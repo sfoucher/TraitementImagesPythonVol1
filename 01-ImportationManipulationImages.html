@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.55">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Importation et manipulation de données spatiales – Traitement d'images satellites avec Python</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./02-RehaussementVisualisationImages.html" rel="next">
+<link href="./00-PriseEnMainPython.html" rel="prev">
+<link href="./images/gen-ai/Gemini_Generated_Image_3a8wwf3a8wwf3a8w.jpg" rel="icon" type="image/jpeg">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="css/quizlib.min.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-ImportationManipulationImages.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Importation et manipulation de données spatiales</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Traitement d’images satellites avec Python</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/sfoucher/TraitementImagesVol1" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Recherche"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Préface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-auteurs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">À propos des auteurs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Partie 1. Importation, manipulation et visualisation de données spatiales</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-PriseEnMainPython.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction au langage Python</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-ImportationManipulationImages.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Importation et manipulation de données spatiales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-RehaussementVisualisationImages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Réhaussement et visualisation d’images</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Partie 2. Transformations des données satellitaires</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-TransformationSpectrales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Transformations spectrales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-TransformationSpatiales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Transformations spatiales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliographie</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table des matières</h2>
+   
+  <ul>
+  <li><a href="#sec-011" id="toc-sec-011" class="nav-link active" data-scroll-target="#sec-011"><span class="header-section-number">2.1</span> Importation d’images</a>
+  <ul class="collapse">
+  <li><a href="#formats-des-images" id="toc-formats-des-images" class="nav-link" data-scroll-target="#formats-des-images"><span class="header-section-number">2.1.1</span> Formats des images</a></li>
+  <li><a href="#métadonnées-des-images" id="toc-métadonnées-des-images" class="nav-link" data-scroll-target="#métadonnées-des-images"><span class="header-section-number">2.1.2</span> Métadonnées des images</a></li>
+  </ul></li>
+  <li><a href="#sec-012" id="toc-sec-012" class="nav-link" data-scroll-target="#sec-012"><span class="header-section-number">2.2</span> Manipulation des images</a>
+  <ul class="collapse">
+  <li><a href="#manipulation-de-la-matrice-de-pixels" id="toc-manipulation-de-la-matrice-de-pixels" class="nav-link" data-scroll-target="#manipulation-de-la-matrice-de-pixels"><span class="header-section-number">2.2.1</span> Manipulation de la matrice de pixels</a></li>
+  <li><a href="#information-de-base" id="toc-information-de-base" class="nav-link" data-scroll-target="#information-de-base"><span class="header-section-number">2.2.2</span> Information de base</a></li>
+  <li><a href="#découpage-et-indexation-de-la-matrice" id="toc-découpage-et-indexation-de-la-matrice" class="nav-link" data-scroll-target="#découpage-et-indexation-de-la-matrice"><span class="header-section-number">2.2.3</span> Découpage et indexation de la matrice</a></li>
+  <li><a href="#mosaïquage-masquage-et-découpage" id="toc-mosaïquage-masquage-et-découpage" class="nav-link" data-scroll-target="#mosaïquage-masquage-et-découpage"><span class="header-section-number">2.2.4</span> Mosaïquage, masquage et découpage</a></li>
+  <li><a href="#changement-de-projection-cartographique" id="toc-changement-de-projection-cartographique" class="nav-link" data-scroll-target="#changement-de-projection-cartographique"><span class="header-section-number">2.2.5</span> Changement de projection cartographique</a></li>
+  <li><a href="#recalage-dimages-et-co-registration" id="toc-recalage-dimages-et-co-registration" class="nav-link" data-scroll-target="#recalage-dimages-et-co-registration"><span class="header-section-number">2.2.6</span> Recalage d’images et co-registration</a></li>
+  </ul></li>
+  <li><a href="#sec-013" id="toc-sec-013" class="nav-link" data-scroll-target="#sec-013"><span class="header-section-number">2.3</span> Données en géoscience</a></li>
+  <li><a href="#sec-012" id="toc-sec-012" class="nav-link" data-scroll-target="#sec-012"><span class="header-section-number">2.4</span> Importation de données vectorielles</a>
+  <ul class="collapse">
+  <li><a href="#sec-0121" id="toc-sec-0121" class="nav-link" data-scroll-target="#sec-0121"><span class="header-section-number">2.4.1</span> Importation d’un fichier <em>shapefile</em></a></li>
+  <li><a href="#sec-0122" id="toc-sec-0122" class="nav-link" data-scroll-target="#sec-0122"><span class="header-section-number">2.4.2</span> Importation d’une couche dans un <em>GeoPackage</em></a></li>
+  <li><a href="#sec-0123" id="toc-sec-0123" class="nav-link" data-scroll-target="#sec-0123"><span class="header-section-number">2.4.3</span> Importation d’une couche dans une <em>geodatabase</em> d’ESRI</a></li>
+  <li><a href="#sec-0124" id="toc-sec-0124" class="nav-link" data-scroll-target="#sec-0124"><span class="header-section-number">2.4.4</span> Importation d’un fichier <em>shapefile</em></a></li>
+  </ul></li>
+  <li><a href="#sec-014" id="toc-sec-014" class="nav-link" data-scroll-target="#sec-014"><span class="header-section-number">2.5</span> Manipulation de données vectorielles</a>
+  <ul class="collapse">
+  <li><a href="#requêtes-attributaires" id="toc-requêtes-attributaires" class="nav-link" data-scroll-target="#requêtes-attributaires"><span class="header-section-number">2.5.1</span> Requêtes attributaires</a></li>
+  </ul></li>
+  <li><a href="#sec-015" id="toc-sec-015" class="nav-link" data-scroll-target="#sec-015"><span class="header-section-number">2.6</span> Quiz de révision du chapitre</a></li>
+  <li><a href="#sec-016" id="toc-sec-016" class="nav-link" data-scroll-target="#sec-016"><span class="header-section-number">2.7</span> Exercices de révision</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/sfoucher/TraitementImagesVol1/issues/new" class="toc-action"><i class="bi bi-github"></i>Signaler un problème ou<br>formuler une suggestion</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-chap01" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Importation et manipulation de données spatiales</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Dans ce chapitre, nous abordons quelques formats d’images ainsi que leur lecture. Ce chapitre est aussi disponible sous la forme d’un notebook Python: <a href="https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/01-ImportationManipulationImages.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid"></a></p>
+<p>Les librairies qui vont être explorées dans ce chapitre sont les suivantes: * SciPy * NumPy * OpenCV * RasterIO * <a href="https://corteva.github.io/rioxarray/stable/index.html">rioxarray</a> * xarray</p>
+<p>Dans l’environnement Google Colab, seul <code>rioxarray</code> et gdal doivent être installé:</p>
+<div id="54d688d9" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt<span class="op">-</span>get update</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt<span class="op">-</span>get install gdal<span class="op">-</span><span class="bu">bin</span> libgdal<span class="op">-</span>dev</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>q rioxarray</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Nous allons utilisés ces deux images dans ce chapitre:</p>
+<div id="7d9e65bf" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>wget https:<span class="op">//</span>github.com<span class="op">/</span>sfoucher<span class="op">/</span>TraitementImagesPythonVol1<span class="op">/</span>raw<span class="op">/</span>refs<span class="op">/</span>heads<span class="op">/</span>main<span class="op">/</span>data<span class="op">/</span>chapitre01<span class="op">/</span>subset_RGBNIR_of_S2A_MSIL2A_20240625T153941_N0510_R011_T18TYR_20240625T221903.tif <span class="op">-</span>O RGBNIR_of_S2A.tif</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>wget https:<span class="op">//</span>github.com<span class="op">/</span>sfoucher<span class="op">/</span>opengeos<span class="op">-</span>data<span class="op">/</span>raw<span class="op">/</span>refs<span class="op">/</span>heads<span class="op">/</span>main<span class="op">/</span>raster<span class="op">/</span>landsat7.tif <span class="op">-</span>O landsat7.tif</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>wget https:<span class="op">//</span>github.com<span class="op">/</span>sfoucher<span class="op">/</span>opengeos<span class="op">-</span>data<span class="op">/</span>raw<span class="op">/</span>refs<span class="op">/</span>heads<span class="op">/</span>main<span class="op">/</span>images<span class="op">/</span>berkeley.jpg <span class="op">-</span>O berkeley.jpg</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>wget https:<span class="op">//</span>raw.githubusercontent.com<span class="op">/</span>sfoucher<span class="op">/</span>TraitementImagesPythonVol1<span class="op">/</span>refs<span class="op">/</span>heads<span class="op">/</span>main<span class="op">/</span>images<span class="op">/</span>modis<span class="op">-</span>aqua.PNG <span class="op">-</span>O modis<span class="op">-</span>aqua.PNG</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="sec-011" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-011"><span class="header-section-number">2.1</span> Importation d’images</h2>
+<p>La première étape avant tout traitement est d’accéder à la donnée image pour qu’elle soit manipulée par le programme Python. L’imagerie satellite présente certains défis notamment en raison de la taille parfois très importante des images. Il existe maintenant certaines librairies, comme 🔖<a href="https://docs.xarray.dev/en/stable/">Xarray</a>, qui on cherchées à optimiser la lecture et l’écriture de grandes images. Il est donc conseiller de toujours garder un oeil sur l’espace mémoire occupé par les variables Python reliées aux images. La librairie principale en géomatique qui va nous permettre d’importer (et d’exporter) de l’imagerie est la librairie <a href="https://gdal.org">GDAL</a> qui rassemble la plupart des formats sous forme de <em>driver</em> (ou pilote en français).</p>
+<p>Dans le domaine de la géomatique, il faut prêter attention à trois caractéristiques principales des images: 1. <strong>La matrice des données</strong> elle-même qui contient les valeurs brutes des pixels. Cette matrice sera souvent un cube à trois dimensions. En Python, ce cube sera le plus souvent un objet de la librairie 🔖<a href="https://numpy.org/">NumPy</a> (voir section). 2. <strong>La dynamique des images</strong> c.à.d le format de stockage des valeurs individuelles (octet, entier, double, etc.). Ce format décide principalement de la résolution radiométrique et des valeurs minimales et maximales supportées. 3. <strong>La métadonnée</strong> qui va transporter l’information auxiliaire de l’image comme les dimensions et la position de l’image, la date, etc. Cette donnée auxiliaire prendra souvent la forme d’un dictionnaire Python.</p>
+<p>Les différents formats se distinguent principalement sur la manière dont ces trois caractéristiques sont gérées.</p>
+<section id="formats-des-images" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="formats-des-images"><span class="header-section-number">2.1.1</span> Formats des images</h3>
+<p>Il existe maintenant de nombreux formats numériques pour la donnée de type image parfois appelé donnée matricielle ou donnée <em>raster</em>. La librairie GDAL rassemble la plupart des formats matriciels rencontrés en géomatique (voir 🔖<a href="https://gdal.org/en/latest/drivers/raster/index.html">Raster drivers — GDAL documentation</a> pour une liste complète).</p>
+<p>On peut distinguer deux grandes familles de format: 1. Les formats de type <strong>RVB</strong> issus de l’imagerie numérique grand publique comme 🔖<a href="https://gdal.org/en/latest/drivers/raster/jpeg.html#raster-jpeg">JPEG</a>, <a href="https://gdal.org/en/latest/drivers/raster/png.html#raster-png">png</a>, etc. Ces formats ne supportent généralement que trois bandes au maximum (rouge, vert et bleu) et des valeurs de niveaux de gris entre 0 et 255 (format dit 8 bit). 2. <strong>Les géo-formats</strong> issus des domaines scientifiques ou techniques comme GeoTIFF, HDF5, etc. qui peuvent inclure plus que trois bandes et des dynamiques plus élevées (16 bit ou même float).</p>
+<p>Les formats RVB restent très utilisés en Python notamment par les librairies dites de vision par ordinateur (<em>Computer Vision</em>) comme OpenCV et sickit-image ainsi que les grandes librairies en apprentissage profond (PyTorch, Tensorflow).</p>
+<div class="bloc_package">
+<div class="bloc_package-header">
+<div class="bloc_package-icon">
+
+</div>
+<p><strong>Installation de gdal dans un système Linux </strong></p>
+</div>
+<div class="bloc_package-body">
+<ul>
+<li>Pour installer GDAL&nbsp;:</li>
+</ul>
+<pre><code>!apt-get update
+!apt-get install gdal-bin libgdal-dev</code></pre>
+</div>
+</div>
+<section id="formats-de-type-rvb" class="level4" data-number="2.1.1.1">
+<h4 data-number="2.1.1.1" class="anchored" data-anchor-id="formats-de-type-rvb"><span class="header-section-number">2.1.1.1</span> Formats de type RVB</h4>
+<p>Les premiers formats pour de l’imagerie à une bande (monochrome) et à trois bandes (image couleur rouge-vert-bleu) sont issus du domaine des sciences de l’ordinateur. On trouvera, entre autres, les formats pbm, png et jpeg. Ces formats supportent peu de métadonnées et sont placées dans un entête (<em>header</em>) très limité. Cependant, ces formats restent très populaires dans le domaine de la vision par ordinateur et sont très utilisés en apprentissage profond en particulier. Pour la lecture des images RVB, on peut utiliser les librairies Rasterio, <a href="https://he-arc.github.io/livre-python/pillow/index.html">PIL</a> ou <a href="https://docs.opencv.org/4.10.0/index.html">OpenCV</a>.</p>
+<section id="lecture-avec-la-librairie-pil" class="level5" data-number="2.1.1.1.1">
+<h5 data-number="2.1.1.1.1" class="anchored" data-anchor-id="lecture-avec-la-librairie-pil"><span class="header-section-number">2.1.1.1.1</span> Lecture avec la librairie PIL</h5>
+<p>La librairie PIL retourne un objet de type <code>PngImageFile</code>, l’affichage de l’image se fait directement dans la cellule de sortie.</p>
+<div id="7de01c31" class="cell" data-execution_count="3">
+<div id="lst-lecture-PIL-PNG" class="python cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-lecture-PIL-PNG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Bloc de code&nbsp;2.1: Lecture d’une image en format PNG avec PIL
+</figcaption>
+<div aria-describedby="lst-lecture-PIL-PNG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-lecture-PIL-PNG"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-lecture-PIL-PNG-1"><a href="#lst-lecture-PIL-PNG-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="lst-lecture-PIL-PNG-2"><a href="#lst-lecture-PIL-PNG-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'modis-aqua.PNG'</span>)</span>
+<span id="lst-lecture-PIL-PNG-3"><a href="#lst-lecture-PIL-PNG-3" aria-hidden="true" tabindex="-1"></a>img</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+<figure class="figure">
+<p><img src="01-ImportationManipulationImages_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="lecture-avec-la-librairie-opencv" class="level5" data-number="2.1.1.1.2">
+<h5 data-number="2.1.1.1.2" class="anchored" data-anchor-id="lecture-avec-la-librairie-opencv"><span class="header-section-number">2.1.1.1.2</span> Lecture avec la librairie OpenCV</h5>
+<p>La librairie <a href="https://docs.opencv.org/4.10.0/index.html">OpenCV</a> est aussi très populaire en vision par ordinateur. La fonction <code>imread</code> donne directement un objet de type NumPy en sortie.</p>
+<div id="ff9da6b1" class="cell" data-execution_count="4">
+<div id="lst-lecture-opencv-PNG" class="python cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-lecture-opencv-PNG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Bloc de code&nbsp;2.2: Lecture d’une image en format PNG avec OpenCV
+</figcaption>
+<div aria-describedby="lst-lecture-opencv-PNG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-lecture-opencv-PNG"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-lecture-opencv-PNG-1"><a href="#lst-lecture-opencv-PNG-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="lst-lecture-opencv-PNG-2"><a href="#lst-lecture-opencv-PNG-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">'modis-aqua.PNG'</span>)</span>
+<span id="lst-lecture-opencv-PNG-3"><a href="#lst-lecture-opencv-PNG-3" aria-hidden="true" tabindex="-1"></a>img</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="lecture-avec-la-librairie-rasterio" class="level5" data-number="2.1.1.1.3">
+<h5 data-number="2.1.1.1.3" class="anchored" data-anchor-id="lecture-avec-la-librairie-rasterio"><span class="header-section-number">2.1.1.1.3</span> Lecture avec la librairie RasterIO</h5>
+<p>Rien ne nous empêche de lire une image de format RVB avec <a href="https://rasterio.readthedocs.io/en/stable/">RasterIO</a> comme décrit dans (<a href="#lst-lecturerasterioPNG" class="quarto-xref">bloc&nbsp;<span>2.3</span></a>). Vous noterez cependant les avertissements concernant l’absence de géoréférence pour ce type d’image.</p>
+<div id="02b5e5d0" class="cell" data-execution_count="5">
+<div id="lst-lecturerasterioPNG" class="python cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-lecturerasterioPNG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Bloc de code&nbsp;2.3: Lecture d’une image en format PNG avec OpenCV
+</figcaption>
+<div aria-describedby="lst-lecturerasterioPNG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-lecturerasterioPNG"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-lecturerasterioPNG-1"><a href="#lst-lecturerasterioPNG-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="lst-lecturerasterioPNG-2"><a href="#lst-lecturerasterioPNG-2" aria-hidden="true" tabindex="-1"></a>img<span class="op">=</span> rasterio.<span class="bu">open</span>(<span class="st">'modis-aqua.PNG'</span>)</span>
+<span id="lst-lecturerasterioPNG-3"><a href="#lst-lecturerasterioPNG-3" aria-hidden="true" tabindex="-1"></a>img</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+</section>
+<section id="le-format-geotiff" class="level4" data-number="2.1.1.2">
+<h4 data-number="2.1.1.2" class="anchored" data-anchor-id="le-format-geotiff"><span class="header-section-number">2.1.1.2</span> Le format GeoTiff</h4>
+<p>Le format GeoTIFF est une extension du format TIFF (Tagged Image File Format) qui permet d’incorporer des métadonnées géospatiales directement dans un fichier image. Développé initialement par Dr.&nbsp;Niles Ritter au Jet Propulsion Laboratory de la <a href="https://www.earthdata.nasa.gov/esdis/esco/standards-and-practices/geotiff" target="_blank">NASA</a> dans les années 1990, GeoTIFF est devenu un standard de facto pour le stockage et l’échange d’images géoréférencées dans les domaines de la télédétection et des systèmes d’information géographique (SIG). Ce format supporte plus que trois bandes aussi longtemps que ces bandes sont de même dimension.</p>
+<p>Le format GeoTIFF est très utilisé et est largement supporté par les bibliothèques et logiciels géospatiaux, notamment <a href="https://gdal.org">GDAL</a> (<em>Geospatial Data Abstraction Library</em>), qui offre des capacités de lecture et d’écriture pour ce format. Cette compatibilité étendue a contribué à son adoption généralisée dans la communauté géospatiale.</p>
+<section id="standardisation-par-logc" class="level5" data-number="2.1.1.2.1">
+<h5 data-number="2.1.1.2.1" class="anchored" data-anchor-id="standardisation-par-logc"><span class="header-section-number">2.1.1.2.1</span> Standardisation par l’OGC</h5>
+<p>Le standard GeoTIFF proposé par l’Open Geospatial Consortium (OGC) en 2019 formalise et étend les spécifications originales du format GeoTIFF, offrant une norme robuste pour l’échange d’images géoréférencées. Cette standardisation, connue sous le nom d’OGC GeoTIFF 1.1 <span class="citation" data-cites="OGCGeoTIFF">(<a href="references.html#ref-OGCGeoTIFF" role="doc-biblioref">2019</a>)</span>, apporte plusieurs améliorations et clarifications importantes.</p>
+</section>
+</section>
+<section id="le-format-cog" class="level4" data-number="2.1.1.3">
+<h4 data-number="2.1.1.3" class="anchored" data-anchor-id="le-format-cog"><span class="header-section-number">2.1.1.3</span> Le format COG</h4>
+<p>Une innovation récente dans l’écosystème GeoTIFF est le format <em>Cloud Optimized GeoTIFF</em> (<a href="http://cogeo.org/">COG</a>), conçu pour faciliter l’utilisation de fichiers GeoTIFF hébergés sur des serveurs web HTTP. Le COG permet aux utilisateurs et aux logiciels d’accéder à des parties spécifiques du fichier sans avoir à le télécharger entièrement, ce qui est particulièrement utile pour les applications basées sur le cloud.</p>
+</section>
+</section>
+<section id="métadonnées-des-images" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="métadonnées-des-images"><span class="header-section-number">2.1.2</span> Métadonnées des images</h3>
+<p>La manière la plus directe d’accéder à la métadonnée d’une image est d’utiliser les commandes 🔖<a href="https://rasterio.readthedocs.io/en/stable/cli.html#info"><code>rio info</code></a> de la librairie Rasterio ou <code>gdalinfo</code> de la librairie <code>gdal</code>. Le résultat est imprimé dans la sortie standard ou sous forme d’un dictionnaire Python.</p>
+<div id="36bf1821" class="cell" data-execution_count="6">
+<div id="lst-gdalinfo" class="python cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-gdalinfo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Bloc de code&nbsp;2.4: Collecte d’information sur une image avec gdal
+</figcaption>
+<div aria-describedby="lst-gdalinfo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-gdalinfo"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-gdalinfo-1"><a href="#lst-gdalinfo-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>gdalinfo RGBNIR_of_S2A.tif</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Warning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.
+Driver: GTiff/GeoTIFF
+Files: RGBNIR_of_S2A.tif
+       RGBNIR_of_S2A.tif.aux.xml
+Size is 2074, 1926
+Coordinate System is:
+PROJCS["WGS 84 / UTM zone 18N",
+    GEOGCS["WGS 84",
+        DATUM["WGS_1984",
+            SPHEROID["WGS 84",6378137,298.257223563,
+                AUTHORITY["EPSG","7030"]],
+            AUTHORITY["EPSG","6326"]],
+        PRIMEM["Greenwich",0,
+            AUTHORITY["EPSG","8901"]],
+        UNIT["degree",0.0174532925199433,
+            AUTHORITY["EPSG","9122"]],
+        AUTHORITY["EPSG","4326"]],
+    PROJECTION["Transverse_Mercator"],
+    PARAMETER["latitude_of_origin",0],
+    PARAMETER["central_meridian",-75],
+    PARAMETER["scale_factor",0.9996],
+    PARAMETER["false_easting",500000],
+    PARAMETER["false_northing",0],
+    UNIT["metre",1,
+        AUTHORITY["EPSG","9001"]],
+    AXIS["Easting",EAST],
+    AXIS["Northing",NORTH],
+    AUTHORITY["EPSG","32618"]]
+Origin = (731780.000000000000000,5040800.000000000000000)
+Pixel Size = (10.000000000000000,-10.000000000000000)
+Metadata:
+  AREA_OR_POINT=Area
+  TIFFTAG_IMAGEDESCRIPTION=subset_RGBNIR_of_S2A_MSIL2A_20240625T153941_N0510_R011_T18TYR_20240625T221903
+  TIFFTAG_RESOLUTIONUNIT=1 (unitless)
+  TIFFTAG_XRESOLUTION=1
+  TIFFTAG_YRESOLUTION=1
+Image Structure Metadata:
+  INTERLEAVE=BAND
+Corner Coordinates:
+Upper Left  (  731780.000, 5040800.000) ( 72d 2' 3.11"W, 45d28'55.98"N)
+Lower Left  (  731780.000, 5021540.000) ( 72d 2'35.69"W, 45d18'32.70"N)
+Upper Right (  752520.000, 5040800.000) ( 71d46' 9.19"W, 45d28'30.08"N)
+Lower Right (  752520.000, 5021540.000) ( 71d46'44.67"W, 45d18' 6.95"N)
+Center      (  742150.000, 5031170.000) ( 71d54'23.16"W, 45d23'31.71"N)
+Band 1 Block=2074x1926 Type=UInt16, ColorInterp=Gray
+  Min=86.000 Max=15104.000 
+  Minimum=86.000, Maximum=15104.000, Mean=1426.625, StdDev=306.564
+  Metadata:
+    STATISTICS_MAXIMUM=15104
+    STATISTICS_MEAN=1426.6252674912
+    STATISTICS_MINIMUM=86
+    STATISTICS_STDDEV=306.56427126942
+    STATISTICS_VALID_PERCENT=100
+Band 2 Block=2074x1926 Type=UInt16, ColorInterp=Undefined
+  Min=1139.000 Max=14352.000 
+  Minimum=1139.000, Maximum=14352.000, Mean=1669.605, StdDev=310.919
+  Metadata:
+    STATISTICS_MAXIMUM=14352
+    STATISTICS_MEAN=1669.6050060032
+    STATISTICS_MINIMUM=1139
+    STATISTICS_STDDEV=310.91935787639
+    STATISTICS_VALID_PERCENT=100
+Band 3 Block=2074x1926 Type=UInt16, ColorInterp=Undefined
+  Min=706.000 Max=15280.000 
+  Minimum=706.000, Maximum=15280.000, Mean=1471.392, StdDev=385.447
+  Metadata:
+    STATISTICS_MAXIMUM=15280
+    STATISTICS_MEAN=1471.3923473736
+    STATISTICS_MINIMUM=706
+    STATISTICS_STDDEV=385.44654593014
+    STATISTICS_VALID_PERCENT=100
+Band 4 Block=2074x1926 Type=UInt16, ColorInterp=Undefined
+  Min=1067.000 Max=15642.000 
+  Minimum=1067.000, Maximum=15642.000, Mean=4393.945, StdDev=1037.934
+  Metadata:
+    STATISTICS_MAXIMUM=15642
+    STATISTICS_MEAN=4393.94485025
+    STATISTICS_MINIMUM=1067
+    STATISTICS_STDDEV=1037.933939728
+    STATISTICS_VALID_PERCENT=100</code></pre>
+</div>
+</div>
+<p>Le plus simple est d’utiliser la fonction <code>rio info</code>:</p>
+<div id="8e02bdc2" class="cell" data-execution_count="7">
+<div id="lst-rioinfo" class="python cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-rioinfo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Bloc de code&nbsp;2.5: Collecte d’information sur une image avec rasterio
+</figcaption>
+<div aria-describedby="lst-rioinfo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-rioinfo"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-rioinfo-1"><a href="#lst-rioinfo-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>rio info RGBNIR_of_S2A.tif <span class="op">--</span>indent <span class="dv">2</span> <span class="op">--</span>verbose</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>WARNING:rasterio._env:CPLE_AppDefined in RGBNIR_of_S2A.tif: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.
+WARNING:rasterio._env:CPLE_AppDefined in RGBNIR_of_S2A.tif: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.
+WARNING:rasterio._env:CPLE_AppDefined in TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.
+{
+  "blockysize": 1926,
+  "bounds": [
+    731780.0,
+    5021540.0,
+    752520.0,
+    5040800.0
+  ],
+  "checksum": [
+    18623,
+    42114,
+    31774,
+    54171
+  ],
+  "colorinterp": [
+    "gray",
+    "undefined",
+    "undefined",
+    "undefined"
+  ],
+  "count": 4,
+  "crs": "EPSG:32618",
+  "descriptions": [
+    null,
+    null,
+    null,
+    null
+  ],
+  "driver": "GTiff",
+  "dtype": "uint16",
+  "height": 1926,
+  "indexes": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "interleave": "band",
+  "lnglat": [
+    -71.90643373271799,
+    45.39214029576973
+  ],
+  "mask_flags": [
+    [
+      "all_valid"
+    ],
+    [
+      "all_valid"
+    ],
+    [
+      "all_valid"
+    ],
+    [
+      "all_valid"
+    ]
+  ],
+  "nodata": null,
+  "res": [
+    10.0,
+    10.0
+  ],
+  "shape": [
+    1926,
+    2074
+  ],
+  "stats": [
+    {
+      "max": 15104.0,
+      "mean": 1426.6252674912,
+      "min": 86.0,
+      "std": 306.56427126942
+    },
+    {
+      "max": 14352.0,
+      "mean": 1669.6050060032,
+      "min": 1139.0,
+      "std": 310.91935787639
+    },
+    {
+      "max": 15280.0,
+      "mean": 1471.3923473736,
+      "min": 706.0,
+      "std": 385.44654593014
+    },
+    {
+      "max": 15642.0,
+      "mean": 4393.94485025,
+      "min": 1067.0,
+      "std": 1037.933939728
+    }
+  ],
+  "tiled": false,
+  "transform": [
+    10.0,
+    0.0,
+    731780.0,
+    0.0,
+    -10.0,
+    5040800.0,
+    0.0,
+    0.0,
+    1.0
+  ],
+  "units": [
+    null,
+    null,
+    null,
+    null
+  ],
+  "width": 2074
+}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-012" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-012"><span class="header-section-number">2.2</span> Manipulation des images</h2>
+<section id="manipulation-de-la-matrice-de-pixels" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="manipulation-de-la-matrice-de-pixels"><span class="header-section-number">2.2.1</span> Manipulation de la matrice de pixels</h3>
+<p>La donnée brute de l’image est généralement contenue dans un cube matricielle à trois dimensions (deux dimensions spatiales et une dimension spectrale). Comme exposé précédemment, la librairie dite <em>“fondationnelle”</em> pour la manipulation de matrices en Python est <a href="https://numpy.org/">NumPy</a>. Cette librairie contient un nombre très important de fonctionnalités couvrant l’algèbre linéaires, les statistiques, etc. et constitue la fondation de nombreuses librairies (voir (<a href="#fig-naturenumpy1" class="quarto-xref">figure&nbsp;<span>2.1</span></a>))</p>
+<div id="fig-naturenumpy1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-naturenumpy1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://raw.githubusercontent.com/sfoucher/TraitementImagesPythonVol1/refs/heads/main/images/41586_2020_2649_Fig2_HTML.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-naturenumpy1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: La librairie NumPy est le fondement de nombreuses librairies scientifiques (d’après <span class="citation" data-cites="NumpyNature">(<a href="references.html#ref-NumpyNature" role="doc-biblioref">Harris 2020</a>)</span>).
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="information-de-base" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="information-de-base"><span class="header-section-number">2.2.2</span> Information de base</h3>
+<p>Les deux informations de base à afficher sur une matrice sont 1) les dimensions de la matrice et 2) le format de stockage (le type). Pour cela, on peut utiliser le (<a href="#lst-numpyshape" class="quarto-xref">bloc&nbsp;<span>2.6</span></a>), le résultat nous informe que la matrice a 3 dimensions et une taille de <code>(442, 553, 3)</code> et un type <code>uint8</code> qui représente 1 octet (8 bit). Par conséquent, la matrice a <code>442</code> lignes, <code>553</code> colonnes et <code>3</code> canaux ou bandes. Il faut prêter une attention particulière aux valeurs minimales et maximales tolérées par le type de la donnée comme indiqué dans le (<a href="#tbl-numpytype" class="quarto-xref">tableau&nbsp;<span>2.1</span></a>) (voir aussi 🔖<a href="https://numpy.org/doc/stable/user/basics.types.html">Data types — NumPy v2.1 Manual</a>).</p>
+<div id="e075220b" class="cell" data-execution_count="8">
+<div id="lst-numpyshape" class="python cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-numpyshape-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Bloc de code&nbsp;2.6: Lecture d’une image en format PNG avec OpenCV
+</figcaption>
+<div aria-describedby="lst-numpyshape-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-numpyshape"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-numpyshape-1"><a href="#lst-numpyshape-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="lst-numpyshape-2"><a href="#lst-numpyshape-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">'modis-aqua.PNG'</span>)</span>
+<span id="lst-numpyshape-3"><a href="#lst-numpyshape-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Nombre de dimensions: '</span>,img.ndim)</span>
+<span id="lst-numpyshape-4"><a href="#lst-numpyshape-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Dimensions de la matrice: '</span>,img.shape)</span>
+<span id="lst-numpyshape-5"><a href="#lst-numpyshape-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Type de la donnée: '</span>,img.dtype)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Nombre de dimensions:  3
+Dimensions de la matrice:  (442, 553, 3)
+Type de la donnée:  uint8</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tabulate <span class="im">import</span> tabulate</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> [[<span class="st">"uint8"</span>, <span class="st">"char"</span>, <span class="dv">8</span>, <span class="dv">0</span>, <span class="dv">255</span>],</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"int8"</span>, <span class="st">"signed char"</span>, <span class="dv">8</span>, <span class="op">-</span><span class="dv">127</span>, <span class="op">+</span><span class="dv">128</span>],</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"uint16"</span>, <span class="st">"unsigned short"</span>, <span class="dv">16</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">32768</span>, <span class="op">+</span><span class="dv">32767</span>],</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"int16"</span>, <span class="st">"short"</span>, <span class="dv">16</span>, <span class="dv">0</span>, <span class="dv">655355</span>]]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>Markdown(tabulate(table, headers<span class="op">=</span>[<span class="st">"dtype"</span>, <span class="st">"Nom"</span>, <span class="st">"Taille (bits)"</span>, <span class="st">"Min"</span>, <span class="st">"Max"</span>], tablefmt<span class="op">=</span><span class="st">"pipe"</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-numpytype" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="9">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-numpytype-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;2.1: Type de données de NumPy
+</figcaption>
+<div aria-describedby="tbl-numpytype-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">dtype</th>
+<th style="text-align: left;">Nom</th>
+<th style="text-align: right;">Taille (bits)</th>
+<th style="text-align: right;">Min</th>
+<th style="text-align: right;">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">uint8</td>
+<td style="text-align: left;">char</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">255</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">int8</td>
+<td style="text-align: left;">signed char</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">-127</td>
+<td style="text-align: right;">128</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">uint16</td>
+<td style="text-align: left;">unsigned short</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-32768</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">int16</td>
+<td style="text-align: left;">short</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">655355</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="bloc_aller_loin">
+<div class="bloc_aller_loin-header">
+<div class="bloc_aller_loin-icon">
+
+</div>
+<p><strong>Les différents types de données en dans NumPy</strong></p>
+</div>
+<div class="bloc_aller_loin-body">
+<p>Il comprend des références ou des extensions d’une méthode abordée dans une section.</p>
+</div>
+</div>
+</section>
+<section id="découpage-et-indexation-de-la-matrice" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="découpage-et-indexation-de-la-matrice"><span class="header-section-number">2.2.3</span> Découpage et indexation de la matrice</h3>
+<p>L’indexation et le découpage des matrices dans NumPy sont des techniques essentielles pour manipuler efficacement les données multidimensionnelles en Python, offrant une syntaxe puissante et flexible pour accéder et modifier des sous-ensembles spécifiques d’éléments dans les tableaux (voir <a href="#fig-naturenumpy2" class="quarto-xref">figure&nbsp;<span>2.2</span></a>). Indexer une matrice consiste à accéder à une valeur dans la matrice pour une position particulière, la syntaxe générale est <code>matrice[ligne, colonne, bande]</code> et est similaire à la manipulation des <a href="https://docs.python.org/fr/3/tutorial/introduction.html#lists">listes</a> en Python. Les indices commencent à <code>0</code> et se termine à la <code>taille-1</code> de l’axe considéré.</p>
+<div id="fig-naturenumpy2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-naturenumpy2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://raw.githubusercontent.com/sfoucher/TraitementImagesPythonVol1/refs/heads/main/images/41586_2020_2649_Fig1_HTML.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-naturenumpy2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.2: Vue d’ensemble des opérations de base des matrices avec NumPy
+</figcaption>
+</figure>
+</div>
+<p>Le découpage (ou <em>slicing</em> en anglais) consiste à produire une nouvelle matrice qui est un sous-ensemble de la matrice d’origine. Un découpage se fait avec le symbole ‘:’, la syntaxe générale pour définir un découpage est <code>[début:fin:pas]</code>. Si on ne spécifie pas <code>début</code> ou <code>fin</code> alors les valeurs 0 ou <code>dimension-1</code> sont considérées implicitement. Quelques exemples: * choisir un pixel en particulier avec toutes les bandes: <code>matrice[1,1,:]</code> * choisir la colonne 2: <code>matrice[:,2,:]</code></p>
+<p>La syntaxe de base pour le découpage (<em>slicing</em>) des tableaux NumPy repose sur l’utilisation des deux-points (<code>:</code>) à l’intérieur des crochets d’indexation. Cette notation permet de sélectionner des plages d’éléments de manière concise et intuitive. La structure générale du découpage est <code>matrice[start:stop:step]</code>, où : 1. <code>start</code> représente l’index de départ (inclus) 2. <code>stop</code> indique l’index de fin (exclu) 3. <code>step</code> définit l’intervalle entre chaque élément sélectionné</p>
+<p>Si l’un de ces paramètres est omis, NumPy utilise des valeurs par défaut : 0 pour <code>start</code>, la taille du tableau pour <code>stop</code>, et 1 pour <code>step</code>. Par exemple, pour un tableau unidimensionnel <code>array</code>, on peut extraire les éléments du deuxième au quatrième avec <code>array[1:4]</code>. Pour sélectionner tous les éléments à partir du troisième, on utiliserait <code>array[2:]</code>. Cette syntaxe s’applique également aux tableaux multidimensionnels, où chaque dimension est séparée par une virgule. Ainsi, pour une matrice 2D m, <code>m[0:2, 1:3]</code> sélectionnerait une sous-matrice 2x2 composée des deux premières lignes et des deuxième et troisième colonnes. L’indexation négative est également supportée, permettant de compter à partir de la fin du tableau. Par exemple, <code>a[-3:]</code> sélectionnerait les trois derniers éléments d’un tableau.</p>
+<div id="9c1ea25f" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">'modis-aqua.PNG'</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>img_col <span class="op">=</span> img[:,<span class="dv">1</span>,:]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Nombre de dimensions: '</span>,img_col.ndim)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Dimensions de la matrice: '</span>,img_col.shape)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Nombre de dimensions:  2
+Dimensions de la matrice:  (442, 3)</code></pre>
+</div>
+</div>
+<div class="bloc_aller_loin">
+<div class="bloc_aller_loin-header">
+<div class="bloc_aller_loin-icon">
+
+</div>
+<p><strong>Une vue versus une copie</strong></p>
+</div>
+<div class="bloc_aller_loin-body">
+<p>Avec NumPy, les manipulations peuvent créer des vues ou des copies. Une vue est une simple représentation de la même donnée originale alors qu’une copie est un nouvel espace mémoire.</p>
+<p>Par défaut, un découpage créé une vue.</p>
+<p>On peut vérifier si l’espace mémoire est partagé avec <code>np.shares_memory(arr, slice_arr)</code>.</p>
+<p>On peut toujours forcer une copie avec la méthode <code>copy()</code></p>
+</div>
+</div>
+<section id="exemple-1-calcul-dun-rapport-de-bande" class="level4" data-number="2.2.3.1">
+<h4 data-number="2.2.3.1" class="anchored" data-anchor-id="exemple-1-calcul-dun-rapport-de-bande"><span class="header-section-number">2.2.3.1</span> Exemple 1: calcul d’un rapport de bande</h4>
+</section>
+<section id="exemple-2-application-dun-filtrage-spatial" class="level4" data-number="2.2.3.2">
+<h4 data-number="2.2.3.2" class="anchored" data-anchor-id="exemple-2-application-dun-filtrage-spatial"><span class="header-section-number">2.2.3.2</span> Exemple 2: application d’un filtrage spatial</h4>
+</section>
+</section>
+<section id="mosaïquage-masquage-et-découpage" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="mosaïquage-masquage-et-découpage"><span class="header-section-number">2.2.4</span> Mosaïquage, masquage et découpage</h3>
+<section id="masquage" class="level4" data-number="2.2.4.1">
+<h4 data-number="2.2.4.1" class="anchored" data-anchor-id="masquage"><span class="header-section-number">2.2.4.1</span> Masquage</h4>
+<p>L’utilisation d’un masque est un outil important en traitement d’image car la plupart des images de télédétection contiennent des pixels non valides qu’il faut exclure des traitements (ce que l’on appelle le <em>no data</em> en Anglais). Il y a plusieurs raison possibles pour la présence de pixels non valides: 1. L’image est projetée dans une grille cartographique et certaines zones, généralement situées en dehors de l’empreinte au sol du capteur, sont à exclure. 2. La présence de nuages que l’on veut exclure. 3. La présence de pixels erronés dûs à des problèmes de capteurs. 4. La présence de valeurs non numériques (<em>not a number</em> ou <code>nan</code>)</p>
+<p>La librairie NumPy fournit des mécanismes pour exclure automatiquement certaines valeurs.</p>
+</section>
+</section>
+<section id="changement-de-projection-cartographique" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="changement-de-projection-cartographique"><span class="header-section-number">2.2.5</span> Changement de projection cartographique</h3>
+</section>
+<section id="recalage-dimages-et-co-registration" class="level3" data-number="2.2.6">
+<h3 data-number="2.2.6" class="anchored" data-anchor-id="recalage-dimages-et-co-registration"><span class="header-section-number">2.2.6</span> Recalage d’images et co-registration</h3>
+</section>
+</section>
+<section id="sec-013" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-013"><span class="header-section-number">2.3</span> Données en géoscience</h2>
+<p>Calibration, unités, données manquantes, données éparses.</p>
+<p>netcdf, xarray, GRIB.</p>
+<p>Données météos, exemple avec SWOT.</p>
+</section>
+<section id="sec-012" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-012"><span class="header-section-number">2.4</span> Importation de données vectorielles</h2>
+<section id="sec-0121" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="sec-0121"><span class="header-section-number">2.4.1</span> Importation d’un fichier <em>shapefile</em></h3>
+</section>
+<section id="sec-0122" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="sec-0122"><span class="header-section-number">2.4.2</span> Importation d’une couche dans un <em>GeoPackage</em></h3>
+</section>
+<section id="sec-0123" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="sec-0123"><span class="header-section-number">2.4.3</span> Importation d’une couche dans une <em>geodatabase</em> d’ESRI</h3>
+</section>
+<section id="sec-0124" class="level3" data-number="2.4.4">
+<h3 data-number="2.4.4" class="anchored" data-anchor-id="sec-0124"><span class="header-section-number">2.4.4</span> Importation d’un fichier <em>shapefile</em></h3>
+</section>
+</section>
+<section id="sec-014" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-014"><span class="header-section-number">2.5</span> Manipulation de données vectorielles</h2>
+<section id="requêtes-attributaires" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="requêtes-attributaires"><span class="header-section-number">2.5.1</span> Requêtes attributaires</h3>
+</section>
+</section>
+<section id="sec-015" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="sec-015"><span class="header-section-number">2.6</span> Quiz de révision du chapitre</h2>
+</section>
+<section id="sec-016" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="sec-016"><span class="header-section-number">2.7</span> Exercices de révision</h2>
+<div class="bloc_exercice">
+<div class="bloc_exercice-header">
+<div class="bloc_exercice-icon">
+
+</div>
+<p><strong>Exercice 1.</strong> À compléter</p>
+</div>
+<div class="bloc_exercice-body">
+<div id="5b15f55d" class="cell" data-message="false" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># à compléter</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Correction à la <span class="quarto-unresolved-ref">?sec-08011</span>.</p>
+</div>
+</div>
+<div class="bloc_exercice">
+<div class="bloc_exercice-header">
+<div class="bloc_exercice-icon">
+
+</div>
+<p><strong>Exercice 2.</strong> À compléter</p>
+</div>
+<div class="bloc_exercice-body">
+<div id="d93767c1" class="cell" data-message="false" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># à compléter</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Correction à la <span class="quarto-unresolved-ref">?sec-08012</span>.</p>
+</div>
+</div>
+<div class="bloc_exercice">
+<div class="bloc_exercice-header">
+<div class="bloc_exercice-icon">
+
+</div>
+<p><strong>Exercice 3.</strong> À compléter</p>
+</div>
+<div class="bloc_exercice-body">
+<div id="96832312" class="cell" data-message="false" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># à compléter</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Correction à la <span class="quarto-unresolved-ref">?sec-08013</span>.</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-NumpyNature" class="csl-entry" role="listitem">
+Harris, Millman, C. R. 2020. <span>«&nbsp;Array programming with NumPy.&nbsp;»</span> <em><span>Nature</span></em>: 357‑362. <a href="https://doi.org/10.1038/s41586-020-2649-2">https://doi.org/10.1038/s41586-020-2649-2</a>.
+</div>
+<div id="ref-OGCGeoTIFF" class="csl-entry" role="listitem">
+OGC. 2019. <span>«&nbsp;<span>OGC GeoTIFF Standard</span>.&nbsp;»</span> <a href="https://docs.ogc.org/is/19-008r4/19-008r4.html/" class="uri">https://docs.ogc.org/is/19-008r4/19-008r4.html/</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copié");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copié");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/github\.com\/sfoucher\/TraitementImagesVol1\/livre\/index\.html");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./00-PriseEnMainPython.html" class="pagination-link" aria-label="Introduction au langage Python">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction au langage Python</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./02-RehaussementVisualisationImages.html" class="pagination-link" aria-label="Réhaussement et visualisation d'images">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Réhaussement et visualisation d’images</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Traitement d’images satellites avec Python.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sfoucher/TraitementImagesVol1/issues/new" class="toc-action"><i class="bi bi-github"></i>Signaler un problème ou<br>formuler une suggestion</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Ce livre a été réalisé avec <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

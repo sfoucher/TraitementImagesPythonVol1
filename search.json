@@ -1,0 +1,432 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Traitement d’images satellites avec Python",
+    "section": "",
+    "text": "Préface",
+    "crumbs": [
+      "Préface"
+    ]
+  },
+  {
+    "objectID": "index.html#sect001",
+    "href": "index.html#sect001",
+    "title": "Traitement d’images satellites avec Python",
+    "section": "Un manuel sous la forme d’une ressource éducative libre",
+    "text": "Un manuel sous la forme d’une ressource éducative libre\nPourquoi un manuel sous licence libre?\nLes logiciels libres sont aujourd’hui très répandus. Comparativement aux logiciels propriétaires, l’accès au code source permet à quiconque de l’utiliser, de le modifier, de le dupliquer et de le partager. Le logiciel Python, dans lequel sont mises en œuvre les méthodes de traitement d’images satellites décrites dans ce livre, est d’ailleurs à la fois un langage de programmation et un logiciel libre (sous la licence publique générale GNU GPL2). Par analogie aux logiciels libres, il existe aussi des ressources éducatives libres (REL) « dont la licence accorde les permissions désignées par les 5R (Retenir — Réutiliser — Réviser — Remixer — Redistribuer) et donc permet nécessairement la modification » (fabriqueREL). La licence de ce livre, CC BY-SA (figure 1), permet donc de :\n\nRetenir, c’est-à-dire télécharger et imprimer gratuitement le livre. Notez qu’il aurait été plutôt surprenant d’écrire un livre payant sur un logiciel libre et donc gratuit. Aussi, nous aurions été très embarrassés que des personnes étudiantes avec des ressources financières limitées doivent payer pour avoir accès au livre, sans pour autant savoir préalablement si le contenu est réellement adapté à leurs besoins.\nRéutiliser, c’est-à-dire utiliser la totalité ou une section du livre sans limitation et sans compensation financière. Cela permet ainsi à d’autres personnes enseignantes de l’utiliser dans le cadre d’activités pédagogiques.\nRéviser, c’est-à-dire modifier, adapter et traduire le contenu en fonction d’un besoin pédagogique précis puisqu’aucun manuel n’est parfait, tant s’en faut! Le livre a d’ailleurs été écrit intégralement dans R avec Quatro. Quiconque peut ainsi télécharger gratuitement le code source du livre sur github et le modifier à sa guise (voir l’encadré intitulé Suggestions d’adaptation du manuel).\nRemixer, c’est-à-dire « combiner la ressource avec d’autres ressources dont la licence le permet aussi pour créer une nouvelle ressource intégrée » (fabriqueREL).\nRedistribuer, c’est-à-dire distribuer, en totalité ou en partie le manuel ou une version révisée sur d’autres canaux que le site Web du livre (par exemple, sur le site Moodle de votre université ou en faire une version imprimée).\n\nLa licence de ce livre, CC BY-SA (figure 1), oblige donc à :\n\nAttribuer la paternité de l’auteur dans vos versions dérivées, ainsi qu’une mention concernant les grandes modifications apportées, en utilisant la formulation suivante :\n\nApparicio Philippe, Yacine Bouroubi, Samuel Foucher et Mickaël Germain (2024). Traitement d’images satellites : . Université de Sherbrooke, Département de géomatique appliquée. fabriqueREL. Licence CC BY-SA.\n\nUtiliser la même licence ou une licence similaire à toutes versions dérivées.\n\n\n\n\n\n\n\nFigure 1: Licence Creative Commons du livre\n\n\n\n\n\n\n\n\nSuggestions d’adaptation du manuel\n\n\nPour chaque méthode d’analyse spatiale abordée dans le livre, une description détaillée et une mise en œuvre dans Python sont disponibles. Par conséquent, plusieurs adaptations du manuel sont possibles :\n\nConserver uniquement les chapitres sur les méthodes ciblées dans votre cours.\nEn faire une version imprimée et la distribuer aux personnes étudiantes.\nModifier la description d’une ou de plusieurs méthodes en effectuant les mises à jour directement dans les chapitres.\nInsérer ses propres jeux de données dans les sections intitulées Mise en œuvre dans Python.\nModifier les tableaux et figures.\nAjouter une série d’exercices.\nModifier les quiz de révision.\nRédiger un nouveau chapitre.\nModifier des syntaxes en Python. Plusieurs librairies Python peuvent être utilisées pour mettre en œuvre telle ou telle méthode. Ces derniers évoluent aussi très vite et de nouvelles librairies sont proposées fréquemment! Par conséquent, il peut être judicieux de modifier une syntaxe Python du livre en fonction de ses habitudes de programmation en Python (utilisation d’autres librairies que ceux utilisés dans le manuel par exemple) ou de bien mettre à jour une syntaxe à la suite de la parution d’une nouvelle librairie plus performante ou intéressante.\nToute autre adaptation qui permet de répondre au mieux à un besoin pédagogique.",
+    "crumbs": [
+      "Préface"
+    ]
+  },
+  {
+    "objectID": "index.html#sect002",
+    "href": "index.html#sect002",
+    "title": "Traitement d’images satellites avec Python",
+    "section": "Comment lire ce manuel?",
+    "text": "Comment lire ce manuel?\nLe livre comprend plusieurs types de blocs de texte qui en facilitent la lecture.\n\n\n\n\n\nBloc packages\n\n\nHabituellement localisé au début d’un chapitre, il comprend la liste des packages Python utilisés pour un chapitre.\n\n\n\n\n\n\n\nBloc objectif\n\n\nIl comprend une description des objectifs d’un chapitre ou d’une section.\n\n\n\n\n\n\n\nBloc notes\n\n\nIl comprend une information secondaire sur une notion, une idée abordée dans une section.\n\n\n\n\n\n\n\nBloc pour aller plus loin\n\n\nIl comprend des références ou des extensions d’une méthode abordée dans une section.\n\n\n\n\n\n\n\nBloc astuce\n\n\nIl décrit un élément qui vous facilitera la vie : une propriété statistique, un package, une fonction, une syntaxe Python.\n\n\n\n\n\n\n\nBloc attention\n\n\nIl comprend une notion ou un élément important à bien maîtriser.\n\n\n\n\n\n\n\nBloc exercice\n\n\nIl comprend un court exercice de révision à la fin de chaque chapitre.",
+    "crumbs": [
+      "Préface"
+    ]
+  },
+  {
+    "objectID": "index.html#sect003",
+    "href": "index.html#sect003",
+    "title": "Traitement d’images satellites avec Python",
+    "section": "Comment utiliser les données du livre pour reproduire les exemples?",
+    "text": "Comment utiliser les données du livre pour reproduire les exemples?\nCe livre comprend des exemples détaillés et appliqués dans R pour chacune des méthodes abordées. Ces exemples se basent sur des jeux de données structurés et mis à disposition avec le livre. Ils sont disponibles sur le repo github dans le sous-dossier data, à l’adresse https://github.com/SerieBoldR/TraitementImagesVol1/tree/main/data.\nUne autre option est de télécharger le repo complet du livre directement sur github (https://github.com/SerieBoldR/TraitementImagesVol1) en cliquant sur le bouton Code, puis le bouton Download ZIP (figure 2). Les données se trouvent alors dans le sous-dossier nommé data.\n\n\n\n\n\n\nFigure 2: Téléchargement de l’intégralité du livre",
+    "crumbs": [
+      "Préface"
+    ]
+  },
+  {
+    "objectID": "index.html#sect004",
+    "href": "index.html#sect004",
+    "title": "Traitement d’images satellites avec Python",
+    "section": "Structure du livre",
+    "text": "Structure du livre\nLe livre est organisé autour de quatre grandes parties.\nPartie 1. Importation et manipulation de données spatiales. Dans cette première partie, nous voyons comment importer, manipuler, cartographier et exporter des données spatiales dans R, principalement avec les packages sf pour les données vectorielles, terra pour les données matricielles (images) et tmap pour la cartographie (chapitre 2  Importation et manipulation de données spatiales). Maîtriser les notions abordées dans ce chapitre constitue une étape préalable et indispensable à tout projet d’analyse spatiale. D’une part, avant d’analyser des données spatiales, il convient de les structurer (importation et manipulation) et de les explorer (cartographie). D’autre part, une fois la ou les méthodes d’analyse spatiale mises en œuvre, il convient de cartographier les résultats finaux et de les exporter au besoin dans un format de données géographiques (shapefile (shp), GeoPackage (GPKG), GeoJSON (geojson), sqlite (sqlite), GeoTiff, etc.).\nPartie 2. Transformations des données spatiales. Cette troisième partie comprend deux chapitres : les transformations spectrales (chapitre 4  Transformations spectrales) et les transformations spatiales (chapitre 5  Transformations spatiales).\nPartie 3. Classifications d’images. Cette troisième partie comprend deux chapitres : les classifications supervisées (?sec-chap05) et non supervisées (?sec-chap06).\nPartie 4. Données massives. Cette quatrième et dernière partie comprend un seul chapitre qui est dédié aux plateformes de mégadonnes ?sec-chap07, notammment Google Earth Engine.",
+    "crumbs": [
+      "Préface"
+    ]
+  },
+  {
+    "objectID": "index.html#sect005",
+    "href": "index.html#sect005",
+    "title": "Traitement d’images satellites avec Python",
+    "section": "Remerciements",
+    "text": "Remerciements\nDe nombreuses personnes ont contribué à l’élaboration de ce manuel.\nCe projet a bénéficié du soutien pédagogique et financier de la fabriqueREL (ressources éducatives libres). Les différentes rencontres avec le comité de suivi nous ont permis de comprendre l’univers des ressources éducatives libres (REL) et notamment leurs fameux 5R (Retenir — Réutiliser — Réviser — Remixer — Redistribuer), de mieux définir le besoin pédagogique visé par ce manuel, d’identifier des ressources pédagogiques et des outils pertinents pour son élaboration. Ainsi, nous remercions chaleureusement les membres de la fabriqueREL pour leur soutien inconditionnel :\n\nMyriam Beaudet, bibliothécaire à l’Université de Sherbrooke.\nMarianne Dubé, coordonnatrice de la fabriqueREL, Université de Sherbrooke.\nSerge Piché, conseiller pédagogique, Université de Sherbrooke.\nClaude Potvin, conseiller en formation, Service de soutien à l’enseignement, Université Laval.\n\nNous remercions chaleureusement les personnes étudiantes des cours à modifier plus tard du Baccalauréat en géomatique appliquée à l’environnement et du Microprogramme de 1er cycle en géomatique appliquée du Département de géomatique appliquée de l’Université de Sherbrooke de la session d’été 2023 : à modifier plus tard.\nNous remercions aussi les membres du comité de révision pour leurs commentaires et suggestions très constructifs. Ce comité est composé de quatre personnes étudiantes du Département de géomatique appliquée de l’Université de Sherbrooke :\n\nÀ compléter plus tard.\nÀ compléter plus tard.\n\nFinalement, nous remercions Denise Latreille, réviseure linguistique et chargée de cours à l’Université Sherbrooke, pour la révision du manuel.",
+    "crumbs": [
+      "Préface"
+    ]
+  },
+  {
+    "objectID": "index.html#sect006",
+    "href": "index.html#sect006",
+    "title": "Traitement d’images satellites avec Python",
+    "section": "Introduction aux images de télédétection",
+    "text": "Introduction aux images de télédétection\nL’imagerie numérique a pris une place importante dans notre vie de tous les jours depuis une quinzaine d’année. Ces images sont prises généralement au niveau du sol (imagerie proximale) avec seulement trois couleurs dans le domaine de la vision humaine (rouge, vert et bleu). Dans la suite du manuel, on parlera d’images du domaine de la vision par ordinateur ou images en vision pour faire plus court.\nLes images de télédétection ont des particularités et des propriétés qui les différencient des images de tous les jours. On peut souligner au moins cinq caractéristiques principales: 1. Les images sont géoréférencées : Cela veut dire que pour chaque pixel nous pouvons y associer une position géographique ou cartographique. 2. Le point de vue est très différent : Ces images sont prises avec une vue d’en haut (Nadir) ou oblique avec une distance qui peut être très grande (On parle d’images distales). 3. Elles possèdent plus que 3 bandes : Contrairement aux images en vision, les images de télédétection possèdent bien souvent plus que 3 bandes. Il n’est pas rare de trouver 4 bandes (Pléiade), 13 bandes (Sentinel-2, Landsat) et même 200 bandes pour des capteurs hyperspectraux. 4. Elles peuvent être calibrées : Les valeurs numérique de l’image peuvent être converties en quantités physiques (luminance, réflectance, section efficace, etc.) via une fonction de calibration. 5. Elles sont de grande taille : Il n’est pas rare de manipuler des images qui font plusieurs dizaines de milliers de pixels en dimension.\n\nRessources en ligne\n\n\nListes des librairies utilisés\nDans ce livre, nous utilisons de nombreux packages Python que vous pouvez installer avec le code ci-dessous.\n\nimport sys\nimport subprocess\nimport pkg_resources\n\n# Liste des packages\nlist_packages = [\"pandas\", \"scikit-image\", \"matplotlib\", \n                 \"geopandas\", \"rasterio\", \"folium\"]\n\n# Packages non installés dans la liste\ninstalled_packages = {pkg.key for pkg in pkg_resources.working_set}\npackages_not_installed = [pkg for pkg in list_packages if pkg.lower() not in installed_packages]\n\n# Installation des packages manquants\nif packages_not_installed:\n    print(\"Installing missing packages...\")\n    for package in packages_not_installed:\n        subprocess.check_call([sys.executable, \"-m\", \"pip\", \"install\", package])\n    print(\"All packages installed successfully.\")\nelse:\n    print(\"All required packages are already installed.\")\n\n\n\nPython 101\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(\n  subplot_kw = {'projection': 'polar'} \n)\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\nFigure 3: A line plot on a polar axis",
+    "crumbs": [
+      "Préface"
+    ]
+  },
+  {
+    "objectID": "00-auteurs.html",
+    "href": "00-auteurs.html",
+    "title": "À propos des auteurs",
+    "section": "",
+    "text": "Philippe Apparicio est professeur titulaire au Département de géomatique appliquée de l’Université de Sherbrooke. Il y enseigne aux programmes de 1er et 2e cycles de géomatique les cours Transport et mobilité durable, Modélisation et analyse spatiale et Géomatique appliquée à la gestion urbaine. Durant les dernières années, il a offert plusieurs formations aux Écoles d’été du Centre interuniversitaire québécois de statistiques sociales (CIQSS). Géographe de formation, ses intérêts de recherche incluent la justice et l’équité environnementale, la mobilité durable, les pollutions atmosphérique et sonore, et le vélo en ville. Il a publié une centaine d’articles scientifiques dans différents domaines des études urbaines et de la géographie mobilisant la géomatique et l’analyse spatiale.\nYacine Bouroubi est professeur titulaire au Département de géomatique appliquée de l’Université de Sherbrooke. Il y enseigne aux programmes de 1er et 2e cycles de géomatique les cours Transport et mobilité durable, Modélisation et analyse spatiale et Géomatique appliquée à la gestion urbaine. Durant les dernières années, il a offert plusieurs formations aux Écoles d’été du Centre interuniversitaire québécois de statistiques sociales (CIQSS). Géographe de formation, ses intérêts de recherche incluent la justice et l’équité environnementale, la mobilité durable, les pollutions atmosphérique et sonore, et le vélo en ville. Il a publié une centaine d’articles scientifiques dans différents domaines des études urbaines et de la géographie mobilisant la géomatique et l’analyse spatiale.\nSamuel Foucher est professeur titulaire au Département de géomatique appliquée de l’Université de Sherbrooke. Il y enseigne aux programmes de 1er et 2e cycles de géomatique les cours Transport et mobilité durable, Modélisation et analyse spatiale et Géomatique appliquée à la gestion urbaine. Durant les dernières années, il a offert plusieurs formations aux Écoles d’été du Centre interuniversitaire québécois de statistiques sociales (CIQSS). Géographe de formation, ses intérêts de recherche incluent la justice et l’équité environnementale, la mobilité durable, les pollutions atmosphérique et sonore, et le vélo en ville. Il a publié une centaine d’articles scientifiques dans différents domaines des études urbaines et de la géographie mobilisant la géomatique et l’analyse spatiale.\nMickaël Germain est professeur titulaire au Département de géomatique appliquée de l’Université de Sherbrooke. Il y enseigne aux programmes de 1er et 2e cycles de géomatique les cours Transport et mobilité durable, Modélisation et analyse spatiale et Géomatique appliquée à la gestion urbaine. Durant les dernières années, il a offert plusieurs formations aux Écoles d’été du Centre interuniversitaire québécois de statistiques sociales (CIQSS). Géographe de formation, ses intérêts de recherche incluent la justice et l’équité environnementale, la mobilité durable, les pollutions atmosphérique et sonore, et le vélo en ville. Il a publié une centaine d’articles scientifiques dans différents domaines des études urbaines et de la géographie mobilisant la géomatique et l’analyse spatiale.",
+    "crumbs": [
+      "À propos des auteurs"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html",
+    "href": "00-PriseEnMainPython.html",
+    "title": "1  Introduction au langage Python",
+    "section": "",
+    "text": "1.1 Les distributions\nIl existe plusieurs distributions du langage Python, ces distributions sont comme différentes saveurs de votre glace préférée - chacune a ses propres caractéristiques uniques, mais elles sont toutes fondamentalement Python. Voici un aperçu des principales distributions :\nJython et IronPython : Ces versions sont comme des traducteurs, permettant à Python de “parler” Java (Jython) ou .NET (IronPython). Chaque distribution a ses forces, que ce soit la simplicité, la vitesse ou des fonctionnalités spécifiques. Le choix dépend de vos besoins, comme choisir entre une glace simple ou un banana split élaboré.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#les-distributions",
+    "href": "00-PriseEnMainPython.html#les-distributions",
+    "title": "1  Introduction au langage Python",
+    "section": "",
+    "text": "CPython : C’est la distribution “vanille” officielle, comme la recette originale de Python. C’est le choix idéal pour la compatibilité et la conformité aux standards.\nAnaconda : Pensez-y comme à un sundae tout garni. Il vient avec de nombreuses bibliothèques scientifiques préinstallées, idéal pour l’analyse de données et le machine learning.\nMiniconda : est une distribution légère de Python qui vous permet d’ajouter les librairies au besoin.\nPyPy : C’est comme une version turbo de Python, optimisée pour la vitesse.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#les-styles-de-programmation-en-python",
+    "href": "00-PriseEnMainPython.html#les-styles-de-programmation-en-python",
+    "title": "1  Introduction au langage Python",
+    "section": "1.2 Les styles de programmation en Python",
+    "text": "1.2 Les styles de programmation en Python\nIl existe plusieurs approches pour programmer en Python. La plus directe est en version interactive en tapant python et de rentrer des commandes ligne par ligne.\n\n1.2.1 Les outils de programmation\nUn code python prend la forme d’un simple fichier texte avec l’extension .py et peut être modifié avec un simple éditeur de texte. Cependant, il n’y aura pas de rétroactions immédiates de l’interpréteur Python ce qui rend la correction d’erreurs (débogage) beaucoup plus laborieux.\nUn IDE (Integrated Developement Environnement) est comme une boîte à outils complète pour les programmeurs, vous trouverez :\n\nUn éditeur de texte amélioré pour écrire votre code, avec des fonctionnalités comme la coloration syntaxique qui rend le code plus lisible.\nUn compilateur qui transforme votre code en instructions que l’ordinateur peut comprendre.\nUn débogueur pour trouver et corriger les erreurs, tel un détective numérique.\nDes outils d’automatisation qui effectuent des tâches répétitives, comme un assistant virtuel pour le codage.\nL’accès à la documentation des différentes librairies.\n\nCes outils intégrés permettent aux développeurs de travailler plus efficacement, en passant moins de temps à jongler entre différentes applications et plus de temps à produire du code.\nVoici quelques options populaires :\n\nPyCharm : C’est un des outils les plus utilisés dans l’industrie. Il offre une multitude de fonctionnalités comme l’autocomplétion intelligente et le débogage intégré, idéal pour les grands projets. Cepednant, cet outil peut être assez gourmand en mémoire et en CPU.\nVisual Studio Code : Gratuit, léger mais puissant, il est personnalisable avec des extensions pour Python.\nSpyder : Logiciel libre et gratuit, orienté vers les applications scientifiques.\nJupyter Notebooks : Imaginez un cahier interactif pour le code. Idéal pour l’analyse de données et l’apprentissage, il permet de mélanger code, texte et visualisations. Des services gratuits dans le cloud sont disponibles comme Google Colab et Kaggle. Ces environnements sont néanmoins moins appropriées pour des grands projets et le débogage.\nSublime Text : C’est comme un stylo élégant et rapide. Léger et rapide, il est apprécié pour sa simplicité et sa vitesse. Le choix dépend de vos besoins, que vous soyez débutant ou développeur chevronné. L’important est de trouver l’éditeur qui vous convient le mieux pour coder confortablement.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#bonnes-pratiques",
+    "href": "00-PriseEnMainPython.html#bonnes-pratiques",
+    "title": "1  Introduction au langage Python",
+    "section": "1.3 Bonnes pratiques",
+    "text": "1.3 Bonnes pratiques\nPython est un langage très dynamique, qui évolue constamment. Cela pose certains défis pour la gestion du code à long terme. Il est fortement conseillé d’utiliser des environnements virtuels pour gérer vos différentes librairies. Voici quelques bonnes pratiques à suivre :\n\nN’installez par la toute dernière version de Python : installez toujours une version ou deux qui précède la dernière version. Les versions trop récentes peuvent être instables. La version de python désirée peut être spécifiée au moment de la création d’un environnement virtuel (voir plus bas). Vous pouvez afficher la liste des versions de python avec la commande conda search --full-name python. Il est recommandé d’installer 1 ou 2 version antérieure, par exemple si 3.13 est la version plus récente, installer plutôt la version 3.11.\nN’utilisez pas de version obsolète de Python : cela peut sembler contradictoire avec le point 1 mais c’est l’excès inverse. Si vous utilisez une version trop ancienne alors toutes vos librairies vont cessez d’évoluer et peuvent devenir obsolète.\nUtilisez des environnements virtuels : Pensez-y comme à des compartiments séparées pour chaque projet. Cela évite les conflits entre les différentes versions de bibliothèques et garde votre système propre. Par exemple, si vous souhaitez vérifier une nouvelle version de Python, utilisez un environnement : conda create --name test python=3.11\nVérifiez l’installation : Après l’installation, ouvrez un terminal et tapez python --version pour vous assurer que tout fonctionne correctement.\n\n\n1.3.1 Création d’un environnement virtuel\nIl y a deux façons d’installer un environnement virtuel selon votre distribution de Python:\n\nOption 1 : vous utilisez Anaconda ou Miniconda, dans ce cas la commande conda est utilisée pour créer un environnement test avec Python 3.10:\n\nconda env -n test python=3.10\nconda activate test\n\nOption 2 : vous utilisez CPython\n\nconda env -n test python=3.10\nconda activate test\n\n\n1.3.2 Création d’un environnement de travail local (avancé)\nNote: les notebooks peuvent fonctionner localement uniquement sous Linux ou avec WSL2.\nLes notebooks Python fonctionnent par défaut dans l’environnement Google Colab. Si vous souhaitez faire fonctionner ces notebook localement, vous pouvez installer un environnement local avec un serveur Jupyter. Il suffit de suivre les étapes suivantes: 1. Installer WSL2 sous Windows 2. Installer vscode 3. Installer Miniconda 4. Faire une installation du contenu du livre soit en utilisant une commande git clone ou en récupérant le .zip du livre 5. Ouvrir WSL2 et placer vous dans le répertoire du livre TraitementImagesPythonVol1. Assurez vous que vous avez accès à conda en tapant conda --version 6. Lancer la commande conda env create -f jupyter_env.yaml 7. Activer le nouvel environnement: conda activate jupyter_env 8. Le serveur jupyter peut ensuite être lancé avec la commande suivante: jupyter lab --ip='*' --NotebookApp.token='' --NotebookApp.password='' Une fenêtre devrait alors apparaître dans votre fureteur. Dans le menu de gauche vous pouvez accéder aux notebooks dans le répertoire notebooks:",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#les-structures-de-base-en-python",
+    "href": "00-PriseEnMainPython.html#les-structures-de-base-en-python",
+    "title": "1  Introduction au langage Python",
+    "section": "1.4 Les structures de base en Python",
+    "text": "1.4 Les structures de base en Python\nIl y a essentiellement deux structures de données que Python manipule : les listes et les dictionnaires.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#les-listes",
+    "href": "00-PriseEnMainPython.html#les-listes",
+    "title": "1  Introduction au langage Python",
+    "section": "1.5 Les listes",
+    "text": "1.5 Les listes\nLes listes sont comme des boites extensibles où vous pouvez ranger différents types d’objets :\n\nReprésentées par des crochets : [1, 2, 3, \"python\"].\nOrdonnées et modifiables (mutables), vous pouvez récupérer une valeur par sa position avec [].\nPermettent les doublons (deux fois la même valeur).\nIdéales pour stocker des collections d’éléments que vous voulez modifier\n\n\n1.5.1 Les tuples\nLes tuples sont similaires aux listes, mais les boîtes sont scellées :\n\nReprésentés par des parenthèses : (1, 2, 3, \"python\").\nOrdonnés mais non modifiables (immutables).\nPermettent les doublons.\nSouvent utilisé pour stocker des données qui ne doivent pas changer (comme des paramètres).\n\n\n\n1.5.2 Les ensembles (Sets)\nLes ensembles sont comme des boites magiques qui ne gardent qu’un exemplaire de chaque objet :\n\nReprésentés par des accolades : {1, 2, 3}.\nNon ordonnés et modifiables.\nN’autorisent pas les doublons.\nUtiles pour éliminer les doublons et effectuer des opérations mathématiques sur des ensembles.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#dictionnaires",
+    "href": "00-PriseEnMainPython.html#dictionnaires",
+    "title": "1  Introduction au langage Python",
+    "section": "1.6 Dictionnaires",
+    "text": "1.6 Dictionnaires\nLes dictionnaires sont comme des boites avec des étiquettes sur chcune d’elle :\n\nReprésentés par des accolades avec des paires clé-valeur : {\"nom\": \"Python\", \"année\": 1991}.\nNon ordonnés et modifiables.\nLes clés doivent être uniques, mais les valeurs peuvent être dupliquées\nUtiles pour stocker des données associatives ou pour créer des tables de recherche rapide",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#programmation-objet",
+    "href": "00-PriseEnMainPython.html#programmation-objet",
+    "title": "1  Introduction au langage Python",
+    "section": "1.7 Programmation objet",
+    "text": "1.7 Programmation objet\nLa programmation orientée objet (POO) en Python est comme construire avec des blocs LEGO. Chaque objet est un bloc LEGO avec ses propres caractéristiques (attributs) et capacités (méthodes). Les classes sont les plans pour créer ces blocs. Par exemple, une classe “Voiture” pourrait avoir des attributs comme “couleur” et “vitesse”, et des méthodes comme “démarrer” et “accélérer”.\nPython rend la POO accessible avec des fonctionnalités conviviales :\n\nEncapsulation : Comme emballer un cadeau, elle cache les détails internes d’un objet.\nHéritage : Permet de créer de nouvelles classes basées sur des classes existantes, comme un enfant héritant des traits de ses parents.\nPolymorphisme : Permet à différents objets de répondre au même message de manière unique, comme si différents animaux répondaient différemment à “fais du bruit”.\n\nCes caractéristiques font de Python un excellent choix pour apprendre et appliquer les concepts de la POO, rendant le code plus organisé et réutilisable\n\n\n\n\n\nListe des packages utilisés dans ce chapitre\n\n\n\nPour importer et manipuler des fichiers géographiques :\n\nsf pour importer et manipuler des données vectorielles.\nterra pour importer et manipuler des données matricielles.\n\nPour construire des cartes et des graphiques :\n\ntmap est certainement le meilleur package pour la cartographie.\nggplot2 pour construire des graphiques.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#quiz-de-révision-du-chapitre",
+    "href": "00-PriseEnMainPython.html#quiz-de-révision-du-chapitre",
+    "title": "1  Introduction au langage Python",
+    "section": "1.8 Quiz de révision du chapitre",
+    "text": "1.8 Quiz de révision du chapitre",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "00-PriseEnMainPython.html#sec-016",
+    "href": "00-PriseEnMainPython.html#sec-016",
+    "title": "1  Introduction au langage Python",
+    "section": "1.9 Cahier de révision (notebook)",
+    "text": "1.9 Cahier de révision (notebook)\n/TODO\n\n\n\n\nHarris, Millman, C. R. 2020. « Array programming with NumPy. » Nature: 357‑362. https://doi.org/10.1038/s41586-020-2649-2.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction au langage Python</span>"
+    ]
+  },
+  {
+    "objectID": "01-ImportationManipulationImages.html",
+    "href": "01-ImportationManipulationImages.html",
+    "title": "2  Importation et manipulation de données spatiales",
+    "section": "",
+    "text": "2.1 Importation d’images\nLa première étape avant tout traitement est d’accéder à la donnée image pour qu’elle soit manipulée par le programme Python. L’imagerie satellite présente certains défis notamment en raison de la taille parfois très importante des images. Il existe maintenant certaines librairies, comme 🔖Xarray, qui on cherchées à optimiser la lecture et l’écriture de grandes images. Il est donc conseiller de toujours garder un oeil sur l’espace mémoire occupé par les variables Python reliées aux images. La librairie principale en géomatique qui va nous permettre d’importer (et d’exporter) de l’imagerie est la librairie GDAL qui rassemble la plupart des formats sous forme de driver (ou pilote en français).\nDans le domaine de la géomatique, il faut prêter attention à trois caractéristiques principales des images: 1. La matrice des données elle-même qui contient les valeurs brutes des pixels. Cette matrice sera souvent un cube à trois dimensions. En Python, ce cube sera le plus souvent un objet de la librairie 🔖NumPy (voir section). 2. La dynamique des images c.à.d le format de stockage des valeurs individuelles (octet, entier, double, etc.). Ce format décide principalement de la résolution radiométrique et des valeurs minimales et maximales supportées. 3. La métadonnée qui va transporter l’information auxiliaire de l’image comme les dimensions et la position de l’image, la date, etc. Cette donnée auxiliaire prendra souvent la forme d’un dictionnaire Python.\nLes différents formats se distinguent principalement sur la manière dont ces trois caractéristiques sont gérées.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Importation et manipulation de données spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "01-ImportationManipulationImages.html#sec-011",
+    "href": "01-ImportationManipulationImages.html#sec-011",
+    "title": "2  Importation et manipulation de données spatiales",
+    "section": "",
+    "text": "2.1.1 Formats des images\nIl existe maintenant de nombreux formats numériques pour la donnée de type image parfois appelé donnée matricielle ou donnée raster. La librairie GDAL rassemble la plupart des formats matriciels rencontrés en géomatique (voir 🔖Raster drivers — GDAL documentation pour une liste complète).\nOn peut distinguer deux grandes familles de format: 1. Les formats de type RVB issus de l’imagerie numérique grand publique comme 🔖JPEG, png, etc. Ces formats ne supportent généralement que trois bandes au maximum (rouge, vert et bleu) et des valeurs de niveaux de gris entre 0 et 255 (format dit 8 bit). 2. Les géo-formats issus des domaines scientifiques ou techniques comme GeoTIFF, HDF5, etc. qui peuvent inclure plus que trois bandes et des dynamiques plus élevées (16 bit ou même float).\nLes formats RVB restent très utilisés en Python notamment par les librairies dites de vision par ordinateur (Computer Vision) comme OpenCV et sickit-image ainsi que les grandes librairies en apprentissage profond (PyTorch, Tensorflow).\n\n\n\n\n\nInstallation de gdal dans un système Linux \n\n\n\nPour installer GDAL :\n\n!apt-get update\n!apt-get install gdal-bin libgdal-dev\n\n\n\n2.1.1.1 Formats de type RVB\nLes premiers formats pour de l’imagerie à une bande (monochrome) et à trois bandes (image couleur rouge-vert-bleu) sont issus du domaine des sciences de l’ordinateur. On trouvera, entre autres, les formats pbm, png et jpeg. Ces formats supportent peu de métadonnées et sont placées dans un entête (header) très limité. Cependant, ces formats restent très populaires dans le domaine de la vision par ordinateur et sont très utilisés en apprentissage profond en particulier. Pour la lecture des images RVB, on peut utiliser les librairies Rasterio, PIL ou OpenCV.\n\n2.1.1.1.1 Lecture avec la librairie PIL\nLa librairie PIL retourne un objet de type PngImageFile, l’affichage de l’image se fait directement dans la cellule de sortie.\n\n\n\n\nBloc de code 2.1: Lecture d’une image en format PNG avec PIL\n\n\nfrom PIL import Image\nimg = Image.open('modis-aqua.PNG')\nimg\n\n\n\n\n\n\n\n\n\n\n\n\n\n2.1.1.1.2 Lecture avec la librairie OpenCV\nLa librairie OpenCV est aussi très populaire en vision par ordinateur. La fonction imread donne directement un objet de type NumPy en sortie.\n\n\n\n\nBloc de code 2.2: Lecture d’une image en format PNG avec OpenCV\n\n\nimport cv2\nimg = cv2.imread('modis-aqua.PNG')\nimg\n\n\n\n\n\n\n2.1.1.1.3 Lecture avec la librairie RasterIO\nRien ne nous empêche de lire une image de format RVB avec RasterIO comme décrit dans (bloc 2.3). Vous noterez cependant les avertissements concernant l’absence de géoréférence pour ce type d’image.\n\n\n\n\nBloc de code 2.3: Lecture d’une image en format PNG avec OpenCV\n\n\nimport rasterio\nimg= rasterio.open('modis-aqua.PNG')\nimg\n\n\n\n\n\n\n\n2.1.1.2 Le format GeoTiff\nLe format GeoTIFF est une extension du format TIFF (Tagged Image File Format) qui permet d’incorporer des métadonnées géospatiales directement dans un fichier image. Développé initialement par Dr. Niles Ritter au Jet Propulsion Laboratory de la NASA dans les années 1990, GeoTIFF est devenu un standard de facto pour le stockage et l’échange d’images géoréférencées dans les domaines de la télédétection et des systèmes d’information géographique (SIG). Ce format supporte plus que trois bandes aussi longtemps que ces bandes sont de même dimension.\nLe format GeoTIFF est très utilisé et est largement supporté par les bibliothèques et logiciels géospatiaux, notamment GDAL (Geospatial Data Abstraction Library), qui offre des capacités de lecture et d’écriture pour ce format. Cette compatibilité étendue a contribué à son adoption généralisée dans la communauté géospatiale.\n\n2.1.1.2.1 Standardisation par l’OGC\nLe standard GeoTIFF proposé par l’Open Geospatial Consortium (OGC) en 2019 formalise et étend les spécifications originales du format GeoTIFF, offrant une norme robuste pour l’échange d’images géoréférencées. Cette standardisation, connue sous le nom d’OGC GeoTIFF 1.1 (2019), apporte plusieurs améliorations et clarifications importantes.\n\n\n\n2.1.1.3 Le format COG\nUne innovation récente dans l’écosystème GeoTIFF est le format Cloud Optimized GeoTIFF (COG), conçu pour faciliter l’utilisation de fichiers GeoTIFF hébergés sur des serveurs web HTTP. Le COG permet aux utilisateurs et aux logiciels d’accéder à des parties spécifiques du fichier sans avoir à le télécharger entièrement, ce qui est particulièrement utile pour les applications basées sur le cloud.\n\n\n\n2.1.2 Métadonnées des images\nLa manière la plus directe d’accéder à la métadonnée d’une image est d’utiliser les commandes 🔖rio info de la librairie Rasterio ou gdalinfo de la librairie gdal. Le résultat est imprimé dans la sortie standard ou sous forme d’un dictionnaire Python.\n\n\n\n\nBloc de code 2.4: Collecte d’information sur une image avec gdal\n\n\n!gdalinfo RGBNIR_of_S2A.tif\n\n\n\n\nWarning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.\nDriver: GTiff/GeoTIFF\nFiles: RGBNIR_of_S2A.tif\n       RGBNIR_of_S2A.tif.aux.xml\nSize is 2074, 1926\nCoordinate System is:\nPROJCS[\"WGS 84 / UTM zone 18N\",\n    GEOGCS[\"WGS 84\",\n        DATUM[\"WGS_1984\",\n            SPHEROID[\"WGS 84\",6378137,298.257223563,\n                AUTHORITY[\"EPSG\",\"7030\"]],\n            AUTHORITY[\"EPSG\",\"6326\"]],\n        PRIMEM[\"Greenwich\",0,\n            AUTHORITY[\"EPSG\",\"8901\"]],\n        UNIT[\"degree\",0.0174532925199433,\n            AUTHORITY[\"EPSG\",\"9122\"]],\n        AUTHORITY[\"EPSG\",\"4326\"]],\n    PROJECTION[\"Transverse_Mercator\"],\n    PARAMETER[\"latitude_of_origin\",0],\n    PARAMETER[\"central_meridian\",-75],\n    PARAMETER[\"scale_factor\",0.9996],\n    PARAMETER[\"false_easting\",500000],\n    PARAMETER[\"false_northing\",0],\n    UNIT[\"metre\",1,\n        AUTHORITY[\"EPSG\",\"9001\"]],\n    AXIS[\"Easting\",EAST],\n    AXIS[\"Northing\",NORTH],\n    AUTHORITY[\"EPSG\",\"32618\"]]\nOrigin = (731780.000000000000000,5040800.000000000000000)\nPixel Size = (10.000000000000000,-10.000000000000000)\nMetadata:\n  AREA_OR_POINT=Area\n  TIFFTAG_IMAGEDESCRIPTION=subset_RGBNIR_of_S2A_MSIL2A_20240625T153941_N0510_R011_T18TYR_20240625T221903\n  TIFFTAG_RESOLUTIONUNIT=1 (unitless)\n  TIFFTAG_XRESOLUTION=1\n  TIFFTAG_YRESOLUTION=1\nImage Structure Metadata:\n  INTERLEAVE=BAND\nCorner Coordinates:\nUpper Left  (  731780.000, 5040800.000) ( 72d 2' 3.11\"W, 45d28'55.98\"N)\nLower Left  (  731780.000, 5021540.000) ( 72d 2'35.69\"W, 45d18'32.70\"N)\nUpper Right (  752520.000, 5040800.000) ( 71d46' 9.19\"W, 45d28'30.08\"N)\nLower Right (  752520.000, 5021540.000) ( 71d46'44.67\"W, 45d18' 6.95\"N)\nCenter      (  742150.000, 5031170.000) ( 71d54'23.16\"W, 45d23'31.71\"N)\nBand 1 Block=2074x1926 Type=UInt16, ColorInterp=Gray\n  Min=86.000 Max=15104.000 \n  Minimum=86.000, Maximum=15104.000, Mean=1426.625, StdDev=306.564\n  Metadata:\n    STATISTICS_MAXIMUM=15104\n    STATISTICS_MEAN=1426.6252674912\n    STATISTICS_MINIMUM=86\n    STATISTICS_STDDEV=306.56427126942\n    STATISTICS_VALID_PERCENT=100\nBand 2 Block=2074x1926 Type=UInt16, ColorInterp=Undefined\n  Min=1139.000 Max=14352.000 \n  Minimum=1139.000, Maximum=14352.000, Mean=1669.605, StdDev=310.919\n  Metadata:\n    STATISTICS_MAXIMUM=14352\n    STATISTICS_MEAN=1669.6050060032\n    STATISTICS_MINIMUM=1139\n    STATISTICS_STDDEV=310.91935787639\n    STATISTICS_VALID_PERCENT=100\nBand 3 Block=2074x1926 Type=UInt16, ColorInterp=Undefined\n  Min=706.000 Max=15280.000 \n  Minimum=706.000, Maximum=15280.000, Mean=1471.392, StdDev=385.447\n  Metadata:\n    STATISTICS_MAXIMUM=15280\n    STATISTICS_MEAN=1471.3923473736\n    STATISTICS_MINIMUM=706\n    STATISTICS_STDDEV=385.44654593014\n    STATISTICS_VALID_PERCENT=100\nBand 4 Block=2074x1926 Type=UInt16, ColorInterp=Undefined\n  Min=1067.000 Max=15642.000 \n  Minimum=1067.000, Maximum=15642.000, Mean=4393.945, StdDev=1037.934\n  Metadata:\n    STATISTICS_MAXIMUM=15642\n    STATISTICS_MEAN=4393.94485025\n    STATISTICS_MINIMUM=1067\n    STATISTICS_STDDEV=1037.933939728\n    STATISTICS_VALID_PERCENT=100\n\n\nLe plus simple est d’utiliser la fonction rio info:\n\n\n\n\nBloc de code 2.5: Collecte d’information sur une image avec rasterio\n\n\n!rio info RGBNIR_of_S2A.tif --indent 2 --verbose\n\n\n\n\nWARNING:rasterio._env:CPLE_AppDefined in RGBNIR_of_S2A.tif: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.\nWARNING:rasterio._env:CPLE_AppDefined in RGBNIR_of_S2A.tif: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.\nWARNING:rasterio._env:CPLE_AppDefined in TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.\n{\n  \"blockysize\": 1926,\n  \"bounds\": [\n    731780.0,\n    5021540.0,\n    752520.0,\n    5040800.0\n  ],\n  \"checksum\": [\n    18623,\n    42114,\n    31774,\n    54171\n  ],\n  \"colorinterp\": [\n    \"gray\",\n    \"undefined\",\n    \"undefined\",\n    \"undefined\"\n  ],\n  \"count\": 4,\n  \"crs\": \"EPSG:32618\",\n  \"descriptions\": [\n    null,\n    null,\n    null,\n    null\n  ],\n  \"driver\": \"GTiff\",\n  \"dtype\": \"uint16\",\n  \"height\": 1926,\n  \"indexes\": [\n    1,\n    2,\n    3,\n    4\n  ],\n  \"interleave\": \"band\",\n  \"lnglat\": [\n    -71.90643373271799,\n    45.39214029576973\n  ],\n  \"mask_flags\": [\n    [\n      \"all_valid\"\n    ],\n    [\n      \"all_valid\"\n    ],\n    [\n      \"all_valid\"\n    ],\n    [\n      \"all_valid\"\n    ]\n  ],\n  \"nodata\": null,\n  \"res\": [\n    10.0,\n    10.0\n  ],\n  \"shape\": [\n    1926,\n    2074\n  ],\n  \"stats\": [\n    {\n      \"max\": 15104.0,\n      \"mean\": 1426.6252674912,\n      \"min\": 86.0,\n      \"std\": 306.56427126942\n    },\n    {\n      \"max\": 14352.0,\n      \"mean\": 1669.6050060032,\n      \"min\": 1139.0,\n      \"std\": 310.91935787639\n    },\n    {\n      \"max\": 15280.0,\n      \"mean\": 1471.3923473736,\n      \"min\": 706.0,\n      \"std\": 385.44654593014\n    },\n    {\n      \"max\": 15642.0,\n      \"mean\": 4393.94485025,\n      \"min\": 1067.0,\n      \"std\": 1037.933939728\n    }\n  ],\n  \"tiled\": false,\n  \"transform\": [\n    10.0,\n    0.0,\n    731780.0,\n    0.0,\n    -10.0,\n    5040800.0,\n    0.0,\n    0.0,\n    1.0\n  ],\n  \"units\": [\n    null,\n    null,\n    null,\n    null\n  ],\n  \"width\": 2074\n}",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Importation et manipulation de données spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "01-ImportationManipulationImages.html#sec-012",
+    "href": "01-ImportationManipulationImages.html#sec-012",
+    "title": "2  Importation et manipulation de données spatiales",
+    "section": "2.4 Importation de données vectorielles",
+    "text": "2.4 Importation de données vectorielles\n\n2.4.1 Importation d’un fichier shapefile\n\n\n2.4.2 Importation d’une couche dans un GeoPackage\n\n\n2.4.3 Importation d’une couche dans une geodatabase d’ESRI\n\n\n2.4.4 Importation d’un fichier shapefile",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Importation et manipulation de données spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "01-ImportationManipulationImages.html#sec-013",
+    "href": "01-ImportationManipulationImages.html#sec-013",
+    "title": "2  Importation et manipulation de données spatiales",
+    "section": "2.3 Données en géoscience",
+    "text": "2.3 Données en géoscience\nCalibration, unités, données manquantes, données éparses.\nnetcdf, xarray, GRIB.\nDonnées météos, exemple avec SWOT.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Importation et manipulation de données spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "01-ImportationManipulationImages.html#sec-014",
+    "href": "01-ImportationManipulationImages.html#sec-014",
+    "title": "2  Importation et manipulation de données spatiales",
+    "section": "2.5 Manipulation de données vectorielles",
+    "text": "2.5 Manipulation de données vectorielles\n\n2.5.1 Requêtes attributaires",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Importation et manipulation de données spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "01-ImportationManipulationImages.html#sec-015",
+    "href": "01-ImportationManipulationImages.html#sec-015",
+    "title": "2  Importation et manipulation de données spatiales",
+    "section": "2.6 Quiz de révision du chapitre",
+    "text": "2.6 Quiz de révision du chapitre",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Importation et manipulation de données spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "01-ImportationManipulationImages.html#sec-016",
+    "href": "01-ImportationManipulationImages.html#sec-016",
+    "title": "2  Importation et manipulation de données spatiales",
+    "section": "2.7 Exercices de révision",
+    "text": "2.7 Exercices de révision\n\n\n\n\n\nExercice 1. À compléter\n\n\n\n# ...\n# à compléter\n\nCorrection à la ?sec-08011.\n\n\n\n\n\n\n\nExercice 2. À compléter\n\n\n\n# ...\n# à compléter\n\nCorrection à la ?sec-08012.\n\n\n\n\n\n\n\nExercice 3. À compléter\n\n\n\n# ...\n# à compléter\n\nCorrection à la ?sec-08013.\n\n\n\n\n\n\nHarris, Millman, C. R. 2020. « Array programming with NumPy. » Nature: 357‑362. https://doi.org/10.1038/s41586-020-2649-2.\n\n\nOGC. 2019. « OGC GeoTIFF Standard. » https://docs.ogc.org/is/19-008r4/19-008r4.html/.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Importation et manipulation de données spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "02-RehaussementVisualisationImages.html",
+    "href": "02-RehaussementVisualisationImages.html",
+    "title": "3  Réhaussement et visualisation d’images",
+    "section": "",
+    "text": "3.0.1 Images utilisées\nNous allons utilisés ces deux images dans ce chapitre:\n!wget https://github.com/sfoucher/TraitementImagesPythonVol1/raw/refs/heads/main/data/chapitre01/subset_RGBNIR_of_S2A_MSIL2A_20240625T153941_N0510_R011_T18TYR_20240625T221903.tif -O RGBNIR_of_S2A.tif\n!wget https://github.com/sfoucher/opengeos-data/raw/refs/heads/main/raster/landsat7.tif -O landsat7.tif",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Réhaussement et visualisation d'images</span>"
+    ]
+  },
+  {
+    "objectID": "02-RehaussementVisualisationImages.html#réhaussements-visuels",
+    "href": "02-RehaussementVisualisationImages.html#réhaussements-visuels",
+    "title": "3  Réhaussement et visualisation d’images",
+    "section": "3.1 Réhaussements visuels",
+    "text": "3.1 Réhaussements visuels\nLe but du réhaussement visuel d’une image vise principalement à améliorer la qualité visuelle d’une image en améliorant le contraste, la dynamique ou la texture d’une image. De manière générale, ce réhaussement ne modifie pas la donnée d’origine mais est plutôt appliquée dynamiquement à l’affichage pour des fins d’inspection visuelle.\n\n3.1.1 Statistiques d’une image\nOn peut considérer un ensemble de statistique globales pour chacune des bandes d’une image: - valeurs minimales et maximales - valeurs moyennes, médianes et quantiles - écart-types, skewness et kurtosis Ces statistiques doivent être calculées pour chaque bande d’une image multispectrale.\nEn ligne de commande, gdalinfo permet d’interroger rapidement un fichier image pour connaitre les statistiques de base:\n\n\n\n\nBloc de code 3.1: Statistiques d’une image avec gdal\n\n\n!gdalinfo -stats landsat7.tif\n\n\n\n\nDriver: GTiff/GeoTIFF\nFiles: landsat7.tif\n       landsat7.tif.aux.xml\nSize is 2181, 1917\nCoordinate System is:\nPROJCS[\"WGS 84 / Pseudo-Mercator\",\n    GEOGCS[\"WGS 84\",\n        DATUM[\"WGS_1984\",\n            SPHEROID[\"WGS 84\",6378137,298.257223563,\n                AUTHORITY[\"EPSG\",\"7030\"]],\n            AUTHORITY[\"EPSG\",\"6326\"]],\n        PRIMEM[\"Greenwich\",0,\n            AUTHORITY[\"EPSG\",\"8901\"]],\n        UNIT[\"degree\",0.0174532925199433,\n            AUTHORITY[\"EPSG\",\"9122\"]],\n        AUTHORITY[\"EPSG\",\"4326\"]],\n    PROJECTION[\"Mercator_1SP\"],\n    PARAMETER[\"central_meridian\",0],\n    PARAMETER[\"scale_factor\",1],\n    PARAMETER[\"false_easting\",0],\n    PARAMETER[\"false_northing\",0],\n    UNIT[\"metre\",1,\n        AUTHORITY[\"EPSG\",\"9001\"]],\n    AXIS[\"X\",EAST],\n    AXIS[\"Y\",NORTH],\n    EXTENSION[\"PROJ4\",\"+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs\"],\n    AUTHORITY[\"EPSG\",\"3857\"]]\nOrigin = (-13651650.000000000000000,4576290.000000000000000)\nPixel Size = (30.000000000000000,-30.000000000000000)\nMetadata:\n  AREA_OR_POINT=Area\n  OVR_RESAMPLING_ALG=NEAREST\n  TIFFTAG_RESOLUTIONUNIT=1 (unitless)\n  TIFFTAG_XRESOLUTION=1\n  TIFFTAG_YRESOLUTION=1\nImage Structure Metadata:\n  COMPRESSION=DEFLATE\n  INTERLEAVE=PIXEL\nCorner Coordinates:\nUpper Left  (-13651650.000, 4576290.000) (122d38' 5.49\"W, 37d58'40.08\"N)\nLower Left  (-13651650.000, 4518780.000) (122d38' 5.49\"W, 37d34'10.00\"N)\nUpper Right (-13586220.000, 4576290.000) (122d 2'49.53\"W, 37d58'40.08\"N)\nLower Right (-13586220.000, 4518780.000) (122d 2'49.53\"W, 37d34'10.00\"N)\nCenter      (-13618935.000, 4547535.000) (122d20'27.51\"W, 37d46'26.05\"N)\nBand 1 Block=512x512 Type=Byte, ColorInterp=Red\n  Min=19.000 Max=233.000 \n  Minimum=19.000, Maximum=233.000, Mean=98.433, StdDev=21.164\n  NoData Value=0\n  Overviews: 1091x959, 546x480\n  Metadata:\n    STATISTICS_MAXIMUM=233\n    STATISTICS_MEAN=98.433096940153\n    STATISTICS_MINIMUM=19\n    STATISTICS_STDDEV=21.164021026458\nBand 2 Block=512x512 Type=Byte, ColorInterp=Green\n  Min=19.000 Max=178.000 \n  Minimum=19.000, Maximum=178.000, Mean=55.068, StdDev=22.204\n  NoData Value=0\n  Overviews: 1091x959, 546x480\n  Metadata:\n    STATISTICS_MAXIMUM=178\n    STATISTICS_MEAN=55.067787534804\n    STATISTICS_MINIMUM=19\n    STATISTICS_STDDEV=22.203571974581\nBand 3 Block=512x512 Type=Byte, ColorInterp=Blue\n  Min=19.000 Max=187.000 \n  Minimum=19.000, Maximum=187.000, Mean=43.341, StdDev=20.330\n  NoData Value=0\n  Overviews: 1091x959, 546x480\n  Metadata:\n    STATISTICS_MAXIMUM=187\n    STATISTICS_MEAN=43.340507443056\n    STATISTICS_MINIMUM=19\n    STATISTICS_STDDEV=20.32987736339\n\n\nLes librairies de base comme xarray et numpy peuvent facilement produire des statistiques comme avec la fonction stats:\n\nimport rasterio as rio\nimport numpy as np\nwith rio.open('landsat7.tif') as src:\n    stats= src.stats()\n    print(stats)\n\nLa librairie xarray donne accès à des fonctionnalités plus sophistiquées comme le calcul des quantiles:\n\nimport rioxarray as riox\nwith riox.open_rasterio('landsat7.tif', masked= True) as src:\n    print(src)\nquantiles = src.quantile(dim=['x','y'], q=[.025,.25,.5,.75,.975])\nquantiles\n\n&lt;xarray.DataArray (band: 3, y: 1917, x: 2181)&gt;\n[12542931 values with dtype=float32]\nCoordinates:\n  * band         (band) int64 1 2 3\n  * x            (x) float64 -1.365e+07 -1.365e+07 ... -1.359e+07 -1.359e+07\n  * y            (y) float64 4.576e+06 4.576e+06 ... 4.519e+06 4.519e+06\n    spatial_ref  int64 0\nAttributes:\n    AREA_OR_POINT:           Area\n    OVR_RESAMPLING_ALG:      NEAREST\n    TIFFTAG_RESOLUTIONUNIT:  1 (unitless)\n    TIFFTAG_XRESOLUTION:     1\n    TIFFTAG_YRESOLUTION:     1\n    STATISTICS_MAXIMUM:      233\n    STATISTICS_MEAN:         98.433096940153\n    STATISTICS_MINIMUM:      19\n    STATISTICS_STDDEV:       21.164021026458\n    scale_factor:            1.0\n    add_offset:              0.0\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n&lt;xarray.DataArray (quantile: 5, band: 3)&gt;\narray([[ 54.,  19.,  19.],\n       [ 85.,  38.,  27.],\n       [ 99.,  54.,  38.],\n       [111.,  69.,  57.],\n       [140., 102.,  89.]])\nCoordinates:\n  * band      (band) int64 1 2 3\n  * quantile  (quantile) float64 0.025 0.25 0.5 0.75 0.975xarray.DataArrayquantile: 5band: 354.0 19.0 19.0 85.0 38.0 27.0 ... 111.0 69.0 57.0 140.0 102.0 89.0array([[ 54.,  19.,  19.],\n       [ 85.,  38.,  27.],\n       [ 99.,  54.,  38.],\n       [111.,  69.,  57.],\n       [140., 102.,  89.]])Coordinates: (2)band(band)int641 2 3array([1, 2, 3])quantile(quantile)float640.025 0.25 0.5 0.75 0.975array([0.025, 0.25 , 0.5  , 0.75 , 0.975])Indexes: (2)bandPandasIndexPandasIndex(Index([1, 2, 3], dtype='int64', name='band'))quantilePandasIndexPandasIndex(Index([0.025, 0.25, 0.5, 0.75, 0.975], dtype='float64', name='quantile'))Attributes: (0)\n\n\n\n3.1.1.1 Calcul de l’histogramme\nLe calcul d’un histogramme pour une image (une bande) permet d’avoir une vue plus détaillée de la répartition des valeurs radiométriques. Le calcul d’un histogramme nécessite minimalement de faire le choix d’une valeur du nombre de bins (ou de la largeur). Un bin est un intervalle de valeurs pour lequel on peut calculer le nombre de valeurs observées dans l’image. La fonction de base pour ce type de calcul est la fonction numpy.histogram():\n\nimport numpy as np\narray = np.random.randint(0,10,100) # 100 valeurs aléatoires entre 0 et 10\nhist, bin_limites = np.histogram(array, density=True)\nprint('valeurs :',hist)\nprint(';imites :',bin_limites)\n\nvaleurs : [0.14444444 0.15555556 0.1        0.14444444 0.15555556 0.08888889\n 0.07777778 0.04444444 0.05555556 0.14444444]\n;imites : [0.  0.9 1.8 2.7 3.6 4.5 5.4 6.3 7.2 8.1 9. ]\n\n\nLe calcul se fait avec 10 intervalles par défaut.\nPour des besoins de visualisation, le calcul des valeurs extrêmes de l’histogramme peut aussi se faire via les quantiles comme discutés auparavant.\n\n3.1.1.1.1 Visualisation des histogrammes\nLa librarie rasterio est probablement l’outil le plus simples pour visualiser rapidement des histogrammes sur une image multi-spectrale:\n\nimport rasterio as rio\nfrom rasterio.plot import show_hist\nwith rio.open('RGBNIR_of_S2A.tif') as src:\n  show_hist(src, bins=50, lw=0.0, stacked=False, alpha=0.3,histtype='stepfilled', title=\"Histogram\")\n\n\n\n\n\n\n\n\n\n\n\n\n3.1.2 Réhaussements linéaires\nLe réhaussement linéaire d’une image est la forme la plus simple de réhaussement, elle consiste 1) à optimiser les valeurs des pixels d’une image afin de maximiser la dynamique disponibles à l’affichage, ou 2) changer le format de stockage des valeurs (e.g. de 8 bit à 16 bit):\n\\[ \\text{nouvelle valeur d'un pixel} = \\frac{\\text{valeur d'un pixel} - min_0}{max_0 - min_0}\\times (max_1 - min_1)+min_1\\] Par cette opération, on passe de la dynamique de départ (\\(max_0 - min_0\\)) vers la dynamique cible (\\(max_1 - min_1\\)). Bien que cette opération semble triviale, il est important d’être conscient des trois contraintes suivantes: 1. Faire attention à la dynamique cible, ainsi, pour sauvegarder une image en format 8 bit, on utilisera alors \\(max_1=255\\) et \\(min_1=0\\). 2. Préservation de la valeur de no data : il faut faire attention à la valeur \\(min_1\\) dans le cas d’une valeur présente pour no_data. Par exemple, si no_data=0 alors il faut s’assurer que \\(min_1&gt;0\\). 3. Précision du calcul : si possible réaliser la division ci-dessus en format float\n\n\n3.1.3 Réhaussements non linéaires\nCalcul d’histogrammes, étirement, égalisation, styling\n\n\n3.1.4 Composés couleurs\nLe système visuel humain est sensible seulement à la partie visible du spectre électromagnétique qui compose les couleurs de l’arc-en-ciel du bleu au rouge. L’ensemble des couleurs du spectre visible peut être obtenu à partir du mélange de trois couleurs primaires (rouge, vert et bleu). Ce système de décomposition à trois couleurs est à la base de la plupart des systèmes de visualisation ou de représentation de l’information de couleur. On peut trouver des variantes comme le système HSV (Hue-Saturation-Value) utilisé en encodage de données vidéos.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Réhaussement et visualisation d'images</span>"
+    ]
+  },
+  {
+    "objectID": "02-RehaussementVisualisationImages.html#visualisation",
+    "href": "02-RehaussementVisualisationImages.html#visualisation",
+    "title": "3  Réhaussement et visualisation d’images",
+    "section": "3.2 Visualisation",
+    "text": "3.2 Visualisation\n\n3.2.1 Visualisation en Python\nIl faut d’entrée mentionner que Python n’est pas vraiment fait pour visualiser de la donnée de grande taille, le niveau d’interactivité est aussi plus limité. Néanmoins, il est possible de visualiser de petites images avec la librairie Matplotlib.\n\n\n3.2.2 Outils de visualisation\nIl existe plusieurs outils gratuits de visualisation d’une image satellite, on peut mentionner les deux principaux: - QGIS - ESA Snap\n\n\n3.2.3 Visualisation sur le Web\nUne des meilleures pratiques pour visualiser une image de grande taille est d’utiliser un service de type Web Mapping Service (WMS). Cependant, type de service nécessite une architecture client-serveur qui est plus complexe à mettre en place.\nGoogle Earth Engine offre des moyens de visualiser de la donnée locale: 🔖 Working with Local Geospatial Data — via 17. Geemap — Introduction to GIS Programming\n🔖 __ — via data/raster at main · opengeos/data\n\n\n3.2.4 Visualisation 3D\ndrapper une image satellite sur un DEM",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Réhaussement et visualisation d'images</span>"
+    ]
+  },
+  {
+    "objectID": "02-RehaussementVisualisationImages.html#quiz-de-révision-du-chapitre",
+    "href": "02-RehaussementVisualisationImages.html#quiz-de-révision-du-chapitre",
+    "title": "3  Réhaussement et visualisation d’images",
+    "section": "3.3 Quiz de révision du chapitre",
+    "text": "3.3 Quiz de révision du chapitre",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Réhaussement et visualisation d'images</span>"
+    ]
+  },
+  {
+    "objectID": "02-RehaussementVisualisationImages.html#exercices-de-révision",
+    "href": "02-RehaussementVisualisationImages.html#exercices-de-révision",
+    "title": "3  Réhaussement et visualisation d’images",
+    "section": "3.4 Exercices de révision",
+    "text": "3.4 Exercices de révision",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Réhaussement et visualisation d'images</span>"
+    ]
+  },
+  {
+    "objectID": "03-TransformationSpectrales.html",
+    "href": "03-TransformationSpectrales.html",
+    "title": "4  Transformations spectrales",
+    "section": "",
+    "text": "4.1 Qu’est ce que l’information spectrale?\nL’information spectrale touche à l’exploitation de la dimension spectrale des images (c.à.d le long des bandes spectrales de l’image). La taille de cette dimension spectrale dépend du type de capteurs considéré. Un capteur à très haute résolution spatiale par exemple aura très peu de bandes (4 ou 5). Un capteur multispectral pourra contenir une quinzaine de bande. À l’autre extrême, on trouvera les capteurs hyperspectraux qui peuvent contenir des centaines de bandes spectrales.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Transformations spectrales</span>"
+    ]
+  },
+  {
+    "objectID": "03-TransformationSpectrales.html#indices-spectraux",
+    "href": "03-TransformationSpectrales.html#indices-spectraux",
+    "title": "4  Transformations spectrales",
+    "section": "4.2 Indices spectraux",
+    "text": "4.2 Indices spectraux\nIl existe une vaste littérature sur les indices spectraux, le choix d’un indice plutôt qu’un autre dépend fortement de l’application visée, nous allons simplement couvrir les principes de base ici.\nLe principe d’un indice spectral consiste à mettre en valeur certaines caractéristiques du spectre comme des pentes, des gradients, etc.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Transformations spectrales</span>"
+    ]
+  },
+  {
+    "objectID": "03-TransformationSpectrales.html#réduction-de-dimension",
+    "href": "03-TransformationSpectrales.html#réduction-de-dimension",
+    "title": "4  Transformations spectrales",
+    "section": "4.3 Réduction de dimension",
+    "text": "4.3 Réduction de dimension\n\n4.3.1 Analyses en composantes principales",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Transformations spectrales</span>"
+    ]
+  },
+  {
+    "objectID": "03-TransformationSpectrales.html#exercices-de-révision",
+    "href": "03-TransformationSpectrales.html#exercices-de-révision",
+    "title": "4  Transformations spectrales",
+    "section": "4.4 Exercices de révision",
+    "text": "4.4 Exercices de révision",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Transformations spectrales</span>"
+    ]
+  },
+  {
+    "objectID": "04-TransformationSpatiales.html",
+    "href": "04-TransformationSpatiales.html",
+    "title": "5  Transformations spatiales",
+    "section": "",
+    "text": "5.0.1 Images utilisées\nNous allons utilisez les images suivantes dans ce chapitre:\n!wget https://github.com/sfoucher/TraitementImagesPythonVol1/raw/refs/heads/main/data/chapitre01/subset_RGBNIR_of_S2A_MSIL2A_20240625T153941_N0510_R011_T18TYR_20240625T221903.tif -O RGBNIR_of_S2A.tif\n!wget https://github.com/sfoucher/opengeos-data/raw/refs/heads/main/raster/landsat7.tif -O landsat7.tif\n!wget https://github.com/sfoucher/opengeos-data/raw/refs/heads/main/images/berkeley.jpg -O berkeley.jpg\nVérifiez que vous êtes capable de les lire :\nimport rioxarray as rxr\nwith rxr.open_rasterio('berkeley.jpg', mask_and_scale= True) as img_rgb:\n    print(img_rgb)\nwith rxr.open_rasterio('RGBNIR_of_S2A.tif', mask_and_scale= True) as img_rgbnir:\n    print(img_rgbnir)",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Transformations spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "04-TransformationSpatiales.html#analyse-fréquentielle",
+    "href": "04-TransformationSpatiales.html#analyse-fréquentielle",
+    "title": "5  Transformations spatiales",
+    "section": "5.1 Analyse fréquentielle",
+    "text": "5.1 Analyse fréquentielle",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Transformations spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "04-TransformationSpatiales.html#filtrage-dimage",
+    "href": "04-TransformationSpatiales.html#filtrage-dimage",
+    "title": "5  Transformations spatiales",
+    "section": "5.2 Filtrage d’image",
+    "text": "5.2 Filtrage d’image\nLe filtrage d’image a plusieurs objectifs en télédétection:\n\nLa réduction du bruit afin d’améliorer la résolution radiométrique et améliorer la lisibilité de l’image.\nLe réhaussement de l’image afin d’améliorer le contraste ou faire ressortir les contours.\nLa production de nouvelles caractéristiques: c.à.d dériver de nouvelles images mettant en valeur certaines informations dans l’image comme la texture, les contours, etc.\n\nIl existe de nombreuses méthodes de filtrage dans la littérature, on peut rassembler ces filtres en quatre grandes catégories:\n\nLe filtrage peut-être global ou local, c.à.d prendre en compte toute l’image pour filtrer (ex: filtrage par Fourier) ou seulement localement avec une fenêtre ou un voisinage local.\nLa fonction de filtrage peut-être linéaire ou non linéaire.\nLa fonction de filtrage peut être stationnaire ou adaptative\nLe filtrage peut-être mono-échelle ou multi-échelles\n\n\n5.2.1 Filtrage linéaire stationnaire\nUn filtrage linéaire stationnaire consiste à appliquer une même pondération locale des valeurs des pixels dans une fenêtre glissante. La taille de cette fenêtre est généralement impaire (3,5, etc.) afin de définir une position centrale et une fenêtre symétrique.\n\n\n\n\n\n\nNote\n\n\n\nMettre une figure ici\n\n\nLe filtre le plus simple est certainement le filtre moyen qui consiste à appliquer le même poids uniforme dans la fenêtre glissante.\n\\[\nF= \\frac{1}{25}\\left[\n\\begin{array}{c|c|c|c|c}\n1 & 1 & 1 & 1 & 1 \\\\\n\\hline\n1 & 1 & 1 & 1 & 1 \\\\\n\\hline\n1 & 1 & 1 & 1 & 1 \\\\\n\\hline\n1 & 1 & 1 & 1 & 1 \\\\\n\\hline\n1 & 1 & 1 & 1 & 1\n\\end{array}\n\\right]\n\\]\nEn python, on dispose des fonctions rolling et sliding_window définis dans la librairie numpy. Par exemple pour le cas du filtre moyen on peut construire une nouvelle vue de l’image avec deux nouvelles dimensions x_win et y_win:\n\nimport rioxarray as rxr\nrolling_win = img_rgb.rolling(x=5, y=5,  min_periods= 3, center= True).construct(x=\"x_win\", y=\"y_win\", keep_attrs= True)\nprint(rolling_win[0,0,1,...])\nprint(rolling_win.shape)\n\n&lt;xarray.DataArray (x_win: 5, y_win: 5)&gt;\narray([[ nan,  nan,  nan,  nan,  nan],\n       [ nan,  nan, 209., 210., 209.],\n       [ nan,  nan, 213., 214., 212.],\n       [ nan,  nan, 213., 212., 210.],\n       [ nan,  nan, 210., 209., 206.]], dtype=float32)\nCoordinates:\n    band         int64 1\n    x            float64 1.5\n    y            float64 0.5\n    spatial_ref  int64 0\nDimensions without coordinates: x_win, y_win\n(3, 771, 1311, 5, 5)\n\n\nL’avantage de cette approche est qu’il n’y a pas d’utilisation inutile de la mémoire. Noter les nan sur les bords de l’image car la fenêtre déborde sur les bordures de l’image. Par la suite un opérateur moyenne peut être appliqué.\n\nfiltre_moyen= rolling_win.mean(dim= ['x_win', 'y_win'], skipna= True)\n#print(median_filter)\nfiltre_moyen.astype('int').plot.imshow(rgb=\"band\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nFiltre de Sobel, filtre Prewitt\n\n\n\n5.2.1.1 Filtrage par convolution\nLa façon la plus efficace d’appliquer un filtre linéaire est d’appliquer une convolution. La convolution est généralement très efficace car elle est peut être calculée dans le domaine fréquentielle.\n\nimport numpy as np\nfrom scipy import signal\nimport xarray as xr\n\nscharr = np.array([[ -3-3j, 0-10j,  +3 -3j],\n                   [-10+0j, 0+ 0j, +10 +0j],\n                   [ -3+3j, 0+10j,  +3 +3j]]) # Gx + j*Gy\nprint(img_rgb.isel(band=0).shape)\ngrad = signal.convolve2d(img_rgb.isel(band=0), scharr, boundary='symm', mode='same')\n# on reconstruit un xarray à partir du résultat:\narr = xr.DataArray(np.abs(grad), dims=(\"y\", \"x\"), coords= {'x': img_rgb.coords['x'], 'y': img_rgb.coords['y'], 'spatial_ref': 0})\nprint(arr)\narr.plot.imshow()\n\n(771, 1311)\n&lt;xarray.DataArray (y: 771, x: 1311)&gt;\narray([[  65.96969001,   58.85575588,   54.91812087, ..., 1474.        ,\n        1037.01205393,  389.99487176],\n       [  61.07372594,   39.8246155 ,   89.18520057, ..., 1763.79647352,\n         864.92543031,  270.20362692],\n       [  98.48857802,  112.44554237,  168.10710871, ..., 2110.61365484,\n         870.36658943,  204.40156555],\n       ...,\n       [ 143.17821063,  597.00753764, 2479.42977315, ...,  216.00925906,\n         248.33847869,  200.89798406],\n       [ 106.07544485,  393.67245268, 2188.78824924, ...,  124.96399481,\n         159.90622252,  346.34087255],\n       [  41.59326869,  229.05894438, 1845.1216762 , ...,  175.16278143,\n          33.37663854,  414.3911196 ]])\nCoordinates:\n  * x            (x) float64 0.5 1.5 2.5 3.5 ... 1.308e+03 1.31e+03 1.31e+03\n  * y            (y) float64 0.5 1.5 2.5 3.5 4.5 ... 767.5 768.5 769.5 770.5\n    spatial_ref  int64 0\n\n\n\n\n\n\n\n\n\n\n\n5.2.1.2 Filtrage par une couche convolutionnelle\nUne couche convolutionnelle est simplement un ensemble de filtres appliqués sur la donnée d’entrée. Ce type de filtrage est à la base des réseaux dits convolutionnels qui seront abordés dans le tome 2.\n\n\n\n5.2.2 Filtrage adaptatif\nLes filtrages adaptatifs consistent à appliquer un traitement en fonction du contenu local d’une image. Le filtre n’est alors plus stationnaire et sa réponse peut varier en fonction du contenu local.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Transformations spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "04-TransformationSpatiales.html#sec-043",
+    "href": "04-TransformationSpatiales.html#sec-043",
+    "title": "5  Transformations spatiales",
+    "section": "5.3 Segmentation",
+    "text": "5.3 Segmentation",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Transformations spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "04-TransformationSpatiales.html#sec-044",
+    "href": "04-TransformationSpatiales.html#sec-044",
+    "title": "5  Transformations spatiales",
+    "section": "5.4 Vectorisation et rasterisation",
+    "text": "5.4 Vectorisation et rasterisation",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Transformations spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "04-TransformationSpatiales.html#sec-045",
+    "href": "04-TransformationSpatiales.html#sec-045",
+    "title": "5  Transformations spatiales",
+    "section": "5.5 Analyse de terrain",
+    "text": "5.5 Analyse de terrain\n\n5.5.1 Élévation\n\n\n5.5.2 Pente\n\n\n5.5.3 Ombrage\n\n\n5.5.4 Visibilité",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Transformations spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "04-TransformationSpatiales.html#sec-046",
+    "href": "04-TransformationSpatiales.html#sec-046",
+    "title": "5  Transformations spatiales",
+    "section": "5.6 Quiz de révision du chapitre",
+    "text": "5.6 Quiz de révision du chapitre",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Transformations spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "04-TransformationSpatiales.html#sec-047",
+    "href": "04-TransformationSpatiales.html#sec-047",
+    "title": "5  Transformations spatiales",
+    "section": "5.7 Exercices de révision",
+    "text": "5.7 Exercices de révision",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Transformations spatiales</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "Bibliographie",
+    "section": "",
+    "text": "Harris, Millman, C. R. 2020. « Array programming with\nNumPy. » Nature: 357‑362. https://doi.org/10.1038/s41586-020-2649-2.\n\n\nOGC. 2019. « OGC GeoTIFF Standard. » https://docs.ogc.org/is/19-008r4/19-008r4.html/.",
+    "crumbs": [
+      "Bibliographie"
+    ]
+  }
+]
