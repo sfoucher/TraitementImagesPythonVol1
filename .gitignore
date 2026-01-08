@@ -21,3 +21,5 @@ ASCIIdata_splib07b_rsSentinel2/*
 /.luarc.json
 index.log
 
+
+**/*.quarto_ipynb

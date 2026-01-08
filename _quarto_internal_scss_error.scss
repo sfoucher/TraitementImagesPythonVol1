@@ -1,4 +1,4 @@
-// quarto-scss-analysis-annotation { "quarto-version": "1.6.42" }
+// quarto-scss-analysis-annotation { "quarto-version": "1.8.26" }
 
 // quarto-scss-analysis-annotation { "origin": "'use' section from format" }
 
@@ -1185,7 +1185,7 @@ $btn-code-copy-color-active: #4758AB !default;
 
 // quarto-scss-analysis-annotation { "origin": "Defaults from Quarto's SCSS" }
 
-$code-copy-selector: "pre.sourceCode:hover > " !default;
+$code-copy-selector: "div.code-copy-outer-scaffold:hover > " !default;
 $code-white-space: pre-wrap !default;
 $tbl-cap-location: top !default;
 $sidebar-border: false !default;
@@ -1230,7 +1230,11 @@ $code-block-theme-dark-threshhold: 40% !default;
 
 /* Inline Code Formatting */
 // $code-bg, $code-color, $code-padding
-$code-color: #7d12ba !default;
+$code-color: if(
+  variable-exists(pre-color) and $pre-color != null,
+  $pre-color,
+  #7d12ba
+) !default;
 
 // Set a default body emphasis color
 $code-bg: $gray-100 !default;
@@ -5284,7 +5288,6 @@ $grid-default-toc-mid-body: minmax(
 @import "mixins/banner";
 @include bsBanner("");
 
-
 // scss-docs-start import-stack
 // Configuration
 @import "variables-dark";
@@ -5297,6 +5300,7 @@ $grid-default-toc-mid-body: minmax(
 @import "type";
 @import "images";
 @import "containers";
+@import "light-dark";
 @import "grid";
 @import "tables";
 @import "forms";
@@ -5331,9 +5335,24 @@ $grid-default-toc-mid-body: minmax(
 @import "utilities/api";
 // scss-docs-end import-stack
 
-@import "spacer";
-@import "tab-fill";
-@import "color-utilities";
+.tab-content {
+  // Workaround for pkgdown's CSS to make tab-pane all a consistent height
+  // https://github.com/r-lib/pkgdown/blob/956f07/inst/BS5/assets/pkgdown.scss#L342-L355
+  >.tab-pane.html-fill-container {
+    display: none;
+  }
+
+  // Take precedence over Bootstrap's `display:block` rule
+  >.active.html-fill-container {
+    display: flex;
+  }
+
+  // Another workaround for pkgdown adding extra padding we didn't ask for
+  // https://github.com/r-lib/pkgdown/blob/956f07/inst/BS5/assets/pkgdown.scss#L335-L337
+  &.html-fill-container {
+    padding: 0;
+  }
+}
 
 $spacer: 1rem !default;
 
@@ -5366,44 +5385,6 @@ $spacer: 1rem !default;
 .html-fill-container > .html-fill-item.bslib-mb-spacing {
   margin-bottom: 0;
 }
-// color-contrast() was introduced in Bootstrap 5.
-// We include our own version for a few reasons:
-// 1. Easily turn off warnings options(bslib.color_contrast_warnings=F)
-// 2. Allow Bootstrap 3 & 4 to use color-contrast() in variable definitions
-// 3. Allow Bootstrap 3 & 4 to use bs_get_contrast()
-
-// Also note that color-contrast() lives in sass-utils since projects like Quarto
-// and flexdashboard currently assume it exists there....
-@import "../sass-utils/color-contrast.scss";
-
-
-@function is-css-variable($x) {
-  @if (type-of($x) != string) {
-    @return false;
-  } @else {
-    @return str-slice($x, 1, 6) == 'var(--';
-  }
-}
-
-.tab-content {
-  // Workaround for pkgdown's CSS to make tab-pane all a consistent height
-  // https://github.com/r-lib/pkgdown/blob/956f07/inst/BS5/assets/pkgdown.scss#L342-L355
-  >.tab-pane.html-fill-container {
-    display: none;
-  }
-
-  // Take precedence over Bootstrap's `display:block` rule
-  >.active.html-fill-container {
-    display: flex;
-  }
-
-  // Another workaround for pkgdown adding extra padding we didn't ask for
-  // https://github.com/r-lib/pkgdown/blob/956f07/inst/BS5/assets/pkgdown.scss#L335-L337
-  &.html-fill-container {
-    padding: 0;
-  }
-}
-
 $bslib-enable-color-utilities: $bootstrap-version >= 5 !default;
 
 @if ($bslib-enable-color-utilities) {
@@ -5479,241 +5460,28 @@ $bslib-enable-color-utilities: $bootstrap-version >= 5 !default;
   }
 }
 
-.bslib-grid {
-  display: grid !important;
-  gap: var(--bslib-spacer, 1rem);
-  height: var(--bslib-grid-height);
-  &.grid {
-    // Don't let intrinsic width of a column affect the width of grid cols
-    grid-template-columns: repeat(var(--bs-columns, 12), minmax(0, 1fr));
-    // For some reason, Bootstrap sets `grid-template-rows: 1fr` by default, which
-    // is problematic for a multi-row filling layout. This fixes it...
-    // > page_fillable(layout_columns(c(12, 12), plotly::plot_ly(), plotly::plot_ly()))
-    grid-template-rows: unset;
-    grid-auto-rows: var(--bslib-grid--row-heights);
-    @include bslib-breakpoints-css-vars('bslib-grid--row-heights', map-keys($grid-breakpoints));
-  }
+// color-contrast() was introduced in Bootstrap 5.
+// We include our own version for a few reasons:
+// 1. Easily turn off warnings options(bslib.color_contrast_warnings=F)
+// 2. Allow Bootstrap 3 & 4 to use color-contrast() in variable definitions
+// 3. Allow Bootstrap 3 & 4 to use bs_get_contrast()
 
-  & > * > .shiny-input-container {
-    width: 100%;
-  }
-}
+// Also note that color-contrast() lives in sass-utils since projects like Quarto
+// and flexdashboard currently assume it exists there....
+@import "../sass-utils/color-contrast.scss";
 
-.bslib-grid-item {
-  grid-column: auto/span 1;
-}
 
-@include media-breakpoint-down(md) {
-  // collapse all columns to a single column below medium (by default only)
-  .bslib-grid-item {
-    grid-column: 1 / -1;
+@function is-css-variable($x) {
+  @if (type-of($x) != string) {
+    @return false;
+  } @else {
+    @return str-slice($x, 1, 6) == 'var(--';
   }
 }
 
-@include media-breakpoint-down(sm) {
-  // with each "row" taking its natural height
-  .bslib-grid {
-    grid-template-columns: 1fr !important;
-    height: var(--bslib-grid-height-mobile);
-    &.grid {
-      height: unset !important;
-      grid-auto-rows: var(--bslib-grid--row-heights--xs, auto);
-    }
-  }
-}
-
-.navbar+.container-fluid {
-
-  // When the tab/page is fillable, undo the padding on the container-fluid
-  // (in this case, the user has control over padding/gap)
-  &:has(> .tab-content > .tab-pane.active.html-fill-container) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  // When the tab/page is fillable, add sensible default padding
-  >.tab-content>.tab-pane.active.html-fill-container {
-    padding: var(--bslib-spacer, 1rem);
-    gap: var(--bslib-spacer, 1rem);
-
-    // ...but if it holds a single sidebar layout, remove the padding
-    &:has(> .bslib-sidebar-layout:only-child) {
-      padding: 0;
-    }
-
-    // And smart border defaults for nav_panel("Foo", layout_sidebar())
-    >.bslib-sidebar-layout:only-child {
-      &:not([data-bslib-sidebar-border="true"]) {
-        border-left: none;
-        border-right: none;
-        border-bottom: none;
-      }
-
-      &:not([data-bslib-sidebar-border-radius="true"]) {
-        border-radius: 0;
-      }
-    }
-  }
-}
-
-// Make sure a border appears between the navbar and the sidebar layout
-// (especially important when page_navbar(inverse = FALSE, sidebar = sidebar())
-.navbar+div>.bslib-sidebar-layout {
-  border-top: var(--bslib-sidebar-border);
-}
-.bslib-card {
-  // TODO: allow a way to opt out
-  overflow: auto;
-
-  // Avoid "double padding" when two card_body()s are immediate siblings
-  .card-body + .card-body {
-    padding-top: 0;
-  }
-
-  .card-body {
-    overflow: auto;
-    p {
-      margin-top: 0;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  .card-body {
-    max-height: var(--bslib-card-body-max-height, none);
-  }
-
-  &[data-full-screen="true"] > .card-body {
-    max-height: var(--bslib-card-body-max-height-full-screen, none);
-  }
-
-  .card-header {
-    .form-group {
-      margin-bottom: 0;
-    }
-    .selectize-control {
-      margin-bottom: 0;
-      // TODO: we should probably add this to selectize's SCSS since this actually makes selectInput()
-      // usable with width="fit-content"
-      .item {
-        margin-right: 1.15rem;
-      }
-    }
-  }
-
-  .card-footer {
-    margin-top: auto;
-  }
-
-  // For navs_tab_card(title = ...)
-  .bslib-navs-card-title {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    .nav {
-      margin-left: auto;
-    }
-  }
-
-  .bslib-sidebar-layout:not([data-bslib-sidebar-border="true"]) {
-    border: none;
-  }
-  .bslib-sidebar-layout:not([data-bslib-sidebar-border-radius="true"]) {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-
-}
-
-
-/*************************************************
-* Full screen card logic
-*************************************************/
-
-[data-full-screen="true"] {
-  position: fixed;
-  inset: 3.5rem 1rem 1rem;
-  height: auto !important;
-  max-height: none !important;
-  width: auto !important;
-  z-index: $zindex-popover;
-}
-
-.bslib-full-screen-enter {
-  display: none;
-  position: absolute;
-  bottom: var(--bslib-full-screen-enter-bottom, 0.2rem);
-  right: var(--bslib-full-screen-enter-right, 0);
-  top: var(--bslib-full-screen-enter-top);
-  left: var(--bslib-full-screen-enter-left);
-  color: var(--bslib-color-fg, var(--bs-card-color));
-  background-color: var(--bslib-color-bg, var(--bs-card-bg, var(--bs-body-bg)));
-  border: var(--bs-card-border-width) solid var(--bslib-color-fg, var(--bs-card-border-color));
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  margin: 0.2rem 0.4rem;
-  padding: 0.55rem !important;
-  font-size: .8rem;
-  cursor: pointer;
-  opacity: 0.7;
-  &:hover { opacity: 1; }
-  z-index: $zindex-popover;
-}
-
-.card[data-full-screen="false"]:hover > * > .bslib-full-screen-enter {
-  display: block;
-}
-
-// Hide all enter-full-screen buttons when *any* card is full-screenified
-.bslib-has-full-screen .card:hover > * > .bslib-full-screen-enter {
-  display: none;
-}
-
-// Only allow full_screen on desktop screens
-@include media-breakpoint-down(sm) {
-  .bslib-full-screen-enter { display: none !important; }
-}
-
-.bslib-full-screen-exit {
-  position: relative;
-  top: 1.35rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  text-decoration: none;
-  display: flex;
-  float: right;
-  margin-right: 2.15rem;
-  align-items: center;
-  color: rgba(var(--bs-body-bg-rgb), 0.8);
-  &:hover {
-    color: rgba(var(--bs-body-bg-rgb), 1);
-  }
-  svg {
-    margin-left: 0.5rem;
-    font-size: 1.5rem;
-  }
-}
-
-#bslib-full-screen-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(var(--bs-body-color-rgb), 0.6);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  z-index: $zindex-popover - 1;
-  animation: bslib-full-screen-overlay-enter 400ms cubic-bezier(.6,.02,.65,1) forwards;
-}
-
-@keyframes bslib-full-screen-overlay-enter {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
+@import "spacer";
+@import "tab-fill";
+@import "color-utilities";
 
 $bslib-sidebar-bg: rgba(var(--bs-emphasis-color-rgb, 0,0,0), 0.05) !default;
 $bslib-sidebar-fg: var(--bs-emphasis-color, black) !default;
@@ -6058,24 +5826,26 @@ $bslib-sidebar-column-sidebar: Min(calc(100% - var(--bslib-sidebar-icon-size)), 
   }
 }
 
-$bslib-page-sidebar-title-bg: if($navbar-bg, $navbar-bg, $dark) !default;
-$bslib-page-sidebar-title-color: color-contrast($bslib-page-sidebar-title-bg) !default;
-$bslib-sidebar-padding: $spacer * 1.5 !default;
-
-:root {
-  --bslib-page-sidebar-title-bg: #{$bslib-page-sidebar-title-bg};
-  --bslib-page-sidebar-title-color: #{$bslib-page-sidebar-title-color};
-}
-
-.bslib-page-title {
-  background-color: var(--bslib-page-sidebar-title-bg);
-  color: var(--bslib-page-sidebar-title-color);
-  font-size: $h4-font-size;
-  font-weight: 300;
-  padding: var(--bslib-spacer, 1rem);
-  padding-left: $bslib-sidebar-padding;
-  margin-bottom: 0;
-  border-bottom: $border-width solid $border-color;
+.accordion {
+  .accordion-header {
+    @include bootstrap-heading($h2-font-size);
+    margin-bottom: 0;
+  }
+  .accordion-icon:not(:empty) {
+    margin-right: 0.75rem;
+    display: flex; /* Without flex, the height/alignment is messed up */
+  }
+  .accordion-button:not(.collapsed) {
+    box-shadow: none;
+    // This none overrides the box-shadow applied to
+    // .accordion-button:focus (and, as a result, non-collapsed buttons
+    // won't show a visual indication of focus, #488).
+    // So, repeat the .accordion-button:focus below to give it a
+    // higher priority.
+    &:focus {
+      box-shadow: var(--#{$prefix}accordion-btn-focus-box-shadow);
+    }
+  }
 }
 
 $bslib-value-box-enable-border: "auto" !default; // "auto" | "never" | "always"
@@ -6368,28 +6138,6 @@ $bslib-value-box-horizontal-break-point: 300px;
   }
 }
 
-.accordion {
-  .accordion-header {
-    @include bootstrap-heading($h2-font-size);
-    margin-bottom: 0;
-  }
-  .accordion-icon:not(:empty) {
-    margin-right: 0.75rem;
-    display: flex; /* Without flex, the height/alignment is messed up */
-  }
-  .accordion-button:not(.collapsed) {
-    box-shadow: none;
-    // This none overrides the box-shadow applied to
-    // .accordion-button:focus (and, as a result, non-collapsed buttons
-    // won't show a visual indication of focus, #488).
-    // So, repeat the .accordion-button:focus below to give it a
-    // higher priority.
-    &:focus {
-      box-shadow: var(--#{$prefix}accordion-btn-focus-box-shadow);
-    }
-  }
-}
-
 html {
   height: 100%;
 }
@@ -6405,6 +6153,262 @@ html {
 @include media-breakpoint-down(sm) {
   .bslib-page-fill {
     height: var(--bslib-page-fill-mobile-height, auto);
+  }
+}
+
+.bslib-grid {
+  display: grid !important;
+  gap: var(--bslib-spacer, 1rem);
+  height: var(--bslib-grid-height);
+  &.grid {
+    // Don't let intrinsic width of a column affect the width of grid cols
+    grid-template-columns: repeat(var(--bs-columns, 12), minmax(0, 1fr));
+    // For some reason, Bootstrap sets `grid-template-rows: 1fr` by default, which
+    // is problematic for a multi-row filling layout. This fixes it...
+    // > page_fillable(layout_columns(c(12, 12), plotly::plot_ly(), plotly::plot_ly()))
+    grid-template-rows: unset;
+    grid-auto-rows: var(--bslib-grid--row-heights);
+    @include bslib-breakpoints-css-vars('bslib-grid--row-heights', map-keys($grid-breakpoints));
+  }
+
+  & > * > .shiny-input-container {
+    width: 100%;
+  }
+}
+
+.bslib-grid-item {
+  grid-column: auto/span 1;
+}
+
+@include media-breakpoint-down(md) {
+  // collapse all columns to a single column below medium (by default only)
+  .bslib-grid-item {
+    grid-column: 1 / -1;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  // with each "row" taking its natural height
+  .bslib-grid {
+    grid-template-columns: 1fr !important;
+    height: var(--bslib-grid-height-mobile);
+    &.grid {
+      height: unset !important;
+      grid-auto-rows: var(--bslib-grid--row-heights--xs, auto);
+    }
+  }
+}
+
+$bslib-page-sidebar-title-bg: if($navbar-bg, $navbar-bg, $dark) !default;
+$bslib-page-sidebar-title-color: color-contrast($bslib-page-sidebar-title-bg) !default;
+$bslib-sidebar-padding: $spacer * 1.5 !default;
+
+:root {
+  --bslib-page-sidebar-title-bg: #{$bslib-page-sidebar-title-bg};
+  --bslib-page-sidebar-title-color: #{$bslib-page-sidebar-title-color};
+}
+
+.bslib-page-title {
+  background-color: var(--bslib-page-sidebar-title-bg);
+  color: var(--bslib-page-sidebar-title-color);
+  font-size: $h4-font-size;
+  font-weight: 300;
+  padding: var(--bslib-spacer, 1rem);
+  padding-left: $bslib-sidebar-padding;
+  margin-bottom: 0;
+  border-bottom: $border-width solid $border-color;
+}
+
+.navbar+.container-fluid {
+
+  // When the tab/page is fillable, undo the padding on the container-fluid
+  // (in this case, the user has control over padding/gap)
+  &:has(> .tab-content > .tab-pane.active.html-fill-container) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  // When the tab/page is fillable, add sensible default padding
+  >.tab-content>.tab-pane.active.html-fill-container {
+    padding: var(--bslib-spacer, 1rem);
+    gap: var(--bslib-spacer, 1rem);
+
+    // ...but if it holds a single sidebar layout, remove the padding
+    &:has(> .bslib-sidebar-layout:only-child) {
+      padding: 0;
+    }
+
+    // And smart border defaults for nav_panel("Foo", layout_sidebar())
+    >.bslib-sidebar-layout:only-child {
+      &:not([data-bslib-sidebar-border="true"]) {
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+      }
+
+      &:not([data-bslib-sidebar-border-radius="true"]) {
+        border-radius: 0;
+      }
+    }
+  }
+}
+
+// Make sure a border appears between the navbar and the sidebar layout
+// (especially important when page_navbar(inverse = FALSE, sidebar = sidebar())
+.navbar+div>.bslib-sidebar-layout {
+  border-top: var(--bslib-sidebar-border);
+}
+.bslib-card {
+  // TODO: allow a way to opt out
+  overflow: auto;
+
+  // Avoid "double padding" when two card_body()s are immediate siblings
+  .card-body + .card-body {
+    padding-top: 0;
+  }
+
+  .card-body {
+    overflow: auto;
+    p {
+      margin-top: 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .card-body {
+    max-height: var(--bslib-card-body-max-height, none);
+  }
+
+  &[data-full-screen="true"] > .card-body {
+    max-height: var(--bslib-card-body-max-height-full-screen, none);
+  }
+
+  .card-header {
+    .form-group {
+      margin-bottom: 0;
+    }
+    .selectize-control {
+      margin-bottom: 0;
+      // TODO: we should probably add this to selectize's SCSS since this actually makes selectInput()
+      // usable with width="fit-content"
+      .item {
+        margin-right: 1.15rem;
+      }
+    }
+  }
+
+  .card-footer {
+    margin-top: auto;
+  }
+
+  // For navs_tab_card(title = ...)
+  .bslib-navs-card-title {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    .nav {
+      margin-left: auto;
+    }
+  }
+
+  .bslib-sidebar-layout:not([data-bslib-sidebar-border="true"]) {
+    border: none;
+  }
+  .bslib-sidebar-layout:not([data-bslib-sidebar-border-radius="true"]) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+}
+
+
+/*************************************************
+* Full screen card logic
+*************************************************/
+
+[data-full-screen="true"] {
+  position: fixed;
+  inset: 3.5rem 1rem 1rem;
+  height: auto !important;
+  max-height: none !important;
+  width: auto !important;
+  z-index: $zindex-popover;
+}
+
+.bslib-full-screen-enter {
+  display: none;
+  position: absolute;
+  bottom: var(--bslib-full-screen-enter-bottom, 0.2rem);
+  right: var(--bslib-full-screen-enter-right, 0);
+  top: var(--bslib-full-screen-enter-top);
+  left: var(--bslib-full-screen-enter-left);
+  color: var(--bslib-color-fg, var(--bs-card-color));
+  background-color: var(--bslib-color-bg, var(--bs-card-bg, var(--bs-body-bg)));
+  border: var(--bs-card-border-width) solid var(--bslib-color-fg, var(--bs-card-border-color));
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  margin: 0.2rem 0.4rem;
+  padding: 0.55rem !important;
+  font-size: .8rem;
+  cursor: pointer;
+  opacity: 0.7;
+  &:hover { opacity: 1; }
+  z-index: $zindex-popover;
+}
+
+.card[data-full-screen="false"]:hover > * > .bslib-full-screen-enter {
+  display: block;
+}
+
+// Hide all enter-full-screen buttons when *any* card is full-screenified
+.bslib-has-full-screen .card:hover > * > .bslib-full-screen-enter {
+  display: none;
+}
+
+// Only allow full_screen on desktop screens
+@include media-breakpoint-down(sm) {
+  .bslib-full-screen-enter { display: none !important; }
+}
+
+.bslib-full-screen-exit {
+  position: relative;
+  top: 1.35rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  float: right;
+  margin-right: 2.15rem;
+  align-items: center;
+  color: rgba(var(--bs-body-bg-rgb), 0.8);
+  &:hover {
+    color: rgba(var(--bs-body-bg-rgb), 1);
+  }
+  svg {
+    margin-left: 0.5rem;
+    font-size: 1.5rem;
+  }
+}
+
+#bslib-full-screen-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(var(--bs-body-color-rgb), 0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: $zindex-popover - 1;
+  animation: bslib-full-screen-overlay-enter 400ms cubic-bezier(.6,.02,.65,1) forwards;
+}
+
+@keyframes bslib-full-screen-overlay-enter {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
@@ -9880,8 +9884,7 @@ details > summary > p:only-child {
 }
 
 // codeCopy
-pre.sourceCode,
-code.sourceCode {
+div.code-copy-outer-scaffold {
   position: relative;
 }
 
@@ -10371,10 +10374,6 @@ $mermaid-node-fg-color: $primary !default;
   margin-right: 5px;
   background-color: transparent;
   z-index: 3;
-}
-
-.code-copy-button:focus {
-  outline: none;
 }
 
 .code-copy-button-tooltip {
@@ -11046,7 +11045,11 @@ h1.title {
   margin-top: 0;
 }
 
-main.content > section:first-of-type > h2:first-child {
+main.content > p:has(+ section) {
+  margin-bottom: 2rem;
+}
+
+main.content > section:first-of-type > h2:nth-child(1) {
   margin-top: 0;
 }
 
@@ -11288,7 +11291,8 @@ pre.sourceCode {
     border: none;
   }
   font-size: $code-block-font-size;
-  overflow: visible !important;
+  overflow-y: visible !important;
+  // overflow-y: auto !important;
   @if $code-block-bg {
     padding: $code-block-bg-padding;
   }
@@ -11302,6 +11306,7 @@ pre.sourceCode > code.sourceCode {
 
 div.sourceCode {
   overflow-y: hidden;
+  // position: relative;
 }
 
 .callout div.sourceCode {
@@ -11332,6 +11337,26 @@ pre {
   border: initial;
 }
 
+p code.sourceCode,
+li code.sourceCode,
+td code.sourceCode {
+  $calculated-bg: if(
+    variable-exists(code-bg),
+    if(
+      $code-bg == $gray-100 and variable-exists(code-block-bg-color),
+      $code-block-bg-color,
+      $code-bg
+    ),
+    null
+  );
+
+  @if variable-exists(mono-background-color) {
+    background-color: $mono-background-color;
+  } @else if variable-exists(calculated-bg) {
+    background-color: $calculated-bg;
+  }
+}
+
 // Maps the pandoc 'monobackgroundcolor' to bootstrap
 // Note this only targets code outside of sourceCode blocks
 @if variable-exists(mono-background-color) {
@@ -11351,14 +11376,23 @@ pre code:not(.sourceCode) {
   background-color: initial;
 }
 
-// Default padding if background is set
 p code:not(.sourceCode),
 li code:not(.sourceCode),
 td code:not(.sourceCode) {
+  $calculated-bg: if(
+    variable-exists(code-bg),
+    if(
+      $code-bg == $gray-100 and variable-exists(code-block-bg-color),
+      $code-block-bg-color,
+      $code-bg
+    ),
+    null
+  );
+
   @if variable-exists(mono-background-color) {
     background-color: $mono-background-color;
-  } @else if variable-exists(code-bg) {
-    background-color: $code-bg;
+  } @else if variable-exists(calculated-bg) {
+    background-color: $calculated-bg;
   }
 
   @if variable-exists(code-padding) {
@@ -11797,6 +11831,8 @@ kbd,
 .callout.callout-style-simple .callout-body {
   font-size: 0.9rem;
   font-weight: 400;
+  margin-bottom: -0.4em;
+  margin-top: 0.5em;
 }
 
 .callout.callout-style-default .callout-body {
@@ -11813,6 +11849,15 @@ kbd,
   margin-bottom: -0.2em;
 }
 
+.callout.callout-empty-content > .callout-header {
+  margin-bottom: 0em;
+  border-bottom-right-radius: add($border-radius, -1px);
+}
+
+.callout > .callout-header.collapsed {
+  border-bottom-right-radius: add($border-radius, -1px);
+}
+
 .callout.callout-style-simple > div.callout-header {
   border-bottom: none;
   font-size: 0.9rem;
@@ -11827,6 +11872,7 @@ kbd,
   font-size: 0.9rem;
   padding-left: 0.5em;
   padding-right: 0.5em;
+  border-top-right-radius: add($border-radius, -1px);
 }
 
 .callout.callout-style-default .callout-body {
@@ -12590,6 +12636,18 @@ a {
   background-color: $link-color-bg;
   font-weight: $link-weight;
   text-decoration: $link-decoration;
+}
+
+// screen-reader-only, cf https://github.com/quarto-dev/quarto-cli/issues/726#issuecomment-1112486100
+.screen-reader-only {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  border: 0;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  width: 1px;
 }
 
 
