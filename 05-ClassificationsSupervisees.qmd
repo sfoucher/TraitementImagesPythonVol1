@@ -232,19 +232,6 @@ La construction d'un modèle implique généralement toujours les mêmes étapes
 
 5.  Enfin le test du modèle sur un ensemble de données indépendant.
 
-```{mermaid}
-%%| echo: false
-%%| label: fig-pipeline
-%%| fig-cap: "Étapes standards dans un entraînement."
-flowchart TD
-    A[fa:fa-database Données] --> B(fa:fa-gear Prétraitement)
-    B --> C(fa:fa-folder-tree Partage des données) -.-> D(fa:fa-gears Entraînement)
-    H[[Hyper-paramètres]] --> D
-    D --> |Modèle| E>Validation]
-    E --> |Modèle| G>Test]
-    C -.-> E
-    C -.-> G
-```
 
 ### Construction d'un ensemble d’entraînement {#sec-05.02.02}
 

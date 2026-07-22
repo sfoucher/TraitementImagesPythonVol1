@@ -4,6 +4,7 @@
 .Ruserdata
 .jupyter_cache/
 tex-hacks/*
+book/*
 lua/*
 /.quarto/
 *.tif
@@ -23,3 +24,6 @@ index.log
 
 
 **/*.quarto_ipynb
+*.pyc
+__pycache__/
+*.bak

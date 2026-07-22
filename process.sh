@@ -1,61 +1,57 @@
-quarto render --cache --to html --output-dir ./docs
+#!/usr/bin/env bash
+# Build book (HTML + PDF) in the mlsysbook docker container, export notebooks.
+set -euo pipefail
 
-quarto convert 00-PriseEnMainPython.qmd
-marimo convert 00-PriseEnMainPython.ipynb  -o ./marimo/00-PriseEnMainPython.py
-#jupyter nbconvert 00-PriseEnMainPython.ipynb  --to pdf --output-dir pdfs
-#jupyter nbconvert 00-PriseEnMainPython.ipynb --to latex --output-dir latex
-mv 00-PriseEnMainPython.ipynb ./notebooks/
+IMAGE="mlsysbook-linux:v2"
+PDF_NAME="Traitement-d-images-satellites-avec-Python.pdf"
 
-quarto convert index.qmd
-#jupyter nbconvert index.ipynb  --to pdf --output-dir pdfs
-#jupyter nbconvert index.ipynb --to latex --output-dir latex
+# Chapters exported to ipynb (+marimo) and stashed under notebooks/
+CHAPTERS=(
+  00-PriseEnMainPython
+  01-ImportationManipulationImages
+  02-RehaussementVisualisationImages
+  03-TransformationSpectrales
+  04-TransformationSpatiales
+  05-ClassificationsSupervisees
+)
+# Aux pages: export and stash under notebooks/ (not marimo-converted)
+AUX=(index 00-auteurs references)
 
-quarto convert 00-auteurs.qmd
-#jupyter nbconvert 00-auteurs.ipynb  --to pdf --output-dir pdfs
-#jupyter nbconvert 00-auteurs.ipynb --to latex --output-dir latex
+# Run a command inside the build container (repo mounted at /workspace)
+q() { docker run --rm -v "$PWD":/workspace "$IMAGE" "$@"; }
 
-quarto convert references.qmd
-#jupyter nbconvert references.ipynb  --to pdf --output-dir pdfs
-#jupyter nbconvert references.ipynb --to latex --output-dir latex
+mkdir -p docs pdf notebooks marimo
 
-quarto convert 01-ImportationManipulationImages.qmd
-marimo convert 01-ImportationManipulationImages.ipynb  -o ./marimo/01-ImportationManipulationImages.py
-#jupyter nbconvert 01-ImportationManipulationImages.ipynb  --execute --to pdf --output-dir pdfs
-#jupyter nbconvert 01-ImportationManipulationImages.ipynb --execute --to latex --output-dir latex
-mv 01-ImportationManipulationImages.ipynb ./notebooks/
+# 1. HTML site
+q quarto render --cache --to html --output-dir ./docs
 
-quarto convert 02-RehaussementVisualisationImages.qmd
-marimo convert 02-RehaussementVisualisationImages.ipynb  -o ./marimo/02-RehaussementVisualisationImages.py
-#jupyter nbconvert 02-RehaussementVisualisationImages.ipynb  --execute --to pdf --output-dir pdfs
-#jupyter nbconvert 02-RehaussementVisualisationImages.ipynb --execute --to latex --output-dir latex
-mv 02-RehaussementVisualisationImages.ipynb ./notebooks/
+# 2. PDF -> publish into docs for the download link
+q quarto render --profile production --cache --no-clean --to pdf --output-dir ./pdf
+cp -f "./pdf/$PDF_NAME" ./docs/
 
-quarto convert 03-TransformationSpectrales.qmd
-marimo convert 03-TransformationSpectrales.ipynb  -o ./marimo/03-TransformationSpectrales.py
-#jupyter nbconvert 03-TransformationSpectrales.ipynb  --execute --to pdf --output-dir pdfs
-#jupyter nbconvert 03-TransformationSpectrales.ipynb --execute --to latex --output-dir latex
-mv 03-TransformationSpectrales.ipynb ./notebooks/
+# 3. DOCX (optional)
+# mkdir -p docx
+# q quarto render --cache --no-clean --to docx --output-dir ./docx
+# mv -f "./docx/${PDF_NAME%.pdf}.docx" .
 
-quarto convert 04-TransformationSpatiales.qmd
-marimo convert 04-TransformationSpatiales.ipynb  -o ./marimo/04-TransformationSpatiales.py
-#jupyter nbconvert 04-TransformationSpatiales.ipynb  --execute --to pdf --output-dir pdfs
-#jupyter nbconvert 04-TransformationSpatiales.ipynb --execute --to latex --output-dir latex
-mv 04-TransformationSpatiales.ipynb ./notebooks/
+# Detect marimo in the container once (present after adding it to
+# docker/dependencies/requirements.txt and rebuilding the image).
+HAVE_MARIMO=0
+q bash -lc 'command -v marimo >/dev/null 2>&1' && HAVE_MARIMO=1 || true
+[ "$HAVE_MARIMO" = 1 ] || echo "WARN: marimo not in image; skipping marimo export (rebuild image to enable)"
 
-quarto convert 05-ClassificationsSupervisees.qmd
-marimo convert 05-ClassificationsSupervisees.ipynb  -o ./marimo/05-ClassificationsSupervisees.py
-#jupyter nbconvert 05-ClassificationsSupervisees.ipynb  --execute --to pdf --output-dir pdfs
-#jupyter nbconvert 05-ClassificationsSupervisees.ipynb --execute --to latex --output-dir latex
-mv 05-ClassificationsSupervisees.ipynb ./notebooks/
+# 4. Export chapters -> ipynb (+marimo if available), stash under notebooks/
+for ch in "${CHAPTERS[@]}"; do
+  q quarto convert "$ch.qmd"
+  [ "$HAVE_MARIMO" = 1 ] && q marimo convert "$ch.ipynb" -o "./marimo/$ch.py"
+  mv -f "$ch.ipynb" ./notebooks/
+done
 
+# 5. Aux pages: export and stash under notebooks/
+for ch in "${AUX[@]}"; do
+  q quarto convert "$ch.qmd"
+  mv -f "$ch.ipynb" ./notebooks/
+done
 
-#quarto render --cache --no-clean --to docx --output-dir ./docx
-#mv -f ./docx/Traitement-d-images-satellites-avec-Python.docx .
-
-#quarto render --profile production --cache --no-clean --to pdf --output-dir ./pdf
-cp -f ./pdf/Traitement-d-images-satellites-avec-Python.pdf ./docs
-
-
-git add .
-git commit -m 'new content'
-git push
+# 6. Publish (manual)
+# git add . && git commit -m 'new content' && git push
