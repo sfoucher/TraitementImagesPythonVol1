@@ -27,7 +27,8 @@ q quarto render --cache --to html --output-dir ./docs
 
 # 2. PDF -> publish into docs for the download link
 q quarto render --profile production --cache --no-clean --to pdf --output-dir ./pdf
-cp -f "./pdf/$PDF_NAME" ./docs/
+# copy inside container: docs/ is root-owned, host cp would hit EACCES
+q cp -f "./pdf/$PDF_NAME" ./docs/
 
 # 3. DOCX (optional)
 # mkdir -p docx

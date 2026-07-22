@@ -47,3 +47,9 @@ geopandas
 numba
 scikit-learn
 supertree
+opencv-python-headless
+seaborn
+gdown
+spyndex
+# CPU-only torch (conv demo, ch04); install via download.pytorch.org/whl/cpu at build
+torch==2.4.0+cpu

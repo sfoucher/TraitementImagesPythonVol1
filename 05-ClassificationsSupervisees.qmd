@@ -220,7 +220,7 @@ On constate aussi que sans les échantillons de validation, nous serions incapab
 
 ### Pipeline
 
-La construction d'un modèle implique généralement toujours les mêmes étapes illustrées sur la [@fig-pipeline]:
+La construction d'un modèle implique généralement toujours les mêmes étapes suivantes:
 
 1.  La préparation des données implique parfois un pré-traitement afin de normaliser les données.
 
