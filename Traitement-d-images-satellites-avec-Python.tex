@@ -825,10 +825,22 @@ manipulation des données satellitaires.
 \item
   installer un environnement d'exécution du code de cet ouvrage;
 \item
-  comprendre les structures de base du langage Python;
+  comprendre les structures de base du langage Python (listes, tuples,
+  ensembles, dictionnaires);
+\item
+  écrire des boucles, des conditions et des fonctions;
+\item
+  aborder la programmation orientée objet;
+\item
+  manipuler un tableau \texttt{NumPy}.
 \end{itemize}
 
 \end{tcolorbox}
+
+Ce chapitre est aussi disponible sous la forme d'un notebook Python sur
+Google Colab :
+
+\href{https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/00-PriseEnMainPython.ipynb}{\pandocbounded{\includegraphics[keepaspectratio]{images/colab.png}}}
 
 Python, créé par
 \href{https://en.wikipedia.org/wiki/Guido_van_Rossum}{Guido van Rossum}
@@ -847,30 +859,39 @@ votre glace préférée - chacune a ses propres caractéristiques uniques,
 mais elles sont toutes fondamentalement Python. Voici un aperçu des
 principales distributions :
 
-\begin{itemize}
-\item
-  \href{https://www.python.org/downloads/}{CPython} est la distribution
-  ``vanille'' officielle, comme la recette originale de Python. Elle est
-  ainsi le choix idéal pour la compatibilité et la conformité aux
-  standards.
-\item
-  \href{https://www.anaconda.com/download}{Anaconda}. Pensez-y comme à
-  un sundae tout garni. Elle vient avec de nombreuses bibliothèques
-  scientifiques préinstallées, ce qui est idéal pour l'analyse de
-  données et l'apprentissage automatique (\emph{machine learning}).
-\item
-  \href{https://docs.anaconda.com/miniconda/miniconda-install/}{Miniconda}
-  est une distribution légère de Python qui vous permet d'ajouter au
-  besoin d'autres bibliothèques.
-\item
-  \href{https://pypy.org/}{PyPy} : est une version turbo de Python,
-  optimisée pour la vitesse.
-\end{itemize}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Distribution
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Description
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Idéale pour
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\href{https://www.python.org/downloads/}{CPython} & L'implémentation
+officielle « vanille » & La compatibilité et la conformité aux
+standards \\
+\href{https://www.anaconda.com/download}{Anaconda} & Livrée avec de
+nombreuses bibliothèques scientifiques & L'analyse de données et
+l'apprentissage automatique (\emph{machine learning}) \\
+\href{https://docs.anaconda.com/miniconda/miniconda-install/}{Miniconda}
+& Version légère ; on ajoute les bibliothèques au besoin & Un
+environnement minimal et contrôlé \\
+\href{https://pypy.org/}{PyPy} & Implémentation optimisée pour la
+vitesse d'exécution & Les programmes gourmands en calcul \\
+\end{longtable}
 
 Chaque distribution a ses forces, que ce soit la simplicité, la vitesse
 ou des fonctionnalités spécifiques. Le choix dépend donc de vos besoins,
-comme choisir entre une glace simple ou une glace royal (banana split)
-élaboré.
+comme choisir entre une glace simple ou une glace royale (banana split)
+élaborée.
 
 \section{Les styles de programmation en
 Python}\label{les-styles-de-programmation-en-python}
@@ -888,8 +909,8 @@ Cependant, il n'y aura pas de rétroactions immédiates de l'interpréteur
 Python, ce qui rend la correction d'erreurs (débogage) beaucoup plus
 laborieux.
 
-Un IDE (\emph{Integrated Developement Environnement}) est comme une
-boîte à outils complète pour les programmeurs, vous trouverez :
+Un IDE (\emph{Integrated Development Environment}) est comme une boîte à
+outils complète pour les programmeurs, vous trouverez :
 
 \begin{itemize}
 \item
@@ -897,8 +918,7 @@ boîte à outils complète pour les programmeurs, vous trouverez :
   fonctionnalités comme la coloration syntaxique qui rend le code plus
   lisible.
 \item
-  Un compilateur qui transforme votre code en instructions que
-  l'ordinateur peut comprendre.
+  Un interpréteur qui exécute votre code ligne par ligne.
 \item
   Un débogueur pour trouver et corriger les erreurs, tel un détective
   numérique.
@@ -915,38 +935,34 @@ applications et plus de temps à produire du code.
 
 Voici quelques options populaires :
 
-\begin{itemize}
-\item
-  \href{https://www.jetbrains.com/pycharm/}{PyCharm}: est un des outils
-  les plus utilisés dans l'industrie. Il offre une multitude de
-  fonctionnalités comme l'autocomplétion intelligente et le débogage
-  intégré, idéal pour les grands projets. Cependant, cet outil peut être
-  assez gourmand en mémoire et en CPU. Notez qu'il existe une version
-  gratuite et une version professionnelle.
-\item
-  \href{https://code.visualstudio.com/}{Visual Studio Code} : gratuit,
-  léger mais puissant, il est personnalisable avec des extensions pour
-  Python.
-\item
-  \href{https://www.spyder-ide.org/}{Spyder} : logiciel libre et
-  gratuit, orienté vers les applications scientifiques.
-\item
-  \href{https://jupyter.org/}{Jupyter Notebooks} : imaginez un cahier
-  interactif pour le code. Idéal pour l'analyse de données et
-  l'apprentissage, il permet de mélanger code, texte et visualisations.
-  Des services gratuits dans le \textbf{cloud} sont disponibles comme
-  Google Colab et Kaggle. Ces environnements sont néanmoins moins
-  appropriés pour des grands projets et le débogage. Jupyter peut
-  souffrir de problèmes de reproductibilité dus à l'exécution arbitraire
-  des cellules.
-\item
-  \href{https://marimo.io/}{Marimo} se veut une version plus moderne des
-  \emph{notebooks jupyter}. Contrairement à Jupyter, Marimo garantit la
-  cohérence entre le code, les sorties et l'état du programme. Il
-  analyse intelligemment les relations entre les cellules et réexécute
-  automatiquement celles qui sont affectées par des changements,
-  éliminant ainsi les problèmes d'état caché.
-\end{itemize}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Outil
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Points forts
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\href{https://www.jetbrains.com/pycharm/}{PyCharm} & IDE complet &
+Autocomplétion, débogage intégré ; idéal pour les grands projets
+(gourmand en ressources) \\
+\href{https://code.visualstudio.com/}{Visual Studio Code} & Éditeur
+extensible & Gratuit, léger, personnalisable par extensions \\
+\href{https://www.spyder-ide.org/}{Spyder} & IDE scientifique & Libre et
+gratuit, orienté calcul scientifique \\
+\href{https://jupyter.org/}{Jupyter} & Notebook & Mélange code, texte et
+visualisations ; gratuit sur Colab/Kaggle (reproductibilité limitée) \\
+\href{https://marimo.io/}{Marimo} & Notebook réactif & Réexécute
+automatiquement les cellules dépendantes ; évite l'état caché \\
+\end{longtable}
 
 \section{Bonnes pratiques}\label{bonnes-pratiques}
 
@@ -959,7 +975,7 @@ pratiques à suivre :
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \textbf{N'installez par la toute dernière version de Python} : Il est
+  \textbf{N'installez pas la toute dernière version de Python} : Il est
   recommandé d'installer 1 ou 2 version antérieure, par exemple si 3.13
   est \href{https://www.python.org/downloads/}{la version plus récente},
   installer plutôt la version 3.11. Les versions trop récentes peuvent
@@ -974,8 +990,8 @@ pratiques à suivre :
   librairies cesseront d'évoluer et peuvent devenir obsolètes.
 \item
   \textbf{Utilisez des environnements virtuels}. Pensez-y comme à des
-  compartiments séparées pour chaque projet. Cela évite les conflits
-  entre les différentes versions de bibliothèques (\emph{libraries})et
+  compartiments séparés pour chaque projet. Cela évite les conflits
+  entre les différentes versions de bibliothèques (\emph{libraries}) et
   garde votre système propre. Par exemple, si vous souhaitez vérifier
   une nouvelle version de Python, utilisez un environnement :
   \texttt{conda\ create\ -\/-name\ test\ python=3.11}
@@ -1003,7 +1019,7 @@ distribution de Python:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ExtensionTok{conda}\NormalTok{ env }\AttributeTok{{-}n}\NormalTok{ test python=3.10}
+\ExtensionTok{conda}\NormalTok{ create }\AttributeTok{{-}n}\NormalTok{ test python=3.10}
 \ExtensionTok{conda}\NormalTok{ activate test}
 \end{Highlighting}
 \end{Shaded}
@@ -1014,13 +1030,17 @@ distribution de Python:
 \tightlist
 \item
   \textbf{Option 2}. Vous utilisez
-  \href{https://www.python.org/downloads/}{CPython}
+  \href{https://www.python.org/downloads/}{CPython}, sans
+  \texttt{conda}. Le module \texttt{venv} de la bibliothèque standard
+  crée l'environnement et \texttt{pip} installe ensuite les
+  bibliothèques :
 \end{enumerate}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ExtensionTok{conda}\NormalTok{ env }\AttributeTok{{-}n}\NormalTok{ test python=3.10}
-\ExtensionTok{conda}\NormalTok{ activate test}
+\ExtensionTok{python} \AttributeTok{{-}m}\NormalTok{ venv test}
+\BuiltInTok{source}\NormalTok{ test/bin/activate       }\CommentTok{\# Windows : test\textbackslash{}Scripts\textbackslash{}activate}
+\ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}{-}upgrade}\NormalTok{ pip}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1081,8 +1101,8 @@ serveur Jupyter Lab.}
 \section{Les structures de base en
 Python}\label{les-structures-de-base-en-python}
 
-Il y a essentiellement deux structures de données que Python manipule :
-les listes et les dictionnaires.
+Python manipule quatre structures de données fondamentales : les listes,
+les tuples, les ensembles et les dictionnaires.
 
 \subsection{Les listes}\label{les-listes}
 
@@ -1102,6 +1122,30 @@ différents types d'objets:
   modifier
 \end{itemize}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Une liste des bandes spectrales d\textquotesingle{}une image (analogie télédétection)}
+\NormalTok{bandes }\OperatorTok{=}\NormalTok{ [}\StringTok{"bleu"}\NormalTok{, }\StringTok{"vert"}\NormalTok{, }\StringTok{"rouge"}\NormalTok{, }\StringTok{"PIR"}\NormalTok{]}
+\BuiltInTok{print}\NormalTok{(bandes[}\DecValTok{0}\NormalTok{])          }\CommentTok{\# premier élément}
+\BuiltInTok{print}\NormalTok{(bandes[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{])         }\CommentTok{\# dernier élément}
+\BuiltInTok{print}\NormalTok{(bandes[}\DecValTok{1}\NormalTok{:}\DecValTok{3}\NormalTok{])        }\CommentTok{\# tranche (slice) : [\textquotesingle{}vert\textquotesingle{}, \textquotesingle{}rouge\textquotesingle{}]}
+
+\NormalTok{bandes.append(}\StringTok{"SWIR"}\NormalTok{)     }\CommentTok{\# ajout en fin de liste}
+\BuiltInTok{print}\NormalTok{(}\BuiltInTok{len}\NormalTok{(bandes), }\StringTok{"bandes :"}\NormalTok{, bandes)}
+
+\CommentTok{\# Compréhension de liste : transformer chaque élément}
+\BuiltInTok{print}\NormalTok{([b.upper() }\ControlFlowTok{for}\NormalTok{ b }\KeywordTok{in}\NormalTok{ bandes])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+bleu
+PIR
+['vert', 'rouge']
+5 bandes : ['bleu', 'vert', 'rouge', 'PIR', 'SWIR']
+['BLEU', 'VERT', 'ROUGE', 'PIR', 'SWIR']
+\end{verbatim}
+
 \subsection{Les tuples}\label{les-tuples}
 
 Les tuples sont similaires aux listes, mais les boîtes sont scellées:
@@ -1117,6 +1161,21 @@ Les tuples sont similaires aux listes, mais les boîtes sont scellées:
   Souvent utilisés pour stocker des données qui ne doivent pas changer
   (comme des paramètres).
 \end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Les dimensions (lignes, colonnes) d\textquotesingle{}une image : une donnée qui ne change pas}
+\NormalTok{dimensions }\OperatorTok{=}\NormalTok{ (}\DecValTok{512}\NormalTok{, }\DecValTok{512}\NormalTok{)}
+\NormalTok{lignes, colonnes }\OperatorTok{=}\NormalTok{ dimensions        }\CommentTok{\# dépaquetage (unpacking)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Lignes :"}\NormalTok{, lignes, }\StringTok{"| Colonnes :"}\NormalTok{, colonnes)}
+
+\CommentTok{\# dimensions[0] = 1024   \# {-}\textgreater{} TypeError : un tuple est immuable}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Lignes : 512 | Colonnes : 512
+\end{verbatim}
 
 \subsection{Les ensembles (Sets)}\label{les-ensembles-sets}
 
@@ -1135,10 +1194,28 @@ exemplaire de chaque objet:
   mathématiques sur des ensembles.
 \end{itemize}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Éliminer les doublons d\textquotesingle{}une liste de classes d\textquotesingle{}occupation du sol}
+\NormalTok{classes }\OperatorTok{=}\NormalTok{ [}\StringTok{"eau"}\NormalTok{, }\StringTok{"forêt"}\NormalTok{, }\StringTok{"eau"}\NormalTok{, }\StringTok{"urbain"}\NormalTok{, }\StringTok{"forêt"}\NormalTok{]}
+\NormalTok{uniques }\OperatorTok{=} \BuiltInTok{set}\NormalTok{(classes)}
+\BuiltInTok{print}\NormalTok{(uniques)}
+
+\CommentTok{\# Opérations ensemblistes}
+\NormalTok{a, b }\OperatorTok{=}\NormalTok{ \{}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{\}, \{}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{\}}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"intersection :"}\NormalTok{, a }\OperatorTok{\&}\NormalTok{ b, }\StringTok{"| union :"}\NormalTok{, a }\OperatorTok{|}\NormalTok{ b)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+{'forêt', 'eau', 'urbain'}
+intersection : {3} | union : {1, 2, 3, 4}
+\end{verbatim}
+
 \section{Dictionnaires}\label{dictionnaires}
 
-Les dictionnaires sont comme des boites avec des étiquettes sur chcune
-d'elle :
+Les dictionnaires sont comme des boites avec des étiquettes sur chacune
+d'elles :
 
 \begin{itemize}
 \item
@@ -1153,6 +1230,95 @@ d'elle :
   Utiles pour stocker des données associatives ou pour créer des tables
   de recherche rapide
 \end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Un dictionnaire : les métadonnées d\textquotesingle{}une image satellite}
+\NormalTok{image }\OperatorTok{=}\NormalTok{ \{}\StringTok{"capteur"}\NormalTok{: }\StringTok{"Sentinel{-}2"}\NormalTok{, }\StringTok{"bandes"}\NormalTok{: }\DecValTok{13}\NormalTok{, }\StringTok{"resolution\_m"}\NormalTok{: }\DecValTok{10}\NormalTok{\}}
+\BuiltInTok{print}\NormalTok{(image[}\StringTok{"capteur"}\NormalTok{])              }\CommentTok{\# accès par clé}
+
+\NormalTok{image[}\StringTok{"date"}\NormalTok{] }\OperatorTok{=} \StringTok{"2024{-}07{-}01"}         \CommentTok{\# ajout d\textquotesingle{}une paire clé{-}valeur}
+\ControlFlowTok{for}\NormalTok{ cle, valeur }\KeywordTok{in}\NormalTok{ image.items():    }\CommentTok{\# parcours des paires clé{-}valeur}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"}\SpecialCharTok{\{}\NormalTok{cle}\SpecialCharTok{\}}\SpecialStringTok{ : }\SpecialCharTok{\{}\NormalTok{valeur}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Sentinel-2
+capteur : Sentinel-2
+bandes : 13
+resolution_m : 10
+date : 2024-07-01
+\end{verbatim}
+
+\section{Boucles et conditions}\label{boucles-et-conditions}
+
+Un programme prend des décisions (\texttt{if}) et répète des opérations
+(\texttt{for}, \texttt{while}). Ces structures de contrôle sont au cœur
+de tout traitement automatisé.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bandes }\OperatorTok{=}\NormalTok{ [}\StringTok{"bleu"}\NormalTok{, }\StringTok{"vert"}\NormalTok{, }\StringTok{"rouge"}\NormalTok{, }\StringTok{"PIR"}\NormalTok{]}
+
+\CommentTok{\# Boucle for : parcourir chaque bande avec son indice}
+\ControlFlowTok{for}\NormalTok{ i, nom }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(bandes):}
+    \BuiltInTok{print}\NormalTok{(i, nom)}
+
+\CommentTok{\# Condition if / elif / else}
+\NormalTok{reflectance }\OperatorTok{=} \FloatTok{0.42}
+\ControlFlowTok{if}\NormalTok{ reflectance }\OperatorTok{\textgreater{}} \FloatTok{0.5}\NormalTok{:}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"forte réflectance"}\NormalTok{)}
+\ControlFlowTok{elif}\NormalTok{ reflectance }\OperatorTok{\textgreater{}} \FloatTok{0.3}\NormalTok{:}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"réflectance moyenne"}\NormalTok{)}
+\ControlFlowTok{else}\NormalTok{:}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"faible réflectance"}\NormalTok{)}
+
+\CommentTok{\# Boucle while : tant qu\textquotesingle{}une condition est vraie}
+\NormalTok{seuil, valeur }\OperatorTok{=} \FloatTok{0.5}\NormalTok{, }\FloatTok{0.1}
+\ControlFlowTok{while}\NormalTok{ valeur }\OperatorTok{\textless{}}\NormalTok{ seuil:}
+\NormalTok{    valeur }\OperatorTok{+=} \FloatTok{0.2}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"valeur finale :"}\NormalTok{, }\BuiltInTok{round}\NormalTok{(valeur, }\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+0 bleu
+1 vert
+2 rouge
+3 PIR
+réflectance moyenne
+valeur finale : 0.5
+\end{verbatim}
+
+\section{Les fonctions}\label{les-fonctions}
+
+Une fonction regroupe des instructions réutilisables sous un nom. On la
+définit avec \texttt{def} ; elle reçoit des \emph{arguments} et renvoie
+un résultat avec \texttt{return}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ ndvi(nir, rouge):}
+    \CommentTok{"""Indice de végétation NDVI = (PIR {-} Rouge) / (PIR + Rouge)."""}
+    \ControlFlowTok{return}\NormalTok{ (nir }\OperatorTok{{-}}\NormalTok{ rouge) }\OperatorTok{/}\NormalTok{ (nir }\OperatorTok{+}\NormalTok{ rouge)}
+
+\BuiltInTok{print}\NormalTok{(}\BuiltInTok{round}\NormalTok{(ndvi(}\FloatTok{0.6}\NormalTok{, }\FloatTok{0.2}\NormalTok{), }\DecValTok{3}\NormalTok{))}
+
+\CommentTok{\# Argument par défaut}
+\KeywordTok{def}\NormalTok{ normaliser(valeur, maximum}\OperatorTok{=}\DecValTok{255}\NormalTok{):}
+    \ControlFlowTok{return}\NormalTok{ valeur }\OperatorTok{/}\NormalTok{ maximum}
+
+\BuiltInTok{print}\NormalTok{(normaliser(}\DecValTok{128}\NormalTok{))}
+\BuiltInTok{print}\NormalTok{(normaliser(}\DecValTok{1000}\NormalTok{, maximum}\OperatorTok{=}\DecValTok{4095}\NormalTok{))   }\CommentTok{\# image 12 bits}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+0.5
+0.5019607843137255
+0.2442002442002442
+\end{verbatim}
 
 \section{Programmation objet}\label{programmation-objet}
 
@@ -1183,6 +1349,162 @@ Python rend la POO accessible avec des fonctionnalités conviviales:
 Ces caractéristiques font de Python un excellent choix pour apprendre et
 appliquer les concepts de la POO, rendant le code plus organisé et
 réutilisable
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ Image:}
+    \CommentTok{"""Une classe minimale décrivant une image satellite."""}
+
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, capteur, bandes):   }\CommentTok{\# constructeur}
+        \VariableTok{self}\NormalTok{.capteur }\OperatorTok{=}\NormalTok{ capteur              }\CommentTok{\# attributs}
+        \VariableTok{self}\NormalTok{.bandes }\OperatorTok{=}\NormalTok{ bandes}
+
+    \KeywordTok{def}\NormalTok{ resume(}\VariableTok{self}\NormalTok{):                       }\CommentTok{\# méthode}
+        \ControlFlowTok{return} \SpecialStringTok{f"}\SpecialCharTok{\{}\VariableTok{self}\SpecialCharTok{.}\NormalTok{capteur}\SpecialCharTok{\}}\SpecialStringTok{ — }\SpecialCharTok{\{}\VariableTok{self}\SpecialCharTok{.}\NormalTok{bandes}\SpecialCharTok{\}}\SpecialStringTok{ bandes"}
+
+\NormalTok{img }\OperatorTok{=}\NormalTok{ Image(}\StringTok{"Landsat{-}8"}\NormalTok{, }\DecValTok{11}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(img.resume())}
+\BuiltInTok{print}\NormalTok{(img.capteur)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Landsat-8 — 11 bandes
+Landsat-8
+\end{verbatim}
+
+\section{Importer des
+bibliothèques}\label{importer-des-bibliothuxe8ques}
+
+Python possède une petite bibliothèque standard, mais toute sa puissance
+vient des \emph{packages} externes (comme NumPy). On les installe une
+fois avec \texttt{pip}, puis on les charge dans un script avec
+\texttt{import}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{pip}\NormalTok{ install numpy          }\CommentTok{\# une seule fois par environnement}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np              }\CommentTok{\# tout le module, sous l\textquotesingle{}alias np}
+\ImportTok{from}\NormalTok{ math }\ImportTok{import}\NormalTok{ pi, sqrt       }\CommentTok{\# seulement certains éléments}
+
+\BuiltInTok{print}\NormalTok{(np.array([}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{]))}
+\BuiltInTok{print}\NormalTok{(}\BuiltInTok{round}\NormalTok{(pi, }\DecValTok{4}\NormalTok{), sqrt(}\DecValTok{16}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1 2 3]
+3.1416 4.0
+\end{verbatim}
+
+\section{Un avant-goût de NumPy}\label{sec-00-02}
+
+Dans ce manuel, une image est avant tout un tableau de nombres. La
+bibliothèque \href{https://numpy.org/}{NumPy} fournit l'objet
+\texttt{ndarray} qui représente efficacement ces tableaux à plusieurs
+dimensions : c'est la brique de base de tous les chapitres suivants.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+
+\CommentTok{\# Une petite image à une bande : 3 lignes x 4 colonnes}
+\NormalTok{image }\OperatorTok{=}\NormalTok{ np.array([[}\DecValTok{10}\NormalTok{, }\DecValTok{12}\NormalTok{, }\DecValTok{11}\NormalTok{,  }\DecValTok{9}\NormalTok{],}
+\NormalTok{                  [ }\DecValTok{8}\NormalTok{, }\DecValTok{20}\NormalTok{, }\DecValTok{22}\NormalTok{,  }\DecValTok{7}\NormalTok{],}
+\NormalTok{                  [ }\DecValTok{9}\NormalTok{, }\DecValTok{21}\NormalTok{, }\DecValTok{23}\NormalTok{,  }\DecValTok{8}\NormalTok{]])}
+
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Forme (lignes, colonnes) :"}\NormalTok{, image.shape)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Valeur maximale :"}\NormalTok{, image.}\BuiltInTok{max}\NormalTok{())}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Moyenne :"}\NormalTok{, image.mean().}\BuiltInTok{round}\NormalTok{(}\DecValTok{2}\NormalTok{))}
+
+\CommentTok{\# Découpage d\textquotesingle{}une sous{-}image (2 premières lignes, 2 premières colonnes)}
+\BuiltInTok{print}\NormalTok{(image[:}\DecValTok{2}\NormalTok{, :}\DecValTok{2}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Forme (lignes, colonnes) : (3, 4)
+Valeur maximale : 23
+Moyenne : 13.33
+[[10 12]
+ [ 8 20]]
+\end{verbatim}
+
+\section{Points clés}\label{points-cluxe9s}
+
+\begin{tcolorbox}[colback=background_color, colframe=notes_color, boxrule=0.2mm, leftrule=1mm, coltitle=black, fonttitle=\bfseries, title={\includegraphics[width=0.3cm]{images/BlocNote.png} \textbf{Note}}]
+
+\textbf{À retenir}
+
+\begin{itemize}
+\tightlist
+\item
+  Installez Python via un \textbf{environnement virtuel} (\texttt{conda}
+  ou \texttt{venv}) pour isoler chaque projet.
+\item
+  Quatre structures de base : \textbf{listes} (ordonnées, modifiables),
+  \textbf{tuples} (immuables), \textbf{ensembles} (sans doublons) et
+  \textbf{dictionnaires} (paires clé-valeur).
+\item
+  \texttt{if}/\texttt{for}/\texttt{while} contrôlent le déroulement du
+  programme ; les \textbf{fonctions} (\texttt{def}) regroupent du code
+  réutilisable.
+\item
+  Une image est avant tout un \textbf{tableau \texttt{NumPy}} : c'est la
+  structure centrale de tout le manuel.
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{Exercices}\label{exercices}
+
+\begin{tcolorbox}[colback=background_color, colframe=exercise_color, boxrule=0.2mm, leftrule=1mm, coltitle=black, fonttitle=\bfseries, title={\includegraphics[width=0.3cm]{images/BlocExercice.png} \textbf{Exercice}}]
+
+\textbf{À vous de jouer}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Créez un dictionnaire \texttt{metadonnees} décrivant une image
+  (capteur, nombre de bandes, résolution) puis affichez chaque paire
+  clé-valeur.
+\item
+  À partir du tableau \texttt{image} de la section~\ref{sec-00-02},
+  calculez la valeur \textbf{minimale} et l'\textbf{écart-type}
+  (\texttt{image.std()}), puis extrayez la dernière colonne.
+\item
+  Écrivez une fonction \texttt{ratio(a,\ b)} renvoyant
+  \texttt{(a\ -\ b)\ /\ (a\ +\ b)}, et utilisez-la pour un NDVI avec PIR
+  = 0,55 et Rouge = 0,18.
+\end{enumerate}
+
+\end{tcolorbox}
+
+Afficher les solutions
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 1. Dictionnaire de métadonnées}
+\NormalTok{metadonnees }\OperatorTok{=}\NormalTok{ \{}\StringTok{"capteur"}\NormalTok{: }\StringTok{"Sentinel{-}2"}\NormalTok{, }\StringTok{"bandes"}\NormalTok{: }\DecValTok{13}\NormalTok{, }\StringTok{"resolution\_m"}\NormalTok{: }\DecValTok{10}\NormalTok{\}}
+\ControlFlowTok{for}\NormalTok{ cle, valeur }\KeywordTok{in}\NormalTok{ metadonnees.items():}
+    \BuiltInTok{print}\NormalTok{(cle, }\StringTok{":"}\NormalTok{, valeur)}
+
+\CommentTok{\# 2. Statistiques et dernière colonne du tableau \textasciigrave{}image\textasciigrave{}}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"min :"}\NormalTok{, image.}\BuiltInTok{min}\NormalTok{(), }\StringTok{"| écart{-}type :"}\NormalTok{, }\BuiltInTok{round}\NormalTok{(image.std(), }\DecValTok{2}\NormalTok{))}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"dernière colonne :"}\NormalTok{, image[:, }\OperatorTok{{-}}\DecValTok{1}\NormalTok{])}
+
+\CommentTok{\# 3. Fonction ratio et calcul du NDVI}
+\KeywordTok{def}\NormalTok{ ratio(a, b):}
+    \ControlFlowTok{return}\NormalTok{ (a }\OperatorTok{{-}}\NormalTok{ b) }\OperatorTok{/}\NormalTok{ (a }\OperatorTok{+}\NormalTok{ b)}
+
+\BuiltInTok{print}\NormalTok{(}\StringTok{"NDVI :"}\NormalTok{, }\BuiltInTok{round}\NormalTok{(ratio(}\FloatTok{0.55}\NormalTok{, }\FloatTok{0.18}\NormalTok{), }\DecValTok{3}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{tcolorbox}[colback=background_color, colframe=package_color, boxrule=0.2mm, leftrule=1mm, coltitle=black, fonttitle=\bfseries, title={\includegraphics[width=0.3cm]{images/BlocPackage.png} \textbf{Package}}]
 
@@ -1217,6 +1539,226 @@ réutilisable
 
 \end{tcolorbox}
 
+\section{Quiz}\label{quiz}
+
+Utilisez la version html.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item
+  \textbf{Quelle structure de données Python n'autorise }pas** les
+  doublons ?**
+
+  \begin{itemize}
+  \tightlist
+  \item
+    La liste
+  \item
+    Le tuple
+  \item
+    L'ensemble (set)
+  \item
+    Le dictionnaire
+  \end{itemize}
+
+  Relisez au besoin la section « Les ensembles (Sets) ».
+\item
+  \textbf{Les tuples peuvent être modifiés après leur création.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Vrai
+  \item
+    Faux
+  \end{itemize}
+
+  Relisez au besoin la section « Les tuples » : un tuple est immuable.
+\item
+  \textbf{Comment accède-t-on à la valeur associée à la clé
+  \texttt{"capteur"} d'un dictionnaire nommé \texttt{image} ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    image(``capteur'')
+  \item
+    image{[}``capteur''{]}
+  \item
+    image.capteur
+  \item
+    image\{``capteur''\}
+  \end{itemize}
+
+  Relisez au besoin la section « Dictionnaires ».
+\item
+  \textbf{Parmi les affirmations suivantes sur les listes Python,
+  lesquelles sont vraies ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Elles sont ordonnées.
+  \item
+    Elles sont modifiables (\emph{mutable}).
+  \item
+    Elles autorisent les doublons.
+  \item
+    Elles sont délimitées par des accolades \texttt{\{\}}.
+  \end{itemize}
+
+  Relisez au besoin la section « Les listes ».
+\item
+  \textbf{Quel mot-clé permet de définir une fonction en Python ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    func
+  \item
+    def
+  \item
+    function
+  \item
+    return
+  \end{itemize}
+
+  Relisez au besoin la section « Les fonctions ».
+\item
+  \textbf{Que renvoie l'expression \texttt{{[}1,\ 2,\ 3{]}{[}-1{]}} ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    1
+  \item
+    3
+  \item
+    {[}3{]}
+  \item
+    une erreur
+  \end{itemize}
+
+  L'indice -1 désigne le dernier élément. Voir la section « Les listes
+  ».
+\item
+  \textbf{Pour un tableau NumPy \texttt{image}, quel attribut donne ses
+  dimensions (lignes, colonnes) ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    image.size
+  \item
+    image.length
+  \item
+    image.shape
+  \item
+    image.dim
+  \end{itemize}
+
+  Relisez au besoin la section~\ref{sec-00-02}.
+\item
+  \textbf{Pourquoi utiliser un environnement virtuel (\texttt{conda} ou
+  \texttt{venv}) ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Pour isoler les bibliothèques de chaque projet.
+  \item
+    Pour éviter les conflits entre versions de bibliothèques.
+  \item
+    Pour accélérer l'exécution du code Python.
+  \item
+    Pour remplacer l'interpréteur Python.
+  \end{itemize}
+
+  Relisez au besoin la section~\ref{sec-00-01}.
+\end{itemize}
+
+\textbf{Réponses}
+
+\begin{itemize}
+\tightlist
+\item
+  Quelle structure de données Python n'autorise \textbf{pas} les
+  doublons ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    L'ensemble (set)
+  \end{itemize}
+\item
+  Les tuples peuvent être modifiés après leur création.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Faux
+  \end{itemize}
+\item
+  Comment accède-t-on à la valeur associée à la clé \texttt{"capteur"}
+  d'un dictionnaire nommé \texttt{image} ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    image{[}``capteur''{]}
+  \end{itemize}
+\item
+  Parmi les affirmations suivantes sur les listes Python, lesquelles
+  sont vraies ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Elles sont ordonnées.
+  \item
+    Elles sont modifiables (\emph{mutable}).
+  \item
+    Elles autorisent les doublons.
+  \end{itemize}
+\item
+  Quel mot-clé permet de définir une fonction en Python ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    def
+  \end{itemize}
+\item
+  Que renvoie l'expression \texttt{{[}1,\ 2,\ 3{]}{[}-1{]}} ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    3
+  \end{itemize}
+\item
+  Pour un tableau NumPy \texttt{image}, quel attribut donne ses
+  dimensions (lignes, colonnes) ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    image.shape
+  \end{itemize}
+\item
+  Pourquoi utiliser un environnement virtuel (\texttt{conda} ou
+  \texttt{venv}) ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Pour isoler les bibliothèques de chaque projet.
+  \item
+    Pour éviter les conflits entre versions de bibliothèques.
+  \end{itemize}
+\end{itemize}
+
 \bookmarksetup{startatroot}
 
 \chapter{Importation et manipulation de données
@@ -1224,7 +1766,7 @@ spatiales}\label{sec-chap01}
 
 \section{Préambule}\label{pruxe9ambule}
 
-Assurez-vous de lire ce préambule avant d'exécutez le reste du notebook.
+Assurez-vous de lire ce préambule avant d'exécuter le reste du notebook.
 
 \subsection{Objectifs}\label{objectifs}
 
@@ -1247,9 +1789,12 @@ Python:
 \item
   accéder à l'information d'une image avant de la lire;
 \item
-  comprendre les principaux formats pour une image
+  comprendre les principaux formats pour une image;
 \item
-  manipuler la matrice de la donnée d'une image avec numpy
+  manipuler la matrice de la donnée d'une image avec \texttt{numpy};
+\item
+  exploiter les métadonnées et la géoréférence avec \texttt{rioxarray}
+  et \texttt{xarray}.
 \end{itemize}
 
 \end{tcolorbox}
@@ -1340,13 +1885,14 @@ géomatique qui permettre d'importer (et d'exporter) de l'imagerie est la
 librairie \href{https://gdal.org}{GDAL} qui rassemble la plupart des
 formats sous forme de \emph{driver} (ou pilote en français).
 
-Dans le domaine de la géomatique, il faut prêter attention à trois
+Dans le domaine de la géomatique, il faut prêter attention à quatre
 caractéristiques principales des images:
 
 1. \textbf{La matrice des données} elle-même qui contient les valeurs
 brutes des pixels. Cette matrice sera souvent un cube à trois
 dimensions. En Python, ce cube sera le plus souvent un objet de la
-librairie \href{https://numpy.org/}{NumPy} (voir section).
+librairie \href{https://numpy.org/}{NumPy} (voir la section «
+Manipulation de la matrice de pixels » plus bas).
 
 2. \textbf{La dynamique des images} c.-à.-d le format de stockage des
 valeurs individuelles (octet, entier, double, etc.). Ce format décide
@@ -1363,7 +1909,7 @@ Cette donnée auxiliaire prendra souvent la forme d'un dictionnaire
 Python. Elle contiendra aussi l'information de géoréférence.
 
 Les différents formats se distinguent principalement sur la manière dont
-ces trois caractéristiques sont gérées.
+ces quatre caractéristiques sont gérées.
 
 \subsection{Formats des images}\label{formats-des-images}
 
@@ -1390,7 +1936,7 @@ que trois bandes et des dynamiques plus élevées (16 bits ou même float).
 
 Les formats RVB restent très utilisés en Python notamment par les
 bibliothèques dites de vision par ordinateur (\emph{Computer Vision})
-comme OpenCV et sickit-image ainsi que les grandes bibliothèques en
+comme OpenCV et scikit-image ainsi que les grandes bibliothèques en
 apprentissage profond (PyTorch, Tensorflow).
 
 \begin{tcolorbox}[colback=background_color, colframe=package_color, boxrule=0.2mm, leftrule=1mm, coltitle=black, fonttitle=\bfseries, title={\includegraphics[width=0.3cm]{images/BlocPackage.png} \textbf{Package}}]
@@ -1506,6 +2052,26 @@ array([[[17, 50, 33],
         [33, 66, 46]]], shape=(442, 553, 3), dtype=uint8)
 \end{verbatim}
 
+Attention : la fonction \texttt{imread} d'OpenCV renvoie les canaux dans
+l'ordre \textbf{BGR} (bleu, vert, rouge) et non RGB. Il faut convertir
+l'image avant de l'afficher correctement avec \texttt{matplotlib} :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+
+\NormalTok{img\_bgr }\OperatorTok{=}\NormalTok{ cv2.imread(}\StringTok{\textquotesingle{}modis{-}aqua.PNG\textquotesingle{}}\NormalTok{)}
+\NormalTok{img\_rgb }\OperatorTok{=}\NormalTok{ cv2.cvtColor(img\_bgr, cv2.COLOR\_BGR2RGB)   }\CommentTok{\# BGR {-}\textgreater{} RGB}
+
+\NormalTok{fig, ax }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{4}\NormalTok{))}
+\NormalTok{ax[}\DecValTok{0}\NormalTok{].imshow(img\_bgr)}\OperatorTok{;}\NormalTok{ ax[}\DecValTok{0}\NormalTok{].set\_title(}\StringTok{"Sans conversion (BGR)"}\NormalTok{)}\OperatorTok{;}\NormalTok{ ax[}\DecValTok{0}\NormalTok{].axis(}\StringTok{\textquotesingle{}off\textquotesingle{}}\NormalTok{)}
+\NormalTok{ax[}\DecValTok{1}\NormalTok{].imshow(img\_rgb)}\OperatorTok{;}\NormalTok{ ax[}\DecValTok{1}\NormalTok{].set\_title(}\StringTok{"Après conversion (RGB)"}\NormalTok{)}\OperatorTok{;}\NormalTok{ ax[}\DecValTok{1}\NormalTok{].axis(}\StringTok{\textquotesingle{}off\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{01-ImportationManipulationImages_files/figure-pdf/cell-8-output-1.pdf}}
+
 \paragraph{Lecture avec la librairie
 RasterIO}\label{lecture-avec-la-librairie-rasterio}
 
@@ -1591,6 +2157,46 @@ Le plus simple est d'utiliser la fonction \texttt{rio\ info}:
 \end{Highlighting}
 \end{Shaded}
 
+Depuis Python, \texttt{rasterio} donne accès à ces mêmes informations
+sous forme d'attributs et d'un dictionnaire de métadonnées :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ rasterio}
+
+\ControlFlowTok{with}\NormalTok{ rasterio.}\BuiltInTok{open}\NormalTok{(}\StringTok{\textquotesingle{}RGBNIR\_of\_S2A.tif\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ src:}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Nombre de bandes :"}\NormalTok{, src.count)}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Dimensions (lignes, colonnes) :"}\NormalTok{, src.height, src.width)}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Type des pixels :"}\NormalTok{, src.dtypes[}\DecValTok{0}\NormalTok{])}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Système de coordonnées :"}\NormalTok{, src.crs)}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Résolution (m) :"}\NormalTok{, src.res)}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Emprise :"}\NormalTok{, src.bounds)}
+\NormalTok{    meta }\OperatorTok{=}\NormalTok{ src.meta            }\CommentTok{\# toutes les métadonnées dans un dictionnaire}
+\NormalTok{meta}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Nombre de bandes : 4
+Dimensions (lignes, colonnes) : 1926 2074
+Type des pixels : uint16
+Système de coordonnées : EPSG:32618
+Résolution (m) : (10.0, 10.0)
+Emprise : BoundingBox(left=731780.0, bottom=5021540.0, right=752520.0, top=5040800.0)
+\end{verbatim}
+
+\begin{verbatim}
+{'driver': 'GTiff',
+ 'dtype': 'uint16',
+ 'nodata': None,
+ 'width': 2074,
+ 'height': 1926,
+ 'count': 4,
+ 'crs': CRS.from_wkt('PROJCS["WGS 84 / UTM zone 18N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-75],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","32618"]]'),
+ 'transform': Affine(10.0, 0.0, 731780.0,
+        0.0, -10.0, 5040800.0)}
+\end{verbatim}
+
 \section{Manipulation des images}\label{manipulation-des-images}
 
 \subsection{Manipulation de la matrice de
@@ -1650,22 +2256,41 @@ Dimensions de la matrice:  (442, 553, 3)
 Type de la donnée:  uint8
 \end{verbatim}
 
-\begin{longtable}[]{@{}llrrr@{}}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1343}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2388}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2537}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1940}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1791}}@{}}
 
 \caption{\label{tbl-numpytype}Type de données de NumPy}
 
 \tabularnewline
 
 \toprule\noalign{}
-dtype & Nom & Taille (bits) & Min & Max \\
+\begin{minipage}[b]{\linewidth}\raggedright
+dtype
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nom
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Taille (bits)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Min
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Max
+\end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-uint8 & char & 8 & 0 & 255 \\
-int8 & signed char & 8 & -127 & 128 \\
-uint16 & unsigned short & 16 & 0 & -32768 \\
-int16 & short & 16 & 0 & 655355 \\
+uint8 & unsigned char & 8 & 0 & 255 \\
+int8 & signed char & 8 & -128 & 127 \\
+uint16 & unsigned short & 16 & 0 & 65535 \\
+int16 & short & 16 & -32768 & 32767 \\
+uint32 & unsigned int & 32 & 0 & 4294967295 \\
+int32 & int & 32 & -2147483648 & 2147483647 \\
+float32 & float & 32 & -3.4e38 & 3.4e38 \\
+float64 & double & 64 & -1.8e308 & 1.8e308 \\
 
 \end{longtable}
 
@@ -1703,10 +2328,17 @@ nouvelle matrice qui est un sous-ensemble de la matrice d'origine. Un
 découpage se fait avec le symbole `:', la syntaxe générale pour définir
 un découpage est \texttt{{[}début:fin:pas{]}}. Si on ne spécifie pas
 \texttt{début} ou \texttt{fin} alors les valeurs 0 ou
-\texttt{dimension-1} sont considérées implicitement. Quelques exemples:
-* choisir un pixel en particulier avec toutes les bandes:
-\texttt{matrice{[}1,1,:{]}} * choisir la colonne 2:
-\texttt{matrice{[}:,2,:{]}}
+\texttt{dimension-1} sont considérées implicitement. Quelques exemples :
+
+\begin{itemize}
+\tightlist
+\item
+  choisir un pixel en particulier avec toutes les bandes :
+  \texttt{matrice{[}1,\ 1,\ :{]}};
+\item
+  choisir la troisième colonne (indice 2) avec toutes les bandes :
+  \texttt{matrice{[}:,\ 2,\ :{]}}.
+\end{itemize}
 
 La syntaxe de base pour le découpage (\emph{slicing}) des tableaux NumPy
 repose sur l'utilisation des deux-points (\texttt{:}) à l'intérieur des
@@ -1787,7 +2419,57 @@ présence de pixels non valides:
 \end{enumerate}
 
 La librairie NumPy fournit des mécanismes pour exclure automatiquement
-certaines valeurs.
+certaines valeurs. Le module \texttt{numpy.ma} permet de créer un
+tableau masqué où les pixels non valides sont ignorés par les calculs
+statistiques :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+
+\CommentTok{\# Une petite image dont la valeur 0 représente le "no data"}
+\NormalTok{img }\OperatorTok{=}\NormalTok{ np.array([[}\DecValTok{12}\NormalTok{,  }\DecValTok{0}\NormalTok{, }\DecValTok{15}\NormalTok{],}
+\NormalTok{                [ }\DecValTok{8}\NormalTok{, }\DecValTok{20}\NormalTok{,  }\DecValTok{0}\NormalTok{],}
+\NormalTok{                [ }\DecValTok{0}\NormalTok{, }\DecValTok{21}\NormalTok{, }\DecValTok{23}\NormalTok{]], dtype}\OperatorTok{=}\BuiltInTok{float}\NormalTok{)}
+
+\CommentTok{\# Masquer les pixels égaux à 0 : ils seront ignorés par les statistiques}
+\NormalTok{img\_masque }\OperatorTok{=}\NormalTok{ np.ma.masked\_equal(img, }\DecValTok{0}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Moyenne sans masque :"}\NormalTok{, }\BuiltInTok{round}\NormalTok{(img.mean(), }\DecValTok{2}\NormalTok{))}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Moyenne avec masque :"}\NormalTok{, }\BuiltInTok{round}\NormalTok{(img\_masque.mean(), }\DecValTok{2}\NormalTok{))}
+
+\CommentTok{\# Approche équivalente avec des NaN et les fonctions « nan » de NumPy}
+\NormalTok{img\_nan }\OperatorTok{=}\NormalTok{ np.where(img }\OperatorTok{==} \DecValTok{0}\NormalTok{, np.nan, img)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Moyenne (nanmean)   :"}\NormalTok{, }\BuiltInTok{round}\NormalTok{(np.nanmean(img\_nan), }\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Moyenne sans masque : 11.0
+Moyenne avec masque : 16.5
+Moyenne (nanmean)   : 16.5
+\end{verbatim}
+
+\subsection{Exportation d'une image}\label{exportation-dune-image}
+
+Une image chargée avec \texttt{rioxarray} peut être réécrite sur le
+disque au format GeoTIFF avec \texttt{rio.to\_raster}, en conservant sa
+géoréférence :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ rioxarray }\ImportTok{as}\NormalTok{ rxr}
+
+\NormalTok{img }\OperatorTok{=}\NormalTok{ rxr.open\_rasterio(}\StringTok{\textquotesingle{}RGBNIR\_of\_S2A.tif\textquotesingle{}}\NormalTok{)}
+\CommentTok{\# On ne conserve que les trois premières bandes (rouge, vert, bleu)}
+\NormalTok{img\_rvb }\OperatorTok{=}\NormalTok{ img.sel(band}\OperatorTok{=}\NormalTok{[}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{])}
+\NormalTok{img\_rvb.rio.to\_raster(}\StringTok{\textquotesingle{}RGBNIR\_rvb.tif\textquotesingle{}}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Image exportée :"}\NormalTok{, }\BuiltInTok{tuple}\NormalTok{(img\_rvb.sizes.values()))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Image exportée : (3, 1926, 2074)
+\end{verbatim}
 
 \subsection{Changement de projection cartographique (à
 venir)}\label{changement-de-projection-cartographique-uxe0-venir}
@@ -1896,6 +2578,293 @@ métadonnées.
 \caption{\label{fig-xarray}Organisation d'un Dataset dans xarray}
 
 \end{figure}%
+
+\subsubsection{Exemple avec rioxarray}\label{exemple-avec-rioxarray}
+
+\texttt{rioxarray} ouvre un GeoTIFF directement comme un
+\texttt{DataArray} étiqueté : ses dimensions (\texttt{band}, \texttt{y},
+\texttt{x}), ses coordonnées et sa géoréférence sont accessibles via
+l'accesseur \texttt{.rio}. On peut alors sélectionner une bande par son
+étiquette plutôt que par un numéro d'axe :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ rioxarray }\ImportTok{as}\NormalTok{ rxr}
+
+\NormalTok{img }\OperatorTok{=}\NormalTok{ rxr.open\_rasterio(}\StringTok{\textquotesingle{}RGBNIR\_of\_S2A.tif\textquotesingle{}}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Dimensions :"}\NormalTok{, }\BuiltInTok{dict}\NormalTok{(img.sizes))}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Système de coordonnées :"}\NormalTok{, img.rio.crs)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Résolution (m) :"}\NormalTok{, img.rio.resolution())}
+
+\CommentTok{\# Sélection de la bande proche{-}infrarouge (bande 4) par son étiquette}
+\NormalTok{pir }\OperatorTok{=}\NormalTok{ img.sel(band}\OperatorTok{=}\DecValTok{4}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Bande PIR — forme :"}\NormalTok{, pir.shape, }\StringTok{"| valeur maximale :"}\NormalTok{, }\BuiltInTok{int}\NormalTok{(pir.}\BuiltInTok{max}\NormalTok{()))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Dimensions : {'band': 4, 'y': 1926, 'x': 2074}
+Système de coordonnées : EPSG:32618
+Résolution (m) : (10.0, -10.0)
+Bande PIR — forme : (1926, 2074) | valeur maximale : 15642
+\end{verbatim}
+
+\section{Quiz}\label{quiz-1}
+
+Utilisez la version html.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item
+  \textbf{Quelle bibliothèque rassemble la plupart des formats
+  matriciels en géomatique et permet de les lire et de les écrire ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    NumPy
+  \item
+    GDAL
+  \item
+    Matplotlib
+  \item
+    Pandas
+  \end{itemize}
+
+  Relisez au besoin la section « Importation d'images ».
+\item
+  \textbf{Les formats RVB grand public (JPEG, PNG) supportent
+  généralement plus de trois bandes.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Vrai
+  \item
+    Faux
+  \end{itemize}
+
+  Relisez au besoin la section « Formats des images » : ces formats se
+  limitent à trois bandes (RVB).
+\item
+  \textbf{Parmi les caractéristiques suivantes d'une image, lesquelles
+  distinguent les différents formats ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    La matrice des pixels
+  \item
+    La dynamique (le type de stockage des valeurs)
+  \item
+    Le nombre de bandes
+  \item
+    La métadonnée (dont la géoréférence)
+  \end{itemize}
+
+  Relisez au besoin la section « Importation d'images » : quatre
+  caractéristiques principales.
+\item
+  \textbf{Quelle est la plage de valeurs d'un pixel de type
+  \texttt{uint8} ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    de -128 à 127
+  \item
+    de 0 à 255
+  \item
+    de 0 à 65535
+  \item
+    de 0 à 1
+  \end{itemize}
+
+  Relisez au besoin le tableau des types de données NumPy
+  (tableau~\ref{tbl-numpytype}).
+\item
+  \textbf{Dans quel ordre la fonction \texttt{cv2.imread} d'OpenCV
+  renvoie-t-elle les canaux ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    RGB (rouge, vert, bleu)
+  \item
+    BGR (bleu, vert, rouge)
+  \item
+    En niveaux de gris
+  \item
+    CMJN
+  \end{itemize}
+
+  Relisez au besoin la section « Lecture avec la librairie OpenCV ».
+\item
+  \textbf{Pour une matrice NumPy \texttt{img}, quel attribut donne son
+  type de stockage (par ex. \texttt{uint8}) ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    img.shape
+  \item
+    img.ndim
+  \item
+    img.dtype
+  \item
+    img.size
+  \end{itemize}
+
+  Relisez au besoin la section « Information de base ».
+\item
+  \textbf{Que sélectionne le découpage \texttt{matrice{[}:,\ 2,\ :{]}}
+  ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    La deuxième ligne
+  \item
+    La troisième colonne (indice 2), toutes bandes comprises
+  \item
+    La bande numéro 2
+  \item
+    Un seul pixel
+  \end{itemize}
+
+  Relisez au besoin la section « Découpage et indexation de la matrice »
+  : les indices commencent à 0.
+\item
+  \textbf{Quels avantages \texttt{xarray} / \texttt{rioxarray}
+  apportent-ils par rapport à un simple tableau NumPy ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Des dimensions nommées (band, y, x)
+  \item
+    La sélection par étiquette avec \texttt{.sel}
+  \item
+    L'accès à la géoréférence via l'accesseur \texttt{.rio}
+  \item
+    L'augmentation automatique de la résolution spatiale
+  \end{itemize}
+
+  Relisez au besoin la section « Données en géoscience ».
+\item
+  \textbf{Quel format est un GeoTIFF optimisé pour un accès partiel via
+  HTTP (infonuagique) ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    JPEG
+  \item
+    COG (Cloud Optimized GeoTIFF)
+  \item
+    PNG
+  \item
+    HDF5
+  \end{itemize}
+
+  Relisez au besoin la section « Le format COG ».
+\end{itemize}
+
+\textbf{Réponses}
+
+\begin{itemize}
+\tightlist
+\item
+  Quelle bibliothèque rassemble la plupart des formats matriciels en
+  géomatique et permet de les lire et de les écrire ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    GDAL
+  \end{itemize}
+\item
+  Les formats RVB grand public (JPEG, PNG) supportent généralement plus
+  de trois bandes.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Faux
+  \end{itemize}
+\item
+  Parmi les caractéristiques suivantes d'une image, lesquelles
+  distinguent les différents formats ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    La matrice des pixels
+  \item
+    La dynamique (le type de stockage des valeurs)
+  \item
+    Le nombre de bandes
+  \item
+    La métadonnée (dont la géoréférence)
+  \end{itemize}
+\item
+  Quelle est la plage de valeurs d'un pixel de type \texttt{uint8} ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    de 0 à 255
+  \end{itemize}
+\item
+  Dans quel ordre la fonction \texttt{cv2.imread} d'OpenCV
+  renvoie-t-elle les canaux ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    BGR (bleu, vert, rouge)
+  \end{itemize}
+\item
+  Pour une matrice NumPy \texttt{img}, quel attribut donne son type de
+  stockage (par ex. \texttt{uint8}) ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    img.dtype
+  \end{itemize}
+\item
+  Que sélectionne le découpage \texttt{matrice{[}:,\ 2,\ :{]}} ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    La troisième colonne (indice 2), toutes bandes comprises
+  \end{itemize}
+\item
+  Quels avantages \texttt{xarray} / \texttt{rioxarray} apportent-ils par
+  rapport à un simple tableau NumPy ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Des dimensions nommées (band, y, x)
+  \item
+    La sélection par étiquette avec \texttt{.sel}
+  \item
+    L'accès à la géoréférence via l'accesseur \texttt{.rio}
+  \end{itemize}
+\item
+  Quel format est un GeoTIFF optimisé pour un accès partiel via HTTP
+  (infonuagique) ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    COG (Cloud Optimized GeoTIFF)
+  \end{itemize}
+\end{itemize}
 
 \bookmarksetup{startatroot}
 
@@ -2764,7 +3733,7 @@ suivante:
 \end{Shaded}
 
 \begin{verbatim}
-SpectralIndices(['AFRI1600', 'AFRI2100', 'ANDWI', 'ARI', 'ARI2', 'ARVI', 'ATSAVI', 'AVI', 'AWEInsh', 'AWEIsh', 'BAI', 'BAIM', 'BAIS2', 'BCC', 'BI', 'BITM', 'BIXS', 'BLFEI', 'BNDVI', 'BRBA', 'BWDRVI', 'BaI', 'CCI', 'CIG', 'CIRE', 'CRI550', 'CRI700', 'CRSWIR', 'CSI', 'CSIT', 'CVI', 'DBI', 'DBSI', 'DPDD', 'DSI', 'DSWI1', 'DSWI2', 'DSWI3', 'DSWI4', 'DSWI5', 'DVI', 'DVIplus', 'DpRVIHH', 'DpRVIVV', 'EBBI', 'EBI', 'EMBI', 'ENDVI', 'EVI', 'EVI2', 'EVIv', 'ExG', 'ExGR', 'ExR', 'FAI', 'FCVI', 'FDI', 'FWEI', 'GARI', 'GBNDVI', 'GCC', 'GDVI', 'GEMI', 'GLI', 'GM1', 'GM2', 'GNDVI', 'GOSAVI', 'GRNDVI', 'GRVI', 'GSAVI', 'GVMI', 'IAVI', 'IBI', 'IKAW', 'IPVI', 'IRECI', 'IRGBVI', 'LSWI', 'MBI', 'MBWI', 'MCARI', 'MCARI1', 'MCARI2', 'MCARI705', 'MCARIOSAVI', 'MCARIOSAVI705', 'MGRVI', 'MI', 'MIRBI', 'MLSWI26', 'MLSWI27', 'MNDVI', 'MNDWI', 'MNLI', 'MRBVI', 'MSAVI', 'MSI', 'MSR', 'MSR705', 'MTCI', 'MTVI1', 'MTVI2', 'MVI', 'MuWIR', 'NBAI', 'NBLI', 'NBLIOLI', 'NBR', 'NBR2', 'NBRSWIR', 'NBRT1', 'NBRT2', 'NBRT3', 'NBRplus', 'NBSIMS', 'NBUI', 'ND705', 'NDBI', 'NDBaI', 'NDCI', 'NDDI', 'NDGI', 'NDGlaI', 'NDII', 'NDISIb', 'NDISIg', 'NDISImndwi', 'NDISIndwi', 'NDISIr', 'NDMI', 'NDPI', 'NDPolI', 'NDPonI', 'NDREI', 'NDSI', 'NDSII', 'NDSIWV', 'NDSInw', 'NDSWIR', 'NDSaII', 'NDSoI', 'NDTI', 'NDTI4RE', 'NDTillI', 'NDVI', 'NDVI4RE', 'NDVI705', 'NDVIMNDWI', 'NDVIT', 'NDWI', 'NDWIns', 'NDYI', 'NGRDI', 'NHFD', 'NIRv', 'NIRvH2', 'NIRvP', 'NLI', 'NMDI', 'NPCI', 'NRFIg', 'NRFIr', 'NSDS', 'NSDSI1', 'NSDSI2', 'NSDSI3', 'NSTv1', 'NSTv2', 'NWI', 'NormG', 'NormNIR', 'NormR', 'OCVI', 'OSAVI', 'OSI', 'PI', 'PISI', 'PSRI', 'QpRVI', 'RCC', 'RDVI', 'REDSI', 'RENDVI', 'RFDI', 'RGBVI', 'RGRI', 'RI', 'RI4XS', 'RNDVI', 'RVI', 'RVI4RE', 'S2REP', 'S2WI', 'S3', 'SARVI', 'SAVI', 'SAVI2', 'SAVI4RE', 'SAVIT', 'SEVI', 'SI', 'SIPI', 'SLAVI', 'SNDTI', 'SNDTI4RE', 'SR', 'SR2', 'SR3', 'SR555', 'SR705', 'STI', 'STI4RE', 'SWI', 'SWM', 'SeLI', 'TCARI', 'TCARIOSAVI', 'TCARIOSAVI705', 'TCI', 'TDVI', 'TGI', 'TRRVI', 'TSAVI', 'TTVI', 'TVI', 'TWI', 'TriVI', 'UI', 'VARI', 'VARI700', 'VDDPI', 'VHVVD', 'VHVVP', 'VHVVR', 'VI6T', 'VI700', 'VIBI', 'VIG', 'VVVHD', 'VVVHR', 'VVVHS', 'VgNIRBI', 'VrNIRBI', 'WDRVI', 'WDVI', 'WI1', 'WI2', 'WI2015', 'WRI', 'bNIRv', 'kEVI', 'kIPVI', 'kNDVI', 'kRVI', 'kVARI', 'mND705', 'mSR705', 'sNIRvLSWI', 'sNIRvNDPI', 'sNIRvNDVILSWIP', 'sNIRvNDVILSWIS', 'sNIRvSWIR'])
+SpectralIndices(['AFRI1600', 'AFRI2100', 'ANDWI', 'ARI', 'ARI2', 'ARVI', 'ATSAVI', 'AVI', 'AWEInsh', 'AWEIsh', 'AshburnVI', 'BAI', 'BAIM', 'BAIS2', 'BCC', 'BI', 'BITM', 'BIXS', 'BLFEI', 'BNDVI', 'BRBA', 'BWDRVI', 'BaI', 'CCI', 'CI1SWIR', 'CI1woSWIR', 'CI2SWIR', 'CI2woSWIR', 'CIG', 'CIRE', 'CLOSDI', 'CRI550', 'CRI700', 'CRSWIR', 'CSI', 'CSISWIR', 'CSIT', 'CSIwoSWIR', 'CVI', 'DBI', 'DBSI', 'DPDD', 'DSI', 'DSWI1', 'DSWI2', 'DSWI3', 'DSWI4', 'DSWI5', 'DVI', 'DVIplus', 'DpRVIHH', 'DpRVIVV', 'EBBI', 'EBI', 'EMBI', 'ENDVI', 'EVI', 'EVI2', 'EVIv', 'ExG', 'ExGR', 'ExR', 'FAI', 'FCVI', 'FDI', 'FWEI', 'GARI', 'GBNDVI', 'GCC', 'GDVI', 'GEMI', 'GLI', 'GM1', 'GM2', 'GNDVI', 'GOSAVI', 'GRNDVI', 'GRVI', 'GSAVI', 'GVMI', 'IAVI', 'IBI', 'IKAW', 'IPVI', 'IRECI', 'IRGBVI', 'KDI', 'LSWI', 'MBI', 'MBWI', 'MCARI', 'MCARI1', 'MCARI2', 'MCARI705', 'MCARIOSAVI', 'MCARIOSAVI705', 'MGRVI', 'MI', 'MIRBI', 'MLSWI26', 'MLSWI27', 'MNDVI', 'MNDWI', 'MNLI', 'MRBVI', 'MSAVI', 'MSI', 'MSR', 'MSR705', 'MTCI', 'MTVI1', 'MTVI2', 'MVI', 'MuWIR', 'NBAI', 'NBLI', 'NBLIOLI', 'NBR', 'NBR2', 'NBRSWIR', 'NBRT1', 'NBRT2', 'NBRT3', 'NBRplus', 'NBSIMS', 'NBUI', 'ND705', 'NDBI', 'NDBaI', 'NDCI', 'NDDI', 'NDGI', 'NDGlaI', 'NDII', 'NDISIb', 'NDISIg', 'NDISImndwi', 'NDISIndwi', 'NDISIr', 'NDMI', 'NDPI', 'NDPolI', 'NDPonI', 'NDREI', 'NDSI', 'NDSII', 'NDSIITM', 'NDSIWV', 'NDSInw', 'NDSWIR', 'NDSaII', 'NDSoI', 'NDTI', 'NDTI4RE', 'NDTillI', 'NDVI', 'NDVI4RE', 'NDVI705', 'NDVIMNDWI', 'NDVIT', 'NDWI', 'NDWIns', 'NDYI', 'NGRDI', 'NHFD', 'NIRv', 'NIRvH2', 'NIRvP', 'NLI', 'NMDI', 'NPCI', 'NRFIg', 'NRFIr', 'NSDS', 'NSDSI1', 'NSDSI2', 'NSDSI3', 'NSTv1', 'NSTv2', 'NWI', 'NormG', 'NormNIR', 'NormR', 'OCVI', 'OSAVI', 'OSI', 'PI', 'PISI', 'PSRI', 'QpRVI', 'RCC', 'RDVI', 'REDSI', 'RENDVI', 'RFDI', 'RGBVI', 'RGRI', 'RI', 'RI4XS', 'RNDVI', 'RVI', 'RVI4RE', 'RWI', 'S2REP', 'S2WI', 'S3', 'SARVI', 'SAVI', 'SAVI2', 'SAVI4RE', 'SAVIT', 'SCoWI', 'SEVI', 'SI', 'SIPI', 'SLAVI', 'SNDTI', 'SNDTI4RE', 'SR', 'SR2', 'SR3', 'SR555', 'SR705', 'SRVI', 'SRWI', 'STI', 'STI4RE', 'SWI', 'SWM', 'SeLI', 'TCARI', 'TCARIOSAVI', 'TCARIOSAVI705', 'TCI', 'TDVI', 'TGI', 'TRRVI', 'TSAVI', 'TTVI', 'TVI', 'TWI', 'TriVI', 'UI', 'VARI', 'VARI700', 'VDDPI', 'VHVVD', 'VHVVP', 'VHVVR', 'VI6T', 'VI700', 'VIBI', 'VIG', 'VVVHD', 'VVVHR', 'VVVHS', 'VgNIRBI', 'VrNIRBI', 'WCI1', 'WCI2', 'WDRVI', 'WDVI', 'WI1', 'WI2', 'WI2015', 'WRI', 'bNIRv', 'kEVI', 'kIPVI', 'kNDVI', 'kRVI', 'kVARI', 'mND705', 'mSR705', 'sNIRvLSWI', 'sNIRvNDPI', 'sNIRvNDVILSWIP', 'sNIRvNDVILSWIS', 'sNIRvSWIR'])
 \end{verbatim}
 
 Le détail d'un indice particulier, par exemple le `NDVI`, est aussi
@@ -2923,7 +3892,7 @@ classes}
 
 \end{figure}%
 
-\section{Quiz}\label{quiz}
+\section{Quiz}\label{quiz-2}
 
 Utilisez la version html.
 
@@ -2931,41 +3900,77 @@ Utilisez la version html.
 
 \begin{itemize}
 \item
-  \textbf{Parmi les matrices de pondération spatiale ci-dessous,
-  lesquelles sont des matrices de contiguïté?}
+  \textbf{Que caractérise la signature spectrale d'une surface ?}
 
   \begin{itemize}
   \tightlist
   \item
-    Partage d'un nœud
+    Sa température
   \item
-    Partage d'un segment
+    Le type de matériau observé et son état
   \item
-    Partage d'un nœud et ordre d'adjacence
+    Sa position géographique
   \item
-    Partage d'un segment et ordre d'adjacence
-  \item
-    Connectivité selon la distance
+    Sa taille en pixels
   \end{itemize}
 
-  Relisez au besoin la \textbf{?@sec-012}.
+  Relisez au besoin la section « Qu'est ce que l'information spectrale?
+  ».
 \item
-  \textbf{En anglais, comment est appelée une matrice selon le partage
-  d'un nœud?}
+  \textbf{Combien de bandes spectrales un capteur hyperspectral peut-il
+  contenir ?}
 
   \begin{itemize}
   \tightlist
   \item
-    Rook
+    Exactement 3 bandes
   \item
-    Queen
+    Une dizaine de bandes
+  \item
+    Des centaines de bandes
+  \item
+    Une seule bande
   \end{itemize}
 
-  Relisez au besoin le début de la \textbf{?@sec-012}.
+  Relisez au besoin la section « Qu'est ce que l'information spectrale?
+  ».
 \item
-  \textbf{Comparativement à une matrice de l'inverse de la distance, une
-  matrice de l'inverse de la distance au carré accorde un poids plus
-  important aux entités proches.}
+  \textbf{Quelle bibliothèque Python donne accès à plus de 200 indices
+  spectraux ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    NumPy
+  \item
+    spyndex (Awesome Spectral Indices)
+  \item
+    rasterio
+  \item
+    xarray
+  \end{itemize}
+
+  Relisez au besoin la section « Indices spectraux ».
+\item
+  \textbf{Dans la nomenclature de \texttt{spyndex}, quelle lettre
+  désigne la bande du proche-infrarouge ?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    R
+  \item
+    G
+  \item
+    N
+  \item
+    S1
+  \end{itemize}
+
+  Relisez au besoin le tableau des noms de bandes Sentinel-2.
+\item
+  \textbf{Le NDVI se calcule à partir des bandes rouge et
+  proche-infrarouge.}
 
   \begin{itemize}
   \tightlist
@@ -2975,86 +3980,76 @@ Utilisez la version html.
     Faux
   \end{itemize}
 
-  Relisez au besoin la \textbf{?@sec-01222}.
+  NDVI = (PIR - Rouge) / (PIR + Rouge).
 \item
-  \textbf{Quels sont les avantages de la standardisation en ligne des
-  matrices de pondération spatiale?}
+  \textbf{À quoi sert un indice spectral ?}
 
   \begin{itemize}
   \tightlist
   \item
-    La somme de chaque ligne est égale à 1.
+    Mettre en valeur certaines caractéristiques du spectre (pentes,
+    gradients)
   \item
-    La somme de l'ensemble de la matrice est égale au nombre d'entités
-    spatiales.
+    Améliorer la séparabilité de certaines classes d'intérêt
   \item
-    La standardisation permet de comparer la dépendance spatiale selon
-    différentes matrices.
+    Augmenter la résolution spatiale de l'image
   \item
-    La standardisation augmente la vitesse des calculs.
+    Corriger la géométrie de l'image
   \end{itemize}
 
-  Relisez au besoin la \textbf{?@sec-0123}.
+  Relisez au besoin la section « Indices spectraux ».
 \item
-  \textbf{Avec une matrice standardisée, la statistique du I de Moran
-  varie théoriquement de :}
+  \textbf{Quelle fonction de \texttt{spyndex} calcule un indice à partir
+  des bandes ?}
 
   \begin{itemize}
   \tightlist
   \item
-    de -1 à 1
+    spyndex.indices
   \item
-    de 0 à 100
+    spyndex.computeIndex
   \item
-    de moins l'infini à plus l'infini
+    spyndex.bands
+  \item
+    spyndex.plot
   \end{itemize}
 
-  Relisez au besoin la \textbf{?@sec-0142}.
+  Relisez au besoin la section « Indices spectraux ».
 \item
-  \textbf{Quelles sont les trois manières de tester la significativité
-  du I de Moran?}
+  \textbf{La signature spectrale peut être vue comme :}
 
   \begin{itemize}
   \tightlist
   \item
-    Avec l'hypothèse de la normalité
+    Une généralisation de la couleur au-delà des bandes visibles
   \item
-    En relançant plusieurs fois les calculs
+    Un histogramme des pixels de l'image
   \item
-    Avec l'hypothèse de la randomisation
+    La résolution spatiale du capteur
   \item
-    Avec la méthode Monte-Carlo (habituellement avec 999 échantillons)
+    Le niveau de bruit du capteur
   \end{itemize}
 
-  Relisez au besoin la \textbf{?@sec-0143}.
+  Relisez au besoin la section « Qu'est ce que l'information spectrale?
+  ».
 \item
-  \textbf{Comment mesurer la dépendance spatiale d'un modèle MCO?}
+  \textbf{Quel organisme maintient une base de données de signatures
+  spectrales acquises en laboratoire ?}
 
   \begin{itemize}
   \tightlist
   \item
-    En analysant le R2
+    La NASA
   \item
-    En calculant le I de Moran sur les résidus du modèle
+    L'USGS
   \item
-    En simulant des variables spatiales
+    L'ESA
+  \item
+    L'OGC
   \end{itemize}
 
-  Relisez au besoin la \textbf{?@sec-0171}.
-\item
-  \textbf{Quel est le synonyme de l'hétérogénéité spatiale?}
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Non-stationnarité
-  \item
-    Variation spatiale
-  \item
-    Corrélation spatiale
-  \end{itemize}
-
-  Relisez au besoin la \textbf{?@sec-0172}.
+  Relisez au besoin la section « Qu'est ce que l'information spectrale?
+  ».
 \end{itemize}
 
 \textbf{Réponses}
@@ -3062,33 +4057,42 @@ Utilisez la version html.
 \begin{itemize}
 \tightlist
 \item
-  Parmi les matrices de pondération spatiale ci-dessous, lesquelles sont
-  des matrices de contiguïté?
+  Que caractérise la signature spectrale d'une surface ?
 
   \begin{itemize}
   \tightlist
   \item
-    Partage d'un nœud
-  \item
-    Partage d'un segment
-  \item
-    Partage d'un nœud et ordre d'adjacence
-  \item
-    Partage d'un segment et ordre d'adjacence
+    Le type de matériau observé et son état
   \end{itemize}
 \item
-  En anglais, comment est appelée une matrice selon le partage d'un
-  nœud?
+  Combien de bandes spectrales un capteur hyperspectral peut-il contenir
+  ?
 
   \begin{itemize}
   \tightlist
   \item
-    Queen
+    Des centaines de bandes
   \end{itemize}
 \item
-  Comparativement à une matrice de l'inverse de la distance, une matrice
-  de l'inverse de la distance au carré accorde un poids plus important
-  aux entités proches.
+  Quelle bibliothèque Python donne accès à plus de 200 indices spectraux
+  ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    spyndex (Awesome Spectral Indices)
+  \end{itemize}
+\item
+  Dans la nomenclature de \texttt{spyndex}, quelle lettre désigne la
+  bande du proche-infrarouge ?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    N
+  \end{itemize}
+\item
+  Le NDVI se calcule à partir des bandes rouge et proche-infrarouge.
 
   \begin{itemize}
   \tightlist
@@ -3096,57 +4100,41 @@ Utilisez la version html.
     Vrai
   \end{itemize}
 \item
-  Quels sont les avantages de la standardisation en ligne des matrices
-  de pondération spatiale?
+  À quoi sert un indice spectral ?
 
   \begin{itemize}
   \tightlist
   \item
-    La somme de chaque ligne est égale à 1.
+    Mettre en valeur certaines caractéristiques du spectre (pentes,
+    gradients)
   \item
-    La somme de l'ensemble de la matrice est égale au nombre d'entités
-    spatiales.
-  \item
-    La standardisation permet de comparer la dépendance spatiale selon
-    différentes matrices.
+    Améliorer la séparabilité de certaines classes d'intérêt
   \end{itemize}
 \item
-  Avec une matrice standardisée, la statistique du I de Moran varie
-  théoriquement de :
+  Quelle fonction de \texttt{spyndex} calcule un indice à partir des
+  bandes ?
 
   \begin{itemize}
   \tightlist
   \item
-    de -1 à 1
+    spyndex.computeIndex
   \end{itemize}
 \item
-  Quelles sont les trois manières de tester la significativité du I de
-  Moran?
+  La signature spectrale peut être vue comme :
 
   \begin{itemize}
   \tightlist
   \item
-    Avec l'hypothèse de la normalité
-  \item
-    Avec l'hypothèse de la randomisation
-  \item
-    Avec la méthode Monte-Carlo (habituellement avec 999 échantillons)
+    Une généralisation de la couleur au-delà des bandes visibles
   \end{itemize}
 \item
-  Comment mesurer la dépendance spatiale d'un modèle MCO?
+  Quel organisme maintient une base de données de signatures spectrales
+  acquises en laboratoire ?
 
   \begin{itemize}
   \tightlist
   \item
-    En calculant le I de Moran sur les résidus du modèle
-  \end{itemize}
-\item
-  Quel est le synonyme de l'hétérogénéité spatiale?
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Non-stationnarité
+    L'USGS
   \end{itemize}
 \end{itemize}
 
