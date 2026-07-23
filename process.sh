@@ -44,6 +44,7 @@ q bash -lc 'command -v marimo >/dev/null 2>&1' && HAVE_MARIMO=1 || true
 # 4. Export chapters -> ipynb (+marimo if available), stash under notebooks/
 for ch in "${CHAPTERS[@]}"; do
   q quarto convert "$ch.qmd"
+  q python3 clean_notebooks.py "$ch.ipynb"
   [ "$HAVE_MARIMO" = 1 ] && q marimo convert "$ch.ipynb" -o "./marimo/$ch.py"
   mv -f "$ch.ipynb" ./notebooks/
 done
@@ -51,6 +52,7 @@ done
 # 5. Aux pages: export and stash under notebooks/
 for ch in "${AUX[@]}"; do
   q quarto convert "$ch.qmd"
+  q python3 clean_notebooks.py "$ch.ipynb"
   mv -f "$ch.ipynb" ./notebooks/
 done
 
