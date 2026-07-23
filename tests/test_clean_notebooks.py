@@ -33,3 +33,25 @@ class TestStripCellDirectives(unittest.TestCase):
     def test_all_directives_becomes_empty(self):
         lines = ["#| label: tbl-x\n", "#| tbl-cap: \"T\"\n"]
         self.assertEqual(strip_cell_directives(lines), [])
+
+
+from clean_notebooks import strip_yaml_header
+
+
+class TestStripYamlHeader(unittest.TestCase):
+    def test_header_only_cell(self):
+        lines = ["---\n", "jupyter: python3\n", "eval: false\n", "---"]
+        self.assertEqual(strip_yaml_header(lines), [])
+
+    def test_header_then_content(self):
+        lines = ["---\n", "jupyter: python3\n", "---\n", "\n", "# Titre\n", "texte\n"]
+        self.assertEqual(strip_yaml_header(lines), ["# Titre\n", "texte\n"])
+
+    def test_no_header_unchanged(self):
+        lines = ["# Titre\n", "texte\n"]
+        self.assertEqual(strip_yaml_header(lines), ["# Titre\n", "texte\n"])
+
+    def test_horizontal_rule_not_header(self):
+        # a --- not at position 0 is a normal <hr>, must be preserved
+        lines = ["texte\n", "\n", "---\n", "suite\n"]
+        self.assertEqual(strip_yaml_header(lines), ["texte\n", "\n", "---\n", "suite\n"])
