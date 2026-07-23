@@ -55,3 +55,39 @@ class TestStripYamlHeader(unittest.TestCase):
         # a --- not at position 0 is a normal <hr>, must be preserved
         lines = ["texte\n", "\n", "---\n", "suite\n"]
         self.assertEqual(strip_yaml_header(lines), ["texte\n", "\n", "---\n", "suite\n"])
+
+
+from clean_notebooks import iter_blocs_in_markdown
+
+
+class TestIterBlocs(unittest.TestCase):
+    def test_single_bloc_bounds(self):
+        lines = [
+            "intro\n",                       # 0
+            ":::::: bloc_objectif\n",        # 1  open (depth 6)
+            ":::: bloc_objectif-header\n",   # 2
+            "::: bloc_objectif-icon\n",      # 3
+            ":::\n",                          # 4
+            "**Titre**\n",                   # 5
+            "::::\n",                         # 6
+            "::: bloc_objectif-body\n",      # 7
+            "corps\n",                        # 8
+            ":::\n",                          # 9
+            "::::::\n",                        # 10 close (depth 6)
+            "apres\n",                        # 11
+        ]
+        self.assertEqual(iter_blocs_in_markdown(lines), [(1, 10, "bloc_objectif")])
+
+    def test_two_blocs(self):
+        lines = [
+            "::: bloc_notes\n", "a\n", ":::\n",
+            "mid\n",
+            "::: bloc_astuce\n", "b\n", ":::\n",
+        ]
+        self.assertEqual(
+            iter_blocs_in_markdown(lines),
+            [(0, 2, "bloc_notes"), (4, 6, "bloc_astuce")],
+        )
+
+    def test_no_bloc(self):
+        self.assertEqual(iter_blocs_in_markdown(["plain\n", "text\n"]), [])

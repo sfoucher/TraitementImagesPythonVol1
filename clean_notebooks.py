@@ -29,3 +29,46 @@ def strip_yaml_header(lines):
                 rest = rest[1:]
             return rest
     return lines  # no closing fence: leave untouched
+
+
+KNOWN_TYPES = (
+    "bloc_objectif", "bloc_package", "bloc_exercice", "bloc_aller_loin",
+    "bloc_attention", "bloc_astuce", "bloc_notes",
+)
+_FENCE = re.compile(r"^(:{3,})\s*(\S*)\s*$")
+
+
+def _fence_info(line):
+    """Return (colon_count, label) for a fence line, or (None, None)."""
+    m = _FENCE.match(line.rstrip("\n"))
+    if not m:
+        return None, None
+    return len(m.group(1)), m.group(2)
+
+
+def iter_blocs_in_markdown(lines):
+    """Find top-level bloc regions. Returns list of (start, end, type)."""
+    regions = []
+    i = 0
+    n = len(lines)
+    while i < n:
+        colons, label = _fence_info(lines[i])
+        if colons and label in KNOWN_TYPES:
+            # find matching close: same colon count, empty label, tracking nesting
+            depth = 1
+            j = i + 1
+            while j < n:
+                c, lab = _fence_info(lines[j])
+                if c:
+                    if lab:            # an opening fence (has a label)
+                        depth += 1
+                    else:              # a closing fence (bare :::)
+                        depth -= 1
+                        if depth == 0:
+                            break
+                j += 1
+            regions.append((i, j, label))
+            i = j + 1
+        else:
+            i += 1
+    return regions
