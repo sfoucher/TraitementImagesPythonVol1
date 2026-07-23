@@ -1,0 +1,77 @@
+- label: "Quelle structure de données Python n'autorise **pas** les doublons ?"
+  type: uc
+  response: 3
+  answers:
+     - "La liste"
+     - "Le tuple"
+     - "L'ensemble (set)"
+     - "Le dictionnaire"
+  help: "Relisez au besoin la section « Les ensembles (Sets) »."
+
+- label: "Les tuples peuvent être modifiés après leur création."
+  type: uc
+  response: 2
+  answers:
+     - "Vrai"
+     - "Faux"
+  help: "Relisez au besoin la section « Les tuples » : un tuple est immuable."
+
+- label: "Comment accède-t-on à la valeur associée à la clé `\"capteur\"` d'un dictionnaire nommé `image` ?"
+  type: uc
+  response: 2
+  answers:
+     - "image(\"capteur\")"
+     - "image[\"capteur\"]"
+     - "image.capteur"
+     - "image{\"capteur\"}"
+  help: "Relisez au besoin la section « Dictionnaires »."
+
+- label: "Parmi les affirmations suivantes sur les listes Python, lesquelles sont vraies ?"
+  type: mc
+  response: [1, 2, 3]
+  answers:
+     - "Elles sont ordonnées."
+     - "Elles sont modifiables (*mutable*)."
+     - "Elles autorisent les doublons."
+     - "Elles sont délimitées par des accolades `{}`."
+  help: "Relisez au besoin la section « Les listes »."
+
+- label: "Quel mot-clé permet de définir une fonction en Python ?"
+  type: uc
+  response: 2
+  answers:
+     - "func"
+     - "def"
+     - "function"
+     - "return"
+  help: "Relisez au besoin la section « Les fonctions »."
+
+- label: "Que renvoie l'expression `[1, 2, 3][-1]` ?"
+  type: uc
+  response: 2
+  answers:
+     - "1"
+     - "3"
+     - "[3]"
+     - "une erreur"
+  help: "L'indice -1 désigne le dernier élément. Voir la section « Les listes »."
+
+- label: "Pour un tableau NumPy `image`, quel attribut donne ses dimensions (lignes, colonnes) ?"
+  type: uc
+  response: 3
+  answers:
+     - "image.size"
+     - "image.length"
+     - "image.shape"
+     - "image.dim"
+  help: "Relisez au besoin la [section @sec-00-02]."
+
+- label: "Pourquoi utiliser un environnement virtuel (`conda` ou `venv`) ?"
+  type: mc
+  response: [1, 2]
+  answers:
+     - "Pour isoler les bibliothèques de chaque projet."
+     - "Pour éviter les conflits entre versions de bibliothèques."
+     - "Pour accélérer l'exécution du code Python."
+     - "Pour remplacer l'interpréteur Python."
+  help: "Relisez au besoin la [section @sec-00-01]."

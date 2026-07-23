@@ -20,9 +20,16 @@ Dans ce chapitre, nous présentons quelques éléments essentiels du langage Pyt
 
 -   connaître les principales distributions de Python;
 -   installer un environnement d'exécution du code de cet ouvrage;
--   comprendre les structures de base du langage Python;
+-   comprendre les structures de base du langage Python (listes, tuples, ensembles, dictionnaires);
+-   écrire des boucles, des conditions et des fonctions;
+-   aborder la programmation orientée objet;
+-   manipuler un tableau `NumPy`.
 :::
 ::::::
+
+Ce chapitre est aussi disponible sous la forme d'un notebook Python sur Google Colab :
+
+[![](images/colab.png)](https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/00-PriseEnMainPython.ipynb)
 
 Python, créé par [Guido van Rossum](https://en.wikipedia.org/wiki/Guido_van_Rossum) en 1991, est un langage de programmation polyvalent et facile à apprendre, souvent comparé à un couteau suisse numérique pour sa simplicité et sa polyvalence. Comme un outil multifonction, Python peut être utilisé pour une variété de tâches, du développement web à l'analyse de données, en passant par l'intelligence artificielle.
 
@@ -30,15 +37,14 @@ Python, créé par [Guido van Rossum](https://en.wikipedia.org/wiki/Guido_van_Ro
 
 Il existe plusieurs [distributions](https://wiki.python.org/moin/PythonDistributions) du langage Python, ces distributions sont comme différentes saveurs de votre glace préférée - chacune a ses propres caractéristiques uniques, mais elles sont toutes fondamentalement Python. Voici un aperçu des principales distributions :
 
--   [CPython](https://www.python.org/downloads/) est la distribution "vanille" officielle, comme la recette originale de Python. Elle est ainsi le choix idéal pour la compatibilité et la conformité aux standards.
+| Distribution | Description | Idéale pour |
+|---|---|---|
+| [CPython](https://www.python.org/downloads/) | L'implémentation officielle « vanille » | La compatibilité et la conformité aux standards |
+| [Anaconda](https://www.anaconda.com/download) | Livrée avec de nombreuses bibliothèques scientifiques | L'analyse de données et l'apprentissage automatique (*machine learning*) |
+| [Miniconda](https://docs.anaconda.com/miniconda/miniconda-install/) | Version légère ; on ajoute les bibliothèques au besoin | Un environnement minimal et contrôlé |
+| [PyPy](https://pypy.org/) | Implémentation optimisée pour la vitesse d'exécution | Les programmes gourmands en calcul |
 
--   [Anaconda](https://www.anaconda.com/download). Pensez-y comme à un sundae tout garni. Elle vient avec de nombreuses bibliothèques scientifiques préinstallées, ce qui est idéal pour l'analyse de données et l'apprentissage automatique (*machine learning*).
-
--   [Miniconda](https://docs.anaconda.com/miniconda/miniconda-install/) est une distribution légère de Python qui vous permet d'ajouter au besoin d'autres bibliothèques.
-
--   [PyPy](https://pypy.org/) : est une version turbo de Python, optimisée pour la vitesse.
-
-Chaque distribution a ses forces, que ce soit la simplicité, la vitesse ou des fonctionnalités spécifiques. Le choix dépend donc de vos besoins, comme choisir entre une glace simple ou une glace royal (banana split) élaboré.
+Chaque distribution a ses forces, que ce soit la simplicité, la vitesse ou des fonctionnalités spécifiques. Le choix dépend donc de vos besoins, comme choisir entre une glace simple ou une glace royale (banana split) élaborée.
 
 ## Les styles de programmation en Python
 
@@ -48,11 +54,11 @@ Il existe plusieurs approches pour programmer en Python. La plus directe est en 
 
 Un code python prend la forme d'un simple fichier texte avec l'extension `.py` et peut être modifié avec un simple éditeur de texte. Cependant, il n'y aura pas de rétroactions immédiates de l'interpréteur Python, ce qui rend la correction d'erreurs (débogage) beaucoup plus laborieux.
 
-Un IDE (*Integrated Developement Environnement*) est comme une boîte à outils complète pour les programmeurs, vous trouverez :
+Un IDE (*Integrated Development Environment*) est comme une boîte à outils complète pour les programmeurs, vous trouverez :
 
 -   Un éditeur de texte amélioré pour écrire votre code, avec des fonctionnalités comme la coloration syntaxique qui rend le code plus lisible.
 
--   Un compilateur qui transforme votre code en instructions que l'ordinateur peut comprendre.
+-   Un interpréteur qui exécute votre code ligne par ligne.
 
 -   Un débogueur pour trouver et corriger les erreurs, tel un détective numérique.
 
@@ -64,25 +70,23 @@ Ces outils intégrés permettent aux développeurs de travailler plus efficaceme
 
 Voici quelques options populaires :
 
--   [PyCharm](https://www.jetbrains.com/pycharm/): est un des outils les plus utilisés dans l'industrie. Il offre une multitude de fonctionnalités comme l'autocomplétion intelligente et le débogage intégré, idéal pour les grands projets. Cependant, cet outil peut être assez gourmand en mémoire et en CPU. Notez qu'il existe une version gratuite et une version professionnelle.
-
--   [Visual Studio Code](https://code.visualstudio.com/) : gratuit, léger mais puissant, il est personnalisable avec des extensions pour Python.
-
--   [Spyder](https://www.spyder-ide.org/) : logiciel libre et gratuit, orienté vers les applications scientifiques.
-
--   [Jupyter Notebooks](https://jupyter.org/) : imaginez un cahier interactif pour le code. Idéal pour l'analyse de données et l'apprentissage, il permet de mélanger code, texte et visualisations. Des services gratuits dans le **cloud** sont disponibles comme Google Colab et Kaggle. Ces environnements sont néanmoins moins appropriés pour des grands projets et le débogage. Jupyter peut souffrir de problèmes de reproductibilité dus à l'exécution arbitraire des cellules.
-
--   [Marimo](https://marimo.io/) se veut une version plus moderne des *notebooks jupyter*. Contrairement à Jupyter, Marimo garantit la cohérence entre le code, les sorties et l'état du programme. Il analyse intelligemment les relations entre les cellules et réexécute automatiquement celles qui sont affectées par des changements, éliminant ainsi les problèmes d'état caché.
+| Outil | Type | Points forts |
+|---|---|---|
+| [PyCharm](https://www.jetbrains.com/pycharm/) | IDE complet | Autocomplétion, débogage intégré ; idéal pour les grands projets (gourmand en ressources) |
+| [Visual Studio Code](https://code.visualstudio.com/) | Éditeur extensible | Gratuit, léger, personnalisable par extensions |
+| [Spyder](https://www.spyder-ide.org/) | IDE scientifique | Libre et gratuit, orienté calcul scientifique |
+| [Jupyter](https://jupyter.org/) | Notebook | Mélange code, texte et visualisations ; gratuit sur Colab/Kaggle (reproductibilité limitée) |
+| [Marimo](https://marimo.io/) | Notebook réactif | Réexécute automatiquement les cellules dépendantes ; évite l'état caché |
 
 ## Bonnes pratiques
 
 Python est un langage très dynamique, qui évolue constamment. Cela pose certains défis pour la gestion du code à long terme. Il est fortement conseillé d'utiliser des environnements virtuels pour gérer vos différentes bibliothèques (*libraries*). Voici quelques bonnes pratiques à suivre :
 
-1.  **N'installez par la toute dernière version de Python** : Il est recommandé d'installer 1 ou 2 version antérieure, par exemple si 3.13 est [la version plus récente](https://www.python.org/downloads/), installer plutôt la version 3.11. Les versions trop récentes peuvent être instables. La version de python désirée peut être spécifiée au moment de la création d'un environnement virtuel (voir plus bas). Vous pouvez afficher la liste des versions de python avec la commande `conda search --full-name python`.
+1.  **N'installez pas la toute dernière version de Python** : Il est recommandé d'installer 1 ou 2 version antérieure, par exemple si 3.13 est [la version plus récente](https://www.python.org/downloads/), installer plutôt la version 3.11. Les versions trop récentes peuvent être instables. La version de python désirée peut être spécifiée au moment de la création d'un environnement virtuel (voir plus bas). Vous pouvez afficher la liste des versions de python avec la commande `conda search --full-name python`.
 
 2.  **N'utilisez pas de version obsolète de Python**. Cela peut sembler contradictoire avec le point précédent mais c'est l'excès inverse. Si vous utilisez une version trop ancienne alors toutes vos librairies cesseront d'évoluer et peuvent devenir obsolètes.
 
-3.  **Utilisez des environnements virtuels**. Pensez-y comme à des compartiments séparées pour chaque projet. Cela évite les conflits entre les différentes versions de bibliothèques (*libraries*)et garde votre système propre. Par exemple, si vous souhaitez vérifier une nouvelle version de Python, utilisez un environnement : `conda create --name test python=3.11`
+3.  **Utilisez des environnements virtuels**. Pensez-y comme à des compartiments séparés pour chaque projet. Cela évite les conflits entre les différentes versions de bibliothèques (*libraries*) et garde votre système propre. Par exemple, si vous souhaitez vérifier une nouvelle version de Python, utilisez un environnement : `conda create --name test python=3.11`
 
 4.  **Vérifiez l'installation**. Après l'installation, ouvrez un terminal et tapez `python --version` pour vous assurer que tout fonctionne correctement.
 
@@ -93,15 +97,16 @@ Il y a deux façons d'installer un environnement virtuel selon votre distributio
 1.  **Option 1**. Vous utilisez [Anaconda](https://www.anaconda.com/download) ou [Miniconda](https://docs.anaconda.com/miniconda/miniconda-install/). La commande `conda` est utilisée pour créer un environnement test avec Python 3.10:
 
 ``` bash
-conda env -n test python=3.10
+conda create -n test python=3.10
 conda activate test
 ```
 
-2.  **Option 2**. Vous utilisez [CPython](https://www.python.org/downloads/)
+2.  **Option 2**. Vous utilisez [CPython](https://www.python.org/downloads/), sans `conda`. Le module `venv` de la bibliothèque standard crée l'environnement et `pip` installe ensuite les bibliothèques :
 
 ``` bash
-conda env -n test python=3.10
-conda activate test
+python -m venv test
+source test/bin/activate       # Windows : test\Scripts\activate
+pip install --upgrade pip
 ```
 
 ### Création d'un environnement de travail local (avancé)
@@ -132,7 +137,7 @@ Une fenêtre devrait alors apparaître dans votre fureteur. Dans le menu de gauc
 
 ## Les structures de base en Python
 
-Il y a essentiellement deux structures de données que Python manipule : les listes et les dictionnaires.
+Python manipule quatre structures de données fondamentales : les listes, les tuples, les ensembles et les dictionnaires.
 
 ### Les listes
 
@@ -146,6 +151,21 @@ Les listes sont comme des boites extensibles où vous pouvez ranger différents 
 
 -   Idéales pour stocker des collections d'éléments que vous voulez modifier
 
+```{python}
+#| eval: true
+# Une liste des bandes spectrales d'une image (analogie télédétection)
+bandes = ["bleu", "vert", "rouge", "PIR"]
+print(bandes[0])          # premier élément
+print(bandes[-1])         # dernier élément
+print(bandes[1:3])        # tranche (slice) : ['vert', 'rouge']
+
+bandes.append("SWIR")     # ajout en fin de liste
+print(len(bandes), "bandes :", bandes)
+
+# Compréhension de liste : transformer chaque élément
+print([b.upper() for b in bandes])
+```
+
 ### Les tuples
 
 Les tuples sont similaires aux listes, mais les boîtes sont scellées:
@@ -157,6 +177,16 @@ Les tuples sont similaires aux listes, mais les boîtes sont scellées:
 -   Permettent les doublons.
 
 -   Souvent utilisés pour stocker des données qui ne doivent pas changer (comme des paramètres).
+
+```{python}
+#| eval: true
+# Les dimensions (lignes, colonnes) d'une image : une donnée qui ne change pas
+dimensions = (512, 512)
+lignes, colonnes = dimensions        # dépaquetage (unpacking)
+print("Lignes :", lignes, "| Colonnes :", colonnes)
+
+# dimensions[0] = 1024   # -> TypeError : un tuple est immuable
+```
 
 ### Les ensembles (Sets)
 
@@ -170,9 +200,21 @@ Les ensembles sont comme des boites magiques qui ne gardent qu'un exemplaire de 
 
 -   Utiles pour éliminer les doublons et effectuer des opérations mathématiques sur des ensembles.
 
+```{python}
+#| eval: true
+# Éliminer les doublons d'une liste de classes d'occupation du sol
+classes = ["eau", "forêt", "eau", "urbain", "forêt"]
+uniques = set(classes)
+print(uniques)
+
+# Opérations ensemblistes
+a, b = {1, 2, 3}, {3, 4}
+print("intersection :", a & b, "| union :", a | b)
+```
+
 ## Dictionnaires
 
-Les dictionnaires sont comme des boites avec des étiquettes sur chcune d'elle :
+Les dictionnaires sont comme des boites avec des étiquettes sur chacune d'elles :
 
 -   Représentés par des accolades avec des paires clé-valeur : `{"nom": "Python", "année": 1991}`.
 
@@ -181,6 +223,65 @@ Les dictionnaires sont comme des boites avec des étiquettes sur chcune d'elle :
 -   Les clés doivent être uniques, mais les valeurs peuvent être dupliquées
 
 -   Utiles pour stocker des données associatives ou pour créer des tables de recherche rapide
+
+```{python}
+#| eval: true
+# Un dictionnaire : les métadonnées d'une image satellite
+image = {"capteur": "Sentinel-2", "bandes": 13, "resolution_m": 10}
+print(image["capteur"])              # accès par clé
+
+image["date"] = "2024-07-01"         # ajout d'une paire clé-valeur
+for cle, valeur in image.items():    # parcours des paires clé-valeur
+    print(f"{cle} : {valeur}")
+```
+
+## Boucles et conditions
+
+Un programme prend des décisions (`if`) et répète des opérations (`for`, `while`). Ces structures de contrôle sont au cœur de tout traitement automatisé.
+
+```{python}
+#| eval: true
+bandes = ["bleu", "vert", "rouge", "PIR"]
+
+# Boucle for : parcourir chaque bande avec son indice
+for i, nom in enumerate(bandes):
+    print(i, nom)
+
+# Condition if / elif / else
+reflectance = 0.42
+if reflectance > 0.5:
+    print("forte réflectance")
+elif reflectance > 0.3:
+    print("réflectance moyenne")
+else:
+    print("faible réflectance")
+
+# Boucle while : tant qu'une condition est vraie
+seuil, valeur = 0.5, 0.1
+while valeur < seuil:
+    valeur += 0.2
+print("valeur finale :", round(valeur, 1))
+```
+
+## Les fonctions
+
+Une fonction regroupe des instructions réutilisables sous un nom. On la définit avec `def` ; elle reçoit des *arguments* et renvoie un résultat avec `return`.
+
+```{python}
+#| eval: true
+def ndvi(nir, rouge):
+    """Indice de végétation NDVI = (PIR - Rouge) / (PIR + Rouge)."""
+    return (nir - rouge) / (nir + rouge)
+
+print(round(ndvi(0.6, 0.2), 3))
+
+# Argument par défaut
+def normaliser(valeur, maximum=255):
+    return valeur / maximum
+
+print(normaliser(128))
+print(normaliser(1000, maximum=4095))   # image 12 bits
+```
 
 ## Programmation objet
 
@@ -195,6 +296,120 @@ Python rend la POO accessible avec des fonctionnalités conviviales:
 3.  **Polymorphisme**: permet à différents objets de répondre au même message de manière unique, comme si différents animaux répondaient différemment à "fais du bruit".
 
 Ces caractéristiques font de Python un excellent choix pour apprendre et appliquer les concepts de la POO, rendant le code plus organisé et réutilisable
+
+```{python}
+#| eval: true
+class Image:
+    """Une classe minimale décrivant une image satellite."""
+
+    def __init__(self, capteur, bandes):   # constructeur
+        self.capteur = capteur              # attributs
+        self.bandes = bandes
+
+    def resume(self):                       # méthode
+        return f"{self.capteur} — {self.bandes} bandes"
+
+img = Image("Landsat-8", 11)
+print(img.resume())
+print(img.capteur)
+```
+
+## Importer des bibliothèques
+
+Python possède une petite bibliothèque standard, mais toute sa puissance vient des *packages* externes (comme NumPy). On les installe une fois avec `pip`, puis on les charge dans un script avec `import`.
+
+``` bash
+pip install numpy          # une seule fois par environnement
+```
+
+```{python}
+#| eval: true
+import numpy as np              # tout le module, sous l'alias np
+from math import pi, sqrt       # seulement certains éléments
+
+print(np.array([1, 2, 3]))
+print(round(pi, 4), sqrt(16))
+```
+
+## Un avant-goût de NumPy {#sec-00-02}
+
+Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque [NumPy](https://numpy.org/) fournit l'objet `ndarray` qui représente efficacement ces tableaux à plusieurs dimensions : c'est la brique de base de tous les chapitres suivants.
+
+```{python}
+#| eval: true
+import numpy as np
+
+# Une petite image à une bande : 3 lignes x 4 colonnes
+image = np.array([[10, 12, 11,  9],
+                  [ 8, 20, 22,  7],
+                  [ 9, 21, 23,  8]])
+
+print("Forme (lignes, colonnes) :", image.shape)
+print("Valeur maximale :", image.max())
+print("Moyenne :", image.mean().round(2))
+
+# Découpage d'une sous-image (2 premières lignes, 2 premières colonnes)
+print(image[:2, :2])
+```
+
+## Points clés
+
+:::::: bloc_notes
+:::: bloc_notes-header
+::: bloc_notes-icon
+:::
+
+**À retenir**
+::::
+
+::: bloc_notes-body
+-   Installez Python via un **environnement virtuel** (`conda` ou `venv`) pour isoler chaque projet.
+-   Quatre structures de base : **listes** (ordonnées, modifiables), **tuples** (immuables), **ensembles** (sans doublons) et **dictionnaires** (paires clé-valeur).
+-   `if`/`for`/`while` contrôlent le déroulement du programme ; les **fonctions** (`def`) regroupent du code réutilisable.
+-   Une image est avant tout un **tableau `NumPy`** : c'est la structure centrale de tout le manuel.
+:::
+::::::
+
+## Exercices
+
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
+
+**À vous de jouer**
+::::
+
+::: bloc_exercice-body
+1.  Créez un dictionnaire `metadonnees` décrivant une image (capteur, nombre de bandes, résolution) puis affichez chaque paire clé-valeur.
+
+2.  À partir du tableau `image` de la @sec-00-02, calculez la valeur **minimale** et l'**écart-type** (`image.std()`), puis extrayez la dernière colonne.
+
+3.  Écrivez une fonction `ratio(a, b)` renvoyant `(a - b) / (a + b)`, et utilisez-la pour un NDVI avec PIR = 0,55 et Rouge = 0,18.
+:::
+::::::
+
+<details>
+<summary>Afficher les solutions</summary>
+
+``` python
+# 1. Dictionnaire de métadonnées
+metadonnees = {"capteur": "Sentinel-2", "bandes": 13, "resolution_m": 10}
+for cle, valeur in metadonnees.items():
+    print(cle, ":", valeur)
+
+# 2. Statistiques et dernière colonne du tableau `image`
+print("min :", image.min(), "| écart-type :", round(image.std(), 2))
+print("dernière colonne :", image[:, -1])
+
+# 3. Fonction ratio et calcul du NDVI
+def ratio(a, b):
+    return (a - b) / (a + b)
+
+print("NDVI :", round(ratio(0.55, 0.18), 3))
+```
+
+</details>
 
 :::::: bloc_package
 :::: bloc_package-header
@@ -213,3 +428,19 @@ Ces caractéristiques font de Python un excellent choix pour apprendre et appliq
     -   `seaborn` pour construire des graphiques plus détaillés en particulier pour les statistiques.
 :::
 ::::::
+
+## Quiz
+
+::: {.content-visible when-profile="production"}
+
+Utilisez la version html.
+:::
+
+```{python .content-visible when-format="html"}
+#| echo: false
+#| eval: true
+#| results: asis
+from code_complementaire.quizz_functions import Quiz, render_quizz
+Chap00Quiz = Quiz("quiz/Chap00.yml", "Chap00")
+render_quizz(Chap00Quiz)
+```
