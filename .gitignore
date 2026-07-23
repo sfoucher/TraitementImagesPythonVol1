@@ -27,3 +27,5 @@ index.log
 *.pyc
 __pycache__/
 *.bak
+# DOCX render is disabled in process.sh; these are stale orphan figures
+**/figure-docx/
