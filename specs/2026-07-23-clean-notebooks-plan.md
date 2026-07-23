@@ -450,8 +450,15 @@ class _BlocParser(HTMLParser):
         self.blocs = []
         self._divdepth = 0
         self._cur = None          # {"type","header":[],"body":[],"depth"}
-        self._cap = None          # "header" | "body" | "_skip" | None
-        self._capdepth = 0
+        # stack of (capture, divdepth); capture in {"header","body","_skip"}.
+        # A stack (not a flat flag) is required because the -icon div nests
+        # inside -header: when the icon closes we must RESTORE "header" capture,
+        # not reset to None, or the title after the icon is lost.
+        self._capstack = []
+
+    @property
+    def _cap(self):
+        return self._capstack[-1][0] if self._capstack else None
 
     def _emit(self, s):
         if self._cap in ("header", "body"):
@@ -468,13 +475,13 @@ class _BlocParser(HTMLParser):
             if self._cur is not None:
                 t = self._cur["type"]
                 if cls == t + "-header":
-                    self._cap, self._capdepth = "header", self._divdepth
+                    self._capstack.append(("header", self._divdepth))
                     return
                 if cls == t + "-body":
-                    self._cap, self._capdepth = "body", self._divdepth
+                    self._capstack.append(("body", self._divdepth))
                     return
                 if cls == t + "-icon":
-                    self._cap, self._capdepth = "_skip", self._divdepth
+                    self._capstack.append(("_skip", self._divdepth))
                     return
             self._emit(_starttag_str(tag, attrs))
             return
@@ -490,9 +497,9 @@ class _BlocParser(HTMLParser):
         if tag != "div":
             self._emit("</%s>" % tag)
             return
-        # closing a div
-        if self._cap and self._divdepth == self._capdepth:
-            self._cap, self._capdepth = None, 0
+        # closing a div: first, does it close the current capture region?
+        if self._capstack and self._divdepth == self._capstack[-1][1]:
+            self._capstack.pop()
             self._divdepth -= 1
             return
         if self._cur is not None and self._divdepth == self._cur["depth"]:
