@@ -421,7 +421,7 @@ def _(mo):
 
     ```
 
-    #### Masquage
+    ### Masquage
 
     L'utilisation d'un masque est un outil important en traitement d'image car la plupart des images de télédétection contiennent des pixels non valides qu'il faut exclure des traitements (ce que l'on appelle le *no data* en Anglais). Il y a plusieurs raison possibles pour la présence de pixels non valides:
 
@@ -452,6 +452,27 @@ def _(np):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ### Calcul d'un rapport de bandes
+
+    Une opération très courante consiste à combiner deux bandes pixel par pixel. Par exemple, un rapport normalisé entre le proche-infrarouge et le rouge met en évidence la végétation (ce type d'indice spectral est approfondi au chapitre @sec-chap03) :
+    """)
+    return
+
+
+@app.cell
+def _(rxr):
+    _img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
+    rouge = _img.sel(band=1)
+    _pir = _img.sel(band=4)
+    rapport = (_pir - rouge) / (_pir + rouge)
+    print('Forme du rapport :', rapport.shape)
+    print('Valeurs min/max  :', round(float(rapport.min()), 2), round(float(rapport.max()), 2))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ### Exportation d'une image
 
     Une image chargée avec `rioxarray` peut être réécrite sur le disque au format GeoTIFF avec `rio.to_raster`, en conservant sa géoréférence :
@@ -471,8 +492,26 @@ def _(rxr):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ### Changement de projection cartographique (à venir)
+    ### Changement de projection cartographique
 
+    Une image géoréférencée peut être reprojetée dans un autre système de coordonnées avec `rio.reproject`. `rioxarray` recalcule alors la grille de pixels et met à jour la géoréférence :
+    """)
+    return
+
+
+@app.cell
+def _(rxr):
+    _img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+    print("CRS d'origine :", _img.rio.crs)
+    img_wgs84 = _img.rio.reproject('EPSG:4326')
+    print('Après reprojection :', img_wgs84.rio.crs)
+    print('Nouvelle forme :', dict(img_wgs84.sizes))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ```{=html}
 
     ```
@@ -535,7 +574,7 @@ def _(mo):
 
     -   Le `Dataset` contient plusieurs DataArrays alignés.
 
-    Ces trois structures prennent en charge les opérations de type dictionnaire et les calculs de coordination tout en conservant les métadonnées.
+    Ces deux structures prennent en charge les opérations de type dictionnaire et les calculs de coordination tout en conservant les métadonnées.
 
     ![Organisation d'un Dataset dans xarray](images/xarray-dataset-diagram.png){#fig-xarray width="80%" fig-align="center"}
 
@@ -552,8 +591,8 @@ def _(rxr):
     print('Dimensions :', dict(_img.sizes))
     print('Système de coordonnées :', _img.rio.crs)
     print('Résolution (m) :', _img.rio.resolution())
-    pir = _img.sel(band=4)
-    print('Bande PIR — forme :', pir.shape, '| valeur maximale :', int(pir.max()))
+    _pir = _img.sel(band=4)
+    print('Bande PIR — forme :', _pir.shape, '| valeur maximale :', int(_pir.max()))
     return
 
 

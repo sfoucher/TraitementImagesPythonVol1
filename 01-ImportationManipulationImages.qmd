@@ -330,7 +330,7 @@ On peut toujours forcer une copie avec la méthode `copy()`
 -->
 ```
 
-#### Masquage
+### Masquage
 
 L'utilisation d'un masque est un outil important en traitement d'image car la plupart des images de télédétection contiennent des pixels non valides qu'il faut exclure des traitements (ce que l'on appelle le *no data* en Anglais). Il y a plusieurs raison possibles pour la présence de pixels non valides:
 
@@ -362,6 +362,23 @@ img_nan = np.where(img == 0, np.nan, img)
 print("Moyenne (nanmean)   :", round(np.nanmean(img_nan), 2))
 ```
 
+### Calcul d'un rapport de bandes
+
+Une opération très courante consiste à combiner deux bandes pixel par pixel. Par exemple, un rapport normalisé entre le proche-infrarouge et le rouge met en évidence la végétation (ce type d'indice spectral est approfondi au chapitre @sec-chap03) :
+
+```{python}
+import rioxarray as rxr
+
+img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
+rouge = img.sel(band=1)     # bande 1 : rouge
+pir   = img.sel(band=4)     # bande 4 : proche-infrarouge
+
+# Rapport normalisé (NIR - Rouge) / (NIR + Rouge)
+rapport = (pir - rouge) / (pir + rouge)
+print("Forme du rapport :", rapport.shape)
+print("Valeurs min/max  :", round(float(rapport.min()), 2), round(float(rapport.max()), 2))
+```
+
 ### Exportation d'une image
 
 Une image chargée avec `rioxarray` peut être réécrite sur le disque au format GeoTIFF avec `rio.to_raster`, en conservant sa géoréférence :
@@ -376,11 +393,25 @@ img_rvb.rio.to_raster('RGBNIR_rvb.tif')
 print("Image exportée :", tuple(img_rvb.sizes.values()))
 ```
 
-### Changement de projection cartographique (à venir)
+### Changement de projection cartographique
+
+Une image géoréférencée peut être reprojetée dans un autre système de coordonnées avec `rio.reproject`. `rioxarray` recalcule alors la grille de pixels et met à jour la géoréférence :
+
+```{python}
+import rioxarray as rxr
+
+img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+print("CRS d'origine :", img.rio.crs)              # EPSG:32618 (UTM)
+
+# Reprojection en coordonnées géographiques (latitude/longitude)
+img_wgs84 = img.rio.reproject("EPSG:4326")
+print("Après reprojection :", img_wgs84.rio.crs)
+print("Nouvelle forme :", dict(img_wgs84.sizes))
+```
 
 ```{=html}
 <!--
-### Recalage d'images et co-registration 
+### Recalage d'images et co-registration
 -->
 ```
 
@@ -442,7 +473,7 @@ Les principales différences sont les suivantes :
 
 -   Le `Dataset` contient plusieurs DataArrays alignés.
 
-Ces trois structures prennent en charge les opérations de type dictionnaire et les calculs de coordination tout en conservant les métadonnées.
+Ces deux structures prennent en charge les opérations de type dictionnaire et les calculs de coordination tout en conservant les métadonnées.
 
 ![Organisation d'un Dataset dans xarray](images/xarray-dataset-diagram.png){#fig-xarray width="80%" fig-align="center"}
 
