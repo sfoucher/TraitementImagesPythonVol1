@@ -27,4 +27,4 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 
 Docker infra copied from Harvard `cs249r_book` (MLSysBook); `docker/**/README.md` still references upstream repo/registry — not yet adapted.
 
-Image `v2` was layer-patched (added opencv/seaborn/gdown/spyndex/torch); `requirements.txt` lists them but the running image only matches Dockerfile after a full rebuild.
+Image `v2` reconciled with Dockerfile via clean rebuild (opencv/seaborn/gdown/spyndex/torch-cpu all in `requirements.txt`); verified importable in a fresh build.
