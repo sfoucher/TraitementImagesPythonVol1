@@ -1,29 +1,33 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode,pdfpagemode=UseOutlines,pdfdisplaydoctitle=true,pdfpagelayout=SinglePage,pdfstartpage=1}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
+  french,
   11pt,
   letterpaper,
   open=any,
   twoside=false,
   french]{scrbook}
-
+\usepackage{xcolor}
+\usepackage[top=20mm,left=15mm,right=15mm,heightrounded]{geometry}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -41,10 +45,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\usepackage[top=20mm,left=15mm,right=15mm,heightrounded]{geometry}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -110,8 +110,7 @@
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -136,6 +135,8 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -169,6 +170,26 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
 
 \usepackage{colortbl}
 \usepackage[scaled=.8]{cascadia-code}
@@ -234,11 +255,7 @@
 \@ifpackageloaded{float}{}{\usepackage{float}}
 \floatstyle{ruled}
 \@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
-\floatname{codelisting}{Bloc
-
-de
-
-code}
+\floatname{codelisting}{Bloc de code}
 \newcommand*\listoflistings{\listof{codelisting}{Liste des Listings}}
 \makeatother
 \makeatletter
@@ -247,20 +264,9 @@ code}
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
-\ifLuaTeX
-\usepackage[bidi=basic]{babel}
-\else
-\usepackage[bidi=default]{babel}
-\fi
-\babelprovide[main,import]{french}
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={Traitement d'images satellites avec Python},
   pdfauthor={Samuel Foucher; Philippe Apparicio; Yacine Bouroubi; Mickaël Germain; Étienne Clabaut},
@@ -283,8 +289,7 @@ code}
 \subtitle{Première édition}
 \author{Samuel Foucher \and Philippe Apparicio \and Yacine
 Bouroubi \and Mickaël Germain \and Étienne Clabaut}
-\date{2025-06-16}
-
+\date{2026-07-22}
 \begin{document}
 \frontmatter
 \maketitle
@@ -1498,7 +1503,7 @@ array([[[17, 50, 33],
         ...,
         [31, 63, 44],
         [33, 65, 46],
-        [33, 66, 46]]], dtype=uint8)
+        [33, 66, 46]]], shape=(442, 553, 3), dtype=uint8)
 \end{verbatim}
 
 \paragraph{Lecture avec la librairie
@@ -1575,86 +1580,7 @@ forme d'un dictionnaire Python.
 \end{Shaded}
 
 \begin{verbatim}
-Warning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.
-Driver: GTiff/GeoTIFF
-Files: RGBNIR_of_S2A.tif
-       RGBNIR_of_S2A.tif.aux.xml
-Size is 2074, 1926
-Coordinate System is:
-PROJCS["WGS 84 / UTM zone 18N",
-    GEOGCS["WGS 84",
-        DATUM["WGS_1984",
-            SPHEROID["WGS 84",6378137,298.257223563,
-                AUTHORITY["EPSG","7030"]],
-            AUTHORITY["EPSG","6326"]],
-        PRIMEM["Greenwich",0,
-            AUTHORITY["EPSG","8901"]],
-        UNIT["degree",0.0174532925199433,
-            AUTHORITY["EPSG","9122"]],
-        AUTHORITY["EPSG","4326"]],
-    PROJECTION["Transverse_Mercator"],
-    PARAMETER["latitude_of_origin",0],
-    PARAMETER["central_meridian",-75],
-    PARAMETER["scale_factor",0.9996],
-    PARAMETER["false_easting",500000],
-    PARAMETER["false_northing",0],
-    UNIT["metre",1,
-        AUTHORITY["EPSG","9001"]],
-    AXIS["Easting",EAST],
-    AXIS["Northing",NORTH],
-    AUTHORITY["EPSG","32618"]]
-Origin = (731780.000000000000000,5040800.000000000000000)
-Pixel Size = (10.000000000000000,-10.000000000000000)
-Metadata:
-  AREA_OR_POINT=Area
-  TIFFTAG_IMAGEDESCRIPTION=subset_RGBNIR_of_S2A_MSIL2A_20240625T153941_N0510_R011_T18TYR_20240625T221903
-  TIFFTAG_RESOLUTIONUNIT=1 (unitless)
-  TIFFTAG_XRESOLUTION=1
-  TIFFTAG_YRESOLUTION=1
-Image Structure Metadata:
-  INTERLEAVE=BAND
-Corner Coordinates:
-Upper Left  (  731780.000, 5040800.000) ( 72d 2' 3.11"W, 45d28'55.98"N)
-Lower Left  (  731780.000, 5021540.000) ( 72d 2'35.69"W, 45d18'32.70"N)
-Upper Right (  752520.000, 5040800.000) ( 71d46' 9.19"W, 45d28'30.08"N)
-Lower Right (  752520.000, 5021540.000) ( 71d46'44.67"W, 45d18' 6.95"N)
-Center      (  742150.000, 5031170.000) ( 71d54'23.16"W, 45d23'31.71"N)
-Band 1 Block=2074x1926 Type=UInt16, ColorInterp=Gray
-  Min=86.000 Max=15104.000 
-  Minimum=86.000, Maximum=15104.000, Mean=1426.625, StdDev=306.564
-  Metadata:
-    STATISTICS_MAXIMUM=15104
-    STATISTICS_MEAN=1426.6252674912
-    STATISTICS_MINIMUM=86
-    STATISTICS_STDDEV=306.56427126942
-    STATISTICS_VALID_PERCENT=100
-Band 2 Block=2074x1926 Type=UInt16, ColorInterp=Undefined
-  Min=1139.000 Max=14352.000 
-  Minimum=1139.000, Maximum=14352.000, Mean=1669.605, StdDev=310.919
-  Metadata:
-    STATISTICS_MAXIMUM=14352
-    STATISTICS_MEAN=1669.6050060032
-    STATISTICS_MINIMUM=1139
-    STATISTICS_STDDEV=310.91935787639
-    STATISTICS_VALID_PERCENT=100
-Band 3 Block=2074x1926 Type=UInt16, ColorInterp=Undefined
-  Min=706.000 Max=15280.000 
-  Minimum=706.000, Maximum=15280.000, Mean=1471.392, StdDev=385.447
-  Metadata:
-    STATISTICS_MAXIMUM=15280
-    STATISTICS_MEAN=1471.3923473736
-    STATISTICS_MINIMUM=706
-    STATISTICS_STDDEV=385.44654593014
-    STATISTICS_VALID_PERCENT=100
-Band 4 Block=2074x1926 Type=UInt16, ColorInterp=Undefined
-  Min=1067.000 Max=15642.000 
-  Minimum=1067.000, Maximum=15642.000, Mean=4393.945, StdDev=1037.934
-  Metadata:
-    STATISTICS_MAXIMUM=15642
-    STATISTICS_MEAN=4393.94485025
-    STATISTICS_MINIMUM=1067
-    STATISTICS_STDDEV=1037.933939728
-    STATISTICS_VALID_PERCENT=100
+/usr/bin/sh: 1: gdalinfo: not found
 \end{verbatim}
 
 Le plus simple est d'utiliser la fonction \texttt{rio\ info}:
@@ -2220,80 +2146,7 @@ un fichier image pour connaitre ces statistiques univariées de base:
 \end{Shaded}
 
 \begin{verbatim}
-Driver: GTiff/GeoTIFF
-Files: landsat7.tif
-       landsat7.tif.aux.xml
-Size is 2181, 1917
-Coordinate System is:
-PROJCS["WGS 84 / Pseudo-Mercator",
-    GEOGCS["WGS 84",
-        DATUM["WGS_1984",
-            SPHEROID["WGS 84",6378137,298.257223563,
-                AUTHORITY["EPSG","7030"]],
-            AUTHORITY["EPSG","6326"]],
-        PRIMEM["Greenwich",0,
-            AUTHORITY["EPSG","8901"]],
-        UNIT["degree",0.0174532925199433,
-            AUTHORITY["EPSG","9122"]],
-        AUTHORITY["EPSG","4326"]],
-    PROJECTION["Mercator_1SP"],
-    PARAMETER["central_meridian",0],
-    PARAMETER["scale_factor",1],
-    PARAMETER["false_easting",0],
-    PARAMETER["false_northing",0],
-    UNIT["metre",1,
-        AUTHORITY["EPSG","9001"]],
-    AXIS["X",EAST],
-    AXIS["Y",NORTH],
-    EXTENSION["PROJ4","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"],
-    AUTHORITY["EPSG","3857"]]
-Origin = (-13651650.000000000000000,4576290.000000000000000)
-Pixel Size = (30.000000000000000,-30.000000000000000)
-Metadata:
-  AREA_OR_POINT=Area
-  OVR_RESAMPLING_ALG=NEAREST
-  TIFFTAG_RESOLUTIONUNIT=1 (unitless)
-  TIFFTAG_XRESOLUTION=1
-  TIFFTAG_YRESOLUTION=1
-Image Structure Metadata:
-  COMPRESSION=DEFLATE
-  INTERLEAVE=PIXEL
-Corner Coordinates:
-Upper Left  (-13651650.000, 4576290.000) (122d38' 5.49"W, 37d58'40.08"N)
-Lower Left  (-13651650.000, 4518780.000) (122d38' 5.49"W, 37d34'10.00"N)
-Upper Right (-13586220.000, 4576290.000) (122d 2'49.53"W, 37d58'40.08"N)
-Lower Right (-13586220.000, 4518780.000) (122d 2'49.53"W, 37d34'10.00"N)
-Center      (-13618935.000, 4547535.000) (122d20'27.51"W, 37d46'26.05"N)
-Band 1 Block=512x512 Type=Byte, ColorInterp=Red
-  Min=19.000 Max=233.000 
-  Minimum=19.000, Maximum=233.000, Mean=98.433, StdDev=21.164
-  NoData Value=0
-  Overviews: 1091x959, 546x480
-  Metadata:
-    STATISTICS_MAXIMUM=233
-    STATISTICS_MEAN=98.433096940153
-    STATISTICS_MINIMUM=19
-    STATISTICS_STDDEV=21.164021026458
-Band 2 Block=512x512 Type=Byte, ColorInterp=Green
-  Min=19.000 Max=178.000 
-  Minimum=19.000, Maximum=178.000, Mean=55.068, StdDev=22.204
-  NoData Value=0
-  Overviews: 1091x959, 546x480
-  Metadata:
-    STATISTICS_MAXIMUM=178
-    STATISTICS_MEAN=55.067787534804
-    STATISTICS_MINIMUM=19
-    STATISTICS_STDDEV=22.203571974581
-Band 3 Block=512x512 Type=Byte, ColorInterp=Blue
-  Min=19.000 Max=187.000 
-  Minimum=19.000, Maximum=187.000, Mean=43.341, StdDev=20.330
-  NoData Value=0
-  Overviews: 1091x959, 546x480
-  Metadata:
-    STATISTICS_MAXIMUM=187
-    STATISTICS_MEAN=43.340507443056
-    STATISTICS_MINIMUM=19
-    STATISTICS_STDDEV=20.32987736339
+/usr/bin/sh: 1: gdalinfo: not found
 \end{verbatim}
 
 Les librairies de base comme \texttt{rasterio} et \texttt{xarray}
@@ -2333,15 +2186,11 @@ Coordinates:
   * y            (y) float64 15kB 4.576e+06 4.576e+06 ... 4.519e+06 4.519e+06
     spatial_ref  int64 8B 0
 Attributes:
-    AREA_OR_POINT:           Area
-    OVR_RESAMPLING_ALG:      NEAREST
-    TIFFTAG_RESOLUTIONUNIT:  1 (unitless)
     TIFFTAG_XRESOLUTION:     1
     TIFFTAG_YRESOLUTION:     1
-    STATISTICS_MAXIMUM:      233
-    STATISTICS_MEAN:         98.433096940153
-    STATISTICS_MINIMUM:      19
-    STATISTICS_STDDEV:       21.164021026458
+    TIFFTAG_RESOLUTIONUNIT:  1 (unitless)
+    OVR_RESAMPLING_ALG:      NEAREST
+    AREA_OR_POINT:           Area
     scale_factor:            1.0
     add_offset:              0.0
 \end{verbatim}
@@ -2379,8 +2228,8 @@ la fonction \texttt{numpy.histogram()}:
 \end{Shaded}
 
 \begin{verbatim}
-valeurs : [0.1        0.13333333 0.07777778 0.11111111 0.07777778 0.07777778
- 0.16666667 0.11111111 0.13333333 0.12222222]
+valeurs : [0.14444444 0.17777778 0.08888889 0.07777778 0.11111111 0.15555556
+ 0.08888889 0.1        0.06666667 0.1       ]
 ;imites : [0.  0.9 1.8 2.7 3.6 4.5 5.4 6.3 7.2 8.1 9. ]
 \end{verbatim}
 
@@ -2593,7 +2442,7 @@ rétrodiffusion en décibel (\texttt{dB}) avec la fonction
 \end{Shaded}
 
 \begin{verbatim}
-{0: np.float64(-50.87641143798828), 0.1: np.float64(-47.98947440338135), 1: np.float64(-40.625951309204105), 2: np.float64(-37.24779266357422), 50: np.float64(-19.075313568115234), 98: np.float64(-7.6460519409179675), 99: np.float64(-5.534139237403945), 99.9: np.float64(1.8286541925668764), 100: np.float64(26.84148406982422)}
+{0: np.float64(-50.876407623291016), 0.1: np.float64(-47.98946910476685), 1: np.float64(-40.62594409942627), 2: np.float64(-37.24779266357422), 50: np.float64(-19.075312614440918), 98: np.float64(-7.6460519409179675), 99: np.float64(-5.534138813018874), 99.9: np.float64(1.8286541197300006), 100: np.float64(26.84148406982422)}
 \end{verbatim}
 
 Les boites à moustache (\emph{boxplots}) ont une bien meilleure
@@ -2635,9 +2484,9 @@ suivante:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{values}\OperatorTok{=}\NormalTok{ np.sort(}\DecValTok{10}\OperatorTok{*}\NormalTok{np.log10(img\_SAR[}\DecValTok{0}\NormalTok{].data.flatten()))}
-\NormalTok{cdf\_x}\OperatorTok{=}\NormalTok{ np.linspace(values[}\DecValTok{0}\NormalTok{], values[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{], }\DecValTok{1000}\NormalTok{)}
-\NormalTok{cdf\_source}\OperatorTok{=}\NormalTok{ np.interp(cdf\_x, values, np.arange(}\BuiltInTok{len}\NormalTok{(values))}\OperatorTok{/}\BuiltInTok{len}\NormalTok{(values)}\OperatorTok{*}\DecValTok{255}\NormalTok{)}
+\NormalTok{values}\OperatorTok{=}\NormalTok{ np.sort(}\DecValTok{10}\OperatorTok{*}\NormalTok{np.log10(img\_SAR[}\DecValTok{0}\NormalTok{].data.flatten())) }\CommentTok{\# on range les valeurs par ordre croissant}
+\NormalTok{cdf\_x}\OperatorTok{=}\NormalTok{ np.linspace(values[}\DecValTok{0}\NormalTok{], values[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{], }\DecValTok{1000}\NormalTok{) }\CommentTok{\# 1000 valeurs réparties également sur l\textquotesingle{}intervalle des valeurs}
+\NormalTok{cdf\_source}\OperatorTok{=}\NormalTok{ np.interp(cdf\_x, values, np.arange(}\BuiltInTok{len}\NormalTok{(values))}\OperatorTok{/}\BuiltInTok{len}\NormalTok{(values)}\OperatorTok{*}\DecValTok{255}\NormalTok{) }\CommentTok{\# calcul de la CDF source}
 \NormalTok{values\_eq}\OperatorTok{=}\NormalTok{np.interp(np.log10(img\_SAR[}\DecValTok{0}\NormalTok{].data), cdf\_x, cdf\_source).astype(}\StringTok{\textquotesingle{}uint8\textquotesingle{}}\NormalTok{)}
 \NormalTok{plt.imshow(values\_eq)}
 \NormalTok{plt.axis(}\StringTok{\textquotesingle{}off\textquotesingle{}}\NormalTok{)}
@@ -2915,7 +2764,7 @@ suivante:
 \end{Shaded}
 
 \begin{verbatim}
-SpectralIndices(['AFRI1600', 'AFRI2100', 'ANDWI', 'ARI', 'ARI2', 'ARVI', 'ATSAVI', 'AVI', 'AWEInsh', 'AWEIsh', 'BAI', 'BAIM', 'BAIS2', 'BCC', 'BI', 'BITM', 'BIXS', 'BLFEI', 'BNDVI', 'BRBA', 'BWDRVI', 'BaI', 'CCI', 'CIG', 'CIRE', 'CRI550', 'CRI700', 'CSI', 'CSIT', 'CVI', 'DBI', 'DBSI', 'DPDD', 'DSI', 'DSWI1', 'DSWI2', 'DSWI3', 'DSWI4', 'DSWI5', 'DVI', 'DVIplus', 'DpRVIHH', 'DpRVIVV', 'EBBI', 'EBI', 'EMBI', 'ENDVI', 'EVI', 'EVI2', 'EVIv', 'ExG', 'ExGR', 'ExR', 'FAI', 'FCVI', 'GARI', 'GBNDVI', 'GCC', 'GDVI', 'GEMI', 'GLI', 'GM1', 'GM2', 'GNDVI', 'GOSAVI', 'GRNDVI', 'GRVI', 'GSAVI', 'GVMI', 'IAVI', 'IBI', 'IKAW', 'IPVI', 'IRECI', 'LSWI', 'MBI', 'MBWI', 'MCARI', 'MCARI1', 'MCARI2', 'MCARI705', 'MCARIOSAVI', 'MCARIOSAVI705', 'MGRVI', 'MIRBI', 'MLSWI26', 'MLSWI27', 'MNDVI', 'MNDWI', 'MNLI', 'MRBVI', 'MSAVI', 'MSI', 'MSR', 'MSR705', 'MTCI', 'MTVI1', 'MTVI2', 'MuWIR', 'NBAI', 'NBLI', 'NBLIOLI', 'NBR', 'NBR2', 'NBRSWIR', 'NBRT1', 'NBRT2', 'NBRT3', 'NBRplus', 'NBSIMS', 'NBUI', 'ND705', 'NDBI', 'NDBaI', 'NDCI', 'NDDI', 'NDGI', 'NDGlaI', 'NDII', 'NDISIb', 'NDISIg', 'NDISImndwi', 'NDISIndwi', 'NDISIr', 'NDMI', 'NDPI', 'NDPolI', 'NDPonI', 'NDREI', 'NDSI', 'NDSII', 'NDSIWV', 'NDSInw', 'NDSWIR', 'NDSaII', 'NDSoI', 'NDTI', 'NDVI', 'NDVI705', 'NDVIMNDWI', 'NDVIT', 'NDWI', 'NDWIns', 'NDYI', 'NGRDI', 'NHFD', 'NIRv', 'NIRvH2', 'NIRvP', 'NLI', 'NMDI', 'NRFIg', 'NRFIr', 'NSDS', 'NSDSI1', 'NSDSI2', 'NSDSI3', 'NSTv1', 'NSTv2', 'NWI', 'NormG', 'NormNIR', 'NormR', 'OCVI', 'OSAVI', 'OSI', 'PI', 'PISI', 'PSRI', 'QpRVI', 'RCC', 'RDVI', 'REDSI', 'RENDVI', 'RFDI', 'RGBVI', 'RGRI', 'RI', 'RI4XS', 'RNDVI', 'RVI', 'S2REP', 'S2WI', 'S3', 'SARVI', 'SAVI', 'SAVI2', 'SAVIT', 'SEVI', 'SI', 'SIPI', 'SLAVI', 'SR', 'SR2', 'SR3', 'SR555', 'SR705', 'SWI', 'SWM', 'SeLI', 'TCARI', 'TCARIOSAVI', 'TCARIOSAVI705', 'TCI', 'TDVI', 'TGI', 'TRRVI', 'TSAVI', 'TTVI', 'TVI', 'TWI', 'TriVI', 'UI', 'VARI', 'VARI700', 'VDDPI', 'VHVVD', 'VHVVP', 'VHVVR', 'VI6T', 'VI700', 'VIBI', 'VIG', 'VVVHD', 'VVVHR', 'VVVHS', 'VgNIRBI', 'VrNIRBI', 'WDRVI', 'WDVI', 'WI1', 'WI2', 'WI2015', 'WRI', 'bNIRv', 'kEVI', 'kIPVI', 'kNDVI', 'kRVI', 'kVARI', 'mND705', 'mSR705', 'sNIRvLSWI', 'sNIRvNDPI', 'sNIRvNDVILSWIP', 'sNIRvNDVILSWIS', 'sNIRvSWIR'])
+SpectralIndices(['AFRI1600', 'AFRI2100', 'ANDWI', 'ARI', 'ARI2', 'ARVI', 'ATSAVI', 'AVI', 'AWEInsh', 'AWEIsh', 'BAI', 'BAIM', 'BAIS2', 'BCC', 'BI', 'BITM', 'BIXS', 'BLFEI', 'BNDVI', 'BRBA', 'BWDRVI', 'BaI', 'CCI', 'CIG', 'CIRE', 'CRI550', 'CRI700', 'CRSWIR', 'CSI', 'CSIT', 'CVI', 'DBI', 'DBSI', 'DPDD', 'DSI', 'DSWI1', 'DSWI2', 'DSWI3', 'DSWI4', 'DSWI5', 'DVI', 'DVIplus', 'DpRVIHH', 'DpRVIVV', 'EBBI', 'EBI', 'EMBI', 'ENDVI', 'EVI', 'EVI2', 'EVIv', 'ExG', 'ExGR', 'ExR', 'FAI', 'FCVI', 'FDI', 'FWEI', 'GARI', 'GBNDVI', 'GCC', 'GDVI', 'GEMI', 'GLI', 'GM1', 'GM2', 'GNDVI', 'GOSAVI', 'GRNDVI', 'GRVI', 'GSAVI', 'GVMI', 'IAVI', 'IBI', 'IKAW', 'IPVI', 'IRECI', 'IRGBVI', 'LSWI', 'MBI', 'MBWI', 'MCARI', 'MCARI1', 'MCARI2', 'MCARI705', 'MCARIOSAVI', 'MCARIOSAVI705', 'MGRVI', 'MI', 'MIRBI', 'MLSWI26', 'MLSWI27', 'MNDVI', 'MNDWI', 'MNLI', 'MRBVI', 'MSAVI', 'MSI', 'MSR', 'MSR705', 'MTCI', 'MTVI1', 'MTVI2', 'MVI', 'MuWIR', 'NBAI', 'NBLI', 'NBLIOLI', 'NBR', 'NBR2', 'NBRSWIR', 'NBRT1', 'NBRT2', 'NBRT3', 'NBRplus', 'NBSIMS', 'NBUI', 'ND705', 'NDBI', 'NDBaI', 'NDCI', 'NDDI', 'NDGI', 'NDGlaI', 'NDII', 'NDISIb', 'NDISIg', 'NDISImndwi', 'NDISIndwi', 'NDISIr', 'NDMI', 'NDPI', 'NDPolI', 'NDPonI', 'NDREI', 'NDSI', 'NDSII', 'NDSIWV', 'NDSInw', 'NDSWIR', 'NDSaII', 'NDSoI', 'NDTI', 'NDTI4RE', 'NDTillI', 'NDVI', 'NDVI4RE', 'NDVI705', 'NDVIMNDWI', 'NDVIT', 'NDWI', 'NDWIns', 'NDYI', 'NGRDI', 'NHFD', 'NIRv', 'NIRvH2', 'NIRvP', 'NLI', 'NMDI', 'NPCI', 'NRFIg', 'NRFIr', 'NSDS', 'NSDSI1', 'NSDSI2', 'NSDSI3', 'NSTv1', 'NSTv2', 'NWI', 'NormG', 'NormNIR', 'NormR', 'OCVI', 'OSAVI', 'OSI', 'PI', 'PISI', 'PSRI', 'QpRVI', 'RCC', 'RDVI', 'REDSI', 'RENDVI', 'RFDI', 'RGBVI', 'RGRI', 'RI', 'RI4XS', 'RNDVI', 'RVI', 'RVI4RE', 'S2REP', 'S2WI', 'S3', 'SARVI', 'SAVI', 'SAVI2', 'SAVI4RE', 'SAVIT', 'SEVI', 'SI', 'SIPI', 'SLAVI', 'SNDTI', 'SNDTI4RE', 'SR', 'SR2', 'SR3', 'SR555', 'SR705', 'STI', 'STI4RE', 'SWI', 'SWM', 'SeLI', 'TCARI', 'TCARIOSAVI', 'TCARIOSAVI705', 'TCI', 'TDVI', 'TGI', 'TRRVI', 'TSAVI', 'TTVI', 'TVI', 'TWI', 'TriVI', 'UI', 'VARI', 'VARI700', 'VDDPI', 'VHVVD', 'VHVVP', 'VHVVR', 'VI6T', 'VI700', 'VIBI', 'VIG', 'VVVHD', 'VVVHR', 'VVVHS', 'VgNIRBI', 'VrNIRBI', 'WDRVI', 'WDVI', 'WI1', 'WI2', 'WI2015', 'WRI', 'bNIRv', 'kEVI', 'kIPVI', 'kNDVI', 'kRVI', 'kVARI', 'mND705', 'mSR705', 'sNIRvLSWI', 'sNIRvNDPI', 'sNIRvNDVILSWIP', 'sNIRvNDVILSWIS', 'sNIRvSWIR'])
 \end{verbatim}
 
 Le détail d'un indice particulier, par exemple le `NDVI`, est aussi
@@ -3077,6 +2926,229 @@ classes}
 \section{Quiz}\label{quiz}
 
 Utilisez la version html.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item
+  \textbf{Parmi les matrices de pondération spatiale ci-dessous,
+  lesquelles sont des matrices de contiguïté?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Partage d'un nœud
+  \item
+    Partage d'un segment
+  \item
+    Partage d'un nœud et ordre d'adjacence
+  \item
+    Partage d'un segment et ordre d'adjacence
+  \item
+    Connectivité selon la distance
+  \end{itemize}
+
+  Relisez au besoin la \textbf{?@sec-012}.
+\item
+  \textbf{En anglais, comment est appelée une matrice selon le partage
+  d'un nœud?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Rook
+  \item
+    Queen
+  \end{itemize}
+
+  Relisez au besoin le début de la \textbf{?@sec-012}.
+\item
+  \textbf{Comparativement à une matrice de l'inverse de la distance, une
+  matrice de l'inverse de la distance au carré accorde un poids plus
+  important aux entités proches.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Vrai
+  \item
+    Faux
+  \end{itemize}
+
+  Relisez au besoin la \textbf{?@sec-01222}.
+\item
+  \textbf{Quels sont les avantages de la standardisation en ligne des
+  matrices de pondération spatiale?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    La somme de chaque ligne est égale à 1.
+  \item
+    La somme de l'ensemble de la matrice est égale au nombre d'entités
+    spatiales.
+  \item
+    La standardisation permet de comparer la dépendance spatiale selon
+    différentes matrices.
+  \item
+    La standardisation augmente la vitesse des calculs.
+  \end{itemize}
+
+  Relisez au besoin la \textbf{?@sec-0123}.
+\item
+  \textbf{Avec une matrice standardisée, la statistique du I de Moran
+  varie théoriquement de :}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    de -1 à 1
+  \item
+    de 0 à 100
+  \item
+    de moins l'infini à plus l'infini
+  \end{itemize}
+
+  Relisez au besoin la \textbf{?@sec-0142}.
+\item
+  \textbf{Quelles sont les trois manières de tester la significativité
+  du I de Moran?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Avec l'hypothèse de la normalité
+  \item
+    En relançant plusieurs fois les calculs
+  \item
+    Avec l'hypothèse de la randomisation
+  \item
+    Avec la méthode Monte-Carlo (habituellement avec 999 échantillons)
+  \end{itemize}
+
+  Relisez au besoin la \textbf{?@sec-0143}.
+\item
+  \textbf{Comment mesurer la dépendance spatiale d'un modèle MCO?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    En analysant le R2
+  \item
+    En calculant le I de Moran sur les résidus du modèle
+  \item
+    En simulant des variables spatiales
+  \end{itemize}
+
+  Relisez au besoin la \textbf{?@sec-0171}.
+\item
+  \textbf{Quel est le synonyme de l'hétérogénéité spatiale?}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Non-stationnarité
+  \item
+    Variation spatiale
+  \item
+    Corrélation spatiale
+  \end{itemize}
+
+  Relisez au besoin la \textbf{?@sec-0172}.
+\end{itemize}
+
+\textbf{Réponses}
+
+\begin{itemize}
+\tightlist
+\item
+  Parmi les matrices de pondération spatiale ci-dessous, lesquelles sont
+  des matrices de contiguïté?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Partage d'un nœud
+  \item
+    Partage d'un segment
+  \item
+    Partage d'un nœud et ordre d'adjacence
+  \item
+    Partage d'un segment et ordre d'adjacence
+  \end{itemize}
+\item
+  En anglais, comment est appelée une matrice selon le partage d'un
+  nœud?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Queen
+  \end{itemize}
+\item
+  Comparativement à une matrice de l'inverse de la distance, une matrice
+  de l'inverse de la distance au carré accorde un poids plus important
+  aux entités proches.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Vrai
+  \end{itemize}
+\item
+  Quels sont les avantages de la standardisation en ligne des matrices
+  de pondération spatiale?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    La somme de chaque ligne est égale à 1.
+  \item
+    La somme de l'ensemble de la matrice est égale au nombre d'entités
+    spatiales.
+  \item
+    La standardisation permet de comparer la dépendance spatiale selon
+    différentes matrices.
+  \end{itemize}
+\item
+  Avec une matrice standardisée, la statistique du I de Moran varie
+  théoriquement de :
+
+  \begin{itemize}
+  \tightlist
+  \item
+    de -1 à 1
+  \end{itemize}
+\item
+  Quelles sont les trois manières de tester la significativité du I de
+  Moran?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Avec l'hypothèse de la normalité
+  \item
+    Avec l'hypothèse de la randomisation
+  \item
+    Avec la méthode Monte-Carlo (habituellement avec 999 échantillons)
+  \end{itemize}
+\item
+  Comment mesurer la dépendance spatiale d'un modèle MCO?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    En calculant le I de Moran sur les résidus du modèle
+  \end{itemize}
+\item
+  Quel est le synonyme de l'hétérogénéité spatiale?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Non-stationnarité
+  \end{itemize}
+\end{itemize}
 
 \bookmarksetup{startatroot}
 
@@ -3582,7 +3654,7 @@ array([[  65.96969001,   58.85575588,   54.91812087, ..., 1474.        ,
        [ 106.07544485,  393.67245268, 2188.78824924, ...,  124.96399481,
          159.90622252,  346.34087255],
        [  41.59326869,  229.05894438, 1845.1216762 , ...,  175.16278143,
-          33.37663854,  414.3911196 ]])
+          33.37663854,  414.3911196 ]], shape=(771, 1311))
 Coordinates:
   * x            (x) float64 10kB 0.5 1.5 2.5 ... 1.308e+03 1.31e+03 1.31e+03
   * y            (y) float64 6kB 0.5 1.5 2.5 3.5 4.5 ... 767.5 768.5 769.5 770.5
@@ -4268,7 +4340,7 @@ les points d'entraînement seuls étant excellente pour un degré 15.
 \subsection{Pipeline}\label{pipeline}
 
 La construction d'un modèle implique généralement toujours les mêmes
-étapes illustrées sur la figure~\ref{fig-pipeline}:
+étapes suivantes:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -4288,18 +4360,6 @@ La construction d'un modèle implique généralement toujours les mêmes
 \item
   Enfin le test du modèle sur un ensemble de données indépendant.
 \end{enumerate}
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=4.25in,height=6.33in]{05-ClassificationsSupervisees_files/figure-latex/mermaid-figure-1.png}
-
-}
-
-\caption{\label{fig-pipeline}Étapes standards dans un entraînement.}
-
-\end{figure}%
 
 \subsection{Construction d'un ensemble
 d'entraînement}\label{sec-05.02.02}
