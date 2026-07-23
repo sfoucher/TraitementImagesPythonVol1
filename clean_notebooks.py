@@ -211,6 +211,19 @@ class _BlocParser(HTMLParser):
         self._emit("</div>")
 
 
+def render_bloc_markdown(region_lines):
+    """Fallback: strip ::: fences, quote the remaining title + body."""
+    out = []
+    for ln in region_lines:
+        colons, _ = _fence_info(ln)
+        if colons:            # any fence line -> drop
+            continue
+        if ln.strip() == "":  # drop blank lines inside the box
+            continue
+        out.append("> " + ln if not ln.startswith(">") else ln)
+    return out
+
+
 def parse_docs_blocs(html):
     """Extract callouts (type, header inner HTML, body inner HTML) in order."""
     p = _BlocParser()

@@ -172,3 +172,29 @@ class TestRenderBlocHtml(unittest.TestCase):
             open(os.path.join(d, ICON_FILES["bloc_notes"]), "wb").write(b"\x89PNG\r\n")
             uri = icon_data_uri("bloc_notes", d)
             self.assertTrue(uri.startswith("data:image/png;base64,"))
+
+
+from clean_notebooks import render_bloc_markdown
+
+
+class TestRenderBlocMarkdown(unittest.TestCase):
+    def test_strips_fences_and_quotes(self):
+        region = [
+            ":::::: bloc_objectif\n",
+            ":::: bloc_objectif-header\n",
+            "::: bloc_objectif-icon\n",
+            ":::\n",
+            "**Titre**\n",
+            "::::\n",
+            "::: bloc_objectif-body\n",
+            "corps\n",
+            ":::\n",
+            "::::::\n",
+        ]
+        out = render_bloc_markdown(region)
+        self.assertEqual(out, ["> **Titre**\n", "> corps\n"])
+
+    def test_no_fence_lines_remain(self):
+        region = ["::: bloc_notes\n", "texte\n", ":::\n"]
+        out = "".join(render_bloc_markdown(region))
+        self.assertNotIn(":::", out)
