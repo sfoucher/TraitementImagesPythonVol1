@@ -2395,7 +2395,7 @@ On peut toujours forcer une copie avec la méthode \texttt{copy()}
 
 \end{tcolorbox}
 
-\subsubsection{Masquage}\label{masquage}
+\subsection{Masquage}\label{masquage}
 
 L'utilisation d'un masque est un outil important en traitement d'image
 car la plupart des images de télédétection contiennent des pixels non
@@ -2449,6 +2449,34 @@ Moyenne avec masque : 16.5
 Moyenne (nanmean)   : 16.5
 \end{verbatim}
 
+\subsection{Calcul d'un rapport de
+bandes}\label{calcul-dun-rapport-de-bandes}
+
+Une opération très courante consiste à combiner deux bandes pixel par
+pixel. Par exemple, un rapport normalisé entre le proche-infrarouge et
+le rouge met en évidence la végétation (ce type d'indice spectral est
+approfondi au chapitre Chapitre~\ref{sec-chap03}) :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ rioxarray }\ImportTok{as}\NormalTok{ rxr}
+
+\NormalTok{img }\OperatorTok{=}\NormalTok{ rxr.open\_rasterio(}\StringTok{\textquotesingle{}RGBNIR\_of\_S2A.tif\textquotesingle{}}\NormalTok{).astype(}\StringTok{\textquotesingle{}float32\textquotesingle{}}\NormalTok{)}
+\NormalTok{rouge }\OperatorTok{=}\NormalTok{ img.sel(band}\OperatorTok{=}\DecValTok{1}\NormalTok{)     }\CommentTok{\# bande 1 : rouge}
+\NormalTok{pir   }\OperatorTok{=}\NormalTok{ img.sel(band}\OperatorTok{=}\DecValTok{4}\NormalTok{)     }\CommentTok{\# bande 4 : proche{-}infrarouge}
+
+\CommentTok{\# Rapport normalisé (NIR {-} Rouge) / (NIR + Rouge)}
+\NormalTok{rapport }\OperatorTok{=}\NormalTok{ (pir }\OperatorTok{{-}}\NormalTok{ rouge) }\OperatorTok{/}\NormalTok{ (pir }\OperatorTok{+}\NormalTok{ rouge)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Forme du rapport :"}\NormalTok{, rapport.shape)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Valeurs min/max  :"}\NormalTok{, }\BuiltInTok{round}\NormalTok{(}\BuiltInTok{float}\NormalTok{(rapport.}\BuiltInTok{min}\NormalTok{()), }\DecValTok{2}\NormalTok{), }\BuiltInTok{round}\NormalTok{(}\BuiltInTok{float}\NormalTok{(rapport.}\BuiltInTok{max}\NormalTok{()), }\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Forme du rapport : (1926, 2074)
+Valeurs min/max  : -0.42 0.93
+\end{verbatim}
+
 \subsection{Exportation d'une image}\label{exportation-dune-image}
 
 Une image chargée avec \texttt{rioxarray} peut être réécrite sur le
@@ -2471,8 +2499,35 @@ géoréférence :
 Image exportée : (3, 1926, 2074)
 \end{verbatim}
 
-\subsection{Changement de projection cartographique (à
-venir)}\label{changement-de-projection-cartographique-uxe0-venir}
+\subsection{Changement de projection
+cartographique}\label{changement-de-projection-cartographique}
+
+Une image géoréférencée peut être reprojetée dans un autre système de
+coordonnées avec \texttt{rio.reproject}. \texttt{rioxarray} recalcule
+alors la grille de pixels et met à jour la géoréférence :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ rioxarray }\ImportTok{as}\NormalTok{ rxr}
+
+\NormalTok{img }\OperatorTok{=}\NormalTok{ rxr.open\_rasterio(}\StringTok{\textquotesingle{}RGBNIR\_of\_S2A.tif\textquotesingle{}}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"CRS d\textquotesingle{}origine :"}\NormalTok{, img.rio.crs)              }\CommentTok{\# EPSG:32618 (UTM)}
+
+\CommentTok{\# Reprojection en coordonnées géographiques (latitude/longitude)}
+\NormalTok{img\_wgs84 }\OperatorTok{=}\NormalTok{ img.rio.reproject(}\StringTok{"EPSG:4326"}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Après reprojection :"}\NormalTok{, img\_wgs84.rio.crs)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Nouvelle forme :"}\NormalTok{, }\BuiltInTok{dict}\NormalTok{(img\_wgs84.sizes))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+CRS d'origine : EPSG:32618
+\end{verbatim}
+
+\begin{verbatim}
+Après reprojection : EPSG:4326
+Nouvelle forme : {'band': 4, 'y': 1633, 'x': 2483}
+\end{verbatim}
 
 \section{Données en géoscience}\label{donnuxe9es-en-guxe9oscience}
 
@@ -2563,7 +2618,7 @@ Les principales différences sont les suivantes :
   Le \texttt{Dataset} contient plusieurs DataArrays alignés.
 \end{itemize}
 
-Ces trois structures prennent en charge les opérations de type
+Ces deux structures prennent en charge les opérations de type
 dictionnaire et les calculs de coordination tout en conservant les
 métadonnées.
 
