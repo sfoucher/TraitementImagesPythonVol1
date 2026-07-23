@@ -131,6 +131,20 @@ class TestParseDocsBlocs(unittest.TestCase):
     def test_no_bloc(self):
         self.assertEqual(parse_docs_blocs("<p>rien</p>"), [])
 
+    def test_body_link_ampersand_stays_valid_html(self):
+        # a link whose URL contains & must round-trip as &amp; (valid HTML),
+        # not a bare & that would corrupt the attribute
+        frag = (
+            '<div class="bloc_notes">'
+            '<div class="bloc_notes-header"><p><strong>H</strong></p></div>'
+            '<div class="bloc_notes-body">'
+            '<p><a href="https://x.org/p?a=1&amp;b=2">lien</a></p>'
+            '</div></div>'
+        )
+        b = parse_docs_blocs(frag)[0]
+        self.assertIn('href="https://x.org/p?a=1&amp;b=2"', b.body_html)
+        self.assertNotIn("a=1&b=2", b.body_html)
+
 
 import os
 import tempfile

@@ -2,6 +2,7 @@
 """Clean Quarto-exported notebooks (see specs/2026-07-23-clean-notebooks-design.md)."""
 import argparse
 import base64
+import html
 import json
 import re
 import sys
@@ -139,7 +140,10 @@ Bloc = namedtuple("Bloc", "type header_html body_html")
 def _starttag_str(tag, attrs, selfclose=False):
     parts = []
     for k, v in attrs:
-        parts.append(' %s="%s"' % (k, v) if v is not None else " %s" % k)
+        # convert_charrefs decoded entities on the way in; re-escape attribute
+        # values so an embedded " or & (e.g. a link's ?a=1&b=2) stays valid HTML
+        parts.append(' %s="%s"' % (k, html.escape(v, quote=True))
+                     if v is not None else " %s" % k)
     return "<%s%s%s>" % (tag, "".join(parts), " /" if selfclose else "")
 
 
