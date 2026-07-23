@@ -6,7 +6,7 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 
 - **Quarto runs in docker, not on host.** Image: `mlsysbook-linux:v2` (built from `docker/linux/Dockerfile`). Host quarto (`/opt/quarto`) is a different env — use the container for reproducible builds.
 - Run pattern (from repo root): `docker run --rm -v "$PWD":/workspace mlsysbook-linux:v2 quarto <args>` (repo mounts at `/workspace`). Add `--network=host -p 3508:3508` for `quarto preview`.
-- Container runs as **root** → generated files (`docs/`, `pdf/`) are root-owned on host.
+- Container runs as **root** → generated files (`docs/`, `pdf/`) are root-owned on host; host-side ops on them (e.g. copying PDF into `docs/`) hit EACCES — run such steps inside the container (`q cp …`, as process.sh does).
 - `process.sh` — full build+export script (HTML + PDF, chapter→ipynb/marimo export). Set `-euo pipefail`; all quarto/marimo calls wrapped in a `q()` docker helper.
 
 ## Rendering
@@ -19,8 +19,12 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 ## Deps
 
 - Python: `docker/dependencies/requirements.txt`. R: `install_packages.R`. TeX: `tl_packages`. Changing these needs an image rebuild: `docker build -t mlsysbook-linux:v2 -f docker/linux/Dockerfile .`
-- `marimo` is in requirements.txt but only active after an image rebuild.
+- Fast dep-add without full ~20min rebuild: layer-patch — `docker build -t mlsysbook-linux:v2 - <<EOF` / `FROM mlsysbook-linux:v2` / `RUN pip install <pkg>` / `EOF`. Caveat: image then diverges from Dockerfile until a clean rebuild.
+- `torch` must be CPU wheel: `pip install torch==2.4.0+cpu --index-url https://download.pytorch.org/whl/cpu` (avoids ~2GB CUDA wheel).
+- `marimo` is in the `v2` image; chapter→marimo `.py` export active in process.sh.
 
 ## Note
 
 Docker infra copied from Harvard `cs249r_book` (MLSysBook); `docker/**/README.md` still references upstream repo/registry — not yet adapted.
+
+Image `v2` was layer-patched (added opencv/seaborn/gdown/spyndex/torch); `requirements.txt` lists them but the running image only matches Dockerfile after a full rebuild.
