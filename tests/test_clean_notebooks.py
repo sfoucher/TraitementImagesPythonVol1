@@ -91,3 +91,42 @@ class TestIterBlocs(unittest.TestCase):
 
     def test_no_bloc(self):
         self.assertEqual(iter_blocs_in_markdown(["plain\n", "text\n"]), [])
+
+
+from clean_notebooks import parse_docs_blocs, Bloc
+
+DOCS_FRAGMENT = """
+<p>avant</p>
+<div class="bloc_objectif">
+<div class="bloc_objectif-header">
+<div class="bloc_objectif-icon">
+
+</div>
+<p><strong>Objectifs</strong></p>
+</div>
+<div class="bloc_objectif-body">
+<p>intro&nbsp;:</p>
+<ul>
+<li>un</li>
+<li>deux</li>
+</ul>
+</div>
+</div>
+<p>apres</p>
+"""
+
+
+class TestParseDocsBlocs(unittest.TestCase):
+    def test_extracts_one_bloc(self):
+        blocs = parse_docs_blocs(DOCS_FRAGMENT)
+        self.assertEqual(len(blocs), 1)
+        b = blocs[0]
+        self.assertEqual(b.type, "bloc_objectif")
+        self.assertIn("<strong>Objectifs</strong>", b.header_html)
+        self.assertIn("<li>un</li>", b.body_html)
+        self.assertIn("<li>deux</li>", b.body_html)
+        # the icon div must not leak into the header
+        self.assertNotIn("bloc_objectif-icon", b.header_html)
+
+    def test_no_bloc(self):
+        self.assertEqual(parse_docs_blocs("<p>rien</p>"), [])

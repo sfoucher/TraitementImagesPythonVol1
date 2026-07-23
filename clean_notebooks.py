@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Clean Quarto-exported notebooks (see specs/2026-07-23-clean-notebooks-design.md)."""
 import re
+from collections import namedtuple
+from html.parser import HTMLParser
 
 _HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 _DIRECTIVE = re.compile(r"^\s*#\|")
@@ -72,3 +74,91 @@ def iter_blocs_in_markdown(lines):
         else:
             i += 1
     return regions
+
+
+Bloc = namedtuple("Bloc", "type header_html body_html")
+
+
+def _starttag_str(tag, attrs, selfclose=False):
+    parts = []
+    for k, v in attrs:
+        parts.append(' %s="%s"' % (k, v) if v is not None else " %s" % k)
+    return "<%s%s%s>" % (tag, "".join(parts), " /" if selfclose else "")
+
+
+class _BlocParser(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.blocs = []
+        self._divdepth = 0
+        self._cur = None          # {"type","header":[],"body":[],"depth"}
+        # stack of (capture, divdepth); capture in {"header","body","_skip"}.
+        # A stack (not a flat flag) is required because the -icon div nests
+        # inside -header: when the icon closes we must RESTORE "header" capture,
+        # not reset to None, or the title after the icon is lost.
+        self._capstack = []
+
+    @property
+    def _cap(self):
+        return self._capstack[-1][0] if self._capstack else None
+
+    def _emit(self, s):
+        if self._cap in ("header", "body"):
+            self._cur[self._cap].append(s)
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "div":
+            self._divdepth += 1
+            cls = dict(attrs).get("class", "")
+            if self._cur is None and cls in KNOWN_TYPES:
+                self._cur = {"type": cls, "header": [], "body": [],
+                             "depth": self._divdepth}
+                return
+            if self._cur is not None:
+                t = self._cur["type"]
+                if cls == t + "-header":
+                    self._capstack.append(("header", self._divdepth))
+                    return
+                if cls == t + "-body":
+                    self._capstack.append(("body", self._divdepth))
+                    return
+                if cls == t + "-icon":
+                    self._capstack.append(("_skip", self._divdepth))
+                    return
+            self._emit(_starttag_str(tag, attrs))
+            return
+        self._emit(_starttag_str(tag, attrs))
+
+    def handle_startendtag(self, tag, attrs):
+        self._emit(_starttag_str(tag, attrs, selfclose=True))
+
+    def handle_data(self, data):
+        self._emit(data)
+
+    def handle_endtag(self, tag):
+        if tag != "div":
+            self._emit("</%s>" % tag)
+            return
+        # closing a div: first, does it close the current capture region?
+        if self._capstack and self._divdepth == self._capstack[-1][1]:
+            self._capstack.pop()
+            self._divdepth -= 1
+            return
+        if self._cur is not None and self._divdepth == self._cur["depth"]:
+            self.blocs.append(Bloc(
+                self._cur["type"],
+                "".join(self._cur["header"]).strip(),
+                "".join(self._cur["body"]).strip(),
+            ))
+            self._cur = None
+            self._divdepth -= 1
+            return
+        self._divdepth -= 1
+        self._emit("</div>")
+
+
+def parse_docs_blocs(html):
+    """Extract callouts (type, header inner HTML, body inner HTML) in order."""
+    p = _BlocParser()
+    p.feed(html)
+    return p.blocs
