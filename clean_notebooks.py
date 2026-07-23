@@ -1,8 +1,62 @@
 #!/usr/bin/env python3
 """Clean Quarto-exported notebooks (see specs/2026-07-23-clean-notebooks-design.md)."""
+import base64
 import re
 from collections import namedtuple
 from html.parser import HTMLParser
+from pathlib import Path
+
+# type -> (left border color, header background) — from css/r4ds.scss
+BLOC_COLORS = {
+    "bloc_objectif": ("#00796d", "#e2efec"),
+    "bloc_package": ("#352c76", "#e2e1f2"),
+    "bloc_exercice": ("#e34692", "#fbe8f2"),
+    "bloc_aller_loin": ("#eb5f23", "#fef4ec"),
+    "bloc_attention": ("#f0ae4e", "#fef4ec"),
+    "bloc_astuce": ("#31ae74", "#f0f6ec"),
+    "bloc_notes": ("#357cc0", "#eef5fb"),
+}
+ICON_FILES = {
+    "bloc_objectif": "BlocObjectif.png",
+    "bloc_package": "BlocPackage.png",
+    "bloc_exercice": "BlocExercice.png",
+    "bloc_aller_loin": "BlocAllerPlusLoin.png",
+    "bloc_attention": "BlocAttention.png",
+    "bloc_astuce": "BlocAstuce.png",
+    "bloc_notes": "BlocNote.png",
+}
+CONTAINER_BG = "#FAF9FF"
+
+
+def icon_data_uri(bloc_type, images_dir):
+    """Return a base64 data: URI for the bloc icon, or None if missing."""
+    p = Path(images_dir) / ICON_FILES[bloc_type]
+    if not p.is_file():
+        return None
+    b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+    return "data:image/png;base64," + b64
+
+
+def render_bloc_html(bloc_type, header_html, body_html, icon_uri):
+    """Self-contained inline-styled callout box (renders without theme CSS)."""
+    border, header_bg = BLOC_COLORS[bloc_type]
+    img = '<img src="%s" width="16" height="16" alt=""/>' % icon_uri if icon_uri else ""
+    container = (
+        "border:0.5px solid silver;border-left:.3rem solid %s;"
+        "border-radius:.25rem;background:%s;margin:1em 0;" % (border, CONTAINER_BG)
+    )
+    header = (
+        "display:flex;align-items:center;gap:.5rem;padding:.4em .6em;"
+        "background:%s;font-weight:700;" % header_bg
+    )
+    body = "padding:.3em .6em;font-size:.95em;"
+    return (
+        '<div style="%s">\n'
+        '<div style="%s">%s<span>%s</span></div>\n'
+        '<div style="%s">\n%s\n</div>\n'
+        '</div>'
+    ) % (container, header, img, header_html, body, body_html)
+
 
 _HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 _DIRECTIVE = re.compile(r"^\s*#\|")

@@ -130,3 +130,45 @@ class TestParseDocsBlocs(unittest.TestCase):
 
     def test_no_bloc(self):
         self.assertEqual(parse_docs_blocs("<p>rien</p>"), [])
+
+
+import os
+import tempfile
+from clean_notebooks import (BLOC_COLORS, ICON_FILES, icon_data_uri,
+                             render_bloc_html)
+
+
+class TestRenderBlocHtml(unittest.TestCase):
+    def test_all_types_have_colors_and_icons(self):
+        from clean_notebooks import KNOWN_TYPES
+        for t in KNOWN_TYPES:
+            self.assertIn(t, BLOC_COLORS)
+            self.assertIn(t, ICON_FILES)
+
+    def test_render_contains_colors_and_body(self):
+        html = render_bloc_html(
+            "bloc_objectif", "<p><strong>T</strong></p>", "<ul><li>x</li></ul>", None)
+        self.assertIn("#00796d", html)   # objectif border color
+        self.assertIn("#e2efec", html)   # objectif header bg
+        self.assertIn("<strong>T</strong>", html)
+        self.assertIn("<li>x</li>", html)
+        self.assertTrue(html.lstrip().startswith("<div"))
+
+    def test_render_without_icon_has_no_img(self):
+        html = render_bloc_html("bloc_notes", "<p>H</p>", "<p>B</p>", None)
+        self.assertNotIn("<img", html)
+
+    def test_render_with_icon_has_data_uri(self):
+        html = render_bloc_html("bloc_notes", "<p>H</p>", "<p>B</p>",
+                                "data:image/png;base64,AAAA")
+        self.assertIn('src="data:image/png;base64,AAAA"', html)
+
+    def test_icon_data_uri_missing_returns_none(self):
+        with tempfile.TemporaryDirectory() as d:
+            self.assertIsNone(icon_data_uri("bloc_notes", d))
+
+    def test_icon_data_uri_reads_png(self):
+        with tempfile.TemporaryDirectory() as d:
+            open(os.path.join(d, ICON_FILES["bloc_notes"]), "wb").write(b"\x89PNG\r\n")
+            uri = icon_data_uri("bloc_notes", d)
+            self.assertTrue(uri.startswith("data:image/png;base64,"))
