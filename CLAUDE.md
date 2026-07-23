@@ -15,6 +15,9 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 - **PDF:** needs the production profile — `quarto render --profile production --to pdf --output-dir ./pdf`. The `pdf` format is defined only in `_quarto-production.yml` (a Quarto profile), not in `_quarto.yml`.
 - PDF filename is **book-title based** (`Traitement-d-images-satellites-avec-Python.pdf`), NOT the `output:` field in `_quarto-production.yml` (that field is dead for book projects).
 - Execution is cached (`.jupyter_cache/`, `execute: cache: true`) — re-renders reuse cached notebook output.
+- Quarto bundles Typst, but **book projects cannot render it** (`WARN: typst format not supported by book projects`). PDF stays LaTeX unless the project leaves `type: book`.
+- `clean_notebooks.py` (stdlib, tested via `python3 -m unittest tests.test_clean_notebooks -v`) cleans quarto-exported notebooks: renders `bloc_*` callouts as inline HTML (body reused from `docs/<stem>.html`), strips the YAML header, HTML comments, and `#|` directives. Runs in process.sh via `q python3 clean_notebooks.py "$ch.ipynb"` after `quarto convert`.
+- Build emits pre-existing non-fatal warnings — a SCSS parse error dumping `_quarto_internal_scss_error.scss`, and dangling `@sec-*` crossrefs. Don't chase unless fixing them directly.
 
 ## Deps
 
@@ -28,3 +31,9 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 Docker infra copied from Harvard `cs249r_book` (MLSysBook); `docker/**/README.md` still references upstream repo/registry — not yet adapted.
 
 Image `v2` reconciled with Dockerfile via clean rebuild (opencv/seaborn/gdown/spyndex/torch-cpu all in `requirements.txt`); verified importable in a fresh build.
+
+`bloc_*` callouts (objectif/package/exercice/aller_loin/attention/astuce/notes) are custom divs styled in `css/r4ds.scss` (per-type color + `images/Bloc*.png` icon).
+
+DOCX render is commented out in process.sh. Quarto prunes non-target format subdirs from `<chapter>_files/` on each render, so `figure-docx/` PNGs get deleted — they're gitignored (`**/figure-docx/`); don't re-commit them.
+
+`docs/…​.pdf` is ~55MB (>GitHub's 50MB soft limit) and re-commits in full each build — consider Git LFS if the repo gets heavy.
