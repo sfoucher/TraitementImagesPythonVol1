@@ -198,3 +198,48 @@ class TestRenderBlocMarkdown(unittest.TestCase):
         region = ["::: bloc_notes\n", "texte\n", ":::\n"]
         out = "".join(render_bloc_markdown(region))
         self.assertNotIn(":::", out)
+
+
+from clean_notebooks import clean_notebook
+
+
+def _md(src):
+    return {"cell_type": "markdown", "metadata": {}, "source": src}
+
+
+def _code(src):
+    return {"cell_type": "code", "metadata": {}, "source": src,
+            "outputs": [], "execution_count": None}
+
+
+class TestCleanNotebook(unittest.TestCase):
+    def test_yaml_comment_directive_and_bloc(self):
+        nb = {"cells": [
+            _md(["---\n", "jupyter: python3\n", "---\n", "\n",
+                 "# Titre\n", "<!-- draft -->\n",
+                 "::: bloc_notes\n", "**H**\n", "corps\n", ":::\n"]),
+            _code(["#| echo: false\n", "x = 1\n"]),
+        ], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+        blocs = [Bloc("bloc_notes", "<p><strong>H</strong></p>", "<p>corps</p>")]
+        out = clean_notebook(nb, blocs, images_dir="/nonexistent")
+        md_src = "".join(out["cells"][0]["source"])
+        self.assertNotIn("---", md_src)
+        self.assertNotIn("<!--", md_src)
+        self.assertNotIn(":::", md_src)
+        self.assertIn("<strong>H</strong>", md_src)   # HTML render used
+        self.assertEqual(out["cells"][1]["source"], ["x = 1\n"])
+
+    def test_count_mismatch_falls_back_to_markdown(self):
+        nb = {"cells": [
+            _md(["::: bloc_notes\n", "**H**\n", "corps\n", ":::\n"]),
+        ], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+        out = clean_notebook(nb, docs_blocs=[], images_dir="/nonexistent")
+        md_src = "".join(out["cells"][0]["source"])
+        self.assertNotIn(":::", md_src)
+        self.assertIn("> **H**", md_src)              # blockquote fallback
+
+    def test_empty_code_cell_dropped(self):
+        nb = {"cells": [_code(["#| eval: false\n"])],
+              "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+        out = clean_notebook(nb, [], images_dir="/nonexistent")
+        self.assertEqual(out["cells"], [])

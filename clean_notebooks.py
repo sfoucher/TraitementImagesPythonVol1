@@ -2,6 +2,7 @@
 """Clean Quarto-exported notebooks (see specs/2026-07-23-clean-notebooks-design.md)."""
 import base64
 import re
+import sys
 from collections import namedtuple
 from html.parser import HTMLParser
 from pathlib import Path
@@ -229,3 +230,77 @@ def parse_docs_blocs(html):
     p = _BlocParser()
     p.feed(html)
     return p.blocs
+
+
+def _count_blocs(cells):
+    total = 0
+    for c in cells:
+        if c["cell_type"] == "markdown":
+            total += len(iter_blocs_in_markdown(c["source"]))
+    return total
+
+
+def _replace_blocs_html(lines, bloc_iter, images_dir):
+    regions = iter_blocs_in_markdown(lines)
+    if not regions:
+        return lines
+    out, prev = [], 0
+    for start, end, _type in regions:
+        out.extend(lines[prev:start])
+        b = next(bloc_iter)
+        uri = icon_data_uri(b.type, images_dir)
+        out.append(render_bloc_html(b.type, b.header_html, b.body_html, uri) + "\n")
+        prev = end + 1
+    out.extend(lines[prev:])
+    return out
+
+
+def _replace_blocs_markdown(lines):
+    regions = iter_blocs_in_markdown(lines)
+    if not regions:
+        return lines
+    out, prev = [], 0
+    for start, end, _type in regions:
+        out.extend(lines[prev:start])
+        out.extend(render_bloc_markdown(lines[start:end + 1]))
+        prev = end + 1
+    out.extend(lines[prev:])
+    return out
+
+
+def clean_notebook(nb, docs_blocs, images_dir):
+    """Return a cleaned copy of an nbformat notebook dict."""
+    cells = nb.get("cells", [])
+    use_html = _count_blocs(cells) == len(docs_blocs)
+    if not use_html:
+        sys.stderr.write(
+            "WARN: bloc count != docs bloc count; using markdown fallback\n")
+    bloc_iter = iter(docs_blocs)
+
+    new_cells = []
+    first_md_seen = False
+    for cell in cells:
+        if cell["cell_type"] == "markdown":
+            src = cell["source"]
+            if not first_md_seen:
+                src = strip_yaml_header(src)
+                first_md_seen = True
+            src = strip_html_comments("".join(src)).splitlines(keepends=True)
+            if use_html:
+                src = _replace_blocs_html(src, bloc_iter, images_dir)
+            else:
+                src = _replace_blocs_markdown(src)
+            # normalize to canonical one-newline-per-line elements so a second
+            # run re-reads the same list shape (idempotency)
+            src = "".join(src).splitlines(keepends=True)
+            if "".join(src).strip() == "":
+                continue          # drop empty markdown cell
+            cell = dict(cell, source=src)
+        elif cell["cell_type"] == "code":
+            src = strip_cell_directives(cell["source"])
+            if "".join(src).strip() == "":
+                continue          # drop empty code cell
+            cell = dict(cell, source=src)
+        new_cells.append(cell)
+
+    return dict(nb, cells=new_cells)
