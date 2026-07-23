@@ -1,6 +1,9 @@
 # MLSysBook Python Dependencies
 # A single file for all project dependencies (production and development).
 
+# CPU-only torch wheels (torch==2.4.0+cpu below is not on PyPI)
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 # --- Core Dependencies ---
 jupyterlab-quarto>=0.3.0
 jupyter>=1.0.0
