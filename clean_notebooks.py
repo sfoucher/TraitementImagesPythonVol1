@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Clean Quarto-exported notebooks (see specs/2026-07-23-clean-notebooks-design.md)."""
+import argparse
 import base64
+import json
 import re
 import sys
 from collections import namedtuple
@@ -304,3 +306,28 @@ def clean_notebook(nb, docs_blocs, images_dir):
         new_cells.append(cell)
 
     return dict(nb, cells=new_cells)
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Clean Quarto-exported notebooks.")
+    ap.add_argument("notebooks", nargs="+")
+    ap.add_argument("--docs-dir", default="docs")
+    ap.add_argument("--images-dir", default="images")
+    args = ap.parse_args(argv)
+
+    for nbp in args.notebooks:
+        path = Path(nbp)
+        with path.open(encoding="utf-8") as f:
+            nb = json.load(f)
+        html_path = Path(args.docs_dir) / (path.stem + ".html")
+        docs_blocs = parse_docs_blocs(html_path.read_text(encoding="utf-8")) \
+            if html_path.is_file() else []
+        nb = clean_notebook(nb, docs_blocs, args.images_dir)
+        with path.open("w", encoding="utf-8") as f:
+            json.dump(nb, f, ensure_ascii=False, indent=1)
+            f.write("\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

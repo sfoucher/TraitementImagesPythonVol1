@@ -243,3 +243,45 @@ class TestCleanNotebook(unittest.TestCase):
               "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
         out = clean_notebook(nb, [], images_dir="/nonexistent")
         self.assertEqual(out["cells"], [])
+
+
+import json
+from clean_notebooks import main
+
+
+class TestMainEndToEnd(unittest.TestCase):
+    def _write_nb(self, path):
+        nb = {"cells": [
+            {"cell_type": "markdown", "metadata": {},
+             "source": ["---\n", "jupyter: python3\n", "---\n", "\n",
+                        "# Titre {#sec-x}\n", "<!-- d -->\n",
+                        "::: bloc_notes\n", "**H**\n", "corps\n", ":::\n"]},
+            {"cell_type": "code", "metadata": {}, "outputs": [],
+             "execution_count": None, "source": ["#| echo: false\n", "x = 1\n"]},
+        ], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(nb, f)
+
+    def test_cleans_and_is_idempotent(self):
+        with tempfile.TemporaryDirectory() as d:
+            nbp = os.path.join(d, "03-Chap.ipynb")
+            docs = os.path.join(d, "docs")
+            os.makedirs(docs)
+            open(os.path.join(docs, "03-Chap.html"), "w", encoding="utf-8").write(
+                '<div class="bloc_notes"><div class="bloc_notes-header">'
+                '<p><strong>H</strong></p></div>'
+                '<div class="bloc_notes-body"><p>corps</p></div></div>')
+            self._write_nb(nbp)
+
+            rc = main([nbp, "--docs-dir", docs, "--images-dir", d])
+            self.assertEqual(rc, 0)
+            txt1 = open(nbp, encoding="utf-8").read()
+            self.assertNotIn(":::", txt1)
+            self.assertNotIn("#|", txt1)
+            self.assertNotIn("jupyter: python3", txt1)
+            self.assertIn("<strong>H</strong>", txt1)
+
+            # idempotent: second run does not change the file
+            main([nbp, "--docs-dir", docs, "--images-dir", d])
+            txt2 = open(nbp, encoding="utf-8").read()
+            self.assertEqual(txt1, txt2)
