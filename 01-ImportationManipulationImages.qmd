@@ -12,7 +12,7 @@ execute:
 
 ## Préambule
 
-Assurez-vous de lire ce préambule avant d'exécutez le reste du notebook.
+Assurez-vous de lire ce préambule avant d'exécuter le reste du notebook.
 
 ### Objectifs 
 
@@ -32,8 +32,9 @@ Dans ce chapitre, nous abordons quelques formats d'images ainsi que leur lecture
 
 -   connaître les principales bibliothèques Python pour lire une image;
 -   accéder à l'information d'une image avant de la lire;
--   comprendre les principaux formats pour une image
--   manipuler la matrice de la donnée d'une image avec numpy
+-   comprendre les principaux formats pour une image;
+-   manipuler la matrice de la donnée d'une image avec `numpy`;
+-   exploiter les métadonnées et la géoréférence avec `rioxarray` et `xarray`.
 :::::
 
 
@@ -104,9 +105,9 @@ with rxr.open_rasterio('RGBNIR_of_S2A.tif', mask_and_scale= True) as img_rgbnir:
 
 La première étape avant tout traitement est d'accéder à la donnée image pour qu'elle soit manipulée par le langage Python. L'imagerie satellite présente certains défis notamment en raison de la taille parfois très importante des images. Il existe maintenant certaines bibliothèques, comme [Xarray](https://docs.xarray.dev/en/stable/), qui visent à optimiser la lecture et l'écriture de grandes images. Il est donc conseillé de toujours garder un oeil sur l'espace mémoire occupé par les variables Python représentant les images. La librairie principale en géomatique qui permettre d'importer (et d'exporter) de l'imagerie est la librairie [GDAL](https://gdal.org) qui rassemble la plupart des formats sous forme de *driver* (ou pilote en français).
 
-Dans le domaine de la géomatique, il faut prêter attention à trois caractéristiques principales des images:
+Dans le domaine de la géomatique, il faut prêter attention à quatre caractéristiques principales des images:
 
-1\. **La matrice des données** elle-même qui contient les valeurs brutes des pixels. Cette matrice sera souvent un cube à trois dimensions. En Python, ce cube sera le plus souvent un objet de la librairie [NumPy](https://numpy.org/) (voir section).
+1\. **La matrice des données** elle-même qui contient les valeurs brutes des pixels. Cette matrice sera souvent un cube à trois dimensions. En Python, ce cube sera le plus souvent un objet de la librairie [NumPy](https://numpy.org/) (voir la section « Manipulation de la matrice de pixels » plus bas).
 
 2\. **La dynamique des images** c.-à.-d le format de stockage des valeurs individuelles (octet, entier, double, etc.). Ce format décide principalement de la résolution radiométrique et des valeurs minimales et maximales supportées.
 
@@ -114,7 +115,7 @@ Dans le domaine de la géomatique, il faut prêter attention à trois caractéri
 
 4\. **La métadonnée** qui va transporter l'information auxiliaire de l'image comme les dimensions et la position de l'image, la date, etc. Cette donnée auxiliaire prendra souvent la forme d'un dictionnaire Python. Elle contiendra aussi l'information de géoréférence.
 
-Les différents formats se distinguent principalement sur la manière dont ces trois caractéristiques sont gérées.
+Les différents formats se distinguent principalement sur la manière dont ces quatre caractéristiques sont gérées.
 
 ### Formats des images
 
@@ -126,7 +127,7 @@ On peut distinguer deux grandes familles de format:
 
 2\. **Les géo-formats** issus des domaines scientifiques ou techniques comme GeoTIFF, HDF5, NetCDF, etc. qui peuvent inclure plus que trois bandes et des dynamiques plus élevées (16 bits ou même float).
 
-Les formats RVB restent très utilisés en Python notamment par les bibliothèques dites de vision par ordinateur (*Computer Vision*) comme OpenCV et sickit-image ainsi que les grandes bibliothèques en apprentissage profond (PyTorch, Tensorflow).
+Les formats RVB restent très utilisés en Python notamment par les bibliothèques dites de vision par ordinateur (*Computer Vision*) comme OpenCV et scikit-image ainsi que les grandes bibliothèques en apprentissage profond (PyTorch, Tensorflow).
 
 :::::: bloc_package
 :::: bloc_package-header
@@ -170,6 +171,20 @@ img = cv2.imread('modis-aqua.PNG')
 img
 ```
 
+Attention : la fonction `imread` d'OpenCV renvoie les canaux dans l'ordre **BGR** (bleu, vert, rouge) et non RGB. Il faut convertir l'image avant de l'afficher correctement avec `matplotlib` :
+
+```{python}
+import matplotlib.pyplot as plt
+
+img_bgr = cv2.imread('modis-aqua.PNG')
+img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)   # BGR -> RGB
+
+fig, ax = plt.subplots(1, 2, figsize=(8, 4))
+ax[0].imshow(img_bgr); ax[0].set_title("Sans conversion (BGR)"); ax[0].axis('off')
+ax[1].imshow(img_rgb); ax[1].set_title("Après conversion (RGB)"); ax[1].axis('off')
+plt.show()
+```
+
 ##### Lecture avec la librairie RasterIO
 
 Rien ne nous empêche de lire une image de format RVB avec [RasterIO](https://rasterio.readthedocs.io/en/stable/) comme décrit dans ci-dessous. Vous noterez cependant les avertissements concernant l'absence de géoréférence pour ce type d'image.
@@ -209,6 +224,22 @@ Le plus simple est d'utiliser la fonction `rio info`:
 !rio info RGBNIR_of_S2A.tif --indent 2 --verbose
 ```
 
+Depuis Python, `rasterio` donne accès à ces mêmes informations sous forme d'attributs et d'un dictionnaire de métadonnées :
+
+```{python}
+import rasterio
+
+with rasterio.open('RGBNIR_of_S2A.tif') as src:
+    print("Nombre de bandes :", src.count)
+    print("Dimensions (lignes, colonnes) :", src.height, src.width)
+    print("Type des pixels :", src.dtypes[0])
+    print("Système de coordonnées :", src.crs)
+    print("Résolution (m) :", src.res)
+    print("Emprise :", src.bounds)
+    meta = src.meta            # toutes les métadonnées dans un dictionnaire
+meta
+```
+
 ## Manipulation des images
 
 ### Manipulation de la matrice de pixels
@@ -236,10 +267,14 @@ print('Type de la donnée: ',img.dtype)
 
 from IPython.display import Markdown
 from tabulate import tabulate
-table = [["uint8", "char", 8, 0, 255],
-        ["int8", "signed char", 8, -127, +128],
-        ["uint16", "unsigned short", 16, 0, -32768, +32767],
-        ["int16", "short", 16, 0, 655355]]
+table = [["uint8",   "unsigned char",  8,  0,           255],
+         ["int8",    "signed char",    8, -128,         127],
+         ["uint16",  "unsigned short", 16, 0,           65535],
+         ["int16",   "short",          16, -32768,      32767],
+         ["uint32",  "unsigned int",   32, 0,           4294967295],
+         ["int32",   "int",            32, -2147483648, 2147483647],
+         ["float32", "float",          32, "-3.4e38",   "3.4e38"],
+         ["float64", "double",         64, "-1.8e308",  "1.8e308"]]
 Markdown(tabulate(table, headers=["dtype", "Nom", "Taille (bits)", "Min", "Max"], tablefmt="pipe"))
 ```
 
@@ -249,7 +284,10 @@ L'indexation et le découpage (*slicing*) des matrices dans NumPy sont des techn
 
 ![Vue d'ensemble des opérations de base des matrices avec NumPy](images/41586_2020_2649_Fig1_HTML.png){#fig-naturenumpy2 width="100%" fig-align="center"}
 
-Le découpage (ou *slicing* en anglais) consiste à produire une nouvelle matrice qui est un sous-ensemble de la matrice d'origine. Un découpage se fait avec le symbole ':', la syntaxe générale pour définir un découpage est `[début:fin:pas]`. Si on ne spécifie pas `début` ou `fin` alors les valeurs 0 ou `dimension-1` sont considérées implicitement. Quelques exemples: \* choisir un pixel en particulier avec toutes les bandes: `matrice[1,1,:]` \* choisir la colonne 2: `matrice[:,2,:]`
+Le découpage (ou *slicing* en anglais) consiste à produire une nouvelle matrice qui est un sous-ensemble de la matrice d'origine. Un découpage se fait avec le symbole ':', la syntaxe générale pour définir un découpage est `[début:fin:pas]`. Si on ne spécifie pas `début` ou `fin` alors les valeurs 0 ou `dimension-1` sont considérées implicitement. Quelques exemples :
+
+-   choisir un pixel en particulier avec toutes les bandes : `matrice[1, 1, :]`;
+-   choisir la troisième colonne (indice 2) avec toutes les bandes : `matrice[:, 2, :]`.
 
 La syntaxe de base pour le découpage (*slicing*) des tableaux NumPy repose sur l'utilisation des deux-points (`:`) à l'intérieur des crochets d'indexation. Cette notation permet de sélectionner des plages d'éléments de manière concise et intuitive. La structure générale du découpage est `matrice[start:stop:step]`, où : 1. `start` représente l'index de départ (inclus) 2. `stop` indique l'index de fin (exclu) 3. `step` définit l'intervalle entre chaque élément sélectionné
 
@@ -304,7 +342,39 @@ L'utilisation d'un masque est un outil important en traitement d'image car la pl
 
 4.  La présence de valeurs non numériques (*not a number* ou `nan`)
 
-La librairie NumPy fournit des mécanismes pour exclure automatiquement certaines valeurs.
+La librairie NumPy fournit des mécanismes pour exclure automatiquement certaines valeurs. Le module `numpy.ma` permet de créer un tableau masqué où les pixels non valides sont ignorés par les calculs statistiques :
+
+```{python}
+import numpy as np
+
+# Une petite image dont la valeur 0 représente le "no data"
+img = np.array([[12,  0, 15],
+                [ 8, 20,  0],
+                [ 0, 21, 23]], dtype=float)
+
+# Masquer les pixels égaux à 0 : ils seront ignorés par les statistiques
+img_masque = np.ma.masked_equal(img, 0)
+print("Moyenne sans masque :", round(img.mean(), 2))
+print("Moyenne avec masque :", round(img_masque.mean(), 2))
+
+# Approche équivalente avec des NaN et les fonctions « nan » de NumPy
+img_nan = np.where(img == 0, np.nan, img)
+print("Moyenne (nanmean)   :", round(np.nanmean(img_nan), 2))
+```
+
+### Exportation d'une image
+
+Une image chargée avec `rioxarray` peut être réécrite sur le disque au format GeoTIFF avec `rio.to_raster`, en conservant sa géoréférence :
+
+```{python}
+import rioxarray as rxr
+
+img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+# On ne conserve que les trois premières bandes (rouge, vert, bleu)
+img_rvb = img.sel(band=[1, 2, 3])
+img_rvb.rio.to_raster('RGBNIR_rvb.tif')
+print("Image exportée :", tuple(img_rvb.sizes.values()))
+```
 
 ### Changement de projection cartographique (à venir)
 
@@ -376,6 +446,23 @@ Ces trois structures prennent en charge les opérations de type dictionnaire et 
 
 ![Organisation d'un Dataset dans xarray](images/xarray-dataset-diagram.png){#fig-xarray width="80%" fig-align="center"}
 
+#### Exemple avec rioxarray
+
+`rioxarray` ouvre un GeoTIFF directement comme un `DataArray` étiqueté : ses dimensions (`band`, `y`, `x`), ses coordonnées et sa géoréférence sont accessibles via l'accesseur `.rio`. On peut alors sélectionner une bande par son étiquette plutôt que par un numéro d'axe :
+
+```{python}
+import rioxarray as rxr
+
+img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+print("Dimensions :", dict(img.sizes))
+print("Système de coordonnées :", img.rio.crs)
+print("Résolution (m) :", img.rio.resolution())
+
+# Sélection de la bande proche-infrarouge (bande 4) par son étiquette
+pir = img.sel(band=4)
+print("Bande PIR — forme :", pir.shape, "| valeur maximale :", int(pir.max()))
+```
+
 ```{=html}
 <!--
 netcdf, xarray, GRIB.
@@ -400,6 +487,22 @@ Données météos, exemple avec SWOT.
 
 ### Requêtes attributaires 
 
-## Exercices de révision 
+## Exercices de révision
 -->
+```
+
+## Quiz
+
+::: {.content-visible when-profile="production"}
+
+Utilisez la version html.
+:::
+
+```{python .content-visible when-format="html"}
+#| echo: false
+#| eval: true
+#| results: asis
+from code_complementaire.quizz_functions import Quiz, render_quizz
+Chap01Quiz = Quiz("quiz/Chap01.yml", "Chap01")
+render_quizz(Chap01Quiz)
 ```

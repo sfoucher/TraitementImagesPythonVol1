@@ -357,8 +357,8 @@ Utilisez la version html.
 #| eval: true 
 #| results: asis
 from code_complementaire.quizz_functions import Quiz, render_quizz
-Chap01Quiz = Quiz("quiz/Chap01.yml", "Chap01")
-render_quizz(Chap01Quiz)
+Chap03Quiz = Quiz("quiz/Chap03.yml", "Chap03")
+render_quizz(Chap03Quiz)
 #import os
 #output_format = os.environ.get("QUARTO_PROFILE")
 #print(output_format)

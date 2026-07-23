@@ -1,74 +1,87 @@
-- label: "Parmi les matrices de pondération spatiale ci-dessous, lesquelles sont des matrices de contiguïté?"
-  type: mc
-  response: [1,2,3,4]
-  answers:
-     - "Partage d’un nœud"
-     - "Partage d’un segment"
-     - "Partage d’un nœud et ordre d’adjacence"
-     - "Partage d’un segment et ordre d’adjacence"
-     - "Connectivité selon la distance"
-  help: "Relisez au besoin la [section @sec-012]."
-
-- label: "En anglais, comment est appelée une matrice selon le partage d'un nœud?"
+- label: "Quelle bibliothèque rassemble la plupart des formats matriciels en géomatique et permet de les lire et de les écrire ?"
   type: uc
   response: 2
   answers:
-     - "Rook"
-     - "Queen"
-  help: "Relisez au besoin le début de la [section @sec-012]."
+     - "NumPy"
+     - "GDAL"
+     - "Matplotlib"
+     - "Pandas"
+  help: "Relisez au besoin la section « Importation d'images »."
 
-- label: "Comparativement à une matrice de l'inverse de la distance, une matrice de l'inverse de la distance au carré accorde un poids plus important aux entités proches."
+- label: "Les formats RVB grand public (JPEG, PNG) supportent généralement plus de trois bandes."
   type: uc
-  response: 1
+  response: 2
   answers:
      - "Vrai"
      - "Faux"
-  help: "Relisez au besoin la [section @sec-01222]."
+  help: "Relisez au besoin la section « Formats des images » : ces formats se limitent à trois bandes (RVB)."
 
-- label: "Quels sont les avantages de la standardisation en ligne des matrices de pondération spatiale?"
+- label: "Parmi les caractéristiques suivantes d'une image, lesquelles distinguent les différents formats ?"
   type: mc
-  response: [1,2,3]
+  response: [1, 2, 3, 4]
   answers:
-     - "La somme de chaque ligne est égale à 1."
-     - "La somme de l'ensemble de la matrice est égale au nombre d'entités spatiales."
-     - "La standardisation permet de comparer la dépendance spatiale selon différentes matrices."
-     - "La standardisation augmente la vitesse des calculs."
-  help: "Relisez au besoin la [section @sec-0123]."
+     - "La matrice des pixels"
+     - "La dynamique (le type de stockage des valeurs)"
+     - "Le nombre de bandes"
+     - "La métadonnée (dont la géoréférence)"
+  help: "Relisez au besoin la section « Importation d'images » : quatre caractéristiques principales."
 
-- label: "Avec une matrice standardisée, la statistique du I de Moran varie théoriquement de :"
-  type: uc
-  response: 1
-  answers:
-     - "de -1 à 1"
-     - "de 0 à 100"
-     - "de moins l'infini à plus l'infini"
-  help: "Relisez au besoin la [section @sec-0142]."
-
-- label: "Quelles sont les trois manières de tester la significativité du I de Moran?"
-  type: mc
-  response: [1, 3, 4]
-  answers:
-     - "Avec l'hypothèse de la normalité"
-     - "En relançant plusieurs fois les calculs"
-     - "Avec l'hypothèse de la randomisation"
-     - "Avec la méthode Monte-Carlo (habituellement avec 999 échantillons)"
-  help: "Relisez au besoin la [section @sec-0143]."
-
-- label: "Comment mesurer la dépendance spatiale d'un modèle MCO?"
+- label: "Quelle est la plage de valeurs d'un pixel de type `uint8` ?"
   type: uc
   response: 2
   answers:
-     - "En analysant le R2"
-     - "En calculant le I de Moran sur les résidus du modèle"
-     - "En simulant des variables spatiales"
-  help: "Relisez au besoin la [section @sec-0171]."
- 
-- label: "Quel est le synonyme de l'hétérogénéité spatiale?"
+     - "de -128 à 127"
+     - "de 0 à 255"
+     - "de 0 à 65535"
+     - "de 0 à 1"
+  help: "Relisez au besoin le tableau des types de données NumPy (@tbl-numpytype)."
+
+- label: "Dans quel ordre la fonction `cv2.imread` d'OpenCV renvoie-t-elle les canaux ?"
   type: uc
-  response: 1
+  response: 2
   answers:
-     - "Non-stationnarité"
-     - "Variation spatiale"
-     - "Corrélation spatiale"
-  help: "Relisez au besoin la [section @sec-0172]."
-  
+     - "RGB (rouge, vert, bleu)"
+     - "BGR (bleu, vert, rouge)"
+     - "En niveaux de gris"
+     - "CMJN"
+  help: "Relisez au besoin la section « Lecture avec la librairie OpenCV »."
+
+- label: "Pour une matrice NumPy `img`, quel attribut donne son type de stockage (par ex. `uint8`) ?"
+  type: uc
+  response: 3
+  answers:
+     - "img.shape"
+     - "img.ndim"
+     - "img.dtype"
+     - "img.size"
+  help: "Relisez au besoin la section « Information de base »."
+
+- label: "Que sélectionne le découpage `matrice[:, 2, :]` ?"
+  type: uc
+  response: 2
+  answers:
+     - "La deuxième ligne"
+     - "La troisième colonne (indice 2), toutes bandes comprises"
+     - "La bande numéro 2"
+     - "Un seul pixel"
+  help: "Relisez au besoin la section « Découpage et indexation de la matrice » : les indices commencent à 0."
+
+- label: "Quels avantages `xarray` / `rioxarray` apportent-ils par rapport à un simple tableau NumPy ?"
+  type: mc
+  response: [1, 2, 3]
+  answers:
+     - "Des dimensions nommées (band, y, x)"
+     - "La sélection par étiquette avec `.sel`"
+     - "L'accès à la géoréférence via l'accesseur `.rio`"
+     - "L'augmentation automatique de la résolution spatiale"
+  help: "Relisez au besoin la section « Données en géoscience »."
+
+- label: "Quel format est un GeoTIFF optimisé pour un accès partiel via HTTP (infonuagique) ?"
+  type: uc
+  response: 2
+  answers:
+     - "JPEG"
+     - "COG (Cloud Optimized GeoTIFF)"
+     - "PNG"
+     - "HDF5"
+  help: "Relisez au besoin la section « Le format COG »."
