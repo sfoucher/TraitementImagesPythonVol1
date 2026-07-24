@@ -4,8 +4,8 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 
 ## Build toolchain
 
-- **Quarto runs in docker, not on host.** Image: `mlsysbook-linux:v2` (built from `docker/linux/Dockerfile`). Host quarto (`/opt/quarto`) is a different env — use the container for reproducible builds.
-- Run pattern (from repo root): `docker run --rm -v "$PWD":/workspace mlsysbook-linux:v2 quarto <args>` (repo mounts at `/workspace`). Add `--network=host -p 3508:3508` for `quarto preview`.
+- **Quarto runs in docker, not on host.** Image: `mlsysbook-linux:quarto-1.9.38` (the tag encodes the Quarto version; built from `docker/linux/Dockerfile` with `--build-arg QUARTO_VERSION`). Host quarto (`/opt/quarto`) is a different env — use the container for reproducible builds.
+- Run pattern (from repo root): `docker run --rm -v "$PWD":/workspace mlsysbook-linux:quarto-1.9.38 quarto <args>` (repo mounts at `/workspace`). Add `--network=host -p 3508:3508` for `quarto preview`.
 - Container runs as **root** → generated files (`docs/`, `pdf/`) are root-owned on host; host-side ops on them (e.g. copying PDF into `docs/`) hit EACCES — run such steps inside the container (`q cp …`, as process.sh does).
 - `process.sh` — full build+export script (HTML + PDF, chapter→ipynb/marimo export). Set `-euo pipefail`; all quarto/marimo calls wrapped in a `q()` docker helper.
 - Piping a script into the container needs `-i`: `docker run --rm -i … python3 - <<'PY'`. Without `-i`, stdin isn't forwarded → `python3 -` runs an empty script and exits 0 silently.
@@ -26,8 +26,9 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 
 ## Deps
 
-- Python: `docker/dependencies/requirements.txt`. R: `install_packages.R`. TeX: `tl_packages`. Changing these needs an image rebuild: `docker build -t mlsysbook-linux:v2 -f docker/linux/Dockerfile .`
-- Fast dep-add without full ~20min rebuild: layer-patch — `docker build -t mlsysbook-linux:v2 - <<EOF` / `FROM mlsysbook-linux:v2` / `RUN pip install <pkg>` / `EOF`. Caveat: image then diverges from Dockerfile until a clean rebuild.
+- Python: `docker/dependencies/requirements.txt`. R: `install_packages.R`. TeX: `tl_packages`. Changing these needs an image rebuild: `docker build --build-arg QUARTO_VERSION=1.9.38 -t mlsysbook-linux:quarto-1.9.38 -f docker/linux/Dockerfile .`
+- Quarto version is a build arg (`ARG QUARTO_VERSION`, default 1.7.31). process.sh derives `IMAGE` from `QUARTO_VERSION` (default 1.9.38, env-overridable: `QUARTO_VERSION=1.10.x ./process.sh`).
+- Fast dep-add without full ~20min rebuild: layer-patch — `docker build -t mlsysbook-linux:quarto-1.9.38 - <<EOF` / `FROM mlsysbook-linux:quarto-1.9.38` / `RUN pip install <pkg>` / `EOF`. Caveat: image then diverges from Dockerfile until a clean rebuild.
 - `torch` must be CPU wheel: `pip install torch==2.4.0+cpu --index-url https://download.pytorch.org/whl/cpu` (avoids ~2GB CUDA wheel).
 - `marimo` is in the `v2` image; chapter→marimo `.py` export active in process.sh.
 
@@ -35,7 +36,7 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 
 Docker infra copied from Harvard `cs249r_book` (MLSysBook); `docker/**/README.md` still references upstream repo/registry — not yet adapted.
 
-Image `v2` reconciled with Dockerfile via clean rebuild (opencv/seaborn/gdown/spyndex/torch-cpu all in `requirements.txt`); verified importable in a fresh build.
+All Python deps (opencv/seaborn/gdown/spyndex/torch-cpu/…) are in `requirements.txt`, so a clean rebuild is reproducible. The older `mlsysbook-linux:v2` (Quarto 1.7.31) may still exist locally; `quarto-1.9.38` is current.
 
 `bloc_*` callouts (objectif/package/exercice/aller_loin/attention/astuce/notes) are custom divs styled in `css/r4ds.scss` (per-type color + `images/Bloc*.png` icon).
 

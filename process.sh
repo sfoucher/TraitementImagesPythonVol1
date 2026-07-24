@@ -2,7 +2,10 @@
 # Build book (HTML + PDF) in the mlsysbook docker container, export notebooks.
 set -euo pipefail
 
-IMAGE="mlsysbook-linux:v2"
+# Image tag encodes the Quarto version. Override: QUARTO_VERSION=1.10.x ./process.sh
+# (or set IMAGE directly). Build it: docker build --build-arg QUARTO_VERSION=$QUARTO_VERSION -t $IMAGE -f docker/linux/Dockerfile .
+QUARTO_VERSION="${QUARTO_VERSION:-1.9.38}"
+IMAGE="${IMAGE:-mlsysbook-linux:quarto-${QUARTO_VERSION}}"
 PDF_NAME="Traitement-d-images-satellites-avec-Python.pdf"
 
 # Chapters exported to ipynb (+marimo) and stashed under notebooks/
