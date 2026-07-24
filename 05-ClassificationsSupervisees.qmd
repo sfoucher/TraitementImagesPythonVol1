@@ -1001,3 +1001,62 @@ Le perceptron multi-couches est un réseau dense (*fully connected*) avec des co
 
 Ces réseaux sont entraînés via des techniques itératives d'optimisation de type descente en gradient avec une correction des paramètres (les poids) à l'aide de la rétro-propagation de l'erreur. L'erreur est mesurée via une fonction de coût que l'on cherche à réduire.
 --->
+
+## Points clés
+
+:::::: bloc_notes
+:::: bloc_notes-header
+::: bloc_notes-icon
+:::
+
+**À retenir**
+::::
+
+::: bloc_notes-body
+-   La **classification supervisée** attribue une classe à chaque pixel à partir d'un **jeu d'entraînement étiqueté** ; le modèle apprend des **frontières de décision**.
+-   Séparer les données en **entraînement / validation / test** est essentiel pour détecter le **sur-apprentissage** — l'erreur d'entraînement seule est trompeuse.
+-   Les ensembles réels sont souvent **déséquilibrés** ; la **séparabilité** (distance JM) et les statistiques par classe guident l'analyse préliminaire.
+-   La performance se lit dans la **matrice de confusion** : **rappel** (omission, lignes), **précision** (fausses alarmes, colonnes), **f1-score**.
+-   Méthodes **non paramétriques** (parallélépipèdes, K-NN, arbres) vs **paramétriques** (Bayésien naïf, ADQ) ; le K-NN exige une **normalisation** (`StandardScaler`).
+-   La **malédiction de la dimensionnalité** : le nombre de points requis croît exponentiellement avec le nombre de dimensions $D$.
+:::
+::::::
+
+## Exercices
+
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
+
+**À vous de jouer**
+::::
+
+::: bloc_exercice-body
+1.  Comparez les rapports de performance (`classification_report`) du K-NN, de l'arbre de décision et de l'ADQ sur le même ensemble de test : quelle méthode l'emporte, et pour quelles classes ?
+
+2.  Faites varier `test_size` (0.1, 0.3, 0.5) dans `train_test_split` et observez l'effet sur l'erreur de test du K-NN.
+
+3.  Entraînez un arbre de décision avec plusieurs `max_depth` (3, 5, 10, `None`) et repérez à partir de quelle profondeur le sur-apprentissage apparaît.
+
+4.  Utilisez les **4 bandes** (au lieu de Rouge–NIR) pour l'ADQ et comparez la carte d'occupation des sols obtenue.
+:::
+::::::
+
+## Quiz
+
+
+::: {.content-visible when-profile="production"}
+
+Utilisez la version html.
+:::
+
+
+```{python .content-visible when-format="html"}
+#| echo: false
+#| eval: true
+#| results: asis
+from code_complementaire.quizz_functions import Quiz, render_quizz
+Chap05Quiz = Quiz("quiz/Chap05.yml", "Chap05")
+render_quizz(Chap05Quiz)
+```

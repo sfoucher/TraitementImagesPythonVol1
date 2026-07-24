@@ -1,87 +1,129 @@
-- label: "Quels sont les trois principaux problèmes résolus en analyse de réseau?"
-  type: mc
-  response: [1,2,3]
-  answers:
-     - "Trouver le trajet le plus court ou le plus rapide entre deux points (algorithme de Dijkstra)"
-     - "Trouver la route optimale comprenant plusieurs arrêts (problème du voyageur de commerce)"
-     - "Définir des zones de desserte autour d’une origine (algorithme de Dijkstra)"
-     - "Mesurer la dépendance spatiale"
-  help: "Relisez au besoin la [section @sec-0512]."
-  
-- label: "Quels sont les quatre autres problèmes résolus en analyse de réseau?"
-  type: mc
-  response: [1,2,4,5]
-  answers:
-     - "Trouver les k services les plus proches à partir d’une origine"
-     - "Construire une matrice de distance origines-destinations"
-     - "Répartir aléatoirement des points dans un territoire donné"
-     - "Résoudre le problème de tournées de véhicules"
-     - "Réaliser un modèle localisation-affectation"
-  help: "Relisez au besoin la [section @sec-0512]."
-  
-- label: "Quels sont les trois fichiers nécessaires pour construire un réseau multimode avec R5R?"
-  type: mc
-  response: [1,2,4]
-  answers:
-     - "Un fichier pbf pour les données d’OpenStreetMap"
-     - "Un ou plusieurs fichiers GTFS"
-     - "Un fichier pour les bâtiments"
-     - "Un fichier GeoTIFF d’élévation"
-  help: "Relisez au besoin le début de la [section @sec-0512]."
-  
-- label: "Quelle fonction de R5R permet de construire un réseau multimode?"
+- label: "En quoi consiste une classification supervisée ?"
   type: uc
   response: 2
   answers:
-     - "detailed_itineraries()"
-     - "setup_r5()"     
-     - "travel_time_matrix()"
-  help: "Relisez au besoin la [section @sec-052]."
+     - "Regrouper les pixels sans aucune étiquette de référence"
+     - "Attribuer une classe à chaque point à partir d'un jeu d'entraînement étiqueté"
+     - "Réduire le nombre de bandes d'une image"
+     - "Corriger la géométrie d'une image"
+  help: "Relisez au besoin la section « Principes généraux »."
 
-- label: "Quelle fonction de R5R permet de construire un itinéraire?"
+- label: "Qu'est-ce que le sur-apprentissage (overfitting) ?"
   type: uc
   response: 1
   answers:
-     - "detailed_itineraries()"
-     - "setup_r5()"     
-     - "travel_time_matrix()"
-  help: "Relisez au besoin la [section @sec-052]."
+     - "Le modèle apprend le bruit des données d'entraînement et généralise mal"
+     - "Le modèle est trop simple pour s'ajuster aux données"
+     - "Le modèle n'a pas assez de dimensions"
+     - "Le modèle ignore l'ensemble d'entraînement"
+  help: "Relisez au besoin la section « Comportement d'un modèle »."
 
-- label: "Quelle fonction de R5R permet de construire une matrice origine-destination?"
+- label: "Pourquoi a-t-on besoin d'un ensemble de validation/test distinct de l'entraînement ?"
+  type: uc
+  response: 3
+  answers:
+     - "Pour accélérer l'entraînement"
+     - "Pour augmenter le nombre de classes"
+     - "Parce que l'erreur sur l'entraînement seul ne révèle pas le sur-apprentissage"
+     - "Pour normaliser les données"
+  help: "Relisez au besoin les sections « Comportement d'un modèle » et « Pipeline »."
+
+- label: "Un ensemble d'entraînement où les classes ont des fréquences très différentes est dit :"
   type: uc
   response: 2
   answers:
-     - "detailed_itineraries()"
-     - "setup_r5()"     
-     - "travel_time_matrix()"
-  help: "Relisez au besoin la [section @sec-052]."
+     - "normalisé"
+     - "déséquilibré"
+     - "orthogonal"
+     - "supervisé"
+  help: "Relisez au besoin la section « Construction d'un ensemble d'entraînement »."
 
-- label: "Pour évaluer l'accessibilité selon la conceptualisation de la proximité immédiate, quelle mesure d'accessibilité utilisez-vous?"
+- label: "Que mesure la distance de Jeffries-Matusita (JM) entre deux classes ?"
+  type: uc
+  response: 2
+  answers:
+     - "Le nombre d'échantillons par classe"
+     - "La séparabilité des classes sous l'hypothèse de modèles gaussiens"
+     - "La résolution spatiale de l'image"
+     - "Le temps de calcul du modèle"
+  help: "Relisez au besoin la section « Analyse préliminaire des données »."
+
+- label: "Dans la matrice de confusion, le rappel (recall) d'une classe correspond à :"
   type: uc
   response: 1
   answers:
-     - "Distance entre l’origine et le service le plus proche"
-     - "Nombre de services présents à moins de n mètres ou minutes"     
-     - "Distance moyenne entre une origine et n services"
-     - "Modèles gravitaires et méthodes two-step floating catchment area (2SFCA)"
-  help: "Relisez au besoin la [section @sec-052]."
-  
-- label: "Pour évaluer l'accessibilité selon la conceptualisation de l’offre et la demande, quelle mesure d'accessibilité utilisez-vous?"
+     - "une normalisation par rapport aux lignes (sensible aux erreurs d'omission)"
+     - "une normalisation par rapport aux colonnes (sensible aux fausses alarmes)"
+     - "la somme totale de la matrice"
+     - "la diagonale divisée par le nombre de classes"
+  help: "Relisez au besoin la section « Mesures de performance »."
+
+- label: "Le f1-score est :"
   type: uc
-  response: 4
+  response: 3
   answers:
-     - "Distance entre l’origine et le service le plus proche"
-     - "Nombre de services présents à moins de n mètres ou minutes"     
-     - "Distance moyenne entre une origine et n services"
-     - "Modèles gravitaires et méthodes two-step floating catchment area (2SFCA)"
-  help: "Relisez au besoin la [section @sec-052]."
-  
-- label: "Pour évaluer l'accessibilité selon l'offre de services dans l’environnement immédiat, quelle mesure d'accessibilité utilisez-vous?"
+     - "la précision seule"
+     - "le rappel seul"
+     - "une moyenne (harmonique) de la précision et du rappel"
+     - "le nombre de points bien classés"
+  help: "Relisez au besoin la section « Mesures de performance »."
+
+- label: "Quel est le principe de la méthode des parallélépipèdes ?"
   type: uc
   response: 2
   answers:
-     - "Distance entre l’origine et le service le plus proche"
-     - "Nombre de services présents à moins de n mètres ou minutes"     
-     - "Distance moyenne entre une origine et n services"
-     - "Modèles gravitaires et méthodes two-step floating catchment area (2SFCA)"
-  help: "Relisez au besoin la [section @sec-052]."
+     - "Un vote parmi les K voisins les plus proches"
+     - "Délimiter le domaine de chaque classe par une boîte min/max par bande"
+     - "Ajuster une gaussienne multivariée par classe"
+     - "Construire une cascade de règles de seuil"
+  help: "Relisez au besoin la section « Méthode des parallélépipèdes »."
+
+- label: "Qu'est-ce que la malédiction de la dimensionnalité ?"
+  type: uc
+  response: 1
+  answers:
+     - "Le nombre de points nécessaires croît exponentiellement avec le nombre de dimensions"
+     - "Les images deviennent trop grandes à afficher"
+     - "Le nombre de classes augmente avec les bandes"
+     - "Les couleurs se mélangent au-delà de trois bandes"
+  help: "Relisez au besoin la section « La malédiction de la haute dimension »."
+
+- label: "Pourquoi centre-t-on et réduit-on (StandardScaler) les données avant un K-NN ?"
+  type: uc
+  response: 1
+  answers:
+     - "Pour que chaque dimension ait le même poids dans le calcul des distances"
+     - "Pour réduire le nombre de classes"
+     - "Pour accélérer l'affichage"
+     - "Pour supprimer les points aberrants"
+  help: "Relisez au besoin la section « Plus proches voisins »."
+
+- label: "Dans un K-NN, augmenter la valeur de K :"
+  type: uc
+  response: 2
+  answers:
+     - "n'a aucun effet sur les frontières de décision"
+     - "rend les frontières de décision plus lisses (et le calcul plus long)"
+     - "garantit toujours une meilleure précision"
+     - "réduit le nombre de dimensions"
+  help: "Relisez au besoin la section « Plus proches voisins »."
+
+- label: "Quelle hypothèse simplificatrice fait la méthode Bayésienne naïve ?"
+  type: uc
+  response: 3
+  answers:
+     - "Les classes ont toutes la même fréquence"
+     - "Les frontières de décision sont linéaires"
+     - "Les dimensions (bandes) sont indépendantes"
+     - "Toutes les classes ont la même covariance"
+  help: "Relisez au besoin la section « Méthode Bayésienne naïve »."
+
+- label: "La différence entre une méthode paramétrique et non paramétrique est :"
+  type: uc
+  response: 1
+  answers:
+     - "le nombre de paramètres d'une méthode paramétrique est fixe et ne dépend pas de la taille des données"
+     - "une méthode paramétrique n'a pas besoin d'entraînement"
+     - "une méthode non paramétrique ne fait que du seuillage"
+     - "il n'y a aucune différence"
+  help: "Relisez au besoin les sections « Méthodes non paramétriques » et « Méthodes paramétriques »."
