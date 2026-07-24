@@ -65,7 +65,7 @@ def _(mo):
 
     -   [rioxarray](https://corteva.github.io/rioxarray/stable/index.html)
 
-    Dans l'environnement Google Colab, seul `rioxarray` doit être installés
+    Dans l'environnement Google Colab, seul `rioxarray` doit être installé.
     """)
     return
 
@@ -250,13 +250,13 @@ def _(mo):
     | 3     | B03  | G       | Vert                      |
     | 4     | B04  | R       | Rouge                     |
     | 5     | B05  | RE1     | Red edge 1                |
-    | 6     | B06  | RE1     | Red edge 2                |
-    | 7     | B07  | RE2     | Red edge 3                |
+    | 6     | B06  | RE2     | Red edge 2                |
+    | 7     | B07  | RE3     | Red edge 3                |
     | 8     | B08  | N       | Proche-infrarouge 1       |
     | 9     | B08A | N2      | Proche-infrarouge 2       |
-    | 10    | B09  | \-      | Vapeur d'eau              |
+    | 10    | B09  | WV      | Vapeur d'eau              |
     | 11    | B11  | S1      | Infra-rouge onde courte 1 |
-    | 12    | B12  | S2      | Infra-rouge onde courte 1 |
+    | 12    | B12  | S2      | Infra-rouge onde courte 2 |
 
     : Noms des bandes Sentinel-2
 
@@ -375,6 +375,42 @@ def _(couleurs_classes, gdf, nom_classes, pd, plt, spyndex):
 def _(mo):
     mo.md(r"""
     ![Visualisation des points d'une image Sentinel-2 pour trois classes](images/fig-classes-indices.png){fig-align="center"}
+
+    ## Points clés
+
+    <div style="border:0.5px solid silver;border-left:.3rem solid #357cc0;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#eef5fb;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IB2cksfwAAA/pJREFUWIXNl01sVFUYhp/vzLSlDTbiTCmpoEQT5SemQQNaFw12ftCQrtSmKxLiAmUp0UTsz51prcYFKxM10ZCwarCuiAlMWyQuICkQ7KKlmmBiqDWlc52m1jKkvedz0TuVInTujNH6rr6595z3ec89d+45RwioV/p+rVv0wruNyi4LuwV2Abv922MK4wbGrOi48bzxjLPlVhBfKdagpTf3eEi9bpTDQcP6zic9CaXOd2z6uawATSduVm/8fcN7CO+CVAFLwA8CowqjqjKq4aXvvUWRsIQaRbRRoFGhEXgaCIPeQfl4/qH8h5fe3nY7cICkk92hhgH/EVuB/iXxus531t8IMviWnuknwxpKK7QDBhgTy2sZJzpRNEA8fWuPYIaBTcB1i7wx3BW5FAR8r2Jpt8mgXwI7gZxiY0Ndm689MEDCmWnAyAjwKMg3G+ydtjNOw0I58IJanamavKk6DXoQ+AWr+waduqm/BXj9tIZmr/92HtFmhW9z9ZEDV4/I4j+BF/Tc51qxado9J/ASKt89vPORlq/axMOfHwBmJ9xjiDYDk0u2sq0YPJlyE4l0diSRzo4kU25irbZXj8jikq1sAyYRbZ6dcI8V7hmAZK+7DegGVIXDF5zabNFhiX4K7AX2+vWauuDUZlU4DCjQ7TOXA1hLB1CDSP9QZ3SoKLxMDXVGhxDpB2p8JibWNxcR9BBgrWedwG4qbwGXgct+HUg+wwp6KNY3F5FEauYIIp8B5wa7oi+XObiSlEhnzwIHUH3TIJIEUNWv/wv4KpZIMgy6B4SQmItBDeK97gvi2UYR2a7IdhHNZTqjR4P2D4m5aFFA94RBtgLMbVz4KaiBWJKIHFWoB0WVT4L2LbA2zlcDstUAFYA+aLG4nwa7ImlFPlq5oIyUEsBnKVBhArS/r0TYUahDRksKcLcMsAhI04mb1SX1VN3nV7mzHdEfS+nqswRYNKCTALXzNU8ENWh1pmqAZ/yflxHRUgL8xdJJA3INwFP7YlCD2+ENzy5vOEApbf5Xs+SaQTUDICKvBjUQ6xUeP0ZLn/8VlmrG2IqqASAPJGLOzFNBDFRYCeCFbUkBfEYCyNuKqgEzfLzWVeQUYEzIBFoLROV5lt+iG8Pv10+XEsBnGEVODR+vdQ2AMfQCC6i2x3uy8QA+m1me/4ZE2u1KpmYCBY/3ZOOotgMLPnN5Oc50RG4CKUBEObnfmYuuZaSiZ/xSQOtCar4oBt/vzEVFOen//VI+s8wtmaq0fDD7WLjqTjbzzpY/isHX2pKt+6Z01ad40KmbUmwrkAM9mDeVV2Jpt6lceCztNuVN5RUfnlNs691w/pcHk4LW9Wi2ajTrdTi9V//W8fxPxif/DjJKAKcAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>À retenir</strong>
+    </span></div>
+    <div style="padding:.3em .6em;font-size:.95em;">
+    <ul>
+    <li>L’<strong>information spectrale</strong> exploite la dimension des bandes ; la <strong>signature spectrale</strong> caractérise le type et l’état d’un matériau — une généralisation de la couleur au-delà du visible.</li>
+    <li>Le nombre de bandes distingue les capteurs : <strong>multispectral</strong> (une quinzaine) vs <strong>hyperspectral</strong> (des centaines).</li>
+    <li>Un <strong>indice spectral</strong> met en valeur des caractéristiques du spectre (pentes, gradients) et améliore la <strong>séparabilité</strong> des classes d’intérêt.</li>
+    <li>La librairie <strong><code>spyndex</code></strong> (Awesome Spectral Indices) donne accès à plus de 200 indices ; elle suppose une <strong>nomenclature de bandes</strong> (<code>N</code>, <code>R</code>, <code>G</code>, <code>S1</code>…).</li>
+    <li><code>spyndex.computeIndex</code> applique un indice à partir des bandes nommées ; renommer les bandes (<code>assign_coords</code>) facilite l’usage.</li>
+    <li>Le <strong>NDVI</strong> <span class="math inline">\(= (N - R)/(N + R)\)</span> est élevé pour la végétation dense.</li>
+    </ul>
+    </div>
+    </div>
+
+    ## Exercices
+
+    <div style="border:0.5px solid silver;border-left:.3rem solid #e34692;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fbe8f2;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADP0lEQVRYha2XT3LaMBjFf3SyD91rBnqC0BOUbuJl6AkwB9CUnKD0BCXxAeKcIGSpVZ0bwAkKEx8ATkAXemoUgm0I/WY8smVJ7/n78yS3ttstp1iZZF0g1WNhnC3Un6o/N87mVfNbpxAQ+Bw4j7p/qv0R9Y2qSHx4N7q3scBvBLwS8A/dj4ANcCePvLFTPVAAX4yzraivDxCFogcUIvrGE6cSSIE74KdxdlIzrpLEqSGY4V2d1g0yzs6BPnvCcRIB4+waWAKdMsna7yHR2m63aPL4COzCOFuUSZYDQ+DeOJseMjEKB8bZduv58ratjosjCMSltgJ68gZlkg20+KyGRIrPndEZMBD4AuiHhSom9oHfeszxXusAkzLJ1vhc6GjsChjI9bs2UFt8ALp6GDeAt4GpHtfG2SUvMf2O90YHrwk3us/3rJMDV8CTcXZ5VgUYTehroY66NmFh4+w8kuI2r6X4OzthLZNsjM+ZBfJCLQF99Qxfvwu87E5iT+l+ujMvuPgp6kuBX/qAf6Fu8kBP4I/G2UHD2NjGAhpH4He74IcQCNYtk6xdlSNBfoGlcuMLPsbzPeCvkrL1fHk7wSfQ1xC/ncXnvMRyhU/Wmd7tK+ERPjmHwL3aveBwmBL2tdACn4gPSjzwyXchgEf1TXVtmsAPImCcXRtnU+NsT0QCMPgcQQADkTjHV0QgXgkOr3MglUzmu7HWF8dJ2I1keBMBFPgan4lk3vSBsQeG+DJZikgAT4E/ejeMxob7eA/J8aE6Bx7wqlm7x8QErqPJ8aSJ2nuNAV/f18DneG9XuHrAN172i+WhBMJ2CYqtsrwDLLTbBVevjbPTqtgaZ2d1B5QqAkHVFsCFYlxE5OL2qkyyWZlk46ZzwFEEZEHFhvgSW6kvEBwFEvi8KE4h8YaAxKgLfMWLU3dH+3PgIz7OG5FM30tgrxQLsKiapPcz7W53+Lr/fwSaTGU64KValjXDezXvjidQJtkUfwAJ9lj360WDd44iIEUM4Nf4A0ilzB5iZ0BIsJSauMu6am+Ms9O6gZGa1hJsPV/edvFSC14DKs+FeHeG0lzWc/13mPmkM8J+AvovGOC30E7VwHfYEw2/5gB/AcMlhsUeVwFpAAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>À vous de jouer</strong>
+    </span></div>
+    <div style="padding:.3em .6em;font-size:.95em;">
+    <ol type="1">
+    <li>Calculez le <strong>NDWI</strong> (eau) et le <strong>NDBI</strong> (bâti) avec <code>spyndex</code> sur <code>img_s2</code>, puis affichez-les côte à côte avec le NDVI.
+    </li>
+    <li>Comparez les <strong>signatures spectrales</strong> de deux surfaces supplémentaires de la base USGS (p. ex. neige, végétation sèche) sur les bandes Sentinel-2.
+    </li>
+    <li>Parcourez <code>spyndex.indices</code>, choisissez un indice adapté à l’eau ou aux sols, identifiez les bandes qu’il requiert, et calculez-le sur <code>img_s2</code>.
+    </li>
+    <li>Renommez les bandes de <code>img_s2</code> avec la nomenclature <code>spyndex</code> et vérifiez le résultat avec <code>img_s2.coords['band']</code>.
+    </li>
+    </ol>
+    </div>
+    </div>
 
     ## Quiz
 

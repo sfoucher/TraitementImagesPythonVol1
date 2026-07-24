@@ -132,6 +132,35 @@ div.csl-indent {
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="css/quizlib.min.css">
 </head>
@@ -258,7 +287,9 @@ div.csl-indent {
   </ul></li>
   <li><a href="#quest-ce-que-linformation-spectrale" id="toc-quest-ce-que-linformation-spectrale" class="nav-link" data-scroll-target="#quest-ce-que-linformation-spectrale"><span class="header-section-number">4.2</span> Qu’est ce que l’information spectrale?</a></li>
   <li><a href="#indices-spectraux" id="toc-indices-spectraux" class="nav-link" data-scroll-target="#indices-spectraux"><span class="header-section-number">4.3</span> Indices spectraux</a></li>
-  <li><a href="#quiz" id="toc-quiz" class="nav-link" data-scroll-target="#quiz"><span class="header-section-number">4.4</span> Quiz</a></li>
+  <li><a href="#points-clés" id="toc-points-clés" class="nav-link" data-scroll-target="#points-clés"><span class="header-section-number">4.4</span> Points clés</a></li>
+  <li><a href="#exercices" id="toc-exercices" class="nav-link" data-scroll-target="#exercices"><span class="header-section-number">4.5</span> Exercices</a></li>
+  <li><a href="#quiz" id="toc-quiz" class="nav-link" data-scroll-target="#quiz"><span class="header-section-number">4.6</span> Quiz</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/sfoucher/TraitementImagesPythonVol1/issues" class="toc-action"><i class="bi bi-github"></i>Signaler un problème ou<br>formuler une suggestion</a></li></ul></div></nav>
     </div>
@@ -268,7 +299,7 @@ div.csl-indent {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title"><span id="sec-chap03" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Transformations spectrales</span></span></h1>
-<p class="subtitle lead">Première édition · Version 1.271</p>
+<p class="subtitle lead">Première édition · Version 1.273</p>
 </div>
 
 
@@ -318,7 +349,7 @@ div.csl-indent {
 <li><p><a href="https://docs.xarray.dev/en/stable/">Xarray</a></p></li>
 <li><p><a href="https://corteva.github.io/rioxarray/stable/index.html">rioxarray</a></p></li>
 </ul>
-<p>Dans l’environnement Google Colab, seul <code>rioxarray</code> doit être installés</p>
+<p>Dans l’environnement Google Colab, seul <code>rioxarray</code> doit être installé.</p>
 <div id="1c4f7f43" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>qU matplotlib rioxarray xrscipy scikit<span class="op">-</span>image pyarrow spyndex</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
@@ -460,13 +491,13 @@ div.csl-indent {
 <tr class="even">
 <td>6</td>
 <td>B06</td>
-<td>RE1</td>
+<td>RE2</td>
 <td>Red edge 2</td>
 </tr>
 <tr class="odd">
 <td>7</td>
 <td>B07</td>
-<td>RE2</td>
+<td>RE3</td>
 <td>Red edge 3</td>
 </tr>
 <tr class="even">
@@ -484,7 +515,7 @@ div.csl-indent {
 <tr class="even">
 <td>10</td>
 <td>B09</td>
-<td>-</td>
+<td>WV</td>
 <td>Vapeur d’eau</td>
 </tr>
 <tr class="odd">
@@ -497,7 +528,7 @@ div.csl-indent {
 <td>12</td>
 <td>B12</td>
 <td>S2</td>
-<td>Infra-rouge onde courte 1</td>
+<td>Infra-rouge onde courte 2</td>
 </tr>
 </tbody>
 </table>
@@ -587,8 +618,48 @@ La réduction de dimension vise à ne retenir que l'information principale d'un 
 L'analyse en composantes principales (ACP) est probablement la plus employée. En théorie, l'ACP n'est valide seulement que sur des données Gaussiennes c'est à dire que le nuage de points des données a la forme d'une ellipse à N dimensions. Cette ellipse est caractérisée par des directions principales (grand axe versus petit axe). La première composante est celle du grand axe de l'ellipse pour laquelle la donnée présente le maximum de variation. L'ACP est une décomposition linéaire, c'est à dire que les composantes principales sont des sommes pondérées des valeurs originales.
 --->
 </section>
-<section id="quiz" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="quiz"><span class="header-section-number">4.4</span> Quiz</h2>
+<section id="points-clés" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="points-clés"><span class="header-section-number">4.4</span> Points clés</h2>
+<div class="bloc_notes">
+<div class="bloc_notes-header">
+<div class="bloc_notes-icon">
+
+</div>
+<p><strong>À retenir</strong></p>
+</div>
+<div class="bloc_notes-body">
+<ul>
+<li>L’<strong>information spectrale</strong> exploite la dimension des bandes ; la <strong>signature spectrale</strong> caractérise le type et l’état d’un matériau — une généralisation de la couleur au-delà du visible.</li>
+<li>Le nombre de bandes distingue les capteurs : <strong>multispectral</strong> (une quinzaine) vs <strong>hyperspectral</strong> (des centaines).</li>
+<li>Un <strong>indice spectral</strong> met en valeur des caractéristiques du spectre (pentes, gradients) et améliore la <strong>séparabilité</strong> des classes d’intérêt.</li>
+<li>La librairie <strong><code>spyndex</code></strong> (Awesome Spectral Indices) donne accès à plus de 200 indices ; elle suppose une <strong>nomenclature de bandes</strong> (<code>N</code>, <code>R</code>, <code>G</code>, <code>S1</code>…).</li>
+<li><code>spyndex.computeIndex</code> applique un indice à partir des bandes nommées ; renommer les bandes (<code>assign_coords</code>) facilite l’usage.</li>
+<li>Le <strong>NDVI</strong> <span class="math inline">\(= (N - R)/(N + R)\)</span> est élevé pour la végétation dense.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="exercices" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="exercices"><span class="header-section-number">4.5</span> Exercices</h2>
+<div class="bloc_exercice">
+<div class="bloc_exercice-header">
+<div class="bloc_exercice-icon">
+
+</div>
+<p><strong>À vous de jouer</strong></p>
+</div>
+<div class="bloc_exercice-body">
+<ol type="1">
+<li><p>Calculez le <strong>NDWI</strong> (eau) et le <strong>NDBI</strong> (bâti) avec <code>spyndex</code> sur <code>img_s2</code>, puis affichez-les côte à côte avec le NDVI.</p></li>
+<li><p>Comparez les <strong>signatures spectrales</strong> de deux surfaces supplémentaires de la base USGS (p.&nbsp;ex. neige, végétation sèche) sur les bandes Sentinel-2.</p></li>
+<li><p>Parcourez <code>spyndex.indices</code>, choisissez un indice adapté à l’eau ou aux sols, identifiez les bandes qu’il requiert, et calculez-le sur <code>img_s2</code>.</p></li>
+<li><p>Renommez les bandes de <code>img_s2</code> avec la nomenclature <code>spyndex</code> et vérifiez le résultat avec <code>img_s2.coords['band']</code>.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="quiz" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="quiz"><span class="header-section-number">4.6</span> Quiz</h2>
 <div id="e0681e34" class="cell" data-results="asis" data-execution_count="16">
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div id="Chap03" class="card"><link type="text/javascript" src="libs/quizlib.1.0.1.min.js"><script>var Quiz=function(a,b){this.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),this.unansweredQuestionText="Question sans réponse !",this.container=document.getElementById(a),this.questions=[],this.result=new QuizResult,this.answers=b;for(var c=0;c<this.container.children.length;c++)this.container.children[c].classList.contains(Quiz.Classes.QUESTION)&&this.questions.push(this.container.children[c]);if(this.answers.length!=this.questions.length)throw new Error("Number of answers does not match number of questions!")};Quiz.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),Quiz.prototype.checkAnswers=function(a){void 0===a&&(a=!0);for(var b=[],c=[],d=0;d<this.questions.length;d++){var e=this.questions[d],f=this.answers[d],g=[];this.clearHighlights(e);for(var h,i=e.getElementsByClassName(Quiz.Classes.QUESTION_ANSWERS)[0].getElementsByTagName("input"),j=0;j<i.length;j++)h=i[j],"checkbox"===h.type||"radio"===h.type?h.checked&&g.push(h.value):""!==h.value&&g.push(h.value);1!=g.length||Array.isArray(f)?0===g.length&&b.push(e):g=g[0],c.push(Utils.compare(g,f))}if(0===b.length||!a)return this.result.setResults(c),!0;for(d=0;d<b.length;d++){var k=document.createElement("span");k.appendChild(document.createTextNode(this.unansweredQuestionText)),k.className=Quiz.Classes.QUESTION_WARNING,b[d].getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].appendChild(k)}return!1},Quiz.prototype.clearHighlights=function(a){for(var b=a.getElementsByClassName(Quiz.Classes.QUESTION_WARNING);b.length>0;)b[0].parentNode.removeChild(b[0]);var c,d=[a.getElementsByClassName(Quiz.Classes.CORRECT),a.getElementsByClassName(this.Classes.INCORRECT)];for(i=0;i<d.length;i++)for(;d[i].length>0;)c=d[i][0],c.classList.remove(Quiz.Classes.CORRECT),c.classList.remove(Quiz.Classes.INCORRECT);for(var e=a.getElementsByClassName(Quiz.Classes.TEMP);e.length>0;)e[0].parentNode.removeChild(e[0])},Quiz.prototype.highlightResults=function(a){for(var b,c=0;c<this.questions.length;c++)b=this.questions[c],b.getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].classList.add(this.result.results[c]?Quiz.Classes.CORRECT:Quiz.Classes.INCORRECT),void 0!==a&&a(this,b,c,this.result.results[c])};var QuizResult=function(){this.results=[],this.totalQuestions=0,this.score=0,this.scorePercent=0,this.scorePercentFormatted=0};QuizResult.prototype.setResults=function(a){this.results=a,this.totalQuestions=this.results.length,this.score=0;for(var b=0;b<this.results.length;b++)this.results[b]&&this.score++;this.scorePercent=this.score/this.totalQuestions,this.scorePercentFormatted=Math.floor(100*this.scorePercent)};var Utils=function(){};Utils.compare=function(a,b){if(a.length!=b.length)return!1;if(Array.isArray(a)&&Array.isArray(b)){for(var c=0;c<a.length;c++)if(a[c]!==b[c])return!1;return!0}return a===b};
