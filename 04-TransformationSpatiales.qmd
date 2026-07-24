@@ -127,7 +127,7 @@ L'analyse fréquentielle, issue du traitement du signal, permet d'avoir un autre
 
 ### La transformée de Fourier
 
-La transformée de Fourier permet de transformer une image dans un espace fréquentielle. Cette transformée est complètement réversible. Dans le cas des images numériques, on parle de `2D-DFT` (*2D-Discrete Fourier Transform*) qui est un algorithme optimisé pour le calcul fréquentiel [@Cooley-1965]. La *1D-DFT* peu s'écrire simplement comme une projection sur une série d'exponentielles complexes:
+La transformée de Fourier permet de transformer une image dans un espace fréquentielle. Cette transformée est complètement réversible. Dans le cas des images numériques, on parle de `2D-DFT` (*2D-Discrete Fourier Transform*) qui est un algorithme optimisé pour le calcul fréquentiel [@Cooley-1965]. La *1D-DFT* peut s'écrire simplement comme une projection sur une série d'exponentielles complexes:
 
 $$X[k] = \sum_{n=0 \ldots N-1} x[n] \times \exp(-j \times 2\pi \times k \times n/N))$$ {#eq-dft}
 
@@ -135,9 +135,9 @@ La transformée inverse prend une forme similaire:
 
 $$x[k] = \frac{1}{N}\sum_{n=0 \ldots N-1} X[n] \times \exp(j \times 2\pi \times k \times n/N))$$ {#eq-idft}
 
-Le signal d'origine est donc reconstruit à partir d'une somme de sinusoïdes complexes $\exp(j2\pi \frac{k}{N}n))$ de fréquence $k/N$. Noter qu'à partir de $k=N/2$, les sinusoïdes se répètent à un signe près et forme un miroir des composantes, la convention est alors de mettre ces composantes dans une espace négatif $[-N/2,\ldots,-1]$.
+Le signal d'origine est donc reconstruit à partir d'une somme de sinusoïdes complexes $\exp(j2\pi \frac{k}{N}n))$ de fréquence $k/N$. Noter qu'à partir de $k=N/2$, les sinusoïdes se répètent à un signe près et forment un miroir des composantes, la convention est alors de mettre ces composantes dans une espace négatif $[-N/2,\ldots,-1]$.
 
-Dans le cas d'un simple signal périodique à une dimension avec une fréquence de 4/16 (donc 4 périodes sur 16) on obtient deux pics de fréquence à la position de 4 cycles observés sur $N=16$ observations. Les puissances de Fourier sont affichées dans un espace fréquentiel en cycles par unité d'espacement de l'échantillon (avec zéro au début) variant entre -1 et +1. Par exemple, si l'espacement des échantillons est en secondes, l'unité de fréquence est cycles/seconde (ou Hz). Dans le cas de N échantillons, le pic sera observé à la fréquence $+/- 4/16=0.25$ cycles/secondes. La fréquence d'échantillonnage $F_s$ du signal a aussi beaucoup d'importance aussi et doit être au moins a deux fois la plus haute fréquence observée (ici $F_s > 0.5$) sinon un phénomène de repliement appelé aliasing sera observé.
+Dans le cas d'un simple signal périodique à une dimension avec une fréquence de 4/16 (donc 4 périodes sur 16) on obtient deux pics de fréquence à la position de 4 cycles observés sur $N=16$ observations. Les puissances de Fourier sont affichées dans un espace fréquentiel en cycles par unité d'espacement de l'échantillon (avec zéro au début) variant entre -1 et +1. Par exemple, si l'espacement des échantillons est en secondes, l'unité de fréquence est cycles/seconde (ou Hz). Dans le cas de N échantillons, le pic sera observé à la fréquence $+/- 4/16=0.25$ cycles/secondes. La fréquence d'échantillonnage $F_s$ du signal a aussi beaucoup d'importance et doit être au moins à deux fois la plus haute fréquence observée (ici $F_s > 0.5$) sinon un phénomène de repliement appelé aliasing sera observé.
 
 ```{python}
 import math
@@ -360,7 +360,7 @@ L'application de filtres à l'intérieur de fenêtres glissantes implique de gé
 
 **Installation de Pytorch**
 
-Cette section nécessite la librairie Pytorch avec un GPU et ne fonctionnera que sur Colab. On peut quand même installer une version locale CPU de pytorch: `pip install -qU torch==2.4.0+cpu`
+Cette section utilise la librairie PyTorch. Le calcul s'exécute très bien sur CPU (c'est le cas lors de la génération de ce livre) ; un GPU, par exemple sur Colab, ne fait que l'accélérer. Pour une installation locale en version CPU : `pip install -qU torch==2.4.0+cpu`
 
 Une couche convolutionnelle est simplement un ensemble de filtres appliqués sur la donnée d'entrée. Ce type de filtrage est à la base des réseaux dits convolutionnels qui seront abordés dans le tome 2. On peut ici imposer les mêmes filtres de gradient dans la couche convolutionnelle :
 
@@ -448,6 +448,8 @@ K & = \frac{\sigma^2_I}{\sigma^2_I + \sigma^2_{bruit}}
 $$ {#eq-lee-filter}
 
 De la sorte, si la variance locale est élevée $K$ s'approche de $1$ préservant ainsi les détails de l'image $I$ sinon l'image moyenne $I_M$ est appliquée.
+
+En pratique, on exprime souvent la pondération $K$ à l'aide du **coefficient de variation** local $CV = \sigma_I / I_M$ : $K = (CV - CV_{bruit})\,/\,CV$, où $CV_{bruit}$ est le coefficient de variation du *speckle* (ici supposé $\approx 0{,}25$). C'est cette forme équivalente qui est utilisée dans le code ci-dessous (`ponderation`).
 
 ```{python}
 rolling_win = img_SAR.sel(band=1).rolling(x=5, y=5,  min_periods= 3, center= True).construct(x="x_win", y="y_win", keep_attrs= True)
