@@ -8,6 +8,7 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 - Run pattern (from repo root): `docker run --rm -v "$PWD":/workspace mlsysbook-linux:v2 quarto <args>` (repo mounts at `/workspace`). Add `--network=host -p 3508:3508` for `quarto preview`.
 - Container runs as **root** → generated files (`docs/`, `pdf/`) are root-owned on host; host-side ops on them (e.g. copying PDF into `docs/`) hit EACCES — run such steps inside the container (`q cp …`, as process.sh does).
 - `process.sh` — full build+export script (HTML + PDF, chapter→ipynb/marimo export). Set `-euo pipefail`; all quarto/marimo calls wrapped in a `q()` docker helper.
+- Piping a script into the container needs `-i`: `docker run --rm -i … python3 - <<'PY'`. Without `-i`, stdin isn't forwarded → `python3 -` runs an empty script and exits 0 silently.
 
 ## Rendering
 
@@ -18,6 +19,10 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 - Quarto bundles Typst, but **book projects cannot render it** (`WARN: typst format not supported by book projects`). PDF stays LaTeX unless the project leaves `type: book`.
 - `clean_notebooks.py` (stdlib, tested via `python3 -m unittest tests.test_clean_notebooks -v`) cleans quarto-exported notebooks: renders `bloc_*` callouts as inline HTML (body reused from `docs/<stem>.html`), strips the YAML header, HTML comments, and `#|` directives. Runs in process.sh via `q python3 clean_notebooks.py "$ch.ipynb"` after `quarto convert`.
 - Build emits pre-existing non-fatal warnings — a SCSS parse error dumping `_quarto_internal_scss_error.scss`, and dangling `@sec-*` crossrefs. Don't chase unless fixing them directly.
+- Editing any cell in a chapter `.qmd` invalidates its whole jupyter cache → the chapter fully re-executes on next build, which needs its data files present in repo root (`RGBNIR_of_S2A.tif`, `sentinel2.tif` (177MB), `SAR.tif`, `carte.tif`, `modis-aqua.PNG`, `berkeley.jpg`, `ASCIIdata_splib07b_rsSentinel2/`; all `*.tif`-gitignored/local). Verify present before rebuilding.
+- xarray `.plot()` (pcolormesh) on a full-res raster makes a huge **vector** `figure-pdf/*.pdf` (a 1188×1599 SAR image = 40MB, and it bloats the book PDF too). Use `.plot.imshow()` (raster, ~100KB) or `artist.set_rasterized(True)`. `#| fig-format: png` is **ignored per-cell** by the jupyter engine.
+- process.sh renders PDF with `--no-clean`, so renamed/removed figures linger as orphans in `*_files/figure-pdf/`. When a cell's figure outputs change, clear the chapter's `*_files/` and `docs/*_files/` before rebuilding.
+- Quarto converts apostrophes in prose/headings to curly `'` in HTML — `grep` with a straight `'` misses them; verify with apostrophe-free fragments.
 
 ## Deps
 
@@ -34,6 +39,8 @@ Image `v2` reconciled with Dockerfile via clean rebuild (opencv/seaborn/gdown/sp
 
 `bloc_*` callouts (objectif/package/exercice/aller_loin/attention/astuce/notes) are custom divs styled in `css/r4ds.scss` (per-type color + `images/Bloc*.png` icon).
 
+Chapter quizzes: an HTML-only cell `render_quizz(Quiz("quiz/ChapNN.yml", "ChapNN"))` from `code_complementaire/quizz_functions.py`, guarded by `.content-visible when-format="html"` with a `when-profile="production"` PDF fallback. Quiz YAML = list of questions: `type` uc/mc/stat, `response` a **1-based** index (or list for mc), `answers` list, optional `help`. `quiz/Chap01–07.yml` shipped as unrelated spatial-stats placeholders — each chapter must point at its own `ChapNN.yml`.
+
 DOCX render is commented out in process.sh. Quarto prunes non-target format subdirs from `<chapter>_files/` on each render, so `figure-docx/` PNGs get deleted — they're gitignored (`**/figure-docx/`); don't re-commit them.
 
-`docs/…​.pdf` is ~55MB (>GitHub's 50MB soft limit) and re-commits in full each build — consider Git LFS if the repo gets heavy.
+`docs/…​.pdf` is committed in full each build (~17MB after removing vector figure bombs — see the pcolormesh note). If it exceeds GitHub's 50MB soft limit again, hunt oversized `*_files/figure-pdf/*.pdf` or use Git LFS.

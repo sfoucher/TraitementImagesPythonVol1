@@ -526,7 +526,8 @@ def _(img_SAR, plt, xr):
     print(img_SAR.rio.resolution())
     print(img_SAR.rio.crs)
     (_fig, _axs) = plt.subplots(1, 1, figsize=(6, 4))
-    xr.ufuncs.log10(img_SAR.sel(band=1).drop('band')).plot()
+    # imshow (raster) plutôt que .plot() (pcolormesh vectoriel = PDF de 40 Mo)
+    xr.ufuncs.log10(img_SAR.sel(band=1).drop('band')).plot.imshow()
     _axs.set_title('Image SAR Sentinel-1 (dB)')
     return
 

@@ -289,7 +289,7 @@
 \subtitle{Première édition}
 \author{Samuel Foucher \and Philippe Apparicio \and Yacine
 Bouroubi \and Mickaël Germain \and Étienne Clabaut}
-\date{2026-07-23}
+\date{2026-07-24}
 \begin{document}
 \frontmatter
 \maketitle
@@ -4820,7 +4820,8 @@ en dB en appliquant la fonction \texttt{log10}.
 \BuiltInTok{print}\NormalTok{(img\_SAR.rio.resolution())}
 \BuiltInTok{print}\NormalTok{(img\_SAR.rio.crs)}
 \NormalTok{fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{6}\NormalTok{, }\DecValTok{4}\NormalTok{))}
-\NormalTok{xr.ufuncs.log10(img\_SAR.sel(band}\OperatorTok{=}\DecValTok{1}\NormalTok{).drop(}\StringTok{"band"}\NormalTok{)).plot()}
+\CommentTok{\# imshow (raster) plutôt que .plot() (pcolormesh vectoriel = PDF de 40 Mo)}
+\NormalTok{xr.ufuncs.log10(img\_SAR.sel(band}\OperatorTok{=}\DecValTok{1}\NormalTok{).drop(}\StringTok{"band"}\NormalTok{)).plot.imshow()}
 \NormalTok{axs.set\_title(}\StringTok{"Image SAR Sentinel{-}1 (dB)"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
