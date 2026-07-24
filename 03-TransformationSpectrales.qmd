@@ -68,7 +68,7 @@ Les librairies qui vont être explorées dans ce chapitre sont les suivantes:
 
 -   [rioxarray](https://corteva.github.io/rioxarray/stable/index.html)
 
-Dans l'environnement Google Colab, seul `rioxarray` doit être installés
+Dans l'environnement Google Colab, seul `rioxarray` doit être installé.
 
 ```{python}
 #| eval: false
@@ -191,13 +191,13 @@ spyndex.bands
 | 3     | B03  | G       | Vert                      |
 | 4     | B04  | R       | Rouge                     |
 | 5     | B05  | RE1     | Red edge 1                |
-| 6     | B06  | RE1     | Red edge 2                |
-| 7     | B07  | RE2     | Red edge 3                |
+| 6     | B06  | RE2     | Red edge 2                |
+| 7     | B07  | RE3     | Red edge 3                |
 | 8     | B08  | N       | Proche-infrarouge 1       |
 | 9     | B08A | N2      | Proche-infrarouge 2       |
-| 10    | B09  | \-      | Vapeur d'eau              |
+| 10    | B09  | WV      | Vapeur d'eau              |
 | 11    | B11  | S1      | Infra-rouge onde courte 1 |
-| 12    | B12  | S2      | Infra-rouge onde courte 1 |
+| 12    | B12  | S2      | Infra-rouge onde courte 2 |
 
 : Noms des bandes Sentinel-2
 
@@ -342,6 +342,47 @@ La réduction de dimension vise à ne retenir que l'information principale d'un 
 
 L'analyse en composantes principales (ACP) est probablement la plus employée. En théorie, l'ACP n'est valide seulement que sur des données Gaussiennes c'est à dire que le nuage de points des données a la forme d'une ellipse à N dimensions. Cette ellipse est caractérisée par des directions principales (grand axe versus petit axe). La première composante est celle du grand axe de l'ellipse pour laquelle la donnée présente le maximum de variation. L'ACP est une décomposition linéaire, c'est à dire que les composantes principales sont des sommes pondérées des valeurs originales.
 --->
+
+## Points clés
+
+:::::: bloc_notes
+:::: bloc_notes-header
+::: bloc_notes-icon
+:::
+
+**À retenir**
+::::
+
+::: bloc_notes-body
+-   L'**information spectrale** exploite la dimension des bandes ; la **signature spectrale** caractérise le type et l'état d'un matériau — une généralisation de la couleur au-delà du visible.
+-   Le nombre de bandes distingue les capteurs : **multispectral** (une quinzaine) vs **hyperspectral** (des centaines).
+-   Un **indice spectral** met en valeur des caractéristiques du spectre (pentes, gradients) et améliore la **séparabilité** des classes d'intérêt.
+-   La librairie **`spyndex`** (Awesome Spectral Indices) donne accès à plus de 200 indices ; elle suppose une **nomenclature de bandes** (`N`, `R`, `G`, `S1`…).
+-   `spyndex.computeIndex` applique un indice à partir des bandes nommées ; renommer les bandes (`assign_coords`) facilite l'usage.
+-   Le **NDVI** $= (N - R)/(N + R)$ est élevé pour la végétation dense.
+:::
+::::::
+
+## Exercices
+
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
+
+**À vous de jouer**
+::::
+
+::: bloc_exercice-body
+1.  Calculez le **NDWI** (eau) et le **NDBI** (bâti) avec `spyndex` sur `img_s2`, puis affichez-les côte à côte avec le NDVI.
+
+2.  Comparez les **signatures spectrales** de deux surfaces supplémentaires de la base USGS (p. ex. neige, végétation sèche) sur les bandes Sentinel-2.
+
+3.  Parcourez `spyndex.indices`, choisissez un indice adapté à l'eau ou aux sols, identifiez les bandes qu'il requiert, et calculez-le sur `img_s2`.
+
+4.  Renommez les bandes de `img_s2` avec la nomenclature `spyndex` et vérifiez le résultat avec `img_s2.coords['band']`.
+:::
+::::::
 
 ## Quiz
 
