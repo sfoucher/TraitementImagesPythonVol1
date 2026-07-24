@@ -132,7 +132,7 @@ with rxr.open_rasterio('SAR.tif', mask_and_scale= True) as img_SAR:
 
 ## Visualisation en Python
 
-ID'emblée, il faut mentionner que Python n'est pas vraiment fait pour visualiser de la donnée de grande taille, le niveau d'interactivité est aussi assez limité. Pour une visualisation interactives, il est plutôt conseillé d'utiliser un outil comme [QGIS](https://qgis.org/). Néanmoins, il est possible de visualiser de petites images avec la librairie [`matplotlib`](https://matplotlib.org/stable/) qui est la librairie principale de visualisation en Python. Cette librairie est extrêmement riche et versatile, nous ne présenterons que les bases nécessaires pour démarrer. Le lecteur désirant aller plus loin pourra consulter les nombreux tutoriels disponibles comme [celui-ci](https://matplotlib.org/stable/tutorials/index.html).
+D'emblée, il faut mentionner que Python n'est pas vraiment fait pour visualiser de la donnée de grande taille, le niveau d'interactivité est aussi assez limité. Pour une visualisation interactives, il est plutôt conseillé d'utiliser un outil comme [QGIS](https://qgis.org/). Néanmoins, il est possible de visualiser de petites images avec la librairie [`matplotlib`](https://matplotlib.org/stable/) qui est la librairie principale de visualisation en Python. Cette librairie est extrêmement riche et versatile, nous ne présenterons que les bases nécessaires pour démarrer. Le lecteur désirant aller plus loin pourra consulter les nombreux tutoriels disponibles comme [celui-ci](https://matplotlib.org/stable/tutorials/index.html).
 
 La fonction de base pour créer une figure est `subplots`, la largeur et la hauteur en pouces de la figure peuvent être contrôlées via le paramètre `figsize`:
 
@@ -156,7 +156,8 @@ Pour un affichage à trois bandes, les valeurs seront ramenées sur une échelle
 ```{python}
 import matplotlib.pyplot as plt
 fig, ax= plt.subplots(figsize=(6, 5))
-plt.imshow(img_rgbnir.data.transpose(1,2,0)/2500.0)
+# on garde les 3 premières bandes (R,V,B) : une 4e bande serait lue comme canal alpha
+plt.imshow(img_rgbnir.data[0:3].transpose(1,2,0)/2500.0)
 plt.show()
 ```
 
@@ -249,7 +250,7 @@ import numpy as np
 array = np.random.randint(0,10,100) # 100 valeurs aléatoires entre 0 et 10
 hist, bin_limites = np.histogram(array, density=True)
 print('valeurs :',hist)
-print(';imites :',bin_limites)
+print('limites :',bin_limites)
 ```
 
 Le calcul se fait avec 10 intervalles par défaut.
@@ -376,8 +377,11 @@ Le réhaussenent par fonction consiste à appliquer une fonction non linéaire a
 
 ```{python}
 percentiles_position= (0,0.1,1,2,50,98,99,99.9,100)
-values= xr.apply_ufunc(lambda x: 10 * np.log10(x), img_SAR[0]).data
-percentiles_db= dict(zip(percentiles_position, np.percentile(values, percentiles_position)))
+sar= img_SAR[0].data
+# on masque le no_data et les valeurs <= 0 (impropres au log) : sinon 10*log10 -> -inf/nan
+valid= (sar != NO_DATA_FLOAT) & (sar > 0)
+values= 10*np.log10(np.where(valid, sar, np.nan))  # image en dB, nan hors du masque
+percentiles_db= dict(zip(percentiles_position, np.nanpercentile(values, percentiles_position)))
 print(percentiles_db)
 ```
 
@@ -385,17 +389,19 @@ Les boites à moustache (*boxplots*) ont une bien meilleure distribution qui est
 
 ```{python}
 #| echo: false
+values_valid= values.flatten()
+values_valid= values_valid[np.isfinite(values_valid)]  # on retire les nan hors masque
 fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(6, 4), sharex=True)
 ax[0].set_title('Distribution de la bande 0 de img_SAR en dB', fontsize='small')
 ax[0].grid(True)
-ax[0].violinplot(values.flatten(), orientation  ='horizontal', 
+ax[0].violinplot(values_valid, orientation  ='horizontal',
                  quantiles =(0.01,0.02,0.50,0.98,0.99),
                   showmeans=False,
                   showmedians=True,
                  showextrema = True)
 ax[1].set_xlabel('Valeur des pixels')
 ax[1].grid(True)
-bplot = ax[1].boxplot(values.flatten(), notch = True, orientation  ='horizontal')
+bplot = ax[1].boxplot(values_valid, notch = True, orientation  ='horizontal')
 plt.tight_layout()
 plt.show()
 ```
@@ -438,10 +444,16 @@ j = L \times CDF_{source}(i)
 $$ On peut appliquer cette procédure sur l'image SAR en dB de la façon suivante:
 
 ```{python}
-values= np.sort(10*np.log10(img_SAR[0].data.flatten())) # on range les valeurs par ordre croissant
+sar= img_SAR[0].data
+# masque : no_data et valeurs <= 0 exclues avant le passage en dB
+valid= (sar != NO_DATA_FLOAT) & (sar > 0)
+sar_db= 10*np.log10(np.where(valid, sar, np.nan)) # image en dB (nan hors masque)
+values= np.sort(sar_db[valid].flatten()) # valeurs valides rangées par ordre croissant
 cdf_x= np.linspace(values[0], values[-1], 1000) # 1000 valeurs réparties également sur l'intervalle des valeurs
 cdf_source= np.interp(cdf_x, values, np.arange(len(values))/len(values)*255) # calcul de la CDF source
-values_eq=np.interp(np.log10(img_SAR[0].data), cdf_x, cdf_source).astype('uint8')
+# on applique sur la MÊME échelle (dB) que celle utilisée pour construire la CDF
+values_eq= np.interp(sar_db, cdf_x, cdf_source)
+values_eq= np.where(valid, values_eq, 0).astype('uint8') # no_data remis à 0
 plt.imshow(values_eq)
 plt.axis('off')
 ```
@@ -506,4 +518,60 @@ img_s2.sel(band=[12,11,4]).plot.imshow(vmin=86, vmax=4000, ax=ax[1,1])
 ax[1,1].set_title('SWIR2,SWIR1,NIR')
 plt.tight_layout()
 plt.show()
+```
+
+## Points clés
+
+:::::: bloc_notes
+:::: bloc_notes-header
+::: bloc_notes-icon
+:::
+
+**À retenir**
+::::
+
+::: bloc_notes-body
+-   Le réhaussement visuel améliore l'affichage (contraste, dynamique) **sans modifier la donnée** d'origine : il est appliqué dynamiquement à l'affichage.
+-   Les **statistiques** d'une image (min/max, moyenne, quantiles, écart-type) guident le choix de la transformation.
+-   Le **stretch linéaire** remappe la dynamique ; pour les histogrammes **asymétriques** (images SAR), les **percentiles** (p. ex. 2 %–98 %) fournissent des bornes d'affichage robustes.
+-   Les transformations **non linéaires** — passage en **dB** (`10·log10`) et **égalisation d'histogramme** — rétablissent une distribution exploitable.
+-   Les **palettes de couleur** et les **composés colorés** (choix des bandes) révèlent des propriétés différentes de la surface ; `vmin`/`vmax` contrôlent la dynamique affichée.
+:::
+::::::
+
+## Exercices
+
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
+
+**À vous de jouer**
+::::
+
+::: bloc_exercice-body
+1.  Proposez une autre transformation non linéaire pour l'image SAR (p. ex. la racine carrée ou `np.arcsinh`) et comparez son histogramme à celui obtenu en décibels.
+
+2.  Reprenez l'égalisation d'histogramme en remplaçant la CDF cible équiprobable par une **CDF gaussienne** (avec `scipy.stats.norm.cdf`), puis observez l'effet sur l'image SAR.
+
+3.  À partir de `img_s2`, construisez un nouveau composé coloré (p. ex. `[11, 8, 4]` ou `[8, 4, 3]`) et décrivez les surfaces qu'il met en valeur.
+:::
+::::::
+
+## Quiz
+
+
+::: {.content-visible when-profile="production"}
+
+Utilisez la version html.
+:::
+
+
+```{python .content-visible when-format="html"}
+#| echo: false
+#| eval: true
+#| results: asis
+from code_complementaire.quizz_functions import Quiz, render_quizz
+Chap02Quiz = Quiz("quiz/Chap02.yml", "Chap02")
+render_quizz(Chap02Quiz)
 ```

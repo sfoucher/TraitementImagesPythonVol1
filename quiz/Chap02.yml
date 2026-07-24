@@ -1,75 +1,96 @@
-- label: "Parmi les matrices de pondération spatiale ci-dessous, lesquelles sont des matrices de contiguïté?"
-  type: mc
-  response: [1,2,3,4]
+- label: "Quelle est la principale bibliothèque de visualisation d'images en Python ?"
+  type: uc
+  response: 1
   answers:
-     - "Partage d’un nœud"
-     - "Partage d’un segment"
-     - "Partage d’un nœud et ordre d’adjacence"
-     - "Partage d’un segment et ordre d’adjacence"
-     - "Connectivité selon la distance"
-  help: "Relisez au besoin la [section @sec-022]."
+     - "matplotlib"
+     - "rasterio"
+     - "GDAL"
+     - "NumPy"
+  help: "Relisez au besoin la section « Visualisation en Python »."
 
-- label: "En anglais, comment est appelée une matrice selon le partage d'un nœud?"
+- label: "Dans quel ordre `imshow` attend-il les dimensions d'une image à plusieurs bandes ?"
   type: uc
   response: 2
   answers:
-     - "Rook"
-     - "Queen"
-  help: "Relisez au besoin le début de la [section @sec-022]."
+     - "bande, hauteur, largeur"
+     - "hauteur, largeur, bande"
+     - "largeur, hauteur, bande"
+     - "L'ordre n'a pas d'importance"
+  help: "Relisez au besoin la section « Visualisation en Python »."
 
-- label: "Comparativement à une matrice de l'inverse de la distance, une matrice de l'inverse de la distance au carré accorde un poids plus important aux entités proches."
+- label: "Pour afficher une image à trois bandes avec `imshow`, les valeurs doivent être :"
+  type: uc
+  response: 1
+  answers:
+     - "Ramenées entre 0 et 1 (ou entre 0 et 255)"
+     - "Laissées telles quelles"
+     - "Converties en entiers 64 bits"
+     - "Transformées en décibels"
+  help: "Relisez au besoin la section « Visualisation en Python »."
+
+- label: "Le réhaussement visuel modifie de façon permanente les valeurs de la donnée d'origine."
+  type: uc
+  response: 2
+  answers:
+     - "Vrai"
+     - "Faux"
+  help: "Le réhaussement est appliqué dynamiquement à l'affichage; relisez la section « Réhaussements visuels »."
+
+- label: "Quelles statistiques univariées sont utiles au réhaussement d'une image ?"
+  type: mc
+  response: [1, 2, 3, 4]
+  answers:
+     - "Valeurs minimale et maximale"
+     - "Moyenne"
+     - "Quantiles et percentiles"
+     - "Écart-type"
+     - "Le système de projection cartographique"
+  help: "Relisez au besoin la section « Statistiques d'une image »."
+
+- label: "Pour une distribution très asymétrique (p. ex. une image SAR), quel outil permet de fixer des bornes d'affichage robustes ?"
+  type: uc
+  response: 2
+  answers:
+     - "La valeur moyenne seule"
+     - "Les percentiles (p. ex. 2 % et 98 %)"
+     - "La valeur maximale seule"
+     - "Le nombre de bandes"
+  help: "Relisez au besoin la section « Cas des histogrammes asymétriques »."
+
+- label: "Pour une image radar, quelle transformation non linéaire est populaire pour afficher la rétrodiffusion ?"
+  type: uc
+  response: 1
+  answers:
+     - "Le passage en décibels (10·log10)"
+     - "La mise au carré"
+     - "L'inverse (1/x)"
+     - "La racine cubique"
+  help: "Relisez au besoin la section « Réhaussement par fonctions »."
+
+- label: "Quel est le but de l'égalisation d'histogramme ?"
+  type: uc
+  response: 1
+  answers:
+     - "Rendre les valeurs de pixels équiprobables (histogramme aplati)"
+     - "Réduire la résolution spatiale de l'image"
+     - "Supprimer le bruit thermique du capteur"
+     - "Géoréférencer l'image"
+  help: "Relisez au besoin la section « Égalisation d'histogramme »."
+
+- label: "Les paramètres `vmin` et `vmax` de `imshow` contrôlent la dynamique affichée sans modifier la donnée."
   type: uc
   response: 1
   answers:
      - "Vrai"
      - "Faux"
-  help: "Relisez au besoin la [section @sec-021]."
+  help: "Relisez au besoin la section « Cas des histogrammes asymétriques »."
 
-- label: "Quels sont les avantages de la standardisation en ligne des matrices de pondération spatiale?"
-  type: mc
-  response: [1,2,3]
-  answers:
-     - "La somme de chaque ligne est égale à 1."
-     - "La somme de l'ensemble de la matrice est égale au nombre d'entités spatiales."
-     - "La standardisation permet de comparer la dépendance spatiale selon différentes matrices."
-     - "La standardisation augmente la vitesse des calculs."
-  help: "Relisez au besoin la [section @sec-022]."
-
-- label: "Quelle est la différence entre les deux mesures locales de Getis et Ord?"
+- label: "Dans l'exemple du chapitre, quel triplet de bandes Sentinel-2 produit un composé vraies couleurs (RVB) ?"
   type: uc
-  response: 1
+  response: 2
   answers:
-     - "Gi* tient compte à la fois des valeurs des entités voisines ou proches, mais aussi de celle de i."
-     - "Contrairement à Gi, Gi* a un z-score."
-  help: "Relisez au besoin la [section @sec-022]."
-  
-- label: "Parmi les quatre catégories de la typologie basée sur le nuage de points du I de Moran, lesquelles renvoient à de l'autocorrélation spatiale locale positive?"
-  type: mc
-  response: [1,2]
-  answers:
-     - "HH"
-     - "LL"
-     - "HL"
-     - "LH"
-  help: "Relisez au besoin la [section @sec-022]."
-
-- label: "Le village gaulois correspond à quelle catégorie?"
-  type: uc
-  response: 3
-  answers:
-     - "HH"
-     - "LL"
-     - "HL"
-     - "LH"
-  help: "Relisez au besoin la [section @sec-021]."
-  
-- label: "Quelles sont les trois manières de tester la significativité des mesures d'autocorrélation globales?"
-  type: mc
-  response: [1, 3, 4]
-  answers:
-     - "Avec l'hypothèse de la normalité"
-     - "En relançant plusieurs fois les calculs"
-     - "Avec l'hypothèse de la randomisation"
-     - "Avec la méthode Monte-Carlo (habituellement avec 999 échantillons)"
-  help: "Relisez au besoin la [section @sec-021]."
-  
+     - "8, 3, 2"
+     - "4, 3, 2"
+     - "12, 8, 4"
+     - "12, 11, 4"
+  help: "Relisez au besoin la section « Composés colorés »."
