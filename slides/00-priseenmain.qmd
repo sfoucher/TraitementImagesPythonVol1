@@ -1,0 +1,170 @@
+---
+title: "Introduction au langage Python"
+subtitle: "Chapitre 0 — Traitement d'images satellites avec Python"
+author: "Foucher, Apparicio, Bouroubi, Germain, Clabaut"
+jupyter: python3
+---
+
+## Objectifs {.smaller}
+
+::: {.incremental}
+- Connaître les **distributions** de Python
+- Installer un **environnement d'exécution**
+- Maîtriser les **structures de base** (listes, tuples, ensembles, dictionnaires)
+- Écrire **boucles**, **conditions** et **fonctions**
+- Aborder la **programmation objet**
+- Manipuler un **tableau NumPy**
+:::
+
+::: {.notes}
+Python = outil de scriptage pour manipuler des données satellitaires, pas une fin en soi.
+:::
+
+## Les distributions {.smaller}
+
+| Distribution | Description | Idéale pour |
+|---|---|---|
+| **CPython** | l'implémentation officielle « vanille » | compatibilité, standards |
+| **Anaconda** | livrée avec les bibliothèques scientifiques | données, *machine learning* |
+| **Miniconda** | version légère, on ajoute au besoin | environnement minimal |
+| **PyPy** | optimisée pour la vitesse | calcul intensif |
+
+## Outils de programmation {.smaller}
+
+| Outil | Type | Points forts |
+|---|---|---|
+| **VS Code** | éditeur extensible | gratuit, léger, extensions |
+| **PyCharm** | IDE complet | autocomplétion, débogage |
+| **Spyder** | IDE scientifique | libre, orienté calcul |
+| **Jupyter** | notebook | code + texte + figures (Colab) |
+| **Marimo** | notebook réactif | ré-exécute les dépendances |
+
+## Bonnes pratiques {.smaller}
+
+::: {.incremental}
+- Installez **1–2 versions avant** la plus récente (stabilité)
+- Évitez les versions **obsolètes** (bibliothèques figées)
+- **Un environnement virtuel par projet** (évite les conflits)
+- Vérifiez : `python --version`
+:::
+
+. . .
+
+```bash
+conda create -n test python=3.10   # Anaconda / Miniconda
+conda activate test
+# ou, sans conda :
+python -m venv test && source test/bin/activate
+```
+
+## Quatre structures de base {.smaller}
+
+::: {.incremental}
+- **Liste** `[…]` — ordonnée, modifiable, doublons permis
+- **Tuple** `(…)` — ordonné, **immuable**
+- **Ensemble** `{…}` — non ordonné, **sans doublons**
+- **Dictionnaire** `{clé: valeur}` — paires étiquetées
+:::
+
+## Listes {.smaller}
+
+```{python}
+bandes = ["bleu", "vert", "rouge", "PIR"]
+print(bandes[0], "|", bandes[-1], "|", bandes[1:3])   # index, tranche
+bandes.append("SWIR")
+print([b.upper() for b in bandes])                    # compréhension de liste
+```
+
+## Tuples & ensembles {.smaller}
+
+```{python}
+dimensions = (512, 512)          # immuable : dimensions d'une image
+lignes, colonnes = dimensions    # dépaquetage
+print(lignes, colonnes)
+
+classes = ["eau", "forêt", "eau", "urbain", "forêt"]
+print(set(classes))              # doublons éliminés
+```
+
+## Dictionnaires {.smaller}
+
+```{python}
+image = {"capteur": "Sentinel-2", "bandes": 13, "resolution_m": 10}
+image["date"] = "2024-07-01"                 # ajout d'une paire
+for cle, valeur in image.items():
+    print(f"{cle} : {valeur}")
+```
+
+## Boucles & conditions {.smaller}
+
+```{python}
+for i, nom in enumerate(["bleu", "vert", "rouge", "PIR"]):
+    print(i, nom)
+
+reflectance = 0.42
+if reflectance > 0.5:      print("forte")
+elif reflectance > 0.3:    print("moyenne")
+else:                      print("faible")
+```
+
+## Fonctions {.smaller}
+
+```{python}
+def ndvi(nir, rouge):
+    """NDVI = (PIR - Rouge) / (PIR + Rouge)."""
+    return (nir - rouge) / (nir + rouge)
+
+print(round(ndvi(0.6, 0.2), 3))
+```
+
+::: {.notes}
+Le NDVI reviendra au chapitre 3 — ici c'est juste l'occasion d'introduire `def`/`return`.
+:::
+
+## Programmation objet {.smaller}
+
+```{python}
+class Image:
+    def __init__(self, capteur, bandes):   # constructeur + attributs
+        self.capteur = capteur
+        self.bandes = bandes
+    def resume(self):                       # méthode
+        return f"{self.capteur} — {self.bandes} bandes"
+
+print(Image("Landsat-8", 11).resume())
+```
+
+## Un avant-goût de NumPy {.smaller}
+
+Une image = un **tableau de nombres** (`ndarray`), la brique de tous les chapitres.
+
+```{python}
+import numpy as np
+image = np.array([[10, 12, 11,  9],
+                  [ 8, 20, 22,  7],
+                  [ 9, 21, 23,  8]])
+print("Forme :", image.shape, "| max :", image.max(), "| moyenne :", image.mean().round(2))
+print(image[:2, :2])          # découpage d'une sous-image
+```
+
+## Points clés {.smaller}
+
+::: {.incremental}
+- Installez Python via un **environnement virtuel** (`conda` / `venv`)
+- Quatre structures : **listes**, **tuples**, **ensembles**, **dictionnaires**
+- `if`/`for`/`while` + **fonctions** (`def`) structurent le code
+- Une image est avant tout un **tableau NumPy**
+:::
+
+## À vous de jouer {.smaller}
+
+- Créez un dictionnaire `metadonnees` (capteur, bandes, résolution) et affichez chaque paire
+- Sur le tableau `image`, calculez le **min** et l'**écart-type** (`image.std()`), extrayez la dernière colonne
+- Écrivez `ratio(a, b) = (a - b)/(a + b)` et calculez le NDVI pour PIR = 0,55, Rouge = 0,18
+
+##  {background-color="#357cc0"}
+
+::: {style="text-align:center; color:white;"}
+### Des questions ?
+Chapitre suivant : **Importation et manipulation d'images**
+:::
