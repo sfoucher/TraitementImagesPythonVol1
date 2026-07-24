@@ -23,6 +23,7 @@ crossref:
   lst-title: Bloc de code
 book:
   title: "Traitement d'images satellites avec Python"
+  # PDF overrides this with "Version 1.<git-commit-count>" via process.sh (-M subtitle); HTML keeps this value.
   subtitle: "Première édition"
   search: true
   author: 

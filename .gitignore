@@ -22,7 +22,8 @@ ASCIIdata_splib07b_rsSentinel2/*
 index.log
 
 
-**/*.quarto_ipynb*
+**/*.quarto_ipynb
+**/*.quarto_ipynb_*
 *.pyc
 __pycache__/
 *.bak

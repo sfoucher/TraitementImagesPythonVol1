@@ -8,6 +8,10 @@ QUARTO_VERSION="${QUARTO_VERSION:-1.9.38}"
 IMAGE="${IMAGE:-mlsysbook-linux:quarto-${QUARTO_VERSION}}"
 PDF_NAME="Traitement-d-images-satellites-avec-Python.pdf"
 
+# Auto version stamped on the PDF title page (subtitle). Major fixed at 1,
+# minor = git commit count (monotonic, no upkeep). Overridable: BOOK_VERSION=1.2 ./process.sh
+BOOK_VERSION="${BOOK_VERSION:-1.$(git rev-list --count HEAD 2>/dev/null || echo 0)}"
+
 # Chapters exported to ipynb (+marimo) and stashed under notebooks/
 CHAPTERS=(
   00-PriseEnMainPython
@@ -32,7 +36,8 @@ mkdir -p docs pdf notebooks marimo
 q quarto render --cache --to html --output-dir ./docs
 
 # 2. PDF -> publish into docs for the download link
-q quarto render --profile production --cache --no-clean --to pdf --output-dir ./pdf
+q quarto render --profile production --cache --no-clean --to pdf \
+  -M subtitle="Version ${BOOK_VERSION}" --output-dir ./pdf
 cp -f "./pdf/$PDF_NAME" ./docs/
 
 # 3. DOCX (optional)
