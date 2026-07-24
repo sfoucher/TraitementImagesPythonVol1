@@ -1,0 +1,173 @@
+---
+title: "Classifications d'images supervisées"
+subtitle: "Chapitre 5 — Traitement d'images satellites avec Python"
+author: "Foucher, Apparicio, Bouroubi, Germain, Clabaut"
+jupyter: python3
+---
+
+```{python}
+#| echo: false
+#| output: false
+# Préparation commune : ensemble d'entraînement + palette des classes
+import numpy as np, pandas as pd, matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+from sklearn.model_selection import train_test_split
+
+df = pd.read_csv('../sampling_points.csv')
+X = np.array([np.fromstring(v[1:-1], sep=' ') for v in df['value']])
+keep = X.sum(-1) > 0
+X = X[keep]
+y_raw = df['class'].to_numpy()[keep]
+labels = np.unique(y_raw).tolist()
+y = np.searchsorted(labels, y_raw)                       # étiquettes 0..n-1
+
+noms = ['NoData','Commercial','Nuages','Forêt','Faible vég.','Sol nu','Roche',
+        'Route','Urbain','Eau','Tourbe','Vég. éparse','Roche+vég.']
+coul = ['black','yellow','lightgrey','darkgreen','green','saddlebrown','dimgray',
+        'red','orange','blue','salmon','darkgoldenrod','darkseagreen']
+noms2 = [noms[c] for c in labels]
+cmap = ListedColormap([coul[c] for c in labels])
+
+Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=0)
+```
+
+## Objectifs {.smaller}
+
+::: {.incremental}
+- Comprendre les principes de l'**apprentissage supervisé**
+- Mettre en place un **pipeline** d'entraînement
+- **Évaluer** un classificateur
+- Visualiser les **frontières de décision**
+- Employer **K-NN**, arbres, Bayésien, MLP
+:::
+
+## Principes {.smaller}
+
+::: {.incremental}
+- Attribuer une **classe** à chaque pixel à partir d'un **jeu étiqueté**
+- Les règles de décision sont **apprises** des données (*data driven*)
+- On les visualise comme des **frontières de décision**
+- Défi majeur : **généraliser** au-delà de l'entraînement
+:::
+
+## Sur- et sous-apprentissage {.smaller}
+
+```{python}
+#| fig-align: center
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+rng = np.random.RandomState(0)
+xs = np.sort(rng.rand(30)); ys = np.cos(1.5*np.pi*xs) + rng.randn(30)*0.1
+xg = np.linspace(0, 1, 100)
+fig, ax = plt.subplots(1, 3, figsize=(9, 2.8))
+for a, deg in zip(ax, [1, 4, 15]):
+    m = make_pipeline(PolynomialFeatures(deg), LinearRegression()).fit(xs[:, None], ys)
+    a.plot(xg, m.predict(xg[:, None]), 'b'); a.plot(xg, np.cos(1.5*np.pi*xg), 'g--')
+    a.scatter(xs, ys, s=10, c='k'); a.set_ylim(-2, 2); a.set_title(f"degré {deg}")
+plt.show()
+```
+
+Degré 1 → **sous-apprentissage** · degré 15 → **sur-apprentissage**.
+
+## Pipeline d'entraînement {.smaller}
+
+::: {.incremental}
+1. **Préparer** les données (normalisation)
+2. **Partager** : entraînement / validation / test
+3. **Apprendre** le modèle (hyper-paramètres)
+4. **Valider** (régler les hyper-paramètres)
+5. **Tester** sur des données indépendantes
+:::
+
+## Séparabilité & performance {.smaller}
+
+::: {.incremental}
+- Ensembles réels souvent **déséquilibrés**
+- **Séparabilité** (distance JM) sous hypothèse gaussienne
+- **Matrice de confusion** → **rappel** (omission, lignes), **précision** (fausses alarmes, colonnes)
+- **f1-score** = moyenne harmonique rappel/précision
+:::
+
+## K-NN — frontières de décision {.smaller}
+
+Vote parmi les $K$ voisins les plus proches (bandes Rouge–PIR) :
+
+```{python}
+#| fig-align: center
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.inspection import DecisionBoundaryDisplay
+
+knn = Pipeline([("s", StandardScaler()), ("knn", KNeighborsClassifier(weights='distance'))])
+fig, ax = plt.subplots(1, 3, figsize=(9, 3))
+for a, K in zip(ax, [1, 7, 25]):
+    knn.set_params(knn__n_neighbors=K).fit(Xtr[:, 2:4], ytr)
+    DecisionBoundaryDisplay.from_estimator(knn, X[:, 2:4], plot_method="contourf",
+        alpha=0.5, ax=a, cmap=cmap)
+    a.scatter(Xte[:, 2], Xte[:, 3], c=yte, edgecolors='k', s=12, cmap=cmap)
+    a.set_title(f"K = {K}"); a.set_xticks([]); a.set_yticks([])
+plt.show()
+```
+
+## Comparer les classificateurs {.smaller}
+
+```{python}
+#| fig-align: center
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neural_network import MLPClassifier
+
+modeles = {
+    "K-NN (K=7)": Pipeline([("s", StandardScaler()), ("c", KNeighborsClassifier(7, weights='distance'))]),
+    "Arbre (prof. 5)": DecisionTreeClassifier(max_depth=5, random_state=0),
+    "MLP (50,50)": Pipeline([("s", StandardScaler()), ("c", MLPClassifier((50, 50), max_iter=1000, random_state=0))]),
+}
+fig, ax = plt.subplots(1, 3, figsize=(9, 3))
+for a, (nom, m) in zip(ax, modeles.items()):
+    m.fit(Xtr[:, 2:4], ytr)
+    err = (m.predict(Xte[:, 2:4]) != yte).mean()*100
+    DecisionBoundaryDisplay.from_estimator(m, X[:, 2:4], plot_method="contourf", alpha=0.5, ax=a, cmap=cmap)
+    a.scatter(Xte[:, 2], Xte[:, 3], c=yte, edgecolors='k', s=12, cmap=cmap)
+    a.set_title(f"{nom}\nerreur {err:.0f}%"); a.set_xticks([]); a.set_yticks([])
+plt.show()
+```
+
+## Carte d'occupation des sols {.smaller}
+
+On applique le modèle (4 bandes) à toute l'image :
+
+```{python}
+#| fig-align: center
+import rioxarray as rxr
+clf = Pipeline([("s", StandardScaler()), ("c", KNeighborsClassifier(7, weights='distance'))]).fit(Xtr, ytr)
+img = rxr.open_rasterio('../RGBNIR_of_S2A.tif').to_numpy()          # (4, H, W)
+H, W = img.shape[1], img.shape[2]
+carte = clf.predict(img.transpose(1, 2, 0).reshape(H*W, 4)).reshape(H, W)
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.imshow(carte, cmap=cmap); ax.set_title("Classification K-NN"); ax.axis('off')
+plt.show()
+```
+
+## Points clés {.smaller}
+
+::: {.incremental}
+- Classification supervisée = classe par pixel à partir d'un **jeu étiqueté**
+- **Entraînement / validation / test** pour détecter le sur-apprentissage
+- Performance via la **matrice de confusion** (rappel, précision, f1)
+- Non paramétriques (K-NN, arbres) vs paramétriques (Bayésien, ADQ) vs **MLP**
+:::
+
+## À vous de jouer {.smaller}
+
+- Comparez les `classification_report` du K-NN, de l'arbre et de l'ADQ
+- Faites varier `test_size` et observez l'erreur de test
+- Utilisez les **4 bandes** (au lieu de Rouge–PIR) et comparez la carte
+
+##  {background-color="#357cc0"}
+
+::: {style="text-align:center; color:white;"}
+### Merci !
+Fin du volume 1 — **Traitement d'images satellites avec Python**
+:::
