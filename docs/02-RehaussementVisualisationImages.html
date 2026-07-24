@@ -274,6 +274,9 @@ window.Quarto = {
   <li><a href="#réhaussements-non-linéaires" id="toc-réhaussements-non-linéaires" class="nav-link" data-scroll-target="#réhaussements-non-linéaires"><span class="header-section-number">3.3.3</span> Réhaussements non linéaires</a></li>
   <li><a href="#composés-colorés" id="toc-composés-colorés" class="nav-link" data-scroll-target="#composés-colorés"><span class="header-section-number">3.3.4</span> Composés colorés</a></li>
   </ul></li>
+  <li><a href="#points-clés" id="toc-points-clés" class="nav-link" data-scroll-target="#points-clés"><span class="header-section-number">3.4</span> Points clés</a></li>
+  <li><a href="#exercices" id="toc-exercices" class="nav-link" data-scroll-target="#exercices"><span class="header-section-number">3.5</span> Exercices</a></li>
+  <li><a href="#quiz" id="toc-quiz" class="nav-link" data-scroll-target="#quiz"><span class="header-section-number">3.6</span> Quiz</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/sfoucher/TraitementImagesPythonVol1/issues" class="toc-action"><i class="bi bi-github"></i>Signaler un problème ou<br>formuler une suggestion</a></li></ul></div></nav>
     </div>
@@ -338,18 +341,18 @@ window.Quarto = {
 <li><p><a href="https://corteva.github.io/rioxarray/stable/index.html">rioxarray</a></p></li>
 </ul>
 <p>Dans l’environnement Google Colab, seul <code>rioxarray</code> et GDAL doivent être installés:</p>
-<div id="a0a340ce" class="cell" data-execution_count="2">
+<div id="43457dc9" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt<span class="op">-</span>get update</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt<span class="op">-</span>get install gdal<span class="op">-</span><span class="bu">bin</span> libgdal<span class="op">-</span>dev</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Dans l’environnement <a href="https://colab.research.google.com/">Google Colab</a>, il convient de s’assurer que les librairies sont installées:</p>
-<div id="05af8e95" class="cell" data-execution_count="3">
+<div id="880ec6c5" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>qU matplotlib rioxarray xrscipy scikit<span class="op">-</span>image</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Vérifier les importations:</p>
-<div id="c7c87868" class="cell" data-execution_count="4">
+<div id="45e70536" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
@@ -361,7 +364,7 @@ window.Quarto = {
 <section id="données" class="level3" data-number="3.1.4">
 <h3 data-number="3.1.4" class="anchored" data-anchor-id="données"><span class="header-section-number">3.1.4</span> Données</h3>
 <p>Nous utiliserons les images suivantes dans ce chapitre:</p>
-<div id="34c523c8" class="cell" data-execution_count="5">
+<div id="241f7d20" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gdown</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -372,7 +375,7 @@ window.Quarto = {
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>gdown.download(<span class="st">'https://drive.google.com/uc?export=download&amp;confirm=pbef&amp;id=1a4PQ68Ru8zBphbQ22j0sgJ4D2quw-Wo6'</span>, output<span class="op">=</span> <span class="st">'landsat7.tif'</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Vérifiez que vous êtes capable de les lire :</p>
-<div id="7d81e9f1" class="cell" data-execution_count="6">
+<div id="4a9020a3" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rxr.open_rasterio(<span class="st">'berkeley.jpg'</span>, mask_and_scale<span class="op">=</span> <span class="va">True</span>) <span class="im">as</span> img_rgb:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(img_rgb)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rxr.open_rasterio(<span class="st">'sentinel2.tif'</span>, mask_and_scale<span class="op">=</span> <span class="va">True</span>) <span class="im">as</span> img_s2:</span>
@@ -386,9 +389,9 @@ window.Quarto = {
 </section>
 <section id="visualisation-en-python" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="visualisation-en-python"><span class="header-section-number">3.2</span> Visualisation en Python</h2>
-<p>ID’emblée, il faut mentionner que Python n’est pas vraiment fait pour visualiser de la donnée de grande taille, le niveau d’interactivité est aussi assez limité. Pour une visualisation interactives, il est plutôt conseillé d’utiliser un outil comme <a href="https://qgis.org/">QGIS</a>. Néanmoins, il est possible de visualiser de petites images avec la librairie <a href="https://matplotlib.org/stable/"><code>matplotlib</code></a> qui est la librairie principale de visualisation en Python. Cette librairie est extrêmement riche et versatile, nous ne présenterons que les bases nécessaires pour démarrer. Le lecteur désirant aller plus loin pourra consulter les nombreux tutoriels disponibles comme <a href="https://matplotlib.org/stable/tutorials/index.html">celui-ci</a>.</p>
+<p>D’emblée, il faut mentionner que Python n’est pas vraiment fait pour visualiser de la donnée de grande taille, le niveau d’interactivité est aussi assez limité. Pour une visualisation interactives, il est plutôt conseillé d’utiliser un outil comme <a href="https://qgis.org/">QGIS</a>. Néanmoins, il est possible de visualiser de petites images avec la librairie <a href="https://matplotlib.org/stable/"><code>matplotlib</code></a> qui est la librairie principale de visualisation en Python. Cette librairie est extrêmement riche et versatile, nous ne présenterons que les bases nécessaires pour démarrer. Le lecteur désirant aller plus loin pourra consulter les nombreux tutoriels disponibles comme <a href="https://matplotlib.org/stable/tutorials/index.html">celui-ci</a>.</p>
 <p>La fonction de base pour créer une figure est <code>subplots</code>, la largeur et la hauteur en pouces de la figure peuvent être contrôlées via le paramètre <code>figsize</code>:</p>
-<div id="c01d0081" class="cell" data-execution_count="7">
+<div id="dc903868" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fig, ax<span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
@@ -401,7 +404,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Pour l’affichage des images, la fonction <code>imshow</code> permet d’afficher une matrice 2D à une dimension en format <em>float</em> ou une matrice RVB avec 3 bandes. Il est important que les dimensions de la matrice soient dans l’ordre hauteur, largeur et bande.</p>
-<div id="e3a8c297" class="cell" data-execution_count="8">
+<div id="42c2d4ff" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fig, ax<span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>plt.imshow(img_rgbnir[<span class="dv">0</span>].data)</span>
@@ -415,11 +418,12 @@ window.Quarto = {
 </div>
 </div>
 <p>Pour un affichage à trois bandes, les valeurs seront ramenées sur une échelle de 0 à 1, il est donc nécessaire de normaliser les valeurs avant l’affichage:</p>
-<div id="3abe898f" class="cell" data-execution_count="9">
+<div id="d7da2057" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fig, ax<span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt.imshow(img_rgbnir.data.transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>)<span class="op">/</span><span class="fl">2500.0</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># on garde les 3 premières bandes (R,V,B) : une 4e bande serait lue comme canal alpha</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img_rgbnir.data[<span class="dv">0</span>:<span class="dv">3</span>].transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>)<span class="op">/</span><span class="fl">2500.0</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -429,7 +433,7 @@ window.Quarto = {
 </div>
 </div>
 <p>On remarquera les valeurs des axes <code>x</code> et <code>y</code> avec une origine en haut à gauche. Ceci est un référentiel purement matriciel (lignes et colonnes); autrement dit, il n’y a pas ici de géoréférence. Pour pallier à cette limitation, les librairies <code>rasterio</code> et <code>xarray</code> proposent une extension de la fonction <code>imshow</code> permettant d’afficher les coordonnées cartographiques ainsi qu’un contrôle la dynamique de l’image:</p>
-<div id="255721e0" class="cell" data-execution_count="10">
+<div id="e2041ca2" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fig, ax<span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>img_rgbnir.sel(band<span class="op">=</span>[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]).plot.imshow(vmin<span class="op">=</span><span class="dv">86</span>, vmax<span class="op">=</span><span class="dv">5000</span>)</span>
@@ -477,14 +481,14 @@ drapper une image satellite sur un DEM
 </ul>
 <p>Ces statistiques doivent être calculées pour chaque bande d’une image multispectrale.</p>
 <p>En ligne de commande, <code>gdalinfo</code> permet d’interroger rapidement un fichier image pour connaitre ces statistiques univariées de base:</p>
-<div id="03cb2056" class="cell" data-execution_count="11">
+<div id="14f5f30e" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>gdalinfo <span class="op">-</span>stats landsat7.tif</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>/usr/bin/sh: 1: gdalinfo: not found</code></pre>
 </div>
 </div>
 <p>Les librairies de base comme <code>rasterio</code> et <code>xarray</code> produisent facilement un sommaire des statistiques de base avec la fonction <a href="https://rasterio.readthedocs.io/en/stable/api/rasterio.io.html#rasterio.io.BufferedDatasetWriter.stats">stats</a>:</p>
-<div id="5836151c" class="cell" data-execution_count="12">
+<div id="9d140be8" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio <span class="im">as</span> rio</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rio.<span class="bu">open</span>(<span class="st">'landsat7.tif'</span>) <span class="im">as</span> src:</span>
@@ -492,7 +496,7 @@ drapper une image satellite sur un DEM
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(stats)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>La librairie <code>xarray</code> donne accès à des fonctionnalités plus sophistiquées comme le calcul des quantiles:</p>
-<div id="e7941762" class="cell" data-execution_count="13">
+<div id="e974ceda" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> riox</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> riox.open_rasterio(<span class="st">'landsat7.tif'</span>, masked<span class="op">=</span> <span class="va">True</span>) <span class="im">as</span> src:</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(src)</span>
@@ -967,30 +971,30 @@ array([[ 54.,  19.,  19.],
        [140., 102.,  89.]])
 Coordinates:
   * band      (band) int64 24B 1 2 3
-  * quantile  (quantile) float64 40B 0.025 0.25 0.5 0.75 0.975</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.DataArray</div><div class="xr-array-name"></div><ul class="xr-dim-list"><li><span class="xr-has-index">quantile</span>: 5</li><li><span class="xr-has-index">band</span>: 3</li></ul></div><ul class="xr-sections"><li class="xr-section-item"><div class="xr-array-wrap"><input id="section-19d131fe-1e3a-4115-bd81-c0e3c8fdd54b" class="xr-array-in" type="checkbox" checked=""><label for="section-19d131fe-1e3a-4115-bd81-c0e3c8fdd54b" title="Show/hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-array-preview xr-preview"><span>54.0 19.0 19.0 85.0 38.0 27.0 ... 111.0 69.0 57.0 140.0 102.0 89.0</span></div><div class="xr-array-data"><pre>array([[ 54.,  19.,  19.],
+  * quantile  (quantile) float64 40B 0.025 0.25 0.5 0.75 0.975</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.DataArray</div><div class="xr-array-name"></div><ul class="xr-dim-list"><li><span class="xr-has-index">quantile</span>: 5</li><li><span class="xr-has-index">band</span>: 3</li></ul></div><ul class="xr-sections"><li class="xr-section-item"><div class="xr-array-wrap"><input id="section-9c8cc0bd-6ed8-4848-90c3-d658358b25f9" class="xr-array-in" type="checkbox" checked=""><label for="section-9c8cc0bd-6ed8-4848-90c3-d658358b25f9" title="Show/hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-array-preview xr-preview"><span>54.0 19.0 19.0 85.0 38.0 27.0 ... 111.0 69.0 57.0 140.0 102.0 89.0</span></div><div class="xr-array-data"><pre>array([[ 54.,  19.,  19.],
        [ 85.,  38.,  27.],
        [ 99.,  54.,  38.],
        [111.,  69.,  57.],
-       [140., 102.,  89.]])</pre></div></div></li><li class="xr-section-item"><input id="section-7228e2ad-7706-4153-9249-9191e5a15878" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-7228e2ad-7706-4153-9249-9191e5a15878" class="xr-section-summary">Coordinates: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">band</span></div><div class="xr-var-dims">(band)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">1 2 3</div><input id="attrs-0ecc4e35-86eb-4050-8e4e-1f43fd6c28f8" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-0ecc4e35-86eb-4050-8e4e-1f43fd6c28f8" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-d2a7d250-93ab-4713-b6f9-51fc06ca03b7" class="xr-var-data-in" type="checkbox"><label for="data-d2a7d250-93ab-4713-b6f9-51fc06ca03b7" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([1, 2, 3])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">quantile</span></div><div class="xr-var-dims">(quantile)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.025 0.25 0.5 0.75 0.975</div><input id="attrs-33ea2644-9b79-4393-b4cc-9ee5e5497a80" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-33ea2644-9b79-4393-b4cc-9ee5e5497a80" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-c2533faf-1c45-457c-b13e-ef255137d1f4" class="xr-var-data-in" type="checkbox"><label for="data-c2533faf-1c45-457c-b13e-ef255137d1f4" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([0.025, 0.25 , 0.5  , 0.75 , 0.975])</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-a7c70e1d-ed9d-41f6-aaf7-e55bbb93a3f5" class="xr-section-summary-in" type="checkbox"><label for="section-a7c70e1d-ed9d-41f6-aaf7-e55bbb93a3f5" class="xr-section-summary">Indexes: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-index-name"><div>band</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-969ca7e8-4d24-4a4f-b405-026ca9308492" class="xr-index-data-in" type="checkbox"><label for="index-969ca7e8-4d24-4a4f-b405-026ca9308492" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([1, 2, 3], dtype='int64', name='band'))</pre></div></li><li class="xr-var-item"><div class="xr-index-name"><div>quantile</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-921e21e4-3e9c-4593-8c77-440d4d5713bd" class="xr-index-data-in" type="checkbox"><label for="index-921e21e4-3e9c-4593-8c77-440d4d5713bd" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([0.025, 0.25, 0.5, 0.75, 0.975], dtype='float64', name='quantile'))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-ac6cb351-574a-4ffe-a934-139f69613285" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-ac6cb351-574a-4ffe-a934-139f69613285" class="xr-section-summary" title="Expand/collapse section">Attributes: <span>(0)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"></dl></div></li></ul></div></div>
+       [140., 102.,  89.]])</pre></div></div></li><li class="xr-section-item"><input id="section-8e904fde-c11a-494d-b119-d4855f49d1f8" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-8e904fde-c11a-494d-b119-d4855f49d1f8" class="xr-section-summary">Coordinates: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">band</span></div><div class="xr-var-dims">(band)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">1 2 3</div><input id="attrs-2526a843-8328-4b96-b67d-eb98ee4860e9" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-2526a843-8328-4b96-b67d-eb98ee4860e9" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-82f388e4-4a65-47ae-a27f-726b5f15fb80" class="xr-var-data-in" type="checkbox"><label for="data-82f388e4-4a65-47ae-a27f-726b5f15fb80" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([1, 2, 3])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">quantile</span></div><div class="xr-var-dims">(quantile)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.025 0.25 0.5 0.75 0.975</div><input id="attrs-7e44e876-efe4-4928-a9cb-f2ce7b4c3622" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-7e44e876-efe4-4928-a9cb-f2ce7b4c3622" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-2062b759-f640-4892-829d-0c8489d27537" class="xr-var-data-in" type="checkbox"><label for="data-2062b759-f640-4892-829d-0c8489d27537" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([0.025, 0.25 , 0.5  , 0.75 , 0.975])</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-a36821d5-a540-416c-bf3a-ad4a96d345ce" class="xr-section-summary-in" type="checkbox"><label for="section-a36821d5-a540-416c-bf3a-ad4a96d345ce" class="xr-section-summary">Indexes: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-index-name"><div>band</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-ab2b157d-157f-4cc2-a35c-e13b6302cdef" class="xr-index-data-in" type="checkbox"><label for="index-ab2b157d-157f-4cc2-a35c-e13b6302cdef" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([1, 2, 3], dtype='int64', name='band'))</pre></div></li><li class="xr-var-item"><div class="xr-index-name"><div>quantile</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-04d731be-c81c-4464-9171-6ca12a0fc04f" class="xr-index-data-in" type="checkbox"><label for="index-04d731be-c81c-4464-9171-6ca12a0fc04f" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([0.025, 0.25, 0.5, 0.75, 0.975], dtype='float64', name='quantile'))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-cd310856-26a7-495f-8228-335ab0baabbc" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-cd310856-26a7-495f-8228-335ab0baabbc" class="xr-section-summary" title="Expand/collapse section">Attributes: <span>(0)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"></dl></div></li></ul></div></div>
 </div>
 </div>
 <section id="calcul-de-lhistogramme" class="level4" data-number="3.3.1.1">
 <h4 data-number="3.3.1.1" class="anchored" data-anchor-id="calcul-de-lhistogramme"><span class="header-section-number">3.3.1.1</span> Calcul de l’histogramme</h4>
 <p>Le calcul d’un histogramme pour une image (une bande) permet d’avoir une vue plus détaillée de la répartition des valeurs radiométriques. Le calcul d’un histogramme nécessite minimalement de faire le choix du nombre de barre ( <em>bins</em> ou de la largeur ). Un <em>bin</em> est un intervalle de valeurs pour lequel on peut calculer le nombre de valeurs observées dans l’image. La fonction de base pour ce type de calcul est la fonction <code>numpy.histogram()</code>:</p>
-<div id="b514ae61" class="cell" data-execution_count="14">
+<div id="765492f9" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>array <span class="op">=</span> np.random.randint(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">100</span>) <span class="co"># 100 valeurs aléatoires entre 0 et 10</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>hist, bin_limites <span class="op">=</span> np.histogram(array, density<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'valeurs :'</span>,hist)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">';imites :'</span>,bin_limites)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'limites :'</span>,bin_limites)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>valeurs : [0.1        0.12222222 0.13333333 0.14444444 0.07777778 0.16666667
- 0.05555556 0.1        0.12222222 0.08888889]
-;imites : [0.  0.9 1.8 2.7 3.6 4.5 5.4 6.3 7.2 8.1 9. ]</code></pre>
+<pre><code>valeurs : [0.05555556 0.15555556 0.1        0.13333333 0.11111111 0.12222222
+ 0.11111111 0.07777778 0.11111111 0.13333333]
+limites : [0.  0.9 1.8 2.7 3.6 4.5 5.4 6.3 7.2 8.1 9. ]</code></pre>
 </div>
 </div>
 <p>Le calcul se fait avec 10 intervalles par défaut.</p>
-<div id="6e4d52f1" class="cell" data-execution_count="15">
+<div id="c8671034" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fig, ax<span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt.bar(bin_limites[:<span class="op">-</span><span class="dv">1</span>],hist)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1006,7 +1010,7 @@ Coordinates:
 <section id="visualisation-des-histogrammes" class="level5" data-number="3.3.1.1.1">
 <h5 data-number="3.3.1.1.1" class="anchored" data-anchor-id="visualisation-des-histogrammes"><span class="header-section-number">3.3.1.1.1</span> Visualisation des histogrammes</h5>
 <p>La librarie <code>rasterio</code> est probablement l’outil le plus simples pour visualiser rapidement des histogrammes sur une image multi-spectrale:</p>
-<div id="3e30b041" class="cell" data-execution_count="16">
+<div id="bb611290" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio <span class="im">as</span> rio</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.plot <span class="im">import</span> show_hist</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rio.<span class="bu">open</span>(<span class="st">'RGBNIR_of_S2A.tif'</span>) <span class="im">as</span> src:</span>
@@ -1035,7 +1039,7 @@ Coordinates:
 <section id="cas-des-histogrammes-asymétriques" class="level4" data-number="3.3.2.1">
 <h4 data-number="3.3.2.1" class="anchored" data-anchor-id="cas-des-histogrammes-asymétriques"><span class="header-section-number">3.3.2.1</span> Cas des histogrammes asymétriques</h4>
 <p>Dans certains cas, la distribution de valeurs est très asymétrique et présente une longue queue avec des valeurs extrêmes élevées (à droite ou à gauche de l’histogramme). Le cas des images SAR est particulièrement représentatif de ce type de données. En effet, celles-ci peuvent présenter une distribution de valeurs de type exponentiel. Il est alors préférable d’utiliser des <a href="https://fr.wikipedia.org/wiki/Centile">percentiles</a> au préalable afin d’explorer la forme de l’histogramme et la distribution des valeurs:</p>
-<div id="8d24fadc" class="cell" data-execution_count="17">
+<div id="80423d9d" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>NO_DATA_FLOAT<span class="op">=</span> <span class="op">-</span><span class="fl">999.0</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># on prend tous les pixels de la première bande</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> img_SAR[<span class="dv">0</span>].values.flatten().astype(<span class="bu">float</span>)</span>
@@ -1052,7 +1056,7 @@ Coordinates:
 </div>
 </div>
 <p>On constate que la valeur médiane (<code>0.012</code>) est très faible, ce qui signifie que 50% des valeurs sont inférieures à cette valeur alors que la valeur maximale (<code>483</code>) est 10 000 fois plus élevée! Une manière de visualiser cette distribution de valeurs est d’utiliser <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.boxplot.html"><code>boxplot</code></a> et <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.violinplot.html"><code>violinplot</code></a> de la librairie <code>matplotlib</code>:</p>
-<div id="c2ec9e98" class="cell" data-execution_count="18">
+<div id="fc2c6e1f" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">2</span>, ncols<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>), sharex<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="st">'Distribution de la bande 0 de img_SAR'</span>, fontsize<span class="op">=</span><span class="st">'small'</span>)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].grid(<span class="va">True</span>)</span>
@@ -1074,7 +1078,7 @@ Coordinates:
 </div>
 </div>
 <p>Afin de visualiser correctement l’histogramme, il faut se limiter à un intervalle de valeurs plus réduit. Dans le code ci-dessous, on impose à la fonction <code>np.histogramme</code> de compter les valeurs de pixels dans des intervalles de valeurs fixés par la fonction <code>np.linspace(percentiles[0.1],percentiles[99.9], 50)</code> où <code>percentiles[0.1]</code> et <code>percentiles[99.9]</code> sont les <span class="math inline">\(0.1\%\)</span> et <span class="math inline">\(99.9\%\)</span> percentiles respectivement:</p>
-<div id="94196d68" class="cell" data-execution_count="19">
+<div id="7c31c9dc" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>hist, bin_edges <span class="op">=</span> np.histogram(values, </span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                                bins<span class="op">=</span>np.linspace(percentiles[<span class="fl">0.1</span>], </span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                                percentiles[<span class="fl">99.9</span>], <span class="dv">50</span>), </span>
@@ -1106,7 +1110,7 @@ Coordinates:
 </div>
 </div>
 <p>Au niveau de l’affichage avec <code>matplotlib</code>, la dynamique peut être contrôlée directement avec les paramètres <code>vmin</code> et <code>vmax</code> comme ceci:</p>
-<div id="666fcb72" class="cell" data-execution_count="20">
+<div id="e2669d08" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">2</span>, ncols<span class="op">=</span><span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>), sharex<span class="op">=</span><span class="va">True</span>, sharey<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>[a.axis(<span class="st">'off'</span>) <span class="cf">for</span> a <span class="kw">in</span> ax.flatten()]</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>,<span class="dv">0</span>].imshow(img_SAR[<span class="dv">0</span>].values, vmin<span class="op">=</span>percentiles[<span class="dv">0</span>], vmax<span class="op">=</span>percentiles[<span class="dv">100</span>])</span>
@@ -1133,17 +1137,20 @@ Coordinates:
 <section id="réhaussement-par-fonctions" class="level4" data-number="3.3.3.1">
 <h4 data-number="3.3.3.1" class="anchored" data-anchor-id="réhaussement-par-fonctions"><span class="header-section-number">3.3.3.1</span> Réhaussement par fonctions</h4>
 <p>Le réhaussenent par fonction consiste à appliquer une fonction non linéaire afin de modifier la dynamique de l’image. Par exemple, pour une image radar, une transformation populaire est d’afficher les valeurs de rétrodiffusion en décibel (<code>dB</code>) avec la fonction <code>log10()</code>.</p>
-<div id="609a6067" class="cell" data-execution_count="21">
+<div id="d2dbc566" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>percentiles_position<span class="op">=</span> (<span class="dv">0</span>,<span class="fl">0.1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">50</span>,<span class="dv">98</span>,<span class="dv">99</span>,<span class="fl">99.9</span>,<span class="dv">100</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>values<span class="op">=</span> xr.apply_ufunc(<span class="kw">lambda</span> x: <span class="dv">10</span> <span class="op">*</span> np.log10(x), img_SAR[<span class="dv">0</span>]).data</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>percentiles_db<span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(percentiles_position, np.percentile(values, percentiles_position)))</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(percentiles_db)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>sar<span class="op">=</span> img_SAR[<span class="dv">0</span>].data</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># on masque le no_data et les valeurs &lt;= 0 (impropres au log) : sinon 10*log10 -&gt; -inf/nan</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>valid<span class="op">=</span> (sar <span class="op">!=</span> NO_DATA_FLOAT) <span class="op">&amp;</span> (sar <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>values<span class="op">=</span> <span class="dv">10</span><span class="op">*</span>np.log10(np.where(valid, sar, np.nan))  <span class="co"># image en dB, nan hors du masque</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>percentiles_db<span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(percentiles_position, np.nanpercentile(values, percentiles_position)))</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(percentiles_db)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>{0: np.float64(-50.876407623291016), 0.1: np.float64(-47.98946910476685), 1: np.float64(-40.62594409942627), 2: np.float64(-37.24779266357422), 50: np.float64(-19.075312614440918), 98: np.float64(-7.6460519409179675), 99: np.float64(-5.534138813018874), 99.9: np.float64(1.8286541197300006), 100: np.float64(26.84148406982422)}</code></pre>
 </div>
 </div>
 <p>Les boites à moustache (<em>boxplots</em>) ont une bien meilleure distribution qui est en effet très proche d’une distribution normale gaussienne:</p>
-<div id="8d9cc0ba" class="cell" data-execution_count="22">
+<div id="f09ba2a3" class="cell" data-execution_count="23">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1153,7 +1160,7 @@ Coordinates:
 </div>
 </div>
 <p>On obtient ainsi les images suivantes:</p>
-<div id="b132fe0f" class="cell" data-execution_count="23">
+<div id="c2cdce05" class="cell" data-execution_count="24">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1177,13 +1184,19 @@ j = CDF_{cible}^{-1}(CDF_{source}(i))
 <p>On peut choisir <span class="math inline">\(CDF_{cible}\)</span> comme correspondant à une image où chaque valeur de pixel est équiprobable (d’où le terme <em>égalisation</em>), ce qui veut dire <span class="math inline">\(hist_{cible}(j)=1/L\)</span> avec <span class="math inline">\(L\)</span> égale au nombre de valeurs possibles dans l’image (par exemple <span class="math inline">\(L=256\)</span>). <span class="math display">\[
 j = L \times CDF_{source}(i)
 \]</span> On peut appliquer cette procédure sur l’image SAR en dB de la façon suivante:</p>
-<div id="ca2b36c7" class="cell" data-execution_count="24">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>values<span class="op">=</span> np.sort(<span class="dv">10</span><span class="op">*</span>np.log10(img_SAR[<span class="dv">0</span>].data.flatten())) <span class="co"># on range les valeurs par ordre croissant</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>cdf_x<span class="op">=</span> np.linspace(values[<span class="dv">0</span>], values[<span class="op">-</span><span class="dv">1</span>], <span class="dv">1000</span>) <span class="co"># 1000 valeurs réparties également sur l'intervalle des valeurs</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>cdf_source<span class="op">=</span> np.interp(cdf_x, values, np.arange(<span class="bu">len</span>(values))<span class="op">/</span><span class="bu">len</span>(values)<span class="op">*</span><span class="dv">255</span>) <span class="co"># calcul de la CDF source</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>values_eq<span class="op">=</span>np.interp(np.log10(img_SAR[<span class="dv">0</span>].data), cdf_x, cdf_source).astype(<span class="st">'uint8'</span>)</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>plt.imshow(values_eq)</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0b1fe67f" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>sar<span class="op">=</span> img_SAR[<span class="dv">0</span>].data</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># masque : no_data et valeurs &lt;= 0 exclues avant le passage en dB</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>valid<span class="op">=</span> (sar <span class="op">!=</span> NO_DATA_FLOAT) <span class="op">&amp;</span> (sar <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>sar_db<span class="op">=</span> <span class="dv">10</span><span class="op">*</span>np.log10(np.where(valid, sar, np.nan)) <span class="co"># image en dB (nan hors masque)</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>values<span class="op">=</span> np.sort(sar_db[valid].flatten()) <span class="co"># valeurs valides rangées par ordre croissant</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>cdf_x<span class="op">=</span> np.linspace(values[<span class="dv">0</span>], values[<span class="op">-</span><span class="dv">1</span>], <span class="dv">1000</span>) <span class="co"># 1000 valeurs réparties également sur l'intervalle des valeurs</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>cdf_source<span class="op">=</span> np.interp(cdf_x, values, np.arange(<span class="bu">len</span>(values))<span class="op">/</span><span class="bu">len</span>(values)<span class="op">*</span><span class="dv">255</span>) <span class="co"># calcul de la CDF source</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># on applique sur la MÊME échelle (dB) que celle utilisée pour construire la CDF</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>values_eq<span class="op">=</span> np.interp(sar_db, cdf_x, cdf_source)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>values_eq<span class="op">=</span> np.where(valid, values_eq, <span class="dv">0</span>).astype(<span class="st">'uint8'</span>) <span class="co"># no_data remis à 0</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>plt.imshow(values_eq)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1199,12 +1212,12 @@ Exercise: changer la CDF cible pour une Gaussienne
 <section id="palettes-de-couleur" class="level4" data-number="3.3.3.3">
 <h4 data-number="3.3.3.3" class="anchored" data-anchor-id="palettes-de-couleur"><span class="header-section-number">3.3.3.3</span> Palettes de couleur</h4>
 <p>Les palettes de couleurs sont appliquées dynamiquement à l’affichage sur une image à une seule bande. La librairie <code>matplotlib</code> contient un nombre considérable de <a href="https://matplotlib.org/stable/users/explain/colors/colormaps.html">palettes</a>.</p>
-<div id="d0ae83a6" class="cell" data-execution_count="25">
+<div id="34221304" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> colormaps</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(colormaps)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Voici quelques exemples ci-dessous, les valeurs de l’image doivent être normalisées entre 0 et 1 ou entre 0 et 255 sinon les paramètres <code>vmin</code> et <code>vmax</code> doivent être spécifiés. On peut observer comment ces palettes révèlent les détails de l’image malgré une image originalement très sombre.</p>
-<div id="74ad427b" class="cell" data-execution_count="26">
+<div id="28662f16" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">2</span>, ncols<span class="op">=</span><span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>), sharex<span class="op">=</span><span class="va">True</span>, sharey<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>[a.axis(<span class="st">'off'</span>) <span class="cf">for</span> a <span class="kw">in</span> ax.flatten()]</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>,<span class="dv">0</span>].imshow(img_SAR[<span class="dv">0</span>].data, vmin<span class="op">=</span>percentiles[<span class="dv">2</span>], vmax<span class="op">=</span>percentiles[<span class="dv">98</span>], cmap<span class="op">=</span><span class="st">'jet'</span>)</span>
@@ -1225,7 +1238,7 @@ Exercise: changer la CDF cible pour une Gaussienne
 </div>
 </div>
 <p>Il peut être utile d’ajouter une barre de couleurs afin d’indiquer la correspondance entre les couleurs et les valeurs numériques:</p>
-<div id="264f3a1f" class="cell" data-execution_count="27">
+<div id="82d215dc" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib <span class="im">as</span> mpl</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>cmap<span class="op">=</span> mpl.colormaps.get_cmap(<span class="st">'jet'</span>).with_extremes(under<span class="op">=</span><span class="st">'white'</span>, over<span class="op">=</span><span class="st">'magenta'</span>)</span>
@@ -1246,7 +1259,7 @@ Exercise: changer la CDF cible pour une Gaussienne
 <section id="composés-colorés" class="level3" data-number="3.3.4">
 <h3 data-number="3.3.4" class="anchored" data-anchor-id="composés-colorés"><span class="header-section-number">3.3.4</span> Composés colorés</h3>
 <p>Le système visuel humain est sensible seulement à la partie visible du spectre électromagnétique qui compose les couleurs de l’arc-en-ciel du bleu au rouge. L’ensemble des couleurs du spectre visible peut être obtenu à partir du mélange de trois couleurs primaires (rouge, vert et bleu). Ce système de décomposition à trois couleurs est à la base de la plupart des systèmes de visualisation ou de représentation de l’information de couleur. Si on prend le cas des images Sentinel-2, 12 bandes sont disponibles, plusieurs composés couleurs sont donc possibles (voir le site de <a href="https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/composites/">Copernicus</a>). Voici quelques exemples possibles, chaque composé mettant en valeur des propriétés différentes de la surface.</p>
-<div id="8836e54a" class="cell" data-execution_count="28">
+<div id="e387319b" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>fig, ax<span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">2</span>, ncols<span class="op">=</span> <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>), sharex<span class="op">=</span><span class="va">True</span>, sharey<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>img_s2.sel(band<span class="op">=</span>[<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">2</span>]).plot.imshow(vmin<span class="op">=</span><span class="dv">86</span>, vmax<span class="op">=</span><span class="dv">4000</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>,<span class="dv">0</span>])</span>
@@ -1267,9 +1280,306 @@ Exercise: changer la CDF cible pour une Gaussienne
 </div>
 </div>
 </div>
-
-
 </section>
+</section>
+<section id="points-clés" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="points-clés"><span class="header-section-number">3.4</span> Points clés</h2>
+<div class="bloc_notes">
+<div class="bloc_notes-header">
+<div class="bloc_notes-icon">
+
+</div>
+<p><strong>À retenir</strong></p>
+</div>
+<div class="bloc_notes-body">
+<ul>
+<li>Le réhaussement visuel améliore l’affichage (contraste, dynamique) <strong>sans modifier la donnée</strong> d’origine : il est appliqué dynamiquement à l’affichage.</li>
+<li>Les <strong>statistiques</strong> d’une image (min/max, moyenne, quantiles, écart-type) guident le choix de la transformation.</li>
+<li>Le <strong>stretch linéaire</strong> remappe la dynamique ; pour les histogrammes <strong>asymétriques</strong> (images SAR), les <strong>percentiles</strong> (p.&nbsp;ex. 2 %–98 %) fournissent des bornes d’affichage robustes.</li>
+<li>Les transformations <strong>non linéaires</strong> — passage en <strong>dB</strong> (<code>10·log10</code>) et <strong>égalisation d’histogramme</strong> — rétablissent une distribution exploitable.</li>
+<li>Les <strong>palettes de couleur</strong> et les <strong>composés colorés</strong> (choix des bandes) révèlent des propriétés différentes de la surface ; <code>vmin</code>/<code>vmax</code> contrôlent la dynamique affichée.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="exercices" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="exercices"><span class="header-section-number">3.5</span> Exercices</h2>
+<div class="bloc_exercice">
+<div class="bloc_exercice-header">
+<div class="bloc_exercice-icon">
+
+</div>
+<p><strong>À vous de jouer</strong></p>
+</div>
+<div class="bloc_exercice-body">
+<ol type="1">
+<li><p>Proposez une autre transformation non linéaire pour l’image SAR (p.&nbsp;ex. la racine carrée ou <code>np.arcsinh</code>) et comparez son histogramme à celui obtenu en décibels.</p></li>
+<li><p>Reprenez l’égalisation d’histogramme en remplaçant la CDF cible équiprobable par une <strong>CDF gaussienne</strong> (avec <code>scipy.stats.norm.cdf</code>), puis observez l’effet sur l’image SAR.</p></li>
+<li><p>À partir de <code>img_s2</code>, construisez un nouveau composé coloré (p.&nbsp;ex. <code>[11, 8, 4]</code> ou <code>[8, 4, 3]</code>) et décrivez les surfaces qu’il met en valeur.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="quiz" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="quiz"><span class="header-section-number">3.6</span> Quiz</h2>
+<div id="1efad064" class="cell" data-results="asis" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="26">
+<div id="Chap02" class="card"><link type="text/javascript" src="libs/quizlib.1.0.1.min.js"><script>var Quiz=function(a,b){this.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),this.unansweredQuestionText="Question sans réponse !",this.container=document.getElementById(a),this.questions=[],this.result=new QuizResult,this.answers=b;for(var c=0;c<this.container.children.length;c++)this.container.children[c].classList.contains(Quiz.Classes.QUESTION)&&this.questions.push(this.container.children[c]);if(this.answers.length!=this.questions.length)throw new Error("Number of answers does not match number of questions!")};Quiz.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),Quiz.prototype.checkAnswers=function(a){void 0===a&&(a=!0);for(var b=[],c=[],d=0;d<this.questions.length;d++){var e=this.questions[d],f=this.answers[d],g=[];this.clearHighlights(e);for(var h,i=e.getElementsByClassName(Quiz.Classes.QUESTION_ANSWERS)[0].getElementsByTagName("input"),j=0;j<i.length;j++)h=i[j],"checkbox"===h.type||"radio"===h.type?h.checked&&g.push(h.value):""!==h.value&&g.push(h.value);1!=g.length||Array.isArray(f)?0===g.length&&b.push(e):g=g[0],c.push(Utils.compare(g,f))}if(0===b.length||!a)return this.result.setResults(c),!0;for(d=0;d<b.length;d++){var k=document.createElement("span");k.appendChild(document.createTextNode(this.unansweredQuestionText)),k.className=Quiz.Classes.QUESTION_WARNING,b[d].getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].appendChild(k)}return!1},Quiz.prototype.clearHighlights=function(a){for(var b=a.getElementsByClassName(Quiz.Classes.QUESTION_WARNING);b.length>0;)b[0].parentNode.removeChild(b[0]);var c,d=[a.getElementsByClassName(Quiz.Classes.CORRECT),a.getElementsByClassName(this.Classes.INCORRECT)];for(i=0;i<d.length;i++)for(;d[i].length>0;)c=d[i][0],c.classList.remove(Quiz.Classes.CORRECT),c.classList.remove(Quiz.Classes.INCORRECT);for(var e=a.getElementsByClassName(Quiz.Classes.TEMP);e.length>0;)e[0].parentNode.removeChild(e[0])},Quiz.prototype.highlightResults=function(a){for(var b,c=0;c<this.questions.length;c++)b=this.questions[c],b.getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].classList.add(this.result.results[c]?Quiz.Classes.CORRECT:Quiz.Classes.INCORRECT),void 0!==a&&a(this,b,c,this.result.results[c])};var QuizResult=function(){this.results=[],this.totalQuestions=0,this.score=0,this.scorePercent=0,this.scorePercentFormatted=0};QuizResult.prototype.setResults=function(a){this.results=a,this.totalQuestions=this.results.length,this.score=0;for(var b=0;b<this.results.length;b++)this.results[b]&&this.score++;this.scorePercent=this.score/this.totalQuestions,this.scorePercentFormatted=Math.floor(100*this.scorePercent)};var Utils=function(){};Utils.compare=function(a,b){if(a.length!=b.length)return!1;if(Array.isArray(a)&&Array.isArray(b)){for(var c=0;c<a.length;c++)if(a[c]!==b[c])return!1;return!0}return a===b};
+
+function showResults(quiz) {
+    // Check answers and continue if all questions have been answered
+    if (quiz.checkAnswers()) {
+        var quizScorePercent = quiz.result.scorePercentFormatted; // The unformatted percentage is a decimal in range 0 - 1
+        var quizResultElement = document.getElementById('quiz-result');
+        quizResultElement.style.display = 'block';
+        document.getElementById('quiz-percent').innerHTML = quizScorePercent.toString();
+
+        // Change background colour of results div according to score percent
+        if (quizScorePercent > 75) quizResultElement.style.backgroundColor = '#4caf50';
+        else if (quizScorePercent > 50) quizResultElement.style.backgroundColor = '#ffc107';
+        else if (quizScorePercent > 25) quizResultElement.style.backgroundColor = '#ff9800';
+        else if (quizScorePercent > 0) quizResultElement.style.backgroundColor = '#f44336';
+
+        // Highlight questions according to whether they were correctly answered. The callback allows us to highlight/show the correct answer
+        quiz.highlightResults(handleAnswers);
+    }
+}
+
+/** Callback for Quiz.highlightResults. Highlights the correct answers of incorrectly answered questions
+ * Parameters are: the quiz object, the question element, question number, correctly answered flag
+ */
+function handleAnswers(quiz, question, no, correct) {
+    if (!correct) {
+        var answers = question.getElementsByTagName('input');
+        for (var i = 0; i < answers.length; i++) {
+            if (answers[i].type === 'checkbox' || answers[i].type === 'radio'){
+                // If the current input element is part of the correct answer, highlight it
+                if (quiz.answers[no].indexOf(answers[i].value) > -1) {
+                    answers[i].parentNode.classList.add(Quiz.Classes.CORRECT);
+                }
+            } else {
+                // If the input is anything other than a checkbox or radio button, show the correct answer next to the element
+                var correctAnswer = document.createElement('span');
+                correctAnswer.classList.add(Quiz.Classes.CORRECT);
+                correctAnswer.classList.add(Quiz.Classes.TEMP); // quiz.checkAnswers will automatically remove elements with the temp class
+                correctAnswer.innerHTML = quiz.answers[no];
+                correctAnswer.style.marginLeft = '10px';
+                answers[i].parentNode.insertBefore(correctAnswer, answers[i].nextSibling);
+            }
+        }
+    }
+}
+
+  var quizz_Chap02;
+  window.onload = function() {
+    quizz_Chap02 = new Quiz('Chap02', ['1','2','1','2',['1', '2', '3', '4'],'2','1','1','1','2']);
+  };</script><link rel="stylesheet" type="text/css" src="css/quizlib.min.css"><div class="card quizlib-question"><div class="quizlib-question-title">Quelle est la principale bibliothèque de visualisation d'images en Python ?</div><div>Relisez au besoin la section « Visualisation en Python ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>matplotlib</label></td>
+<td><input type="radio" name="q1" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>rasterio</label></td>
+<td><input type="radio" name="q1" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>GDAL</label></td>
+<td><input type="radio" name="q1" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>NumPy</label></td>
+<td><input type="radio" name="q1" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Dans quel ordre `imshow` attend-il les dimensions d'une image à plusieurs bandes ?</div><div>Relisez au besoin la section « Visualisation en Python ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>bande, hauteur, largeur</label></td>
+<td><input type="radio" name="q2" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>hauteur, largeur, bande</label></td>
+<td><input type="radio" name="q2" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>largeur, hauteur, bande</label></td>
+<td><input type="radio" name="q2" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>L'ordre n'a pas d'importance</label></td>
+<td><input type="radio" name="q2" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Pour afficher une image à trois bandes avec `imshow`, les valeurs doivent être :</div><div>Relisez au besoin la section « Visualisation en Python ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Ramenées entre 0 et 1 (ou entre 0 et 255)</label></td>
+<td><input type="radio" name="q3" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Laissées telles quelles</label></td>
+<td><input type="radio" name="q3" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Converties en entiers 64 bits</label></td>
+<td><input type="radio" name="q3" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Transformées en décibels</label></td>
+<td><input type="radio" name="q3" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Le réhaussement visuel modifie de façon permanente les valeurs de la donnée d'origine.</div><div>Le réhaussement est appliqué dynamiquement à l'affichage; relisez la section « Réhaussements visuels ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Vrai</label></td>
+<td><input type="radio" name="q4" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Faux</label></td>
+<td><input type="radio" name="q4" value="2"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Quelles statistiques univariées sont utiles au réhaussement d'une image ?</div><div>Relisez au besoin la section « Statistiques d'une image ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><label>Valeurs minimale et maximale</label></td>
+<td><input type="checkbox" name="q5" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Moyenne</label></td>
+<td><input type="checkbox" name="q5" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Quantiles et percentiles</label></td>
+<td><input type="checkbox" name="q5" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Écart-type</label></td>
+<td><input type="checkbox" name="q5" value="4"></td>
+</tr>
+<tr class="odd">
+<td><label>Le système de projection cartographique</label></td>
+<td><input type="checkbox" name="q5" value="5"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Pour une distribution très asymétrique (p. ex. une image SAR), quel outil permet de fixer des bornes d'affichage robustes ?</div><div>Relisez au besoin la section « Cas des histogrammes asymétriques ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>La valeur moyenne seule</label></td>
+<td><input type="radio" name="q6" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Les percentiles (p. ex. 2 % et 98 %)</label></td>
+<td><input type="radio" name="q6" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>La valeur maximale seule</label></td>
+<td><input type="radio" name="q6" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Le nombre de bandes</label></td>
+<td><input type="radio" name="q6" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Pour une image radar, quelle transformation non linéaire est populaire pour afficher la rétrodiffusion ?</div><div>Relisez au besoin la section « Réhaussement par fonctions ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Le passage en décibels (10·log10)</label></td>
+<td><input type="radio" name="q7" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>La mise au carré</label></td>
+<td><input type="radio" name="q7" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>L'inverse (1/x)</label></td>
+<td><input type="radio" name="q7" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>La racine cubique</label></td>
+<td><input type="radio" name="q7" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Quel est le but de l'égalisation d'histogramme ?</div><div>Relisez au besoin la section « Égalisation d'histogramme ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Rendre les valeurs de pixels équiprobables (histogramme aplati)</label></td>
+<td><input type="radio" name="q8" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Réduire la résolution spatiale de l'image</label></td>
+<td><input type="radio" name="q8" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Supprimer le bruit thermique du capteur</label></td>
+<td><input type="radio" name="q8" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Géoréférencer l'image</label></td>
+<td><input type="radio" name="q8" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Les paramètres `vmin` et `vmax` de `imshow` contrôlent la dynamique affichée sans modifier la donnée.</div><div>Relisez au besoin la section « Cas des histogrammes asymétriques ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Vrai</label></td>
+<td><input type="radio" name="q9" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Faux</label></td>
+<td><input type="radio" name="q9" value="2"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Dans l'exemple du chapitre, quel triplet de bandes Sentinel-2 produit un composé vraies couleurs (RVB) ?</div><div>Relisez au besoin la section « Composés colorés ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>8, 3, 2</label></td>
+<td><input type="radio" name="q10" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>4, 3, 2</label></td>
+<td><input type="radio" name="q10" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>12, 8, 4</label></td>
+<td><input type="radio" name="q10" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>12, 11, 4</label></td>
+<td><input type="radio" name="q10" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><button type="button" onclick="showResults(quizz_Chap02);" id="buttonID">Vérifier votre résultat</button><div id="quiz-result" class="card"><span id="quiz-percent"></span></div></div>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->

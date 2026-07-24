@@ -454,7 +454,7 @@ Figure&nbsp;1.1: Fenêtre principale du serveur Jupyter Lab.
 <li><p>Permettent les doublons (deux fois la même valeur).</p></li>
 <li><p>Idéales pour stocker des collections d’éléments que vous voulez modifier</p></li>
 </ul>
-<div id="8ac4c540" class="cell" data-execution_count="1">
+<div id="8ac4c540" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Une liste des bandes spectrales d'une image (analogie télédétection)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bandes[<span class="dv">0</span>])          <span class="co"># premier élément</span></span>
@@ -484,7 +484,7 @@ PIR
 <li><p>Permettent les doublons.</p></li>
 <li><p>Souvent utilisés pour stocker des données qui ne doivent pas changer (comme des paramètres).</p></li>
 </ul>
-<div id="6269a5e1" class="cell" data-execution_count="2">
+<div id="6269a5e1" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Les dimensions (lignes, colonnes) d'une image : une donnée qui ne change pas</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dimensions <span class="op">=</span> (<span class="dv">512</span>, <span class="dv">512</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>lignes, colonnes <span class="op">=</span> dimensions        <span class="co"># dépaquetage (unpacking)</span></span>
@@ -505,7 +505,7 @@ PIR
 <li><p>N’autorisent pas les doublons.</p></li>
 <li><p>Utiles pour éliminer les doublons et effectuer des opérations mathématiques sur des ensembles.</p></li>
 </ul>
-<div id="8a6ec720" class="cell" data-execution_count="3">
+<div id="8a6ec720" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Éliminer les doublons d'une liste de classes d'occupation du sol</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>, <span class="st">"forêt"</span>]</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> <span class="bu">set</span>(classes)</span>
@@ -530,7 +530,7 @@ intersection : {3} | union : {1, 2, 3, 4}</code></pre>
 <li><p>Les clés doivent être uniques, mais les valeurs peuvent être dupliquées</p></li>
 <li><p>Utiles pour stocker des données associatives ou pour créer des tables de recherche rapide</p></li>
 </ul>
-<div id="30af0b65" class="cell" data-execution_count="4">
+<div id="30af0b65" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Un dictionnaire : les métadonnées d'une image satellite</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image[<span class="st">"capteur"</span>])              <span class="co"># accès par clé</span></span>
@@ -550,7 +550,7 @@ date : 2024-07-01</code></pre>
 <section id="boucles-et-conditions" class="level2" data-number="1.6">
 <h2 data-number="1.6" class="anchored" data-anchor-id="boucles-et-conditions"><span class="header-section-number">1.6</span> Boucles et conditions</h2>
 <p>Un programme prend des décisions (<code>if</code>) et répète des opérations (<code>for</code>, <code>while</code>). Ces structures de contrôle sont au cœur de tout traitement automatisé.</p>
-<div id="01138a09" class="cell" data-execution_count="5">
+<div id="01138a09" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle for : parcourir chaque bande avec son indice</span></span>
@@ -584,7 +584,7 @@ valeur finale : 0.5</code></pre>
 <section id="les-fonctions" class="level2" data-number="1.7">
 <h2 data-number="1.7" class="anchored" data-anchor-id="les-fonctions"><span class="header-section-number">1.7</span> Les fonctions</h2>
 <p>Une fonction regroupe des instructions réutilisables sous un nom. On la définit avec <code>def</code> ; elle reçoit des <em>arguments</em> et renvoie un résultat avec <code>return</code>.</p>
-<div id="94d6323e" class="cell" data-execution_count="6">
+<div id="94d6323e" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ndvi(nir, rouge):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Indice de végétation NDVI = (PIR - Rouge) / (PIR + Rouge)."""</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (nir <span class="op">-</span> rouge) <span class="op">/</span> (nir <span class="op">+</span> rouge)</span>
@@ -614,7 +614,7 @@ valeur finale : 0.5</code></pre>
 <li><p><strong>Polymorphisme</strong>: permet à différents objets de répondre au même message de manière unique, comme si différents animaux répondaient différemment à “fais du bruit”.</p></li>
 </ol>
 <p>Ces caractéristiques font de Python un excellent choix pour apprendre et appliquer les concepts de la POO, rendant le code plus organisé et réutilisable</p>
-<div id="0b9bed5d" class="cell" data-execution_count="7">
+<div id="0b9bed5d" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Image:</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Une classe minimale décrivant une image satellite."""</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -638,7 +638,7 @@ Landsat-8</code></pre>
 <h2 data-number="1.9" class="anchored" data-anchor-id="importer-des-bibliothèques"><span class="header-section-number">1.9</span> Importer des bibliothèques</h2>
 <p>Python possède une petite bibliothèque standard, mais toute sa puissance vient des <em>packages</em> externes (comme NumPy). On les installe une fois avec <code>pip</code>, puis on les charge dans un script avec <code>import</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install numpy          <span class="co"># une seule fois par environnement</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="2371fe2a" class="cell" data-execution_count="8">
+<div id="2371fe2a" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np              <span class="co"># tout le module, sous l'alias np</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> pi, sqrt       <span class="co"># seulement certains éléments</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -653,7 +653,7 @@ Landsat-8</code></pre>
 <section id="sec-00-02" class="level2" data-number="1.10">
 <h2 data-number="1.10" class="anchored" data-anchor-id="sec-00-02"><span class="header-section-number">1.10</span> Un avant-goût de NumPy</h2>
 <p>Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque <a href="https://numpy.org/">NumPy</a> fournit l’objet <code>ndarray</code> qui représente efficacement ces tableaux à plusieurs dimensions : c’est la brique de base de tous les chapitres suivants.</p>
-<div id="96a00f8c" class="cell" data-execution_count="9">
+<div id="96a00f8c" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Une petite image à une bande : 3 lignes x 4 colonnes</span></span>
@@ -756,7 +756,7 @@ Afficher les solutions
 </section>
 <section id="quiz" class="level2" data-number="1.13">
 <h2 data-number="1.13" class="anchored" data-anchor-id="quiz"><span class="header-section-number">1.13</span> Quiz</h2>
-<div id="b36969d1" class="cell" data-results="asis" data-execution_count="10">
+<div id="b36969d1" class="cell" data-results="asis" data-execution_count="11">
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div id="Chap00" class="card"><link type="text/javascript" src="libs/quizlib.1.0.1.min.js"><script>var Quiz=function(a,b){this.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),this.unansweredQuestionText="Question sans réponse !",this.container=document.getElementById(a),this.questions=[],this.result=new QuizResult,this.answers=b;for(var c=0;c<this.container.children.length;c++)this.container.children[c].classList.contains(Quiz.Classes.QUESTION)&&this.questions.push(this.container.children[c]);if(this.answers.length!=this.questions.length)throw new Error("Number of answers does not match number of questions!")};Quiz.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),Quiz.prototype.checkAnswers=function(a){void 0===a&&(a=!0);for(var b=[],c=[],d=0;d<this.questions.length;d++){var e=this.questions[d],f=this.answers[d],g=[];this.clearHighlights(e);for(var h,i=e.getElementsByClassName(Quiz.Classes.QUESTION_ANSWERS)[0].getElementsByTagName("input"),j=0;j<i.length;j++)h=i[j],"checkbox"===h.type||"radio"===h.type?h.checked&&g.push(h.value):""!==h.value&&g.push(h.value);1!=g.length||Array.isArray(f)?0===g.length&&b.push(e):g=g[0],c.push(Utils.compare(g,f))}if(0===b.length||!a)return this.result.setResults(c),!0;for(d=0;d<b.length;d++){var k=document.createElement("span");k.appendChild(document.createTextNode(this.unansweredQuestionText)),k.className=Quiz.Classes.QUESTION_WARNING,b[d].getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].appendChild(k)}return!1},Quiz.prototype.clearHighlights=function(a){for(var b=a.getElementsByClassName(Quiz.Classes.QUESTION_WARNING);b.length>0;)b[0].parentNode.removeChild(b[0]);var c,d=[a.getElementsByClassName(Quiz.Classes.CORRECT),a.getElementsByClassName(this.Classes.INCORRECT)];for(i=0;i<d.length;i++)for(;d[i].length>0;)c=d[i][0],c.classList.remove(Quiz.Classes.CORRECT),c.classList.remove(Quiz.Classes.INCORRECT);for(var e=a.getElementsByClassName(Quiz.Classes.TEMP);e.length>0;)e[0].parentNode.removeChild(e[0])},Quiz.prototype.highlightResults=function(a){for(var b,c=0;c<this.questions.length;c++)b=this.questions[c],b.getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].classList.add(this.result.results[c]?Quiz.Classes.CORRECT:Quiz.Classes.INCORRECT),void 0!==a&&a(this,b,c,this.result.results[c])};var QuizResult=function(){this.results=[],this.totalQuestions=0,this.score=0,this.scorePercent=0,this.scorePercentFormatted=0};QuizResult.prototype.setResults=function(a){this.results=a,this.totalQuestions=this.results.length,this.score=0;for(var b=0;b<this.results.length;b++)this.results[b]&&this.score++;this.scorePercent=this.score/this.totalQuestions,this.scorePercentFormatted=Math.floor(100*this.scorePercent)};var Utils=function(){};Utils.compare=function(a,b){if(a.length!=b.length)return!1;if(Array.isArray(a)&&Array.isArray(b)){for(var c=0;c<a.length;c++)if(a[c]!==b[c])return!1;return!0}return a===b};
 

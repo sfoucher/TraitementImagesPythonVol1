@@ -123,7 +123,7 @@ def _():
     import xarray as xr
     import xrscipy
 
-    return np, rxr, xr
+    return np, rxr
 
 
 @app.cell(hide_code=True)
@@ -176,7 +176,7 @@ def _(mo):
     mo.md(r"""
     ## Visualisation en Python
 
-    ID'emblée, il faut mentionner que Python n'est pas vraiment fait pour visualiser de la donnée de grande taille, le niveau d'interactivité est aussi assez limité. Pour une visualisation interactives, il est plutôt conseillé d'utiliser un outil comme [QGIS](https://qgis.org/). Néanmoins, il est possible de visualiser de petites images avec la librairie [`matplotlib`](https://matplotlib.org/stable/) qui est la librairie principale de visualisation en Python. Cette librairie est extrêmement riche et versatile, nous ne présenterons que les bases nécessaires pour démarrer. Le lecteur désirant aller plus loin pourra consulter les nombreux tutoriels disponibles comme [celui-ci](https://matplotlib.org/stable/tutorials/index.html).
+    D'emblée, il faut mentionner que Python n'est pas vraiment fait pour visualiser de la donnée de grande taille, le niveau d'interactivité est aussi assez limité. Pour une visualisation interactives, il est plutôt conseillé d'utiliser un outil comme [QGIS](https://qgis.org/). Néanmoins, il est possible de visualiser de petites images avec la librairie [`matplotlib`](https://matplotlib.org/stable/) qui est la librairie principale de visualisation en Python. Cette librairie est extrêmement riche et versatile, nous ne présenterons que les bases nécessaires pour démarrer. Le lecteur désirant aller plus loin pourra consulter les nombreux tutoriels disponibles comme [celui-ci](https://matplotlib.org/stable/tutorials/index.html).
 
     La fonction de base pour créer une figure est `subplots`, la largeur et la hauteur en pouces de la figure peuvent être contrôlées via le paramètre `figsize`:
     """)
@@ -217,7 +217,7 @@ def _(mo):
 @app.cell
 def _(img_rgbnir, plt):
     (_fig, _ax) = plt.subplots(figsize=(6, 5))
-    plt.imshow(img_rgbnir.data.transpose(1, 2, 0) / 2500.0)
+    plt.imshow(img_rgbnir.data[0:3].transpose(1, 2, 0) / 2500.0)
     plt.show()
     return
 
@@ -322,7 +322,7 @@ def _(np):
     array = np.random.randint(0, 10, 100)
     (hist, bin_limites) = np.histogram(array, density=True)  # 100 valeurs aléatoires entre 0 et 10
     print('valeurs :', hist)
-    print(';imites :', bin_limites)
+    print('limites :', bin_limites)
     return bin_limites, hist
 
 
@@ -399,7 +399,7 @@ def _(img_SAR, np):
     _percentiles_position = (0, 0.1, 1, 2, 50, 98, 99, 99.9, 100)
     percentiles = dict(zip(_percentiles_position, np.percentile(values, _percentiles_position)))
     print(percentiles)
-    return percentiles, values
+    return NO_DATA_FLOAT, percentiles, values
 
 
 @app.cell(hide_code=True)
@@ -487,10 +487,12 @@ def _(mo):
 
 
 @app.cell
-def _(img_SAR, np, xr):
+def _(NO_DATA_FLOAT, img_SAR, np):
     _percentiles_position = (0, 0.1, 1, 2, 50, 98, 99, 99.9, 100)
-    values_1 = xr.apply_ufunc(lambda x: 10 * np.log10(x), img_SAR[0]).data
-    percentiles_db = dict(zip(_percentiles_position, np.percentile(values_1, _percentiles_position)))
+    _sar = img_SAR[0].data
+    _valid = (_sar != NO_DATA_FLOAT) & (_sar > 0)
+    values_1 = 10 * np.log10(np.where(_valid, _sar, np.nan))
+    percentiles_db = dict(zip(_percentiles_position, np.nanpercentile(values_1, _percentiles_position)))
     print(percentiles_db)
     return percentiles_db, values_1
 
@@ -504,14 +506,16 @@ def _(mo):
 
 
 @app.cell
-def _(plt, values_1):
+def _(np, plt, values_1):
+    values_valid = values_1.flatten()
+    values_valid = values_valid[np.isfinite(values_valid)]
     (_fig, _ax) = plt.subplots(nrows=2, ncols=1, figsize=(6, 4), sharex=True)
     _ax[0].set_title('Distribution de la bande 0 de img_SAR en dB', fontsize='small')
     _ax[0].grid(True)
-    _ax[0].violinplot(values_1.flatten(), orientation='horizontal', quantiles=(0.01, 0.02, 0.5, 0.98, 0.99), showmeans=False, showmedians=True, showextrema=True)
+    _ax[0].violinplot(values_valid, orientation='horizontal', quantiles=(0.01, 0.02, 0.5, 0.98, 0.99), showmeans=False, showmedians=True, showextrema=True)
     _ax[1].set_xlabel('Valeur des pixels')
     _ax[1].grid(True)
-    _bplot = _ax[1].boxplot(values_1.flatten(), notch=True, orientation='horizontal')
+    _bplot = _ax[1].boxplot(values_valid, notch=True, orientation='horizontal')
     plt.tight_layout()
     plt.show()
     return
@@ -562,11 +566,15 @@ def _(mo):
 
 
 @app.cell
-def _(img_SAR, np, plt):
-    values_2 = np.sort(10 * np.log10(img_SAR[0].data.flatten()))  # on range les valeurs par ordre croissant
-    cdf_x = np.linspace(values_2[0], values_2[-1], 1000)  # 1000 valeurs réparties également sur l'intervalle des valeurs
-    cdf_source = np.interp(cdf_x, values_2, np.arange(len(values_2)) / len(values_2) * 255)  # calcul de la CDF source
-    values_eq = np.interp(np.log10(img_SAR[0].data), cdf_x, cdf_source).astype('uint8')
+def _(NO_DATA_FLOAT, img_SAR, np, plt):
+    _sar = img_SAR[0].data
+    _valid = (_sar != NO_DATA_FLOAT) & (_sar > 0)
+    sar_db = 10 * np.log10(np.where(_valid, _sar, np.nan))
+    values_2 = np.sort(sar_db[_valid].flatten())
+    cdf_x = np.linspace(values_2[0], values_2[-1], 1000)
+    cdf_source = np.interp(cdf_x, values_2, np.arange(len(values_2)) / len(values_2) * 255)
+    values_eq = np.interp(sar_db, cdf_x, cdf_source)
+    values_eq = np.where(_valid, values_eq, 0).astype('uint8')
     plt.imshow(values_eq)
     plt.axis('off')
     return
@@ -656,6 +664,60 @@ def _(img_s2, plt):
     _ax[1, 1].set_title('SWIR2,SWIR1,NIR')
     plt.tight_layout()
     plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Points clés
+
+    <div style="border:0.5px solid silver;border-left:.3rem solid #357cc0;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#eef5fb;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IB2cksfwAAA/pJREFUWIXNl01sVFUYhp/vzLSlDTbiTCmpoEQT5SemQQNaFw12ftCQrtSmKxLiAmUp0UTsz51prcYFKxM10ZCwarCuiAlMWyQuICkQ7KKlmmBiqDWlc52m1jKkvedz0TuVInTujNH6rr6595z3ec89d+45RwioV/p+rVv0wruNyi4LuwV2Abv922MK4wbGrOi48bzxjLPlVhBfKdagpTf3eEi9bpTDQcP6zic9CaXOd2z6uawATSduVm/8fcN7CO+CVAFLwA8CowqjqjKq4aXvvUWRsIQaRbRRoFGhEXgaCIPeQfl4/qH8h5fe3nY7cICkk92hhgH/EVuB/iXxus531t8IMviWnuknwxpKK7QDBhgTy2sZJzpRNEA8fWuPYIaBTcB1i7wx3BW5FAR8r2Jpt8mgXwI7gZxiY0Ndm689MEDCmWnAyAjwKMg3G+ydtjNOw0I58IJanamavKk6DXoQ+AWr+waduqm/BXj9tIZmr/92HtFmhW9z9ZEDV4/I4j+BF/Tc51qxado9J/ASKt89vPORlq/axMOfHwBmJ9xjiDYDk0u2sq0YPJlyE4l0diSRzo4kU25irbZXj8jikq1sAyYRbZ6dcI8V7hmAZK+7DegGVIXDF5zabNFhiX4K7AX2+vWauuDUZlU4DCjQ7TOXA1hLB1CDSP9QZ3SoKLxMDXVGhxDpB2p8JibWNxcR9BBgrWedwG4qbwGXgct+HUg+wwp6KNY3F5FEauYIIp8B5wa7oi+XObiSlEhnzwIHUH3TIJIEUNWv/wv4KpZIMgy6B4SQmItBDeK97gvi2UYR2a7IdhHNZTqjR4P2D4m5aFFA94RBtgLMbVz4KaiBWJKIHFWoB0WVT4L2LbA2zlcDstUAFYA+aLG4nwa7ImlFPlq5oIyUEsBnKVBhArS/r0TYUahDRksKcLcMsAhI04mb1SX1VN3nV7mzHdEfS+nqswRYNKCTALXzNU8ENWh1pmqAZ/yflxHRUgL8xdJJA3INwFP7YlCD2+ENzy5vOEApbf5Xs+SaQTUDICKvBjUQ6xUeP0ZLn/8VlmrG2IqqASAPJGLOzFNBDFRYCeCFbUkBfEYCyNuKqgEzfLzWVeQUYEzIBFoLROV5lt+iG8Pv10+XEsBnGEVODR+vdQ2AMfQCC6i2x3uy8QA+m1me/4ZE2u1KpmYCBY/3ZOOotgMLPnN5Oc50RG4CKUBEObnfmYuuZaSiZ/xSQOtCar4oBt/vzEVFOen//VI+s8wtmaq0fDD7WLjqTjbzzpY/isHX2pKt+6Z01ad40KmbUmwrkAM9mDeVV2Jpt6lceCztNuVN5RUfnlNs691w/pcHk4LW9Wi2ajTrdTi9V//W8fxPxif/DjJKAKcAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>À retenir</strong>
+    </span></div>
+    <div style="padding:.3em .6em;font-size:.95em;">
+    <ul>
+    <li>Le réhaussement visuel améliore l’affichage (contraste, dynamique) <strong>sans modifier la donnée</strong> d’origine : il est appliqué dynamiquement à l’affichage.</li>
+    <li>Les <strong>statistiques</strong> d’une image (min/max, moyenne, quantiles, écart-type) guident le choix de la transformation.</li>
+    <li>Le <strong>stretch linéaire</strong> remappe la dynamique ; pour les histogrammes <strong>asymétriques</strong> (images SAR), les <strong>percentiles</strong> (p. ex. 2 %–98 %) fournissent des bornes d’affichage robustes.</li>
+    <li>Les transformations <strong>non linéaires</strong> — passage en <strong>dB</strong> (<code>10·log10</code>) et <strong>égalisation d’histogramme</strong> — rétablissent une distribution exploitable.</li>
+    <li>Les <strong>palettes de couleur</strong> et les <strong>composés colorés</strong> (choix des bandes) révèlent des propriétés différentes de la surface ; <code>vmin</code>/<code>vmax</code> contrôlent la dynamique affichée.</li>
+    </ul>
+    </div>
+    </div>
+
+    ## Exercices
+
+    <div style="border:0.5px solid silver;border-left:.3rem solid #e34692;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fbe8f2;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADP0lEQVRYha2XT3LaMBjFf3SyD91rBnqC0BOUbuJl6AkwB9CUnKD0BCXxAeKcIGSpVZ0bwAkKEx8ATkAXemoUgm0I/WY8smVJ7/n78yS3ttstp1iZZF0g1WNhnC3Un6o/N87mVfNbpxAQ+Bw4j7p/qv0R9Y2qSHx4N7q3scBvBLwS8A/dj4ANcCePvLFTPVAAX4yzraivDxCFogcUIvrGE6cSSIE74KdxdlIzrpLEqSGY4V2d1g0yzs6BPnvCcRIB4+waWAKdMsna7yHR2m63aPL4COzCOFuUSZYDQ+DeOJseMjEKB8bZduv58ratjosjCMSltgJ68gZlkg20+KyGRIrPndEZMBD4AuiHhSom9oHfeszxXusAkzLJ1vhc6GjsChjI9bs2UFt8ALp6GDeAt4GpHtfG2SUvMf2O90YHrwk3us/3rJMDV8CTcXZ5VgUYTehroY66NmFh4+w8kuI2r6X4OzthLZNsjM+ZBfJCLQF99Qxfvwu87E5iT+l+ujMvuPgp6kuBX/qAf6Fu8kBP4I/G2UHD2NjGAhpH4He74IcQCNYtk6xdlSNBfoGlcuMLPsbzPeCvkrL1fHk7wSfQ1xC/ncXnvMRyhU/Wmd7tK+ERPjmHwL3aveBwmBL2tdACn4gPSjzwyXchgEf1TXVtmsAPImCcXRtnU+NsT0QCMPgcQQADkTjHV0QgXgkOr3MglUzmu7HWF8dJ2I1keBMBFPgan4lk3vSBsQeG+DJZikgAT4E/ejeMxob7eA/J8aE6Bx7wqlm7x8QErqPJ8aSJ2nuNAV/f18DneG9XuHrAN172i+WhBMJ2CYqtsrwDLLTbBVevjbPTqtgaZ2d1B5QqAkHVFsCFYlxE5OL2qkyyWZlk46ZzwFEEZEHFhvgSW6kvEBwFEvi8KE4h8YaAxKgLfMWLU3dH+3PgIz7OG5FM30tgrxQLsKiapPcz7W53+Lr/fwSaTGU64KValjXDezXvjidQJtkUfwAJ9lj360WDd44iIEUM4Nf4A0ilzB5iZ0BIsJSauMu6am+Ms9O6gZGa1hJsPV/edvFSC14DKs+FeHeG0lzWc/13mPmkM8J+AvovGOC30E7VwHfYEw2/5gB/AcMlhsUeVwFpAAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>À vous de jouer</strong>
+    </span></div>
+    <div style="padding:.3em .6em;font-size:.95em;">
+    <ol type="1">
+    <li>Proposez une autre transformation non linéaire pour l’image SAR (p. ex. la racine carrée ou <code>np.arcsinh</code>) et comparez son histogramme à celui obtenu en décibels.
+    </li>
+    <li>Reprenez l’égalisation d’histogramme en remplaçant la CDF cible équiprobable par une <strong>CDF gaussienne</strong> (avec <code>scipy.stats.norm.cdf</code>), puis observez l’effet sur l’image SAR.
+    </li>
+    <li>À partir de <code>img_s2</code>, construisez un nouveau composé coloré (p. ex. <code>[11, 8, 4]</code> ou <code>[8, 4, 3]</code>) et décrivez les surfaces qu’il met en valeur.
+    </li>
+    </ol>
+    </div>
+    </div>
+
+    ## Quiz
+
+    ::: {.content-visible when-profile="production"}
+
+    Utilisez la version html.
+    :::
+    """)
+    return
+
+
+@app.cell
+def _():
+    from code_complementaire.quizz_functions import Quiz, render_quizz
+    Chap02Quiz = Quiz("quiz/Chap02.yml", "Chap02")
+    render_quizz(Chap02Quiz)
     return
 
 
