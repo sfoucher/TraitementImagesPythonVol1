@@ -1229,6 +1229,125 @@ def _(cmap_classes2_3, img_rgbnir, plt, qda_2):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ## Réseaux de neurones
+
+    Les réseaux de neurones artificiels (RNA) ont connu un essor très important depuis les années 2010 avec des approches dites profondes. Ces aspects seront surtout abordés dans le tome 2 consacré à l'intelligence artificielle. On aborde ici seulement le **perceptron** et le **perceptron multi-couches** (MLP).
+
+    Le perceptron est l'unité de base d'un RNA : il consiste en $N$ connexions, une unité de calcul (le neurone) avec une fonction d'activation et une sortie. Le perceptron ne permet de construire que des frontières de décision **linéaires**.
+
+    Le perceptron multi-couches est un réseau dense (*fully connected*) avec des **couches cachées** entre la couche d'entrée et la couche de sortie, ce qui permet de construire des frontières de décision beaucoup plus complexes via une hiérarchie de frontières de décision. Ces réseaux sont entraînés par descente de gradient avec une correction des poids par **rétro-propagation** de l'erreur, mesurée par une fonction de coût que l'on cherche à réduire.
+
+    Comme pour le K-NN, il est important de **normaliser** les données (`StandardScaler`) avant d'entraîner un MLP. On forme donc un pipeline combinant la normalisation et le classificateur :
+    """)
+    return
+
+
+@app.cell
+def _(Pipeline, StandardScaler, X_test_2, X_train_1, y_test_2, y_train_1):
+    from sklearn.neural_network import MLPClassifier
+    clf_4 = Pipeline(steps=[('scaler', StandardScaler()), ('mlp', MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=1000, random_state=0))])
+    clf_4.fit(X_train_1, y_train_1)
+    y_pred_10 = clf_4.predict(X_test_2)
+    print('Nombre de points misclassifiés sur %d points : %d' % (X_test_2.shape[0], (y_test_2 != y_pred_10).sum()))
+    return (clf_4,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    En faisant varier l'architecture (nombre et taille des couches cachées), on observe le passage d'une frontière linéaire (perceptron sans couche cachée) à des frontières de plus en plus complexes :
+    """)
+    return
+
+
+@app.cell
+def _(
+    DecisionBoundaryDisplay,
+    ListedColormap,
+    X_2,
+    X_test_2,
+    X_train_1,
+    clf_4,
+    couleurs_classes,
+    np,
+    plt,
+    y_2,
+    y_test_2,
+    y_train_1,
+):
+    (_, _axs) = plt.subplots(nrows=2, ncols=2, figsize=(9, 9))
+    _couleurs_classes2 = [couleurs_classes[c] for c in np.unique(y_2).tolist()]
+    cmap_classes2_4 = ListedColormap(_couleurs_classes2)
+    archis = [(), (10,), (50, 50), (100, 100)]
+    titres = ['Perceptron (0 couche cachée)', '1 couche (10)', '2 couches (50, 50)', '2 couches (100, 100)']
+    for (_ax, hl, titre) in zip(_axs.flatten(), archis, titres):
+        clf_4.set_params(mlp__hidden_layer_sizes=hl).fit(X_train_1[:, 2:4], y_train_1)
+        y_pred_11 = clf_4.predict(X_test_2[:, 2:4])
+        _disp = DecisionBoundaryDisplay.from_estimator(clf_4, X_2[:, 2:4], response_method='predict', plot_method='contourf', shading='auto', alpha=0.5, ax=_ax, cmap=cmap_classes2_4)
+        _disp.ax_.scatter(X_test_2[:, 2], X_test_2[:, 3], c=y_test_2, edgecolors='k', cmap=cmap_classes2_4)
+        _disp.ax_.set_xlabel('Rouge', fontsize='small')
+        _disp.ax_.set_ylabel('Proche infra-rouge', fontsize='small')
+        _disp.ax_.set_title(f'{titre}\nerreur={(y_test_2 != y_pred_11).sum() / X_test_2.shape[0] * 100:3.1f}%', fontsize='small')
+    plt.show()
+    return (cmap_classes2_4,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Le perceptron sans couche cachée produit une frontière linéaire, comparable à un classificateur linéaire, tandis que l'ajout de couches cachées permet des frontières non linéaires plus souples — au risque de sur-apprendre.
+
+    Le rapport de performance et la matrice de confusion du modèle à deux couches (sur les 4 bandes) :
+    """)
+    return
+
+
+@app.cell
+def _(
+    X_test_2,
+    X_train_1,
+    classification_report,
+    clf_4,
+    nom_classes2_3,
+    np,
+    y_test_2,
+    y_train_1,
+):
+    clf_4.set_params(mlp__hidden_layer_sizes=(50, 50)).fit(X_train_1, y_train_1)
+    y_pred_12 = clf_4.predict(X_test_2)
+    print(classification_report(y_test_2, y_pred_12, target_names=nom_classes2_3, zero_division=np.nan))
+    return (y_pred_12,)
+
+
+@app.cell
+def _(ConfusionMatrixDisplay, nom_classes2_3, y_pred_12, y_test_2):
+    _disp = ConfusionMatrixDisplay.from_predictions(y_test_2, y_pred_12, display_labels=nom_classes2_3, xticks_rotation='vertical')
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Enfin, la prédiction peut s'appliquer sur toute l'image :
+    """)
+    return
+
+
+@app.cell
+def _(clf_4, cmap_classes2_4, img_rgbnir, plt):
+    _data_image = img_rgbnir.to_numpy().transpose(1, 2, 0).reshape(img_rgbnir.shape[1] * img_rgbnir.shape[2], 4)
+    y_classe_4 = clf_4.predict(_data_image)
+    y_classe_4 = y_classe_4.reshape(img_rgbnir.shape[1], img_rgbnir.shape[2])
+    (_fig, _ax) = plt.subplots(nrows=1, ncols=1, figsize=(8, 6))
+    plt.imshow(y_classe_4, cmap=cmap_classes2_4)
+    _ax.set_title("Carte d'occupation des sols avec un MLP", fontsize='small')
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ## Points clés
 
     <div style="border:0.5px solid silver;border-left:.3rem solid #357cc0;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
