@@ -305,6 +305,9 @@ window.Quarto = {
   <li><a href="#fusion-des-segments-par-graphe-de-proximité" id="toc-fusion-des-segments-par-graphe-de-proximité" class="nav-link" data-scroll-target="#fusion-des-segments-par-graphe-de-proximité"><span class="header-section-number">5.5.2</span> Fusion des segments par graphe de proximité</a></li>
   <li><a href="#approche-objet" id="toc-approche-objet" class="nav-link" data-scroll-target="#approche-objet"><span class="header-section-number">5.5.3</span> Approche objet</a></li>
   </ul></li>
+  <li><a href="#points-clés" id="toc-points-clés" class="nav-link" data-scroll-target="#points-clés"><span class="header-section-number">5.6</span> Points clés</a></li>
+  <li><a href="#exercices" id="toc-exercices" class="nav-link" data-scroll-target="#exercices"><span class="header-section-number">5.7</span> Exercices</a></li>
+  <li><a href="#quiz" id="toc-quiz" class="nav-link" data-scroll-target="#quiz"><span class="header-section-number">5.8</span> Quiz</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/sfoucher/TraitementImagesPythonVol1/issues" class="toc-action"><i class="bi bi-github"></i>Signaler un problème ou<br>formuler une suggestion</a></li></ul></div></nav>
     </div>
@@ -314,7 +317,7 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title"><span id="sec-chap04" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Transformations spatiales</span></span></h1>
-<p class="subtitle lead">Première édition · Version 1.268</p>
+<p class="subtitle lead">Première édition · Version 1.269</p>
 </div>
 
 
@@ -367,12 +370,12 @@ window.Quarto = {
 <li><p><a href="https://corteva.github.io/rioxarray/stable/index.html">rioxarray</a></p></li>
 </ul>
 <p>Dans l’environnement Google Colab, seul <code>rioxarray</code> doit être installé:</p>
-<div id="4ad95059" class="cell" data-execution_count="3">
+<div id="3561a0a9" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>qU matplotlib rioxarray xrscipy scikit<span class="op">-</span>image</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Vérifiez les importations:</p>
-<div id="6032ebe5" class="cell" data-execution_count="4">
+<div id="aa2f2144" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy.fft</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
@@ -389,7 +392,7 @@ window.Quarto = {
 <section id="images-utilisées" class="level3" data-number="5.1.3">
 <h3 data-number="5.1.3" class="anchored" data-anchor-id="images-utilisées"><span class="header-section-number">5.1.3</span> Images utilisées</h3>
 <p>Nous utilisons les images suivantes dans ce chapitre:</p>
-<div id="549e9c4a" class="cell" data-execution_count="5">
+<div id="5399df53" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gdown</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -399,7 +402,7 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>gdown.download(<span class="st">'https://drive.google.com/uc?export=download&amp;confirm=pbef&amp;id=1dM6IVqjba6GHwTLmI7CpX8GP2z5txUq6'</span>, output<span class="op">=</span> <span class="st">'SAR.tif'</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Vérifiez que vous êtes capable de les lire :</p>
-<div id="a2d6211b" class="cell" data-execution_count="6">
+<div id="1412bda0" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rxr.open_rasterio(<span class="st">'berkeley.jpg'</span>, mask_and_scale<span class="op">=</span> <span class="va">True</span>) <span class="im">as</span> img_rgb:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(img_rgb)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rxr.open_rasterio(<span class="st">'RGBNIR_of_S2A.tif'</span>, mask_and_scale<span class="op">=</span> <span class="va">True</span>) <span class="im">as</span> img_rgbnir:</span>
@@ -420,7 +423,7 @@ window.Quarto = {
 <p><span id="eq-idft"><span class="math display">\[x[k] = \frac{1}{N}\sum_{n=0 \ldots N-1} X[n] \times \exp(j \times 2\pi \times k \times n/N)) \tag{5.2}\]</span></span></p>
 <p>Le signal d’origine est donc reconstruit à partir d’une somme de sinusoïdes complexes <span class="math inline">\(\exp(j2\pi \frac{k}{N}n))\)</span> de fréquence <span class="math inline">\(k/N\)</span>. Noter qu’à partir de <span class="math inline">\(k=N/2\)</span>, les sinusoïdes se répètent à un signe près et forme un miroir des composantes, la convention est alors de mettre ces composantes dans une espace négatif <span class="math inline">\([-N/2,\ldots,-1]\)</span>.</p>
 <p>Dans le cas d’un simple signal périodique à une dimension avec une fréquence de 4/16 (donc 4 périodes sur 16) on obtient deux pics de fréquence à la position de 4 cycles observés sur <span class="math inline">\(N=16\)</span> observations. Les puissances de Fourier sont affichées dans un espace fréquentiel en cycles par unité d’espacement de l’échantillon (avec zéro au début) variant entre -1 et +1. Par exemple, si l’espacement des échantillons est en secondes, l’unité de fréquence est cycles/seconde (ou Hz). Dans le cas de N échantillons, le pic sera observé à la fréquence <span class="math inline">\(+/- 4/16=0.25\)</span> cycles/secondes. La fréquence d’échantillonnage <span class="math inline">\(F_s\)</span> du signal a aussi beaucoup d’importance aussi et doit être au moins a deux fois la plus haute fréquence observée (ici <span class="math inline">\(F_s &gt; 0.5\)</span>) sinon un phénomène de repliement appelé aliasing sera observé.</p>
-<div id="316eedc9" class="cell" data-execution_count="7">
+<div id="bf4c3b93" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Fs<span class="op">=</span> <span class="fl">2.0</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Ts<span class="op">=</span> <span class="dv">1</span><span class="op">/</span>Fs</span>
@@ -465,7 +468,7 @@ X_f[k] = F[k] \times X[k]
 <p><span id="eq-convolve"><span class="math display">\[
 x_f = IDFT^{-1}[F]*x
 \tag{5.4}\]</span></span></p>
-<div id="8d969d41" class="cell" data-execution_count="8">
+<div id="2ebccdfa" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>input_ <span class="op">=</span> numpy.fft.fft2(img_rgb.to_numpy()) </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> [ndimage.fourier_gaussian(input_[b], sigma<span class="op">=</span><span class="dv">4</span>) <span class="cf">for</span> b <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)] <span class="co"># on filtre chaque bande avec un filtre Gaussien</span></span>
@@ -487,7 +490,7 @@ x_f = IDFT^{-1}[F]*x
 <section id="laliasing" class="level3" data-number="5.2.3">
 <h3 data-number="5.2.3" class="anchored" data-anchor-id="laliasing"><span class="header-section-number">5.2.3</span> L’aliasing</h3>
 <p>L’aliasing est un problème fréquent en traitement du signal. Il résulte d’une fréquence d’échantillonnage trop faible par rapport au contenu fréquentielle du signal. Cela peut se produire lorsque vous sous-échantillonner fortement une image avec un facteur de décimation (par exemple un pixel sur deux). En prenant un pixel sur deux, on réduit la fréquence d’échantillonnage d’un facteur 2 ce qui réduit le contenu fréquentiel de l’image et donc les fréquences maximales de l’image. L’image présente alors un aspect faussement texturée avec beaucoup de hautes fréquences:</p>
-<div id="bf4bad7f" class="cell" data-execution_count="9">
+<div id="c8393001" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>img_rgb.astype(<span class="st">'int'</span>).plot.imshow(rgb<span class="op">=</span><span class="st">"band"</span>)</span>
@@ -505,7 +508,7 @@ x_f = IDFT^{-1}[F]*x
 </div>
 </div>
 <p>Une façon de réduire le contenu fréquentiel est de filtrer par un filtre passe-bas pour réduire les hautes fréquences par exemple avec un filtre Gaussien:</p>
-<div id="0a80235f" class="cell" data-execution_count="10">
+<div id="41cf0cda" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> gaussian_filter</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>q<span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>sigma<span class="op">=</span> q<span class="op">*</span><span class="fl">1.1774</span><span class="op">/</span>math.pi</span>
@@ -528,7 +531,7 @@ x_f = IDFT^{-1}[F]*x
 </div>
 </div>
 <p>La fonction <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.decimate.html#scipy.signal.decimate"><code>decimate</code></a> dans <code>scipy.signal</code> réalise l’opération de décimation (<em>downsampling</em>) en une seule étape:</p>
-<div id="19e90cfe" class="cell" data-execution_count="11">
+<div id="c4fc1970" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xrscipy.signal <span class="im">as</span> dsp</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
@@ -590,7 +593,7 @@ F= \frac{1}{25}\left[
 \right]
 \tag{5.5}\]</span></span></p>
 <p>En python, on dispose des fonctions <code>rolling</code> et <code>sliding_window</code> définis dans la librairie <code>numpy</code>. Par exemple pour le cas du filtre moyen, on construit une nouvelle vue de l’image avec deux nouvelles dimensions <code>x_win</code> et <code>y_win</code>:</p>
-<div id="3af13519" class="cell" data-execution_count="12">
+<div id="4978b7d8" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rolling_win <span class="op">=</span> img_rgb.rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>,  min_periods<span class="op">=</span> <span class="dv">3</span>, center<span class="op">=</span> <span class="va">True</span>).construct(x<span class="op">=</span><span class="st">"x_win"</span>, y<span class="op">=</span><span class="st">"y_win"</span>, keep_attrs<span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rolling_win[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,...])</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rolling_win.shape)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
@@ -611,7 +614,7 @@ Dimensions without coordinates: x_win, y_win
 </div>
 </div>
 <p>L’avantage de cette approche est qu’il n’y a pas d’utilisation inutile de la mémoire. Noter les <code>nan</code> sur les bords de l’image car la fenêtre déborde sur les bordures de l’image. Par la suite un opérateur de moyenne peut être appliqué sur les axes <code>x_win</code> et <code>y_win</code> correspondant aux fenêtres glissantes.</p>
-<div id="5191241f" class="cell" data-execution_count="13">
+<div id="e585089a" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>filtre_moyen<span class="op">=</span> rolling_win.mean(dim<span class="op">=</span> [<span class="st">'x_win'</span>, <span class="st">'y_win'</span>], skipna<span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>filtre_moyen.astype(<span class="st">'int'</span>).plot.imshow(rgb<span class="op">=</span><span class="st">"band"</span>)</span>
@@ -628,7 +631,7 @@ Dimensions without coordinates: x_win, y_win
 </div>
 </div>
 <p>Lorsque la taille <span class="math inline">\(W\)</span> de la fenêtre devient trop grande, il est préférable d’utiliser une convolution dans le domaine fréquentielle. La fonction <code>fftconvolve</code> de la librairie <code>scipy.signal</code> offre cette possibilité:</p>
-<div id="70c5ed6f" class="cell" data-execution_count="14">
+<div id="e44c63ea" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> np.outer(signal.windows.gaussian(<span class="dv">70</span>, <span class="dv">8</span>),</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                  signal.windows.gaussian(<span class="dv">70</span>, <span class="dv">8</span>))</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># notez la répétition du kernel 3x pour traiter une image rgb :</span></span>
@@ -648,7 +651,7 @@ F= \left[
 \right]
 \tag{5.6}\]</span></span></p>
 <p>Remarquez l’utilisation de chiffres complexes afin de passer deux filtres différents sur la partie réelle et imaginaire.</p>
-<div id="29d57292" class="cell" data-execution_count="15">
+<div id="2a4eeb19" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>scharr <span class="op">=</span> np.array([[ <span class="op">-</span><span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">-</span><span class="ot">10j</span>,  <span class="op">+</span><span class="dv">3</span> <span class="op">-</span><span class="ot">3j</span>],</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                   [<span class="op">-</span><span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">0</span><span class="op">+</span> <span class="ot">0j</span>, <span class="op">+</span><span class="dv">10</span> <span class="op">+</span><span class="ot">0j</span>],</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                   [ <span class="op">-</span><span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">10j</span>,  <span class="op">+</span><span class="dv">3</span> <span class="op">+</span><span class="ot">3j</span>]]) <span class="co"># Gx + j*Gy</span></span>
@@ -703,7 +706,7 @@ Coordinates:
 <p><strong>Installation de Pytorch</strong></p>
 <p>Cette section nécessite la librairie Pytorch avec un GPU et ne fonctionnera que sur Colab. On peut quand même installer une version locale CPU de pytorch: <code>pip install -qU torch==2.4.0+cpu</code></p>
 <p>Une couche convolutionnelle est simplement un ensemble de filtres appliqués sur la donnée d’entrée. Ce type de filtrage est à la base des réseaux dits convolutionnels qui seront abordés dans le tome 2. On peut ici imposer les mêmes filtres de gradient dans la couche convolutionnelle :</p>
-<div id="cb47eaf4" class="cell" data-execution_count="16">
+<div id="0dc69d2e" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -714,11 +717,11 @@ Coordinates:
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># On forme une couche convolutionnelle</span></span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>conv_layer <span class="op">=</span> nn.Conv2d(in_channels<span class="op">=</span> nchannels, out_channels<span class="op">=</span><span class="dv">2</span>, kernel_size<span class="op">=</span><span class="dv">3</span>, padding<span class="op">=</span><span class="dv">1</span>, stride<span class="op">=</span><span class="dv">1</span>, dilation<span class="op">=</span> <span class="dv">1</span>)</span>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtre de Sobel</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>sobel_x <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">3</span>], [<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>], [<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">3</span>]])</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>sobel_y <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">3</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">3</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">3</span>]])</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtre de Scharr (coefficients 3/10/3, cf. l'exemple de convolution ci-dessus)</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>scharr_x <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">3</span>], [<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>], [<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">3</span>]])</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>scharr_y <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">3</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">3</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">3</span>]])</span>
 <span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Le filtre (kernel) est formé de deux filtres</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> np.stack([sobel_x, sobel_y])</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> np.stack([scharr_x, scharr_y])</span>
 <span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> kernel.reshape(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co"># On répète le filtre pour chaque bande</span></span>
 <span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> np.tile(kernel,(<span class="dv">1</span>,nchannels,<span class="dv">1</span>,<span class="dv">1</span>))</span>
@@ -748,7 +751,7 @@ torch.Size([1, 3, 771, 1311])</code></pre>
 </div>
 </div>
 <p>Le résultat est alors calculé sur GPU (si disponible):</p>
-<div id="1863f457" class="cell" data-execution_count="17">
+<div id="db91fc04" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -777,7 +780,7 @@ Sortie (BxFxHxW): torch.Size([1, 2, 771, 1311])</code></pre>
 <section id="filtrage-adaptatif" class="level3" data-number="5.4.1">
 <h3 data-number="5.4.1" class="anchored" data-anchor-id="filtrage-adaptatif"><span class="header-section-number">5.4.1</span> Filtrage adaptatif</h3>
 <p>Les filtrages adaptatifs consistent à appliquer un traitement en fonction du contenu local d’une image. Le filtre n’est alors plus stationnaire et sa réponse peut varier en fonction du contenu local. Ce type de filtre est très utilisé pour filtrer les images SAR (Synthetic Aperture Radar) qui sont dégradées par un bruit multiplicatif que l’on appelle <em>speckle</em>. On peut voir un exemple d’une image Sentinel-1 (bande HH) sur la région de Montréal, remarquez que l’image est affichée en dB en appliquant la fonction <code>log10</code>.</p>
-<div id="9b3db10e" class="cell" data-execution_count="18">
+<div id="4424884f" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img_SAR.rio.resolution())</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img_SAR.rio.crs)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
@@ -800,8 +803,8 @@ EPSG:4326</code></pre>
 </div>
 </div>
 <p>Un des filtres les plus simples pour réduire le bruit est d’appliquer un filtre moyen, par exemple un <span class="math inline">\(5 \times 5\)</span> ci-dessous:</p>
-<div id="c7b07b6f" class="cell" data-execution_count="19">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>rolling_win <span class="op">=</span> img_SAR.sel(band<span class="op">=</span><span class="dv">2</span>).rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>,  min_periods<span class="op">=</span> <span class="dv">3</span>, center<span class="op">=</span> <span class="va">True</span>).construct(x<span class="op">=</span><span class="st">"x_win"</span>, y<span class="op">=</span><span class="st">"y_win"</span>, keep_attrs<span class="op">=</span> <span class="va">True</span>)</span>
+<div id="0728dd25" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>rolling_win <span class="op">=</span> img_SAR.sel(band<span class="op">=</span><span class="dv">1</span>).rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>,  min_periods<span class="op">=</span> <span class="dv">3</span>, center<span class="op">=</span> <span class="va">True</span>).construct(x<span class="op">=</span><span class="st">"x_win"</span>, y<span class="op">=</span><span class="st">"y_win"</span>, keep_attrs<span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>filtre_moyen<span class="op">=</span> rolling_win.mean(dim<span class="op">=</span> [<span class="st">'x_win'</span>, <span class="st">'y_win'</span>], skipna<span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>xr.ufuncs.log10(filtre_moyen).plot.imshow()</span>
@@ -825,8 +828,8 @@ K &amp; = \frac{\sigma^2_I}{\sigma^2_I + \sigma^2_{bruit}}
 \end{aligned}
 \tag{5.7}\]</span></span></p>
 <p>De la sorte, si la variance locale est élevée <span class="math inline">\(K\)</span> s’approche de <span class="math inline">\(1\)</span> préservant ainsi les détails de l’image <span class="math inline">\(I\)</span> sinon l’image moyenne <span class="math inline">\(I_M\)</span> est appliquée.</p>
-<div id="84cce1da" class="cell" data-execution_count="20">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>rolling_win <span class="op">=</span> img_SAR.sel(band<span class="op">=</span><span class="dv">2</span>).rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>,  min_periods<span class="op">=</span> <span class="dv">3</span>, center<span class="op">=</span> <span class="va">True</span>).construct(x<span class="op">=</span><span class="st">"x_win"</span>, y<span class="op">=</span><span class="st">"y_win"</span>, keep_attrs<span class="op">=</span> <span class="va">True</span>)</span>
+<div id="bf8953a3" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>rolling_win <span class="op">=</span> img_SAR.sel(band<span class="op">=</span><span class="dv">1</span>).rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>,  min_periods<span class="op">=</span> <span class="dv">3</span>, center<span class="op">=</span> <span class="va">True</span>).construct(x<span class="op">=</span><span class="st">"x_win"</span>, y<span class="op">=</span><span class="st">"y_win"</span>, keep_attrs<span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>filtre_moyen<span class="op">=</span> rolling_win.mean(dim<span class="op">=</span> [<span class="st">'x_win'</span>, <span class="st">'y_win'</span>], skipna<span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>ecart_type<span class="op">=</span> rolling_win.std(dim<span class="op">=</span> [<span class="st">'x_win'</span>, <span class="st">'y_win'</span>], skipna<span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>cv<span class="op">=</span> ecart_type<span class="op">/</span>filtre_moyen</span>
@@ -849,7 +852,7 @@ K &amp; = \frac{\sigma^2_I}{\sigma^2_I + \sigma^2_{bruit}}
 </div>
 </div>
 <p>On zoomant sur l’image, on voit clairement que les détails de l’image sont mieux préservés :</p>
-<div id="8a0b7b56" class="cell" data-execution_count="21">
+<div id="21cf0cfc" class="cell" data-execution_count="20">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -878,7 +881,7 @@ D_{SLIC}= d_{couleur} + \frac{m}{S}d_{xy}
 <li>Mettre à jour les centre <span class="math inline">\(C_k\)</span> de chaque segment <span class="math inline">\(k\)</span> et réitérer à l’étape 3.</li>
 </ol>
 <p>Les régions évoluent rapidement avec les itérations, plus le poids <span class="math inline">\(m\)</span> est élevé, plus la forme du super-pixel est contrainte et ne suivra pas vraiment le contenu de l’image:</p>
-<div id="76e81598" class="cell" data-execution_count="22">
+<div id="e64be8a0" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> img_rgb.to_numpy().astype(<span class="st">'uint8'</span>).transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>) </span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>segments_slic1 <span class="op">=</span> slic(img, n_segments<span class="op">=</span><span class="dv">250</span>, compactness<span class="op">=</span><span class="dv">10</span>, sigma<span class="op">=</span><span class="dv">1</span>, start_label<span class="op">=</span><span class="dv">1</span>, max_num_iter<span class="op">=</span><span class="dv">1</span>)</span>
@@ -916,7 +919,7 @@ D_{SLIC}= d_{couleur} + \frac{m}{S}d_{xy}
 </div>
 </div>
 <p>Le nombre de segments initial est probablement le paramètre le plus important. Une manière de l’estimer est d’évaluer l’échelle moyenne des segments homogènes dans l’image à analyser. On observe ci-dessous l’impact de passer d’une échelle 40 x 40 à 20 x 20. En prenant la moyenne de chaque segment, on constate que l’échelle 40 x 40 génère des segments trop grands mélangeant plusieurs classes.</p>
-<div id="fcf565d1" class="cell" data-execution_count="23">
+<div id="9c981a9f" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> skimage <span class="im">import</span> color, segmentation</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>n_regions <span class="op">=</span> <span class="bu">int</span>((img.shape[<span class="dv">0</span>] <span class="op">*</span> img.shape[<span class="dv">1</span>])<span class="op">/</span>(<span class="dv">40</span><span class="op">*</span><span class="dv">40</span>))</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Nb segments: '</span>,n_regions)</span>
@@ -970,7 +973,7 @@ Figure&nbsp;5.1: Graphe d’adjacence de régions, d’après (<span class="cita
 </figcaption>
 </figure>
 </div>
-<div id="fe1e51fe" class="cell" data-execution_count="24">
+<div id="43d9ab7a" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _weight_mean_color(graph, src, dst, n):</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Fonction pour gérer la fusion des nœuds en recalculant la couleur moyenne.</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">    La méthode suppose que la couleur moyenne de `dst` est déjà calculée.</span></span>
@@ -1034,7 +1037,7 @@ Nombre de segments: 1187</code></pre>
 <section id="approche-objet" class="level3" data-number="5.5.3">
 <h3 data-number="5.5.3" class="anchored" data-anchor-id="approche-objet"><span class="header-section-number">5.5.3</span> Approche objet</h3>
 <p>L’approche objet consiste à traiter chaque segment comme un objet avec un ensemble de propriétés. La librairie <code>skimage</code> offre la possibilité d’enrichir chaque segment avec des <a href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.regionprops">propriétés</a> et de former un tableau:</p>
-<div id="82d3fe3b" class="cell" data-execution_count="25">
+<div id="9598a836" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>properties <span class="op">=</span> [<span class="st">'label'</span>, <span class="st">'area'</span>, <span class="st">'centroid'</span>, <span class="st">'num_pixels'</span>, <span class="st">'intensity_mean'</span>, <span class="st">'intensity_std'</span>]</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>table<span class="op">=</span>   measure.regionprops_table(labels2, intensity_image<span class="op">=</span> img_rgb.to_numpy().transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>), properties<span class="op">=</span>properties)</span>
@@ -1210,6 +1213,352 @@ Nombre de segments: 1187</code></pre>
 </div>
 </div>
 <p>Ce tableau pourra être exploiter pour une tâche de classification par la suite (on parle alors de classification objet).</p>
+</section>
+</section>
+<section id="points-clés" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="points-clés"><span class="header-section-number">5.6</span> Points clés</h2>
+<div class="bloc_notes">
+<div class="bloc_notes-header">
+<div class="bloc_notes-icon">
+
+</div>
+<p><strong>À retenir</strong></p>
+</div>
+<div class="bloc_notes-body">
+<ul>
+<li>La <strong>transformée de Fourier</strong> offre un point de vue fréquentiel réversible ; modifier le spectre filtre <strong>globalement</strong> l’image.</li>
+<li>Trois familles de filtres fréquentiels : <strong>passe-bas</strong> (lissage), <strong>passe-haut</strong> (détails/contours) et <strong>passe-bande</strong>.</li>
+<li>L’<strong>aliasing</strong> provient d’un sous-échantillonnage : appliquer un filtre passe-bas <strong>avant</strong> de décimer.</li>
+<li>Le <strong>filtrage local</strong> par fenêtre glissante : filtre <strong>moyen</strong> (lissage), filtre de <strong>Scharr</strong> (contours) ; la <strong>convolution</strong> est efficace car calculable dans le domaine fréquentiel.</li>
+<li>Le filtre de <strong>Lee</strong> est <strong>adaptatif</strong> : il préserve les détails (<span class="math inline">\(K \to 1\)</span>) là où la variance locale est forte — utile contre le <em>speckle</em> des images SAR.</li>
+<li>La <strong>segmentation</strong> (SLIC) réduit l’image en <strong>super-pixels</strong> homogènes ; le <strong>graphe d’adjacence (RAG)</strong> fusionne les segments ; l’<strong>approche objet</strong> (<code>regionprops</code>) décrit chaque segment par des propriétés.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="exercices" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="exercices"><span class="header-section-number">5.7</span> Exercices</h2>
+<div class="bloc_exercice">
+<div class="bloc_exercice-header">
+<div class="bloc_exercice-icon">
+
+</div>
+<p><strong>À vous de jouer</strong></p>
+</div>
+<div class="bloc_exercice-body">
+<ol type="1">
+<li><p>Décimez <code>img_rgb</code> par un facteur 8, <strong>avec</strong> et <strong>sans</strong> filtre passe-bas gaussien préalable, et comparez l’aliasing obtenu.</p></li>
+<li><p>Appliquez le filtre de Scharr sur les <strong>trois bandes</strong> RVB (plutôt qu’une seule) et combinez les amplitudes de gradient (p.&nbsp;ex. la norme euclidienne).</p></li>
+<li><p>Faites varier la taille de la fenêtre (3×3, 7×7, 11×11) du filtre de Lee sur <code>img_SAR</code> et observez l’effet sur la préservation des détails.</p></li>
+<li><p>Reprenez SLIC avec plusieurs valeurs de <code>compactness</code> (1, 10, 50) et décrivez l’effet sur la forme des super-pixels.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="quiz" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="quiz"><span class="header-section-number">5.8</span> Quiz</h2>
+<div id="9ee4504c" class="cell" data-results="asis" data-execution_count="25">
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div id="Chap04" class="card"><link type="text/javascript" src="libs/quizlib.1.0.1.min.js"><script>var Quiz=function(a,b){this.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),this.unansweredQuestionText="Question sans réponse !",this.container=document.getElementById(a),this.questions=[],this.result=new QuizResult,this.answers=b;for(var c=0;c<this.container.children.length;c++)this.container.children[c].classList.contains(Quiz.Classes.QUESTION)&&this.questions.push(this.container.children[c]);if(this.answers.length!=this.questions.length)throw new Error("Number of answers does not match number of questions!")};Quiz.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),Quiz.prototype.checkAnswers=function(a){void 0===a&&(a=!0);for(var b=[],c=[],d=0;d<this.questions.length;d++){var e=this.questions[d],f=this.answers[d],g=[];this.clearHighlights(e);for(var h,i=e.getElementsByClassName(Quiz.Classes.QUESTION_ANSWERS)[0].getElementsByTagName("input"),j=0;j<i.length;j++)h=i[j],"checkbox"===h.type||"radio"===h.type?h.checked&&g.push(h.value):""!==h.value&&g.push(h.value);1!=g.length||Array.isArray(f)?0===g.length&&b.push(e):g=g[0],c.push(Utils.compare(g,f))}if(0===b.length||!a)return this.result.setResults(c),!0;for(d=0;d<b.length;d++){var k=document.createElement("span");k.appendChild(document.createTextNode(this.unansweredQuestionText)),k.className=Quiz.Classes.QUESTION_WARNING,b[d].getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].appendChild(k)}return!1},Quiz.prototype.clearHighlights=function(a){for(var b=a.getElementsByClassName(Quiz.Classes.QUESTION_WARNING);b.length>0;)b[0].parentNode.removeChild(b[0]);var c,d=[a.getElementsByClassName(Quiz.Classes.CORRECT),a.getElementsByClassName(this.Classes.INCORRECT)];for(i=0;i<d.length;i++)for(;d[i].length>0;)c=d[i][0],c.classList.remove(Quiz.Classes.CORRECT),c.classList.remove(Quiz.Classes.INCORRECT);for(var e=a.getElementsByClassName(Quiz.Classes.TEMP);e.length>0;)e[0].parentNode.removeChild(e[0])},Quiz.prototype.highlightResults=function(a){for(var b,c=0;c<this.questions.length;c++)b=this.questions[c],b.getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].classList.add(this.result.results[c]?Quiz.Classes.CORRECT:Quiz.Classes.INCORRECT),void 0!==a&&a(this,b,c,this.result.results[c])};var QuizResult=function(){this.results=[],this.totalQuestions=0,this.score=0,this.scorePercent=0,this.scorePercentFormatted=0};QuizResult.prototype.setResults=function(a){this.results=a,this.totalQuestions=this.results.length,this.score=0;for(var b=0;b<this.results.length;b++)this.results[b]&&this.score++;this.scorePercent=this.score/this.totalQuestions,this.scorePercentFormatted=Math.floor(100*this.scorePercent)};var Utils=function(){};Utils.compare=function(a,b){if(a.length!=b.length)return!1;if(Array.isArray(a)&&Array.isArray(b)){for(var c=0;c<a.length;c++)if(a[c]!==b[c])return!1;return!0}return a===b};
+
+function showResults(quiz) {
+    // Check answers and continue if all questions have been answered
+    if (quiz.checkAnswers()) {
+        var quizScorePercent = quiz.result.scorePercentFormatted; // The unformatted percentage is a decimal in range 0 - 1
+        var quizResultElement = document.getElementById('quiz-result');
+        quizResultElement.style.display = 'block';
+        document.getElementById('quiz-percent').innerHTML = quizScorePercent.toString();
+
+        // Change background colour of results div according to score percent
+        if (quizScorePercent > 75) quizResultElement.style.backgroundColor = '#4caf50';
+        else if (quizScorePercent > 50) quizResultElement.style.backgroundColor = '#ffc107';
+        else if (quizScorePercent > 25) quizResultElement.style.backgroundColor = '#ff9800';
+        else if (quizScorePercent > 0) quizResultElement.style.backgroundColor = '#f44336';
+
+        // Highlight questions according to whether they were correctly answered. The callback allows us to highlight/show the correct answer
+        quiz.highlightResults(handleAnswers);
+    }
+}
+
+/** Callback for Quiz.highlightResults. Highlights the correct answers of incorrectly answered questions
+ * Parameters are: the quiz object, the question element, question number, correctly answered flag
+ */
+function handleAnswers(quiz, question, no, correct) {
+    if (!correct) {
+        var answers = question.getElementsByTagName('input');
+        for (var i = 0; i < answers.length; i++) {
+            if (answers[i].type === 'checkbox' || answers[i].type === 'radio'){
+                // If the current input element is part of the correct answer, highlight it
+                if (quiz.answers[no].indexOf(answers[i].value) > -1) {
+                    answers[i].parentNode.classList.add(Quiz.Classes.CORRECT);
+                }
+            } else {
+                // If the input is anything other than a checkbox or radio button, show the correct answer next to the element
+                var correctAnswer = document.createElement('span');
+                correctAnswer.classList.add(Quiz.Classes.CORRECT);
+                correctAnswer.classList.add(Quiz.Classes.TEMP); // quiz.checkAnswers will automatically remove elements with the temp class
+                correctAnswer.innerHTML = quiz.answers[no];
+                correctAnswer.style.marginLeft = '10px';
+                answers[i].parentNode.insertBefore(correctAnswer, answers[i].nextSibling);
+            }
+        }
+    }
+}
+
+  var quizz_Chap04;
+  window.onload = function() {
+    quizz_Chap04 = new Quiz('Chap04', ['1','2','2','1','2','3','2','1',['1', '2'],'1','2','1']);
+  };</script><link rel="stylesheet" type="text/css" src="css/quizlib.min.css"><div class="card quizlib-question"><div class="quizlib-question-title">La transformée de Fourier d'une image est complètement réversible.</div><div>Relisez au besoin la section « La transformée de Fourier ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Vrai</label></td>
+<td><input type="radio" name="q1" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Faux</label></td>
+<td><input type="radio" name="q1" value="2"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">À quoi sert un filtre passe-bas ?</div><div>Relisez au besoin la section « Filtrage fréquentiel ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>À ne préserver que les hautes fréquences (détails, contours)</label></td>
+<td><input type="radio" name="q2" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>À lisser l'image en ne préservant que les basses fréquences</label></td>
+<td><input type="radio" name="q2" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>À géoréférencer l'image</label></td>
+<td><input type="radio" name="q2" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>À augmenter la résolution spatiale</label></td>
+<td><input type="radio" name="q2" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Quelle est la cause de l'aliasing (repliement de spectre) ?</div><div>Relisez au besoin la section « L'aliasing ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Une fréquence d'échantillonnage trop élevée</label></td>
+<td><input type="radio" name="q3" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Une fréquence d'échantillonnage trop faible par rapport au contenu fréquentiel</label></td>
+<td><input type="radio" name="q3" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Un mauvais géoréférencement</label></td>
+<td><input type="radio" name="q3" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Un excès de bandes spectrales</label></td>
+<td><input type="radio" name="q3" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Une convolution dans l'espace image correspond à quelle opération dans l'espace de Fourier ?</div><div>Relisez au besoin la section « Filtrage fréquentiel ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Une multiplication</label></td>
+<td><input type="radio" name="q4" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Une addition</label></td>
+<td><input type="radio" name="q4" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Une division</label></td>
+<td><input type="radio" name="q4" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Une transposition</label></td>
+<td><input type="radio" name="q4" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Avant de décimer fortement une image, pourquoi appliquer un filtre passe-bas (p. ex. gaussien) ?</div><div>Relisez au besoin la section « L'aliasing ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Pour augmenter le contraste</label></td>
+<td><input type="radio" name="q5" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Pour réduire les hautes fréquences et éviter l'aliasing</label></td>
+<td><input type="radio" name="q5" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Pour géoréférencer l'image</label></td>
+<td><input type="radio" name="q5" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Pour convertir l'image en dB</label></td>
+<td><input type="radio" name="q5" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">À quoi sert le filtre de Scharr utilisé dans le chapitre ?</div><div>Relisez au besoin la section « Filtrage par convolution ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>À lisser le bruit</label></td>
+<td><input type="radio" name="q6" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>À égaliser l'histogramme</label></td>
+<td><input type="radio" name="q6" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>À détecter les contours (gradients horizontaux et verticaux)</label></td>
+<td><input type="radio" name="q6" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>À segmenter l'image en objets</label></td>
+<td><input type="radio" name="q6" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Pour quel type d'images le filtre de Lee est-il particulièrement utile ?</div><div>Relisez au besoin la section « Filtrage adaptatif ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Les images optiques RVB</label></td>
+<td><input type="radio" name="q7" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Les images SAR dégradées par le speckle (bruit multiplicatif)</label></td>
+<td><input type="radio" name="q7" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Les images hyperspectrales</label></td>
+<td><input type="radio" name="q7" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Les images thermiques</label></td>
+<td><input type="radio" name="q7" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Dans le filtre de Lee, lorsque la variance locale est élevée, le coefficient K s'approche de 1, ce qui :</div><div>Relisez au besoin la section « Filtrage adaptatif ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>préserve les détails de l'image d'origine</label></td>
+<td><input type="radio" name="q8" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>applique la moyenne locale (lissage maximal)</label></td>
+<td><input type="radio" name="q8" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>met le pixel à zéro</label></td>
+<td><input type="radio" name="q8" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>inverse le contraste</label></td>
+<td><input type="radio" name="q8" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Sur quels critères la méthode SLIC regroupe-t-elle les pixels en super-pixels ?</div><div>Relisez au besoin la section « Super-pixel ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><label>La similarité de couleur entre pixels</label></td>
+<td><input type="checkbox" name="q9" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>La distance spatiale au centre du super-pixel</label></td>
+<td><input type="checkbox" name="q9" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>La date d'acquisition de l'image</label></td>
+<td><input type="checkbox" name="q9" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Le système de projection cartographique</label></td>
+<td><input type="checkbox" name="q9" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Dans SLIC, quel est l'effet d'une valeur de compacité (m) élevée ?</div><div>Relisez au besoin la section « Super-pixel ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Les super-pixels sont plus réguliers/compacts et suivent moins le contenu de l'image</label></td>
+<td><input type="radio" name="q10" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Les super-pixels épousent parfaitement les contours des objets</label></td>
+<td><input type="radio" name="q10" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Le nombre de super-pixels augmente automatiquement</label></td>
+<td><input type="radio" name="q10" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>La segmentation devient aléatoire</label></td>
+<td><input type="radio" name="q10" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">À quoi sert un graphe d'adjacence de régions (RAG) après une segmentation ?</div><div>Relisez au besoin la section « Fusion des segments par graphe de proximité ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>À augmenter le nombre de segments</label></td>
+<td><input type="radio" name="q11" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>À fusionner les segments similaires selon leur distance radiométrique</label></td>
+<td><input type="radio" name="q11" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>À géoréférencer les segments</label></td>
+<td><input type="radio" name="q11" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>À calculer la transformée de Fourier</label></td>
+<td><input type="radio" name="q11" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="card quizlib-question"><div class="quizlib-question-title">Que permet l'approche objet avec `regionprops_table` de `skimage` ?</div><div>Relisez au besoin la section « Approche objet ».</div><div class="quizlib-question-answers">
+<table class="table table-sm table-striped small caption-top">
+<tbody>
+<tr class="odd">
+<td><label>Extraire des propriétés par segment (aire, centroïde, intensité moyenne…) dans un tableau</label></td>
+<td><input type="radio" name="q12" value="1"></td>
+</tr>
+<tr class="even">
+<td><label>Appliquer un filtre de Fourier</label></td>
+<td><input type="radio" name="q12" value="2"></td>
+</tr>
+<tr class="odd">
+<td><label>Réduire le speckle</label></td>
+<td><input type="radio" name="q12" value="3"></td>
+</tr>
+<tr class="even">
+<td><label>Décimer l'image</label></td>
+<td><input type="radio" name="q12" value="4"></td>
+</tr>
+</tbody>
+</table>
+</div></div><button type="button" onclick="showResults(quizz_Chap04);" id="buttonID">Vérifier votre résultat</button><div id="quiz-result" class="card"><span id="quiz-percent"></span></div></div>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -1229,7 +1578,6 @@ Jaworek-Korjakowska, P., J.; Kłeczek. 2018. <span>«&nbsp;Region Adjacency Grap
 Lee, J. S. 1986. <span>«&nbsp;Speckle suppression and analysis for synthetic aperture radar images.&nbsp;»</span> <em><span>Opt. Eng.</span></em> 25 (5): 636‑643. <a href="https://doi.org/10.1117/12.7973877">https://doi.org/10.1117/12.7973877</a>.
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->
