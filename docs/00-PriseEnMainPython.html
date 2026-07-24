@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>1&nbsp; Introduction au langage Python – Traitement d'images satellites avec Python</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -58,7 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -74,10 +77,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-05b7db12ff903b44657695d3a85c4c83.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-16e6d546ee454a7b0b881714fc72fe54.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -105,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Recherche"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
@@ -405,14 +408,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li><strong>Option 1</strong>. Vous utilisez <a href="https://www.anaconda.com/download">Anaconda</a> ou <a href="https://docs.anaconda.com/miniconda/miniconda-install/">Miniconda</a>. La commande <code>conda</code> est utilisée pour créer un environnement test avec Python 3.10:</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> test python=3.10</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate test</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> test python=3.10</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate test</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <ol start="2" type="1">
 <li><strong>Option 2</strong>. Vous utilisez <a href="https://www.python.org/downloads/">CPython</a>, sans <code>conda</code>. Le module <code>venv</code> de la bibliothèque standard crée l’environnement et <code>pip</code> installe ensuite les bibliothèques :</li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv test</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv test</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> test/bin/activate       <span class="co"># Windows : test\Scripts\activate</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="création-dun-environnement-de-travail-local-avancé" class="level3" data-number="1.3.2">
 <h3 data-number="1.3.2" class="anchored" data-anchor-id="création-dun-environnement-de-travail-local-avancé"><span class="header-section-number">1.3.2</span> Création d’un environnement de travail local (avancé)</h3>
@@ -451,8 +454,8 @@ Figure&nbsp;1.1: Fenêtre principale du serveur Jupyter Lab.
 <li><p>Permettent les doublons (deux fois la même valeur).</p></li>
 <li><p>Idéales pour stocker des collections d’éléments que vous voulez modifier</p></li>
 </ul>
-<div id="d4095ecd" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Une liste des bandes spectrales d'une image (analogie télédétection)</span></span>
+<div id="8ac4c540" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Une liste des bandes spectrales d'une image (analogie télédétection)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bandes[<span class="dv">0</span>])          <span class="co"># premier élément</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bandes[<span class="op">-</span><span class="dv">1</span>])         <span class="co"># dernier élément</span></span>
@@ -462,7 +465,7 @@ Figure&nbsp;1.1: Fenêtre principale du serveur Jupyter Lab.
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(bandes), <span class="st">"bandes :"</span>, bandes)</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de liste : transformer chaque élément</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>([b.upper() <span class="cf">for</span> b <span class="kw">in</span> bandes])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>([b.upper() <span class="cf">for</span> b <span class="kw">in</span> bandes])</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bleu
 PIR
@@ -481,13 +484,13 @@ PIR
 <li><p>Permettent les doublons.</p></li>
 <li><p>Souvent utilisés pour stocker des données qui ne doivent pas changer (comme des paramètres).</p></li>
 </ul>
-<div id="f1330121" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Les dimensions (lignes, colonnes) d'une image : une donnée qui ne change pas</span></span>
+<div id="6269a5e1" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Les dimensions (lignes, colonnes) d'une image : une donnée qui ne change pas</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dimensions <span class="op">=</span> (<span class="dv">512</span>, <span class="dv">512</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>lignes, colonnes <span class="op">=</span> dimensions        <span class="co"># dépaquetage (unpacking)</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Lignes :"</span>, lignes, <span class="st">"| Colonnes :"</span>, colonnes)</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># dimensions[0] = 1024   # -&gt; TypeError : un tuple est immuable</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># dimensions[0] = 1024   # -&gt; TypeError : un tuple est immuable</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Lignes : 512 | Colonnes : 512</code></pre>
 </div>
@@ -502,15 +505,15 @@ PIR
 <li><p>N’autorisent pas les doublons.</p></li>
 <li><p>Utiles pour éliminer les doublons et effectuer des opérations mathématiques sur des ensembles.</p></li>
 </ul>
-<div id="3d687a50" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Éliminer les doublons d'une liste de classes d'occupation du sol</span></span>
+<div id="8a6ec720" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Éliminer les doublons d'une liste de classes d'occupation du sol</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>, <span class="st">"forêt"</span>]</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> <span class="bu">set</span>(classes)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(uniques)</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Opérations ensemblistes</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>a, b <span class="op">=</span> {<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>}, {<span class="dv">3</span>, <span class="dv">4</span>}</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"intersection :"</span>, a <span class="op">&amp;</span> b, <span class="st">"| union :"</span>, a <span class="op">|</span> b)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"intersection :"</span>, a <span class="op">&amp;</span> b, <span class="st">"| union :"</span>, a <span class="op">|</span> b)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>{'eau', 'urbain', 'forêt'}
 intersection : {3} | union : {1, 2, 3, 4}</code></pre>
@@ -527,14 +530,14 @@ intersection : {3} | union : {1, 2, 3, 4}</code></pre>
 <li><p>Les clés doivent être uniques, mais les valeurs peuvent être dupliquées</p></li>
 <li><p>Utiles pour stocker des données associatives ou pour créer des tables de recherche rapide</p></li>
 </ul>
-<div id="e8098613" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Un dictionnaire : les métadonnées d'une image satellite</span></span>
+<div id="30af0b65" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Un dictionnaire : les métadonnées d'une image satellite</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image[<span class="st">"capteur"</span>])              <span class="co"># accès par clé</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>image[<span class="st">"date"</span>] <span class="op">=</span> <span class="st">"2024-07-01"</span>         <span class="co"># ajout d'une paire clé-valeur</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items():    <span class="co"># parcours des paires clé-valeur</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>cle<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>valeur<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>cle<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>valeur<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Sentinel-2
 capteur : Sentinel-2
@@ -547,8 +550,8 @@ date : 2024-07-01</code></pre>
 <section id="boucles-et-conditions" class="level2" data-number="1.6">
 <h2 data-number="1.6" class="anchored" data-anchor-id="boucles-et-conditions"><span class="header-section-number">1.6</span> Boucles et conditions</h2>
 <p>Un programme prend des décisions (<code>if</code>) et répète des opérations (<code>for</code>, <code>while</code>). Ces structures de contrôle sont au cœur de tout traitement automatisé.</p>
-<div id="f3468eb1" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
+<div id="01138a09" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle for : parcourir chaque bande avec son indice</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes):</span>
@@ -567,7 +570,7 @@ date : 2024-07-01</code></pre>
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>seuil, valeur <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">0.1</span></span>
 <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> valeur <span class="op">&lt;</span> seuil:</span>
 <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    valeur <span class="op">+=</span> <span class="fl">0.2</span></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"valeur finale :"</span>, <span class="bu">round</span>(valeur, <span class="dv">1</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"valeur finale :"</span>, <span class="bu">round</span>(valeur, <span class="dv">1</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0 bleu
 1 vert
@@ -581,8 +584,8 @@ valeur finale : 0.5</code></pre>
 <section id="les-fonctions" class="level2" data-number="1.7">
 <h2 data-number="1.7" class="anchored" data-anchor-id="les-fonctions"><span class="header-section-number">1.7</span> Les fonctions</h2>
 <p>Une fonction regroupe des instructions réutilisables sous un nom. On la définit avec <code>def</code> ; elle reçoit des <em>arguments</em> et renvoie un résultat avec <code>return</code>.</p>
-<div id="60f2d549" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ndvi(nir, rouge):</span>
+<div id="94d6323e" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ndvi(nir, rouge):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Indice de végétation NDVI = (PIR - Rouge) / (PIR + Rouge)."""</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (nir <span class="op">-</span> rouge) <span class="op">/</span> (nir <span class="op">+</span> rouge)</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -593,7 +596,7 @@ valeur finale : 0.5</code></pre>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> valeur <span class="op">/</span> maximum</span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">128</span>))</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">1000</span>, maximum<span class="op">=</span><span class="dv">4095</span>))   <span class="co"># image 12 bits</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">1000</span>, maximum<span class="op">=</span><span class="dv">4095</span>))   <span class="co"># image 12 bits</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.5
 0.5019607843137255
@@ -611,8 +614,8 @@ valeur finale : 0.5</code></pre>
 <li><p><strong>Polymorphisme</strong>: permet à différents objets de répondre au même message de manière unique, comme si différents animaux répondaient différemment à “fais du bruit”.</p></li>
 </ol>
 <p>Ces caractéristiques font de Python un excellent choix pour apprendre et appliquer les concepts de la POO, rendant le code plus organisé et réutilisable</p>
-<div id="9bc64d98" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Image:</span>
+<div id="0b9bed5d" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Image:</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Une classe minimale décrivant une image satellite."""</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capteur, bandes):   <span class="co"># constructeur</span></span>
@@ -624,7 +627,7 @@ valeur finale : 0.5</code></pre>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image(<span class="st">"Landsat-8"</span>, <span class="dv">11</span>)</span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img.resume())</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img.capteur)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img.capteur)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Landsat-8 — 11 bandes
 Landsat-8</code></pre>
@@ -634,13 +637,13 @@ Landsat-8</code></pre>
 <section id="importer-des-bibliothèques" class="level2" data-number="1.9">
 <h2 data-number="1.9" class="anchored" data-anchor-id="importer-des-bibliothèques"><span class="header-section-number">1.9</span> Importer des bibliothèques</h2>
 <p>Python possède une petite bibliothèque standard, mais toute sa puissance vient des <em>packages</em> externes (comme NumPy). On les installe une fois avec <code>pip</code>, puis on les charge dans un script avec <code>import</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install numpy          <span class="co"># une seule fois par environnement</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="a6c31ef3" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np              <span class="co"># tout le module, sous l'alias np</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install numpy          <span class="co"># une seule fois par environnement</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="2371fe2a" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np              <span class="co"># tout le module, sous l'alias np</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> pi, sqrt       <span class="co"># seulement certains éléments</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]))</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(pi, <span class="dv">4</span>), sqrt(<span class="dv">16</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(pi, <span class="dv">4</span>), sqrt(<span class="dv">16</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1 2 3]
 3.1416 4.0</code></pre>
@@ -650,8 +653,8 @@ Landsat-8</code></pre>
 <section id="sec-00-02" class="level2" data-number="1.10">
 <h2 data-number="1.10" class="anchored" data-anchor-id="sec-00-02"><span class="header-section-number">1.10</span> Un avant-goût de NumPy</h2>
 <p>Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque <a href="https://numpy.org/">NumPy</a> fournit l’objet <code>ndarray</code> qui représente efficacement ces tableaux à plusieurs dimensions : c’est la brique de base de tous les chapitres suivants.</p>
-<div id="3c284958" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<div id="96a00f8c" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Une petite image à une bande : 3 lignes x 4 colonnes</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
@@ -663,7 +666,7 @@ Landsat-8</code></pre>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Moyenne :"</span>, image.mean().<span class="bu">round</span>(<span class="dv">2</span>))</span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Découpage d'une sous-image (2 premières lignes, 2 premières colonnes)</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image[:<span class="dv">2</span>, :<span class="dv">2</span>])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image[:<span class="dv">2</span>, :<span class="dv">2</span>])</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Forme (lignes, colonnes) : (3, 4)
 Valeur maximale : 23
@@ -713,7 +716,7 @@ Moyenne : 13.33
 <summary>
 Afficher les solutions
 </summary>
-<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Dictionnaire de métadonnées</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Dictionnaire de métadonnées</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>metadonnees <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cle, valeur <span class="kw">in</span> metadonnees.items():</span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(cle, <span class="st">":"</span>, valeur)</span>
@@ -726,7 +729,7 @@ Afficher les solutions
 <span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ratio(a, b):</span>
 <span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (a <span class="op">-</span> b) <span class="op">/</span> (a <span class="op">+</span> b)</span>
 <span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NDVI :"</span>, <span class="bu">round</span>(ratio(<span class="fl">0.55</span>, <span class="fl">0.18</span>), <span class="dv">3</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NDVI :"</span>, <span class="bu">round</span>(ratio(<span class="fl">0.55</span>, <span class="fl">0.18</span>), <span class="dv">3</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="bloc_package">
 <div class="bloc_package-header">
@@ -753,7 +756,7 @@ Afficher les solutions
 </section>
 <section id="quiz" class="level2" data-number="1.13">
 <h2 data-number="1.13" class="anchored" data-anchor-id="quiz"><span class="header-section-number">1.13</span> Quiz</h2>
-<div id="c6adacd7" class="cell" data-results="asis" data-execution_count="11">
+<div id="b36969d1" class="cell" data-results="asis" data-execution_count="10">
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div id="Chap00" class="card"><link type="text/javascript" src="libs/quizlib.1.0.1.min.js"><script>var Quiz=function(a,b){this.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),this.unansweredQuestionText="Question sans réponse !",this.container=document.getElementById(a),this.questions=[],this.result=new QuizResult,this.answers=b;for(var c=0;c<this.container.children.length;c++)this.container.children[c].classList.contains(Quiz.Classes.QUESTION)&&this.questions.push(this.container.children[c]);if(this.answers.length!=this.questions.length)throw new Error("Number of answers does not match number of questions!")};Quiz.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),Quiz.prototype.checkAnswers=function(a){void 0===a&&(a=!0);for(var b=[],c=[],d=0;d<this.questions.length;d++){var e=this.questions[d],f=this.answers[d],g=[];this.clearHighlights(e);for(var h,i=e.getElementsByClassName(Quiz.Classes.QUESTION_ANSWERS)[0].getElementsByTagName("input"),j=0;j<i.length;j++)h=i[j],"checkbox"===h.type||"radio"===h.type?h.checked&&g.push(h.value):""!==h.value&&g.push(h.value);1!=g.length||Array.isArray(f)?0===g.length&&b.push(e):g=g[0],c.push(Utils.compare(g,f))}if(0===b.length||!a)return this.result.setResults(c),!0;for(d=0;d<b.length;d++){var k=document.createElement("span");k.appendChild(document.createTextNode(this.unansweredQuestionText)),k.className=Quiz.Classes.QUESTION_WARNING,b[d].getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].appendChild(k)}return!1},Quiz.prototype.clearHighlights=function(a){for(var b=a.getElementsByClassName(Quiz.Classes.QUESTION_WARNING);b.length>0;)b[0].parentNode.removeChild(b[0]);var c,d=[a.getElementsByClassName(Quiz.Classes.CORRECT),a.getElementsByClassName(this.Classes.INCORRECT)];for(i=0;i<d.length;i++)for(;d[i].length>0;)c=d[i][0],c.classList.remove(Quiz.Classes.CORRECT),c.classList.remove(Quiz.Classes.INCORRECT);for(var e=a.getElementsByClassName(Quiz.Classes.TEMP);e.length>0;)e[0].parentNode.removeChild(e[0])},Quiz.prototype.highlightResults=function(a){for(var b,c=0;c<this.questions.length;c++)b=this.questions[c],b.getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].classList.add(this.result.results[c]?Quiz.Classes.CORRECT:Quiz.Classes.INCORRECT),void 0!==a&&a(this,b,c,this.result.results[c])};var QuizResult=function(){this.results=[],this.totalQuestions=0,this.score=0,this.scorePercent=0,this.scorePercentFormatted=0};QuizResult.prototype.setResults=function(a){this.results=a,this.totalQuestions=this.results.length,this.score=0;for(var b=0;b<this.results.length;b++)this.results[b]&&this.score++;this.scorePercent=this.score/this.totalQuestions,this.scorePercentFormatted=Math.floor(100*this.scorePercent)};var Utils=function(){};Utils.compare=function(a,b){if(a.length!=b.length)return!1;if(Array.isArray(a)&&Array.isArray(b)){for(var c=0;c<a.length;c++)if(a[c]!==b[c])return!1;return!0}return a===b};
 
@@ -805,7 +808,7 @@ function handleAnswers(quiz, question, no, correct) {
   window.onload = function() {
     quizz_Chap00 = new Quiz('Chap00', ['3','2','2',['1', '2', '3'],'2','2','3',['1', '2']]);
   };</script><link rel="stylesheet" type="text/css" src="css/quizlib.min.css"><div class="card quizlib-question"><div class="quizlib-question-title">Quelle structure de données Python n'autorise **pas** les doublons ?</div><div>Relisez au besoin la section « Les ensembles (Sets) ».</div><div class="quizlib-question-answers">
-<table class="table table-sm table-striped small caption-top" data-quarto-postprocess="true">
+<table class="table table-sm table-striped small caption-top">
 <tbody>
 <tr class="odd">
 <td><label>La liste</label></td>
@@ -826,7 +829,7 @@ function handleAnswers(quiz, question, no, correct) {
 </tbody>
 </table>
 </div></div><div class="card quizlib-question"><div class="quizlib-question-title">Les tuples peuvent être modifiés après leur création.</div><div>Relisez au besoin la section « Les tuples » : un tuple est immuable.</div><div class="quizlib-question-answers">
-<table class="table table-sm table-striped small caption-top" data-quarto-postprocess="true">
+<table class="table table-sm table-striped small caption-top">
 <tbody>
 <tr class="odd">
 <td><label>Vrai</label></td>
@@ -839,7 +842,7 @@ function handleAnswers(quiz, question, no, correct) {
 </tbody>
 </table>
 </div></div><div class="card quizlib-question"><div class="quizlib-question-title">Comment accède-t-on à la valeur associée à la clé `"capteur"` d'un dictionnaire nommé `image` ?</div><div>Relisez au besoin la section « Dictionnaires ».</div><div class="quizlib-question-answers">
-<table class="table table-sm table-striped small caption-top" data-quarto-postprocess="true">
+<table class="table table-sm table-striped small caption-top">
 <tbody>
 <tr class="odd">
 <td><label>image("capteur")</label></td>
@@ -860,7 +863,7 @@ function handleAnswers(quiz, question, no, correct) {
 </tbody>
 </table>
 </div></div><div class="card quizlib-question"><div class="quizlib-question-title">Parmi les affirmations suivantes sur les listes Python, lesquelles sont vraies ?</div><div>Relisez au besoin la section « Les listes ».</div><div class="quizlib-question-answers">
-<table class="table table-sm table-striped small caption-top" data-quarto-postprocess="true">
+<table class="table table-sm table-striped small caption-top">
 <colgroup>
 <col style="width: 50%">
 <col style="width: 50%">
@@ -885,7 +888,7 @@ function handleAnswers(quiz, question, no, correct) {
 </tbody>
 </table>
 </div></div><div class="card quizlib-question"><div class="quizlib-question-title">Quel mot-clé permet de définir une fonction en Python ?</div><div>Relisez au besoin la section « Les fonctions ».</div><div class="quizlib-question-answers">
-<table class="table table-sm table-striped small caption-top" data-quarto-postprocess="true">
+<table class="table table-sm table-striped small caption-top">
 <tbody>
 <tr class="odd">
 <td><label>func</label></td>
@@ -906,7 +909,7 @@ function handleAnswers(quiz, question, no, correct) {
 </tbody>
 </table>
 </div></div><div class="card quizlib-question"><div class="quizlib-question-title">Que renvoie l'expression `[1, 2, 3][-1]` ?</div><div>L'indice -1 désigne le dernier élément. Voir la section « Les listes ».</div><div class="quizlib-question-answers">
-<table class="table table-sm table-striped small caption-top" data-quarto-postprocess="true">
+<table class="table table-sm table-striped small caption-top">
 <tbody>
 <tr class="odd">
 <td><label>1</label></td>
@@ -927,7 +930,7 @@ function handleAnswers(quiz, question, no, correct) {
 </tbody>
 </table>
 </div></div><div class="card quizlib-question"><div class="quizlib-question-title">Pour un tableau NumPy `image`, quel attribut donne ses dimensions (lignes, colonnes) ?</div><div>Relisez au besoin la [section @sec-00-02].</div><div class="quizlib-question-answers">
-<table class="table table-sm table-striped small caption-top" data-quarto-postprocess="true">
+<table class="table table-sm table-striped small caption-top">
 <tbody>
 <tr class="odd">
 <td><label>image.size</label></td>
@@ -948,7 +951,7 @@ function handleAnswers(quiz, question, no, correct) {
 </tbody>
 </table>
 </div></div><div class="card quizlib-question"><div class="quizlib-question-title">Pourquoi utiliser un environnement virtuel (`conda` ou `venv`) ?</div><div>Relisez au besoin la [section @sec-00-01].</div><div class="quizlib-question-answers">
-<table class="table table-sm table-striped small caption-top" data-quarto-postprocess="true">
+<table class="table table-sm table-striped small caption-top">
 <colgroup>
 <col style="width: 50%">
 <col style="width: 50%">
@@ -1031,13 +1034,14 @@ function handleAnswers(quiz, question, no, correct) {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

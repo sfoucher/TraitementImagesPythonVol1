@@ -111,6 +111,7 @@
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
 \usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -172,13 +173,13 @@
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \ifLuaTeX
-\usepackage[bidi=basic]{babel}
+\usepackage[bidi=basic,shorthands=off]{babel}
 \else
-\usepackage[bidi=default]{babel}
+\usepackage[bidi=default,shorthands=off]{babel}
 \fi
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
 
 
 \setlength{\emergencystretch}{3em} % prevent overfull lines
@@ -296,7 +297,6 @@ Bouroubi \and Mickaël Germain \and Étienne Clabaut}
 
 \renewcommand*\contentsname{Table des matières}
 {
-\hypersetup{linkcolor=}
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
@@ -859,6 +859,7 @@ votre glace préférée - chacune a ses propres caractéristiques uniques,
 mais elles sont toutes fondamentalement Python. Voici un aperçu des
 principales distributions :
 
+{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
@@ -887,6 +888,7 @@ environnement minimal et contrôlé \\
 \href{https://pypy.org/}{PyPy} & Implémentation optimisée pour la
 vitesse d'exécution & Les programmes gourmands en calcul \\
 \end{longtable}
+}
 
 Chaque distribution a ses forces, que ce soit la simplicité, la vitesse
 ou des fonctionnalités spécifiques. Le choix dépend donc de vos besoins,
@@ -935,6 +937,7 @@ applications et plus de temps à produire du code.
 
 Voici quelques options populaires :
 
+{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
@@ -963,6 +966,7 @@ visualisations ; gratuit sur Colab/Kaggle (reproductibilité limitée) \\
 \href{https://marimo.io/}{Marimo} & Notebook réactif & Réexécute
 automatiquement les cellules dépendantes ; évite l'état caché \\
 \end{longtable}
+}
 
 \section{Bonnes pratiques}\label{bonnes-pratiques}
 
@@ -2256,6 +2260,8 @@ Dimensions de la matrice:  (442, 553, 3)
 Type de la donnée:  uint8
 \end{verbatim}
 
+{
+
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1343}}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2388}}
@@ -2293,6 +2299,8 @@ float32 & float & 32 & -3.4e38 & 3.4e38 \\
 float64 & double & 64 & -1.8e308 & 1.8e308 \\
 
 \end{longtable}
+
+}
 
 \subsection{Découpage et indexation de la
 matrice}\label{duxe9coupage-et-indexation-de-la-matrice}
@@ -3252,8 +3260,8 @@ la fonction \texttt{numpy.histogram()}:
 \end{Shaded}
 
 \begin{verbatim}
-valeurs : [0.14444444 0.17777778 0.08888889 0.07777778 0.11111111 0.15555556
- 0.08888889 0.1        0.06666667 0.1       ]
+valeurs : [0.12222222 0.07777778 0.1        0.1        0.15555556 0.07777778
+ 0.16666667 0.08888889 0.1        0.12222222]
 ;imites : [0.  0.9 1.8 2.7 3.6 4.5 5.4 6.3 7.2 8.1 9. ]
 \end{verbatim}
 
@@ -3300,7 +3308,7 @@ valeurs des pixels d'une image afin de maximiser la dynamique
 disponibles à l'affichage, ou 2) à changer le format de stockage des
 valeurs (de 8 bits à 16 bits):
 
-\begin{equation}\phantomsection\label{eq-rehauss-lin}{ \text{nouvelle valeur d'un pixel} = \frac{\text{valeur d'un pixel} - min_0}{max_0 - min_0}\times (max_1 - min_1)+min_1}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-rehauss-lin}{ \text{nouvelle valeur d'un pixel} = \frac{\text{valeur d'un pixel} - min_0}{max_0 - min_0}\times (max_1 - min_1)+min_1}\end{equation}
 
 Par cette opération, on passe de la dynamique de départ
 (\(max_0 - min_0\)) vers la dynamique cible (\(max_1 - min_1\)). Bien
@@ -3788,7 +3796,7 @@ suivante:
 \end{Shaded}
 
 \begin{verbatim}
-SpectralIndices(['AFRI1600', 'AFRI2100', 'ANDWI', 'ARI', 'ARI2', 'ARVI', 'ATSAVI', 'AVI', 'AWEInsh', 'AWEIsh', 'AshburnVI', 'BAI', 'BAIM', 'BAIS2', 'BCC', 'BI', 'BITM', 'BIXS', 'BLFEI', 'BNDVI', 'BRBA', 'BWDRVI', 'BaI', 'CCI', 'CI1SWIR', 'CI1woSWIR', 'CI2SWIR', 'CI2woSWIR', 'CIG', 'CIRE', 'CLOSDI', 'CRI550', 'CRI700', 'CRSWIR', 'CSI', 'CSISWIR', 'CSIT', 'CSIwoSWIR', 'CVI', 'DBI', 'DBSI', 'DPDD', 'DSI', 'DSWI1', 'DSWI2', 'DSWI3', 'DSWI4', 'DSWI5', 'DVI', 'DVIplus', 'DpRVIHH', 'DpRVIVV', 'EBBI', 'EBI', 'EMBI', 'ENDVI', 'EVI', 'EVI2', 'EVIv', 'ExG', 'ExGR', 'ExR', 'FAI', 'FCVI', 'FDI', 'FWEI', 'GARI', 'GBNDVI', 'GCC', 'GDVI', 'GEMI', 'GLI', 'GM1', 'GM2', 'GNDVI', 'GOSAVI', 'GRNDVI', 'GRVI', 'GSAVI', 'GVMI', 'IAVI', 'IBI', 'IKAW', 'IPVI', 'IRECI', 'IRGBVI', 'KDI', 'LSWI', 'MBI', 'MBWI', 'MCARI', 'MCARI1', 'MCARI2', 'MCARI705', 'MCARIOSAVI', 'MCARIOSAVI705', 'MGRVI', 'MI', 'MIRBI', 'MLSWI26', 'MLSWI27', 'MNDVI', 'MNDWI', 'MNLI', 'MRBVI', 'MSAVI', 'MSI', 'MSR', 'MSR705', 'MTCI', 'MTVI1', 'MTVI2', 'MVI', 'MuWIR', 'NBAI', 'NBLI', 'NBLIOLI', 'NBR', 'NBR2', 'NBRSWIR', 'NBRT1', 'NBRT2', 'NBRT3', 'NBRplus', 'NBSIMS', 'NBUI', 'ND705', 'NDBI', 'NDBaI', 'NDCI', 'NDDI', 'NDGI', 'NDGlaI', 'NDII', 'NDISIb', 'NDISIg', 'NDISImndwi', 'NDISIndwi', 'NDISIr', 'NDMI', 'NDPI', 'NDPolI', 'NDPonI', 'NDREI', 'NDSI', 'NDSII', 'NDSIITM', 'NDSIWV', 'NDSInw', 'NDSWIR', 'NDSaII', 'NDSoI', 'NDTI', 'NDTI4RE', 'NDTillI', 'NDVI', 'NDVI4RE', 'NDVI705', 'NDVIMNDWI', 'NDVIT', 'NDWI', 'NDWIns', 'NDYI', 'NGRDI', 'NHFD', 'NIRv', 'NIRvH2', 'NIRvP', 'NLI', 'NMDI', 'NPCI', 'NRFIg', 'NRFIr', 'NSDS', 'NSDSI1', 'NSDSI2', 'NSDSI3', 'NSTv1', 'NSTv2', 'NWI', 'NormG', 'NormNIR', 'NormR', 'OCVI', 'OSAVI', 'OSI', 'PI', 'PISI', 'PSRI', 'QpRVI', 'RCC', 'RDVI', 'REDSI', 'RENDVI', 'RFDI', 'RGBVI', 'RGRI', 'RI', 'RI4XS', 'RNDVI', 'RVI', 'RVI4RE', 'RWI', 'S2REP', 'S2WI', 'S3', 'SARVI', 'SAVI', 'SAVI2', 'SAVI4RE', 'SAVIT', 'SCoWI', 'SEVI', 'SI', 'SIPI', 'SLAVI', 'SNDTI', 'SNDTI4RE', 'SR', 'SR2', 'SR3', 'SR555', 'SR705', 'SRVI', 'SRWI', 'STI', 'STI4RE', 'SWI', 'SWM', 'SeLI', 'TCARI', 'TCARIOSAVI', 'TCARIOSAVI705', 'TCI', 'TDVI', 'TGI', 'TRRVI', 'TSAVI', 'TTVI', 'TVI', 'TWI', 'TriVI', 'UI', 'VARI', 'VARI700', 'VDDPI', 'VHVVD', 'VHVVP', 'VHVVR', 'VI6T', 'VI700', 'VIBI', 'VIG', 'VVVHD', 'VVVHR', 'VVVHS', 'VgNIRBI', 'VrNIRBI', 'WCI1', 'WCI2', 'WDRVI', 'WDVI', 'WI1', 'WI2', 'WI2015', 'WRI', 'bNIRv', 'kEVI', 'kIPVI', 'kNDVI', 'kRVI', 'kVARI', 'mND705', 'mSR705', 'sNIRvLSWI', 'sNIRvNDPI', 'sNIRvNDVILSWIP', 'sNIRvNDVILSWIS', 'sNIRvSWIR'])
+SpectralIndices(['AFRI1600', 'AFRI2100', 'ANDWI', 'ARI', 'ARI2', 'ARVI', 'ATSAVI', 'AVI', 'AWEInsh', 'AWEIsh', 'AshburnVI', 'BAI', 'BAIM', 'BAIS2', 'BCC', 'BI', 'BITM', 'BIXS', 'BLFEI', 'BNDVI', 'BRBA', 'BWDRVI', 'BaI', 'CCI', 'CI1SWIR', 'CI1woSWIR', 'CI2SWIR', 'CI2woSWIR', 'CIG', 'CIRE', 'CLOSDI', 'CRI550', 'CRI700', 'CRSWIR', 'CSI', 'CSISWIR', 'CSIT', 'CSIwoSWIR', 'CVI', 'DBI', 'DBSI', 'DPDD', 'DSI', 'DSWI1', 'DSWI2', 'DSWI3', 'DSWI4', 'DSWI5', 'DVI', 'DVIplus', 'DpRVIHH', 'DpRVIVV', 'EBBI', 'EBI', 'EMBI', 'ENDVI', 'EVI', 'EVI2', 'EVIv', 'ExG', 'ExGR', 'ExR', 'FAI', 'FCVI', 'FDI', 'FWEI', 'GARI', 'GBNDVI', 'GCC', 'GDVI', 'GEMI', 'GLI', 'GM1', 'GM2', 'GNDVI', 'GOSAVI', 'GRARI', 'GRNDVI', 'GRVI', 'GSAVI', 'GVMI', 'IAVI', 'IBI', 'IKAW', 'IPVI', 'IRECI', 'IRGBVI', 'KDI', 'LSWI', 'MBI', 'MBWI', 'MCARI', 'MCARI1', 'MCARI2', 'MCARI705', 'MCARIOSAVI', 'MCARIOSAVI705', 'MGRVI', 'MI', 'MIRBI', 'MLSWI26', 'MLSWI27', 'MNDVI', 'MNDWI', 'MNLI', 'MRBVI', 'MSAVI', 'MSI', 'MSR', 'MSR705', 'MTCI', 'MTVI1', 'MTVI2', 'MVI', 'MuWIR', 'NBAI', 'NBLI', 'NBLIOLI', 'NBR', 'NBR2', 'NBRSWIR', 'NBRT1', 'NBRT2', 'NBRT3', 'NBRplus', 'NBSIMS', 'NBUI', 'ND705', 'NDBI', 'NDBaI', 'NDCI', 'NDDI', 'NDGI', 'NDGlaI', 'NDII', 'NDISIb', 'NDISIg', 'NDISImndwi', 'NDISIndwi', 'NDISIr', 'NDMI', 'NDPI', 'NDPolI', 'NDPonI', 'NDREI', 'NDSI', 'NDSII', 'NDSIITM', 'NDSIWV', 'NDSInw', 'NDSWIR', 'NDSaII', 'NDSoI', 'NDTI', 'NDTI4RE', 'NDTillI', 'NDVI', 'NDVI4RE', 'NDVI705', 'NDVIMNDWI', 'NDVIT', 'NDWI', 'NDWIns', 'NDYI', 'NGRDI', 'NHFD', 'NIRv', 'NIRvH2', 'NIRvP', 'NLI', 'NMDI', 'NPCI', 'NRFIg', 'NRFIr', 'NSDS', 'NSDSI1', 'NSDSI2', 'NSDSI3', 'NSTv1', 'NSTv2', 'NWI', 'NormG', 'NormNIR', 'NormR', 'OCVI', 'OSAVI', 'OSI', 'PI', 'PISI', 'PSRI', 'QpRVI', 'RCC', 'RDVI', 'REDSI', 'RENDVI', 'RFDI', 'RGBVI', 'RGRI', 'RI', 'RI4XS', 'RNDVI', 'RVI', 'RVI4RE', 'RWI', 'S2REP', 'S2WI', 'S3', 'SARVI', 'SAVI', 'SAVI2', 'SAVI4RE', 'SAVIT', 'SCoWI', 'SEVI', 'SI', 'SIPI', 'SLAVI', 'SNDTI', 'SNDTI4RE', 'SR', 'SR2', 'SR3', 'SR555', 'SR705', 'SRVI', 'SRWI', 'STI', 'STI4RE', 'SWI', 'SWM', 'SeLI', 'TCARI', 'TCARIOSAVI', 'TCARIOSAVI705', 'TCI', 'TDVI', 'TGI', 'TRRVI', 'TSAVI', 'TTVI', 'TVI', 'TWI', 'TriVI', 'UI', 'VARI', 'VARI700', 'VDDPI', 'VHVVD', 'VHVVP', 'VHVVR', 'VI6T', 'VI700', 'VIBI', 'VIG', 'VVVHD', 'VVVHR', 'VVVHS', 'VgNIRBI', 'VrNIRBI', 'WCI1', 'WCI2', 'WDRVI', 'WDVI', 'WI1', 'WI2', 'WI2015', 'WRI', 'bNIRv', 'kEVI', 'kIPVI', 'kNDVI', 'kRVI', 'kVARI', 'mND705', 'mSR705', 'sNIRvLSWI', 'sNIRvNDPI', 'sNIRvNDVILSWIP', 'sNIRvNDVILSWIS', 'sNIRvSWIR'])
 \end{verbatim}
 
 Le détail d'un indice particulier, par exemple le `NDVI`, est aussi
@@ -4330,11 +4338,11 @@ pour le calcul fréquentiel (Cooley et Tukey 1965). La \emph{1D-DFT} peu
 s'écrire simplement comme une projection sur une série d'exponentielles
 complexes:
 
-\begin{equation}\phantomsection\label{eq-dft}{X[k] = \sum_{n=0 \ldots N-1} x[n] \times \exp(-j \times 2\pi \times k \times n/N))}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-dft}{X[k] = \sum_{n=0 \ldots N-1} x[n] \times \exp(-j \times 2\pi \times k \times n/N))}\end{equation}
 
 La transformée inverse prend une forme similaire:
 
-\begin{equation}\phantomsection\label{eq-idft}{x[k] = \frac{1}{N}\sum_{n=0 \ldots N-1} X[n] \times \exp(j \times 2\pi \times k \times n/N))}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-idft}{x[k] = \frac{1}{N}\sum_{n=0 \ldots N-1} X[n] \times \exp(j \times 2\pi \times k \times n/N))}\end{equation}
 
 Le signal d'origine est donc reconstruit à partir d'une somme de
 sinusoïdes complexes \(\exp(j2\pi \frac{k}{N}n))\) de fréquence \(k/N\).
@@ -4405,7 +4413,7 @@ Notez, qu'un filtrage fréquentielle est une simple multiplication de la
 réponse du filtre \(F[k]\) par les composantes fréquentielles du signal
 à filtrer \(X[k]\):
 
-\begin{equation}\phantomsection\label{eq-fourier-filter}{
+\begin{equation}\protect\phantomsection\label{eq-fourier-filter}{
 X_f[k] = F[k] \times X[k]
 }\end{equation}
 
@@ -4413,7 +4421,7 @@ X_f[k] = F[k] \times X[k]
 équivalente à une opération de convolution dans l'espace originale du
 signal \(x\):
 
-\begin{equation}\phantomsection\label{eq-convolve}{
+\begin{equation}\protect\phantomsection\label{eq-convolve}{
 x_f = IDFT^{-1}[F]*x
 }\end{equation}
 
@@ -4563,7 +4571,7 @@ Le filtre le plus simple est certainement le filtre moyen qui consiste à
 appliquer le même poids uniforme dans la fenêtre glissante. Par exemple
 pour un filtre 5x5:
 
-\begin{equation}\phantomsection\label{eq-boxfilter}{
+\begin{equation}\protect\phantomsection\label{eq-boxfilter}{
 F= \frac{1}{25}\left[
 \begin{array}{c|c|c|c|c}
 1 & 1 & 1 & 1 & 1 \\
@@ -4653,7 +4661,7 @@ est peut être calculée dans le domaine fréquentiel. Prenons l'exemple du
 filtre de Scharr (Jahne et S. 1999), qui permet de détecter les contours
 horizontaux et verticaux:
 
-\begin{equation}\phantomsection\label{eq-scharr-filter}{
+\begin{equation}\protect\phantomsection\label{eq-scharr-filter}{
 F= \left[
 \begin{array}{ccc}
 -3-3j & 0-10j & +3-3j \\
@@ -4860,7 +4868,7 @@ Au lieu d'appliquer un filtre moyen de manière indiscriminée, le filtre
 de Lee (Lee 1986) applique une pondération en fonction du contenu local
 de l'image \(I\) dans sa forme la plus simple :
 
-\begin{equation}\phantomsection\label{eq-lee-filter}{ 
+\begin{equation}\protect\phantomsection\label{eq-lee-filter}{ 
 \begin{aligned}
 I_F & = I_M + K \times (I - I_M) \\
 K & = \frac{\sigma^2_I}{\sigma^2_I + \sigma^2_{bruit}}
@@ -5140,6 +5148,7 @@ et de former un tableau:
 \end{Highlighting}
 \end{Shaded}
 
+{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}llllllllllll@{}}
 \toprule\noalign{}
 & label & area & centroid-0 & centroid-1 & num\_pixels &
@@ -5170,6 +5179,7 @@ intensity\_std-0 & intensity\_std-1 & intensity\_std-2 \\
 9 & 10 & 445.0 & 8.013483 & 308.053933 & 445 & 145.373032 & 138.182022 &
 121.402245 & 18.543356 & 18.644655 & 22.237881 \\
 \end{longtable}
+}
 
 Ce tableau pourra être exploiter pour une tâche de classification par la
 suite (on parle alors de classification objet).
@@ -5569,6 +5579,7 @@ colonne \texttt{value} sous la forme d'un vecteur en format
 \end{Highlighting}
 \end{Shaded}
 
+{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}lllll@{}}
 \toprule\noalign{}
 & 0 & geometry & value & class \\
@@ -5587,6 +5598,7 @@ colonne \texttt{value} sous la forme d'un vecteur en format
 4 & 5 & POINT (736746.629 5031362.018) & {[}2194, 2304, 2268, 3075{]} &
 1 \\
 \end{longtable}
+}
 
 \section{Analyse préliminaire des
 données}\label{analyse-pruxe9liminaire-des-donnuxe9es}
@@ -5723,6 +5735,7 @@ Gaussien:
 \end{Highlighting}
 \end{Shaded}
 
+{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}lllllllllll@{}}
 \toprule\noalign{}
 & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
@@ -5751,6 +5764,7 @@ Gaussien:
 9 & 1.700417 & 1.133180 & 0.782982 & 0.840250 & 1.036828 & 0.660213 &
 0.660589 & 1.886064 & 0.741273 & 0.000000 \\
 \end{longtable}
+}
 
 Afin d'évaluer chaque classe, on peut calculer la séparabilité minimale,
 ce qui nous permet de constater que la classe eau a le maximum de
@@ -6339,7 +6353,7 @@ De la même manière, la prédiction peut s'appliquer sur toute l'image:
 
 \markboth{Bibliographie}{Bibliographie}
 
-\phantomsection\label{refs}
+\protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
 \bibitem[\citeproctext]{ref-Achanta-2012}
 Achanta, Kevin Smith adhakrishna, Appu Shaji et Sabine Süsstrunk. 2012.
