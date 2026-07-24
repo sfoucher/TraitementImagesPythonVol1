@@ -1,0 +1,25 @@
+# Slides project (separate from the book). Render:
+#   docker run ... quarto render slides --to revealjs
+# Decks are written to docs/slides/ (published alongside the book site).
+# Code cells execute with the slides/ folder as working dir, so data files
+# at the repo root are referenced as ../<file> (see 01-importation.qmd).
+project:
+  type: default
+  output-dir: ../docs/slides
+  render:
+    - "*.qmd"
+
+format:
+  revealjs:
+    theme: [default, theme.scss]
+    slide-number: true
+    slide-level: 2
+    chalkboard: true          # dessiner sur les diapos (touche « b »)
+    code-line-numbers: true
+    footer: "Traitement d'images satellites avec Python"
+    from: markdown+emoji
+
+execute:
+  echo: true
+  warning: false
+  message: false

@@ -1,0 +1,12 @@
+/*-- scss:defaults --*/
+// Palette alignée sur la marque du livre (bleu des blocs)
+$primary: #357cc0;
+$link-color: #357cc0;
+$presentation-heading-color: #2a5f8f;
+$presentation-heading-font-weight: 700;
+
+/*-- scss:rules --*/
+.reveal h1, .reveal h2 { letter-spacing: -0.01em; }
+.reveal .footer { color: #6b7a88; }
+// Bandeau coloré sous les titres de section, rappel du livre
+.reveal h2 { border-bottom: 3px solid $primary; padding-bottom: .2em; }
