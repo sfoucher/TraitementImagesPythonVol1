@@ -32,8 +32,9 @@ q() { docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/workspa
 
 mkdir -p docs pdf notebooks marimo
 
-# 1. HTML site
-q quarto render --cache --to html --output-dir ./docs
+# 1. HTML site (landing-page subtitle carries the version alongside the edition)
+q quarto render --cache --to html \
+  -M subtitle="Première édition · Version ${BOOK_VERSION}" --output-dir ./docs
 
 # 2. PDF -> publish into docs for the download link
 q quarto render --profile production --cache --no-clean --to pdf \
