@@ -249,7 +249,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="démo-lecture-et-vraies-couleurs" class="slide level2 smaller">
 <h2>Démo — lecture et vraies couleurs</h2>
 <p>L’ordre des bandes de <code>RGBNIR_of_S2A.tif</code> est <strong>B, V, R, PIR</strong> → on réordonne en R, V, B :</p>
-<div id="2b63a529" class="cell" data-execution_count="1">
+<div id="cb719b95" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb1-2"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href=""></a></span>
@@ -269,7 +269,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="regarder-les-métadonnées-avant-de-lire" class="slide level2 smaller">
 <h2>Regarder les métadonnées avant de lire</h2>
-<div id="b2ce5e25" class="cell" data-execution_count="2">
+<div id="41a3dde0" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" data-code-line-numbers="2-6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rasterio</span>
 <span id="cb2-2"><a href=""></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">'../RGBNIR_of_S2A.tif'</span>) <span class="im">as</span> src:</span>
 <span id="cb2-3"><a href=""></a>    <span class="bu">print</span>(<span class="st">"Bandes     :"</span>, src.count, <span class="st">"| type :"</span>, src.dtypes[<span class="dv">0</span>])</span>

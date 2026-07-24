@@ -338,7 +338,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="listes" class="slide level2 smaller">
 <h2>Listes</h2>
-<div id="9ce8ffe4" class="cell" data-execution_count="1">
+<div id="59d96c5e" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb2-2"><a href=""></a><span class="bu">print</span>(bandes[<span class="dv">0</span>], <span class="st">"|"</span>, bandes[<span class="op">-</span><span class="dv">1</span>], <span class="st">"|"</span>, bandes[<span class="dv">1</span>:<span class="dv">3</span>])   <span class="co"># index, tranche</span></span>
 <span id="cb2-3"><a href=""></a>bandes.append(<span class="st">"SWIR"</span>)</span>
@@ -351,7 +351,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="tuples-ensembles" class="slide level2 smaller">
 <h2>Tuples &amp; ensembles</h2>
-<div id="a47b1ad5" class="cell" data-execution_count="2">
+<div id="39b5b369" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>dimensions <span class="op">=</span> (<span class="dv">512</span>, <span class="dv">512</span>)          <span class="co"># immuable : dimensions d'une image</span></span>
 <span id="cb4-2"><a href=""></a>lignes, colonnes <span class="op">=</span> dimensions    <span class="co"># dépaquetage</span></span>
 <span id="cb4-3"><a href=""></a><span class="bu">print</span>(lignes, colonnes)</span>
@@ -366,7 +366,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="dictionnaires" class="slide level2 smaller">
 <h2>Dictionnaires</h2>
-<div id="7e4f7bff" class="cell" data-execution_count="3">
+<div id="d3a9ba75" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
 <span id="cb6-2"><a href=""></a>image[<span class="st">"date"</span>] <span class="op">=</span> <span class="st">"2024-07-01"</span>                 <span class="co"># ajout d'une paire</span></span>
 <span id="cb6-3"><a href=""></a><span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items():</span>
@@ -381,7 +381,7 @@ date : 2024-07-01</code></pre>
 </section>
 <section id="boucles-conditions" class="slide level2 smaller">
 <h2>Boucles &amp; conditions</h2>
-<div id="e90edabf" class="cell" data-execution_count="4">
+<div id="72fce63f" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]):</span>
 <span id="cb8-2"><a href=""></a>    <span class="bu">print</span>(i, nom)</span>
 <span id="cb8-3"><a href=""></a></span>
@@ -400,7 +400,7 @@ moyenne</code></pre>
 </section>
 <section id="fonctions" class="slide level2 smaller">
 <h2>Fonctions</h2>
-<div id="87e64451" class="cell" data-execution_count="5">
+<div id="0ad76a86" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a><span class="kw">def</span> ndvi(nir, rouge):</span>
 <span id="cb10-2"><a href=""></a>    <span class="co">"""NDVI = (PIR - Rouge) / (PIR + Rouge)."""</span></span>
 <span id="cb10-3"><a href=""></a>    <span class="cf">return</span> (nir <span class="op">-</span> rouge) <span class="op">/</span> (nir <span class="op">+</span> rouge)</span>
@@ -426,7 +426,7 @@ moyenne</code></pre>
 </section>
 <section id="programmation-objet" class="slide level2 smaller">
 <h2>Programmation objet</h2>
-<div id="e04f816b" class="cell" data-execution_count="6">
+<div id="8ca33fab" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a><span class="kw">class</span> Image:</span>
 <span id="cb12-2"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capteur, bandes):   <span class="co"># constructeur + attributs</span></span>
 <span id="cb12-3"><a href=""></a>        <span class="va">self</span>.capteur <span class="op">=</span> capteur</span>
@@ -443,7 +443,7 @@ moyenne</code></pre>
 <section id="un-avant-goût-de-numpy" class="slide level2 smaller">
 <h2>Un avant-goût de NumPy</h2>
 <p>Une image = un <strong>tableau de nombres</strong> (<code>ndarray</code>), la brique de tous les chapitres.</p>
-<div id="8a00b7e4" class="cell" data-execution_count="7">
+<div id="e03bc6a4" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb14-2"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
 <span id="cb14-3"><a href=""></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
