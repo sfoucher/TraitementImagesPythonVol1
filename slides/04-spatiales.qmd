@@ -86,6 +86,26 @@ ax[1].imshow(grad, cmap='gray'); ax[1].set_title("Contours — filtre de Scharr"
 plt.show()
 ```
 
+## Du filtre à la couche convolutionnelle {.smaller}
+
+Une **couche convolutionnelle** applique des filtres comme celui de Scharr — mais dans un réseau de neurones, ces filtres sont **appris** à partir des données.
+
+```{python}
+#| fig-align: center
+import torch, torch.nn as nn
+conv = nn.Conv2d(1, 1, kernel_size=3, padding=1, bias=False)   # une couche conv 3x3
+scharr_gx = torch.tensor([[-3., 0, 3], [-10, 0, 10], [-3, 0, 3]]).reshape(1, 1, 3, 3)
+conv.weight = nn.Parameter(scharr_gx)                          # noyau imposé (Scharr Gx)
+x = torch.tensor(gris, dtype=torch.float32)[None, None]        # (1, 1, H, W)
+sortie = conv(x)[0, 0].detach().numpy()
+fig, ax = plt.subplots(1, 2, figsize=(7, 3))
+ax[0].imshow(gris, cmap='gray'); ax[0].set_title("Entrée"); ax[0].axis('off')
+ax[1].imshow(np.abs(sortie), cmap='gray'); ax[1].set_title("Sortie — couche conv (Scharr)"); ax[1].axis('off')
+plt.show()
+```
+
+Ici le noyau est **imposé** ; un CNN l'**apprendrait** par rétro-propagation (tome 2).
+
 ## Filtrage adaptatif — le *speckle* SAR {.smaller}
 
 Les images radar sont dégradées par un bruit multiplicatif (*speckle*). Le **filtre de Lee** lisse en **préservant les détails** (pondération selon la variance locale).

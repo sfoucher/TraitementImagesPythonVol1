@@ -229,7 +229,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="transformée-de-fourier-1d" class="slide level2 smaller">
 <h2>Transformée de Fourier — 1D</h2>
-<div id="44f672d9" class="cell" data-execution_count="1">
+<div id="31b5a717" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np, matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>N, Fs <span class="op">=</span> <span class="dv">16</span>, <span class="fl">2.0</span><span class="op">;</span> Ts <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>Fs</span>
 <span id="cb1-3"><a href=""></a>t <span class="op">=</span> np.arange(<span class="dv">0</span>, N, Ts)</span>
@@ -260,7 +260,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="laliasing" class="slide level2 smaller">
 <h2>L’aliasing</h2>
 <p>Sous-échantillonner sans filtrer → repliement de spectre :</p>
-<div id="65a50d68" class="cell" data-execution_count="2">
+<div id="b119b935" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb2-2"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> gaussian_filter</span>
 <span id="cb2-3"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../berkeley.jpg'</span>).to_numpy()       <span class="co"># (3, H, W)</span></span>
@@ -290,7 +290,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="filtre-moyen-contours-scharr" class="slide level2 smaller">
 <h2>Filtre moyen &amp; contours (Scharr)</h2>
-<div id="bd59fb2e" class="cell" data-execution_count="3">
+<div id="fe16a703" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
 <span id="cb3-2"><a href=""></a>scharr <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">-</span><span class="ot">10j</span>, <span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>], [<span class="op">-</span><span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>], [<span class="op">-</span><span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">10j</span>, <span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>]])</span>
 <span id="cb3-3"><a href=""></a>gris <span class="op">=</span> img[<span class="dv">0</span>]                                    <span class="co"># une bande</span></span>
@@ -308,21 +308,45 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </div>
 </div>
 </section>
-<section id="filtrage-adaptatif-le-speckle-sar" class="slide level2 smaller">
-<h2>Filtrage adaptatif — le <em>speckle</em> SAR</h2>
-<p>Les images radar sont dégradées par un bruit multiplicatif (<em>speckle</em>). Le <strong>filtre de Lee</strong> lisse en <strong>préservant les détails</strong> (pondération selon la variance locale).</p>
-<div id="1b212667" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>sar <span class="op">=</span> rxr.open_rasterio(<span class="st">'../SAR.tif'</span>).sel(band<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb4-2"><a href=""></a>sar <span class="op">=</span> sar.where(sar <span class="op">&gt;</span> <span class="dv">0</span>)                          <span class="co"># masque no_data</span></span>
-<span id="cb4-3"><a href=""></a>moy <span class="op">=</span> sar.rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>, min_periods<span class="op">=</span><span class="dv">3</span>, center<span class="op">=</span><span class="va">True</span>).mean()</span>
-<span id="cb4-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
-<span id="cb4-5"><a href=""></a>np.log10(sar).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">0</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"SAR brut (speckle)"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb4-6"><a href=""></a>np.log10(moy).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">1</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Filtre moyen 5x5"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb4-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="du-filtre-à-la-couche-convolutionnelle" class="slide level2 smaller">
+<h2>Du filtre à la couche convolutionnelle</h2>
+<p>Une <strong>couche convolutionnelle</strong> applique des filtres comme celui de Scharr — mais dans un réseau de neurones, ces filtres sont <strong>appris</strong> à partir des données.</p>
+<div id="25c9c61e" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">import</span> torch, torch.nn <span class="im">as</span> nn</span>
+<span id="cb4-2"><a href=""></a>conv <span class="op">=</span> nn.Conv2d(<span class="dv">1</span>, <span class="dv">1</span>, kernel_size<span class="op">=</span><span class="dv">3</span>, padding<span class="op">=</span><span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>)   <span class="co"># une couche conv 3x3</span></span>
+<span id="cb4-3"><a href=""></a>scharr_gx <span class="op">=</span> torch.tensor([[<span class="op">-</span><span class="fl">3.</span>, <span class="dv">0</span>, <span class="dv">3</span>], [<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>], [<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">3</span>]]).reshape(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb4-4"><a href=""></a>conv.weight <span class="op">=</span> nn.Parameter(scharr_gx)                          <span class="co"># noyau imposé (Scharr Gx)</span></span>
+<span id="cb4-5"><a href=""></a>x <span class="op">=</span> torch.tensor(gris, dtype<span class="op">=</span>torch.float32)[<span class="va">None</span>, <span class="va">None</span>]        <span class="co"># (1, 1, H, W)</span></span>
+<span id="cb4-6"><a href=""></a>sortie <span class="op">=</span> conv(x)[<span class="dv">0</span>, <span class="dv">0</span>].detach().numpy()</span>
+<span id="cb4-7"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb4-8"><a href=""></a>ax[<span class="dv">0</span>].imshow(gris, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Entrée"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb4-9"><a href=""></a>ax[<span class="dv">1</span>].imshow(np.<span class="bu">abs</span>(sortie), cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Sortie — couche conv (Scharr)"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb4-10"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-5-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="261"></p>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-5-output-1.png" class="quarto-figure quarto-figure-center" width="543" height="178"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ici le noyau est <strong>imposé</strong> ; un CNN l’<strong>apprendrait</strong> par rétro-propagation (tome 2).</p>
+</section>
+<section id="filtrage-adaptatif-le-speckle-sar" class="slide level2 smaller">
+<h2>Filtrage adaptatif — le <em>speckle</em> SAR</h2>
+<p>Les images radar sont dégradées par un bruit multiplicatif (<em>speckle</em>). Le <strong>filtre de Lee</strong> lisse en <strong>préservant les détails</strong> (pondération selon la variance locale).</p>
+<div id="62ea12bd" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a>sar <span class="op">=</span> rxr.open_rasterio(<span class="st">'../SAR.tif'</span>).sel(band<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-2"><a href=""></a>sar <span class="op">=</span> sar.where(sar <span class="op">&gt;</span> <span class="dv">0</span>)                          <span class="co"># masque no_data</span></span>
+<span id="cb5-3"><a href=""></a>moy <span class="op">=</span> sar.rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>, min_periods<span class="op">=</span><span class="dv">3</span>, center<span class="op">=</span><span class="va">True</span>).mean()</span>
+<span id="cb5-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb5-5"><a href=""></a>np.log10(sar).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">0</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"SAR brut (speckle)"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb5-6"><a href=""></a>np.log10(moy).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">1</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Filtre moyen 5x5"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb5-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-6-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="261"></p>
 </figure>
 </div>
 </div>
@@ -331,18 +355,18 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="segmentation-en-super-pixels" class="slide level2 smaller">
 <h2>Segmentation en super-pixels</h2>
 <p><strong>SLIC</strong> regroupe les pixels en régions homogènes et compactes (couleur + distance) :</p>
-<div id="1ff65914" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">from</span> skimage.segmentation <span class="im">import</span> slic, mark_boundaries</span>
-<span id="cb5-2"><a href=""></a>rgb <span class="op">=</span> img.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).astype(<span class="st">'uint8'</span>)      <span class="co"># berkeley (réutilisée)</span></span>
-<span id="cb5-3"><a href=""></a>seg <span class="op">=</span> slic(rgb, n_segments<span class="op">=</span><span class="dv">250</span>, compactness<span class="op">=</span><span class="dv">10</span>, sigma<span class="op">=</span><span class="dv">1</span>, start_label<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.6</span>))</span>
-<span id="cb5-5"><a href=""></a>ax.imshow(mark_boundaries(rgb, seg))</span>
-<span id="cb5-6"><a href=""></a>ax.set_title(<span class="ss">f"SLIC — </span><span class="sc">{</span><span class="bu">len</span>(np.unique(seg))<span class="sc">}</span><span class="ss"> super-pixels"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
-<span id="cb5-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8f94c4af" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a><span class="im">from</span> skimage.segmentation <span class="im">import</span> slic, mark_boundaries</span>
+<span id="cb6-2"><a href=""></a>rgb <span class="op">=</span> img.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).astype(<span class="st">'uint8'</span>)      <span class="co"># berkeley (réutilisée)</span></span>
+<span id="cb6-3"><a href=""></a>seg <span class="op">=</span> slic(rgb, n_segments<span class="op">=</span><span class="dv">250</span>, compactness<span class="op">=</span><span class="dv">10</span>, sigma<span class="op">=</span><span class="dv">1</span>, start_label<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb6-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.6</span>))</span>
+<span id="cb6-5"><a href=""></a>ax.imshow(mark_boundaries(rgb, seg))</span>
+<span id="cb6-6"><a href=""></a>ax.set_title(<span class="ss">f"SLIC — </span><span class="sc">{</span><span class="bu">len</span>(np.unique(seg))<span class="sc">}</span><span class="ss"> super-pixels"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
+<span id="cb6-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-6-output-1.png" class="quarto-figure quarto-figure-center" width="391" height="258"></p>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-7-output-1.png" class="quarto-figure quarto-figure-center" width="391" height="258"></p>
 </figure>
 </div>
 </div>
