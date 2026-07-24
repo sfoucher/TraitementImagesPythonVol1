@@ -556,22 +556,24 @@ RUN echo "🚀 === STARTING PYTHON INSTALLATION ===" && \
     echo "✅ === PYTHON INSTALLATION COMPLETE === (${duration}s)"
 
 # === PHASE 9: QUARTO INSTALLATION ===
+# Override at build time: docker build --build-arg QUARTO_VERSION=1.8.x ...
+ARG QUARTO_VERSION=1.7.31
 RUN echo "🚀 === STARTING QUARTO INSTALLATION ===" && \
     echo "⏰ Estimated time: 1 minute" && \
     start_time=$(date +%s) && \
     \
-    echo "📦 Downloading Quarto 1.7.31..." && \
-    wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.31/quarto-1.7.31-linux-amd64.deb && \
+    echo "📦 Downloading Quarto ${QUARTO_VERSION}..." && \
+    wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb && \
     if [ $? -ne 0 ]; then \
         echo "❌ Failed to download Quarto"; \
         exit 1; \
     fi && \
     echo "📥 Download completed" && \
     echo "📊 Downloaded file size:" && \
-    ls -lh quarto-1.7.31-linux-amd64.deb && \
+    ls -lh quarto-${QUARTO_VERSION}-linux-amd64.deb && \
     \
     echo "📦 Installing Quarto..." && \
-    dpkg -i quarto-1.7.31-linux-amd64.deb && \
+    dpkg -i quarto-${QUARTO_VERSION}-linux-amd64.deb && \
     if [ $? -ne 0 ]; then \
         echo "❌ Failed to install Quarto"; \
         exit 1; \
@@ -579,7 +581,7 @@ RUN echo "🚀 === STARTING QUARTO INSTALLATION ===" && \
     echo "📦 Quarto installed" && \
     \
     echo "🧹 Cleaning up installer..." && \
-    rm quarto-1.7.31-linux-amd64.deb && \
+    rm quarto-${QUARTO_VERSION}-linux-amd64.deb && \
     echo "🧹 Installer cleaned up" && \
     \
     end_time=$(date +%s) && \
