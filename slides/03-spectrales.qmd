@@ -1,0 +1,117 @@
+---
+title: "Transformations spectrales"
+subtitle: "Chapitre 3 — Traitement d'images satellites avec Python"
+author: "Foucher, Apparicio, Bouroubi, Germain, Clabaut"
+jupyter: python3
+---
+
+## Objectifs {.smaller}
+
+::: {.incremental}
+- Comprendre le principe des **indices spectraux**
+- Calculer différents indices avec **`spyndex`**
+- Analyser le **gain en information** des indices
+:::
+
+## Qu'est-ce que l'information spectrale ? {.smaller}
+
+::: {.incremental}
+- La dimension **spectrale** : le long des bandes de l'image
+- 4–5 bandes (multispectral léger) → **centaines** (hyperspectral)
+- La **signature spectrale** caractérise le **type et l'état** d'un matériau
+- Une généralisation de la *couleur* au-delà du visible
+:::
+
+## Signatures spectrales {.smaller}
+
+```{python}
+#| fig-align: center
+import matplotlib.pyplot as plt
+base = '../ASCIIdata_splib07b_rsSentinel2'
+def lire(f):
+    with open(f) as fh:
+        return [float(s.replace(' ', '')) for s in fh.read().split('\n')[1:] if s.strip()]
+wl      = [w*1000 for w in lire(f'{base}/S07SNTL2_Wavelengths_Sentinel2_(13_bands)_microns.txt')]
+prairie = lire(f'{base}/ChapterV_Vegetation/S07SNTL2_Rangeland_C03-004_S08%_G27%_ASDFRa_AREF.txt')
+eau     = lire(f'{base}/ChapterL_Liquids/S07SNTL2_Water+Montmor_SWy-2+0.50g-l_ASDFRa_AREF.txt')
+beton   = lire(f'{base}/ChapterA_ArtificialMaterials/S07SNTL2_Concrete_GDS375_Lt_Gry_Road_ASDFRa_AREF.txt')
+fig, ax = plt.subplots(figsize=(6, 3.4))
+ax.plot(wl, prairie, 'g.-', label='Prairie'); ax.plot(wl, eau, 'b.-', label='Eau'); ax.plot(wl, beton, 'y.-', label='Béton')
+ax.set_xlabel("Longueur d'onde (nm)"); ax.set_ylabel('Réflectance'); ax.legend(); ax.grid(True)
+plt.show()
+```
+
+## Indices spectraux {.smaller}
+
+::: {.incremental}
+- Mettent en valeur des **caractéristiques du spectre** (pentes, gradients)
+- Améliorent la **séparabilité** de certaines classes
+- Le choix dépend fortement de l'**application**
+- **`spyndex`** (Awesome Spectral Indices) : **200+** indices
+:::
+
+## Le NDVI {.smaller}
+
+L'indice le plus connu, à partir du **rouge** ($R$) et du **proche-infrarouge** ($N$) :
+
+$$ NDVI = \frac{N - R}{N + R} $$
+
+::: {.incremental}
+- Végétation dense → NDVI élevé (proche de 1)
+- Eau, sol nu, bâti → valeurs faibles voire négatives
+- `GNDVI` : remplace le rouge par le vert · `SAVI` : correction du sol ($L$)
+:::
+
+## Nomenclature des bandes (`spyndex`) {.smaller}
+
+| Sentinel-2 | B02 | B03 | B04 | B08 | B11 | B12 |
+|---|---|---|---|---|---|---|
+| **spyndex** | B (bleu) | G (vert) | R (rouge) | N (PIR) | S1 (SWIR1) | S2 (SWIR2) |
+
+`spyndex` suppose ces noms de bandes ; on renomme les coordonnées `xarray` avant le calcul.
+
+## Calcul d'indices — `computeIndex` {.smaller}
+
+```{python}
+#| fig-align: center
+import rioxarray as rxr, spyndex
+img = rxr.open_rasterio('../RGBNIR_of_S2A.tif').astype('float32') / 10000   # ordre B,V,R,PIR
+idx = spyndex.computeIndex(
+    index=["NDVI", "GNDVI", "SAVI"],
+    params={"N": img.sel(band=4), "R": img.sel(band=3), "G": img.sel(band=2), "L": 0.5})
+fig, ax = plt.subplots(1, 3, figsize=(8, 3))
+for a, name in zip(ax, ["NDVI", "GNDVI", "SAVI"]):
+    im = a.imshow(idx.sel(index=name), vmin=-0.2, vmax=0.8, cmap='RdYlGn')
+    a.set_title(name); a.axis('off')
+plt.show()
+```
+
+## Utilité : la séparabilité {.smaller}
+
+::: {.incremental}
+- Un bon indice **sépare mieux** les classes d'intérêt
+- On vérifie via des nuages de points (`NDVI` vs `NDWI` vs `NDBI`)
+- Chaque indice met en valeur une **thématique** (végétation, eau, bâti)
+:::
+
+## Points clés {.smaller}
+
+::: {.incremental}
+- La **signature spectrale** caractérise le type/état d'un matériau
+- Un **indice** met en valeur le spectre et améliore la **séparabilité**
+- **`spyndex`** : 200+ indices, nomenclature de bandes (`N`, `R`, `G`…)
+- **NDVI** $=(N-R)/(N+R)$ : élevé pour la végétation
+:::
+
+## À vous de jouer {.smaller}
+
+- Calculez le **NDWI** (eau) et le **NDBI** (bâti) et affichez-les
+- Comparez les signatures de deux surfaces de la base USGS (neige, sol)
+- Choisissez un indice adapté aux sols dans `spyndex.indices` et calculez-le
+
+##  {background-color="#357cc0"}
+
+::: {style="text-align:center; color:white;"}
+### Des questions ?
+Chapitre suivant : **Transformations spatiales**
+:::
