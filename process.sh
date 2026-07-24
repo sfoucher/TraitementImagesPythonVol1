@@ -20,8 +20,11 @@ CHAPTERS=(
 # Aux pages: export and stash under notebooks/ (not marimo-converted)
 AUX=(index 00-auteurs references)
 
-# Run a command inside the build container (repo mounted at /workspace)
-q() { docker run --rm -v "$PWD":/workspace "$IMAGE" "$@"; }
+# Run a command inside the build container (repo mounted at /workspace).
+# --user maps container output to the host user (no more root-owned docs/pdf).
+# HOME=/tmp gives quarto/jupyter/matplotlib a writable config dir (image HOME
+# is /root, unwritable for a non-root uid).
+q() { docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/workspace "$IMAGE" "$@"; }
 
 mkdir -p docs pdf notebooks marimo
 
@@ -30,8 +33,7 @@ q quarto render --cache --to html --output-dir ./docs
 
 # 2. PDF -> publish into docs for the download link
 q quarto render --profile production --cache --no-clean --to pdf --output-dir ./pdf
-# copy inside container: docs/ is root-owned, host cp would hit EACCES
-q cp -f "./pdf/$PDF_NAME" ./docs/
+cp -f "./pdf/$PDF_NAME" ./docs/
 
 # 3. DOCX (optional)
 # mkdir -p docx
