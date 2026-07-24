@@ -29,3 +29,10 @@ __pycache__/
 *.bak
 # DOCX render is disabled in process.sh; these are stale orphan figures
 **/figure-docx/
+# Generated PDF-render intermediates (regenerated each build; final PDF lives in docs/)
+**/figure-pdf/
+/Traitement-d-images-satellites-avec-Python.tex
+# Build artifacts / bootstrap junk
+_quarto_internal_scss_error.scss
+get-pip.py
+scratchpad-*.log
