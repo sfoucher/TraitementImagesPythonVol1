@@ -493,13 +493,10 @@ idx= X.sum(axis=-1)>0 # on exclut certains points sans valeurs
 X= X[idx,...]
 y = df['class'].to_numpy()
 y= y[idx]
-class_labels = np.unique(y).tolist() # on cherche à savoir combien de classes uniques
+class_labels = np.unique(y).tolist() # étiquettes présentes (triées ; certaines classes peuvent être absentes)
 n_classes = len(class_labels)
-if max(class_labels) > n_classes: # il se peut que certaines classes soit absentes
-  y_new= []
-  for i,l in enumerate(class_labels):
-    y_new.extend([i]*sum(y==l))
-  y_new = np.array(y_new)
+# remappe les étiquettes vers 0..n-1, aligné ligne à ligne avec X (toujours défini, sans dépendre de l'ordre des données)
+y_new = np.searchsorted(class_labels, y)
 
 couleurs_classes2= [couleurs_classes[c] for c in np.unique(y).tolist()] # couleurs des classes
 nom_classes2= [nom_classes[c] for c in np.unique(y).tolist()]
@@ -577,7 +574,7 @@ Les méthodes non paramétriques ne font pas d'hypothèses particulières sur le
 La méthode du parallélépipède est probablement la plus simple et consiste à délimiter directement le domaine des points d'une classe par une boite (un parallélépipède) à $D$ dimensions. Les limites de ces parallélépipèdes forment alors des frontières de décision manuelles qui permettent d'attribuer une classe d'appartenance à un nouveau point. Un des avantages de cette technique est que si un point n'est dans aucun parallélépipède alors il est non classifié. Par contre, la construction de ces parallélépipèdes se complexifient grandement avec le nombre de bandes. À une dimension, deux paramètres, équivalents à un seuillage d'histogramme, sont suffisants. À deux dimensions, vous devez définir 4 segments par classe. Avec trois bandes, vous devez définir six plans par classes et à D dimensions, D hyperplans à D-1 dimensions par classe. Le modèle ici est donc une suite de valeurs `min` et `max` pour chacune des bandes et des classes:
 
 ```{python}
-def parrallepiped_train(X_train, y_train):
+def parallelepiped_train(X_train, y_train):
   classes= np.unique(y_train).tolist()
   clf= []
   for cl in classes:
@@ -588,14 +585,14 @@ def parrallepiped_train(X_train, y_train):
         limits.append([data_cl[:,b].min(), data_cl[:,b].max()]) # on calcul le min et max pour chaque bande
       clf.append(np.array(limits))
   return clf
-clf= parrallepiped_train(X, y_new)
+clf= parallelepiped_train(X, y_new)
 ```
 
 La prédiction consiste à trouver pour chaque point la première limite qui est satisfaite. Notez qu'il n'y a aucun moyen de décider quelle est la meilleure classe si le point appartient à plusieurs classes.
 
 ```{python}
 @jit(nopython=True)
-def parrallepiped_predict(clf, X_test):
+def parallelepiped_predict(clf, X_test):
   y_pred= []
   for data in X_test:
     y_pred.append(np.nan)
@@ -603,7 +600,7 @@ def parrallepiped_predict(clf, X_test):
       inside= True
       for b,limit in enumerate(limits):
         inside = inside and (data[b] >= limit[0]) & (data[b] <= limit[1])
-        if ~inside:
+        if not inside:
           break
       if inside:
         y_pred[-1]=cl
@@ -614,19 +611,19 @@ On peut appliquer ensuite le modèle sur l'image au complet. Les résultats sont
 
 ```{python}
 data_image= img_rgbnir.to_numpy().transpose(1,2,0).reshape(img_rgbnir.shape[1]*img_rgbnir.shape[2],4)
-y_image= parrallepiped_predict(clf, data_image)
+y_image= parallelepiped_predict(clf, data_image)
 y_image= y_image.reshape(img_rgbnir.shape[1],img_rgbnir.shape[2])
 
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(8, 6))
 plt.imshow(y_image, cmap=cmap_classes2)
-ax.set_title("Méthode des parrallélépipèdes", fontsize="small")
+ax.set_title("Méthode des parallélépipèdes", fontsize="small")
 plt.show()
 ```
 
 On peut calculer quelques mesures de performance sur l'ensemble d'entrainement :
 
 ```{python}
-y_pred= parrallepiped_predict(clf, X)
+y_pred= parallelepiped_predict(clf, X)
 nom_classes2= [nom_classes[c] for c in np.unique(y).tolist()]
 print(classification_report(y_new, y_pred, target_names=nom_classes2, zero_division=np.nan))
 ```
@@ -654,13 +651,10 @@ idx= X.sum(axis=-1)>0 # il se peut qu'il y ait des valeurs erronées
 X= X[idx,...]
 y = df['class'].to_numpy()
 y= y[idx]
-class_labels = np.unique(y).tolist() # on cherche à savoir combien de classes uniques
+class_labels = np.unique(y).tolist() # étiquettes présentes (triées ; certaines classes peuvent être absentes)
 n_classes = len(class_labels)
-if max(class_labels) > n_classes: # il se peut que certaines classes soit absentes
-  y_new= []
-  for i,l in enumerate(class_labels):
-    y_new.extend([i]*sum(y==l))
-  y_new = np.array(y_new)
+# remappe les étiquettes vers 0..n-1, aligné ligne à ligne avec X (toujours défini, sans dépendre de l'ordre des données)
+y_new = np.searchsorted(class_labels, y)
 nom_classes2= [nom_classes[c] for c in np.unique(y).tolist()]
 ```
 
