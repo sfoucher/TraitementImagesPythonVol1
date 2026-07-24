@@ -217,10 +217,10 @@ def _(Pipeline, np, plt):
     y_test = true_fun(X_test) + np.random.randn(int(10)) * noise_level
     plt.figure(figsize=(14, 5))
     results = []
-    for _i in range(len(degrees)):
-        _ax = plt.subplot(1, len(degrees), _i + 1)
+    for i in range(len(degrees)):
+        _ax = plt.subplot(1, len(degrees), i + 1)
         plt.setp(_ax, xticks=(), yticks=())
-        polynomial_features = PolynomialFeatures(degree=degrees[_i], include_bias=False)
+        polynomial_features = PolynomialFeatures(degree=degrees[i], include_bias=False)
         linear_regression = LinearRegression()
         pipeline = Pipeline([('polynomial_features', polynomial_features), ('linear_regression', linear_regression)])
         pipeline.fit(X[:, np.newaxis], y)
@@ -235,8 +235,8 @@ def _(Pipeline, np, plt):
         plt.xlim((0, 1))
         plt.ylim((-2, 2))
         plt.legend(loc='best')
-        plt.title('Degré {}\nErreur = {:.1e}(+/- {:.1e})'.format(degrees[_i], -scores['test_score'].mean(), scores['test_score'].std()), fontsize='small')
-        results.append([degrees[_i], -scores['train_score'].mean(), -scores['test_score'].mean(), scores['train_score'].std(), scores['test_score'].std()])
+        plt.title('Degré {}\nErreur = {:.1e}(+/- {:.1e})'.format(degrees[i], -scores['test_score'].mean(), scores['test_score'].std()), fontsize='small')
+        results.append([degrees[i], -scores['train_score'].mean(), -scores['test_score'].mean(), scores['train_score'].std(), scores['test_score'].std()])
     plt.show()
     return
 
@@ -556,11 +556,7 @@ def _(ListedColormap, couleurs_classes, nom_classes, np, pd):
     y_1 = y_1[_idx]
     class_labels_1 = np.unique(y_1).tolist()
     _n_classes = len(class_labels_1)
-    if max(class_labels_1) > _n_classes:
-        y_new = []
-        for (_i, _l) in enumerate(class_labels_1):
-            y_new.extend([_i] * sum(y_1 == _l))
-        y_new = np.array(y_new)
+    y_new = np.searchsorted(class_labels_1, y_1)
     _couleurs_classes2 = [couleurs_classes[c] for c in np.unique(y_1).tolist()]
     nom_classes2 = [nom_classes[c] for c in np.unique(y_1).tolist()]
     cmap_classes2 = ListedColormap(_couleurs_classes2)
@@ -681,7 +677,7 @@ def _(mo):
 
 @app.cell
 def _(X_1, np, y_new):
-    def parrallepiped_train(X_train, y_train):
+    def parallelepiped_train(X_train, y_train):
         classes = np.unique(y_train).tolist()
         clf = []
         for cl in classes:
@@ -691,7 +687,7 @@ def _(X_1, np, y_new):
                 limits.append([data_cl[:, b].min(), data_cl[:, b].max()])
             clf.append(np.array(limits))  # on calcul le min et max pour chaque bande
         return clf
-    clf = parrallepiped_train(X_1, y_new)
+    clf = parallelepiped_train(X_1, y_new)
     return (clf,)
 
 
@@ -706,7 +702,7 @@ def _(mo):
 @app.cell
 def _(jit, np):
     @jit(nopython=True)
-    def parrallepiped_predict(clf, X_test):
+    def parallelepiped_predict(clf, X_test):
       y_pred= []
       for data in X_test:
         y_pred.append(np.nan)
@@ -714,13 +710,13 @@ def _(jit, np):
           inside= True
           for b,limit in enumerate(limits):
             inside = inside and (data[b] >= limit[0]) & (data[b] <= limit[1])
-            if ~inside:
+            if not inside:
               break
           if inside:
             y_pred[-1]=cl
       return np.array(y_pred)
 
-    return (parrallepiped_predict,)
+    return (parallelepiped_predict,)
 
 
 @app.cell(hide_code=True)
@@ -732,13 +728,13 @@ def _(mo):
 
 
 @app.cell
-def _(clf, cmap_classes2, img_rgbnir, parrallepiped_predict, plt):
+def _(clf, cmap_classes2, img_rgbnir, parallelepiped_predict, plt):
     _data_image = img_rgbnir.to_numpy().transpose(1, 2, 0).reshape(img_rgbnir.shape[1] * img_rgbnir.shape[2], 4)
-    y_image = parrallepiped_predict(clf, _data_image)
+    y_image = parallelepiped_predict(clf, _data_image)
     y_image = y_image.reshape(img_rgbnir.shape[1], img_rgbnir.shape[2])
     (_fig, _ax) = plt.subplots(nrows=1, ncols=1, figsize=(8, 6))
     plt.imshow(y_image, cmap=cmap_classes2)
-    _ax.set_title('Méthode des parrallélépipèdes', fontsize='small')
+    _ax.set_title('Méthode des parallélépipèdes', fontsize='small')
     plt.show()
     return
 
@@ -758,11 +754,11 @@ def _(
     clf,
     nom_classes,
     np,
-    parrallepiped_predict,
+    parallelepiped_predict,
     y_1,
     y_new,
 ):
-    y_pred_2 = parrallepiped_predict(clf, X_1)
+    y_pred_2 = parallelepiped_predict(clf, X_1)
     nom_classes2_1 = [nom_classes[c] for c in np.unique(y_1).tolist()]
     print(classification_report(y_new, y_pred_2, target_names=nom_classes2_1, zero_division=np.nan))
     return
@@ -795,11 +791,7 @@ def _(nom_classes, np, pd):
     y_2 = y_2[_idx]
     class_labels_2 = np.unique(y_2).tolist()
     _n_classes = len(class_labels_2)
-    if max(class_labels_2) > _n_classes:
-        y_new_1 = []
-        for (_i, _l) in enumerate(class_labels_2):
-            y_new_1.extend([_i] * sum(y_2 == _l))
-        y_new_1 = np.array(y_new_1)
+    y_new_1 = np.searchsorted(class_labels_2, y_2)
     nom_classes2_2 = [nom_classes[c] for c in np.unique(y_2).tolist()]
     return X_2, y_2, y_new_1
 
