@@ -1,3 +1,4 @@
 format:
   orange-book-typst:
     toc: true
+    citeproc: true
