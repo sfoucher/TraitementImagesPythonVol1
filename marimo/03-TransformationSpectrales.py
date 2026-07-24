@@ -287,6 +287,18 @@ def _(img_s2):
     return img_s2_1, sentinel2_bands
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Le **NDVI** (*Normalized Difference Vegetation Index*) est l'indice le plus connu. Il se calcule à partir des bandes rouge ($R$) et proche-infrarouge ($N$) :
+
+    $$ NDVI = \frac{N - R}{N + R} $$ {#eq-ndvi}
+
+    La végétation en bonne santé réfléchit fortement le proche-infrarouge et absorbe le rouge : son NDVI est donc élevé (proche de $1$), alors que l'eau, le sol nu ou le bâti donnent des valeurs faibles, voire négatives. Le `GNDVI` remplace le rouge par le vert et le `SAVI` ajoute un facteur de correction du sol ($L$). On calcule ces trois indices ci-dessous avec `spyndex.computeIndex` :
+    """)
+    return
+
+
 @app.cell
 def _(img_s2_1, plt, spyndex):
     from rasterio import plot

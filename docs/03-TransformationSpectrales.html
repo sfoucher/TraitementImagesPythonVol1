@@ -299,7 +299,7 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title"><span id="sec-chap03" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Transformations spectrales</span></span></h1>
-<p class="subtitle lead">Première édition · Version 1.273</p>
+<p class="subtitle lead">Première édition · Version 1.275</p>
 </div>
 
 
@@ -545,6 +545,9 @@ window.Quarto = {
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>img_s2 <span class="op">=</span> img_s2.sel(band <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">13</span>))).assign_coords({<span class="st">'band'</span>:sentinel2_bands})</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>img_s2<span class="op">=</span>img_s2<span class="op">/</span><span class="dv">10000</span> <span class="co"># normalisation en réflectance</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>Le <strong>NDVI</strong> (<em>Normalized Difference Vegetation Index</em>) est l’indice le plus connu. Il se calcule à partir des bandes rouge (<span class="math inline">\(R\)</span>) et proche-infrarouge (<span class="math inline">\(N\)</span>) :</p>
+<p><span id="eq-ndvi"><span class="math display">\[ NDVI = \frac{N - R}{N + R}  \tag{4.1}\]</span></span></p>
+<p>La végétation en bonne santé réfléchit fortement le proche-infrarouge et absorbe le rouge : son NDVI est donc élevé (proche de <span class="math inline">\(1\)</span>), alors que l’eau, le sol nu ou le bâti donnent des valeurs faibles, voire négatives. Le <code>GNDVI</code> remplace le rouge par le vert et le <code>SAVI</code> ajoute un facteur de correction du sol (<span class="math inline">\(L\)</span>). On calcule ces trois indices ci-dessous avec <code>spyndex.computeIndex</code> :</p>
 <div id="afcfb595" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio <span class="im">import</span> plot</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
