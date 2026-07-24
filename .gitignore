@@ -16,6 +16,7 @@ berkeley.jpg:Zone.Identifier
 scratch-pad.qmd
 update-tlmgr-latest.sh
 pdf/*
+typst-out/
 *.zip
 ASCIIdata_splib07b_rsSentinel2/*
 /.luarc.json
