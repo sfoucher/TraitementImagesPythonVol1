@@ -427,13 +427,50 @@ def _(mo):
     <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fbe8f2;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADP0lEQVRYha2XT3LaMBjFf3SyD91rBnqC0BOUbuJl6AkwB9CUnKD0BCXxAeKcIGSpVZ0bwAkKEx8ATkAXemoUgm0I/WY8smVJ7/n78yS3ttstp1iZZF0g1WNhnC3Un6o/N87mVfNbpxAQ+Bw4j7p/qv0R9Y2qSHx4N7q3scBvBLwS8A/dj4ANcCePvLFTPVAAX4yzraivDxCFogcUIvrGE6cSSIE74KdxdlIzrpLEqSGY4V2d1g0yzs6BPnvCcRIB4+waWAKdMsna7yHR2m63aPL4COzCOFuUSZYDQ+DeOJseMjEKB8bZduv58ratjosjCMSltgJ68gZlkg20+KyGRIrPndEZMBD4AuiHhSom9oHfeszxXusAkzLJ1vhc6GjsChjI9bs2UFt8ALp6GDeAt4GpHtfG2SUvMf2O90YHrwk3us/3rJMDV8CTcXZ5VgUYTehroY66NmFh4+w8kuI2r6X4OzthLZNsjM+ZBfJCLQF99Qxfvwu87E5iT+l+ujMvuPgp6kuBX/qAf6Fu8kBP4I/G2UHD2NjGAhpH4He74IcQCNYtk6xdlSNBfoGlcuMLPsbzPeCvkrL1fHk7wSfQ1xC/ncXnvMRyhU/Wmd7tK+ERPjmHwL3aveBwmBL2tdACn4gPSjzwyXchgEf1TXVtmsAPImCcXRtnU+NsT0QCMPgcQQADkTjHV0QgXgkOr3MglUzmu7HWF8dJ2I1keBMBFPgan4lk3vSBsQeG+DJZikgAT4E/ejeMxob7eA/J8aE6Bx7wqlm7x8QErqPJ8aSJ2nuNAV/f18DneG9XuHrAN172i+WhBMJ2CYqtsrwDLLTbBVevjbPTqtgaZ2d1B5QqAkHVFsCFYlxE5OL2qkyyWZlk46ZzwFEEZEHFhvgSW6kvEBwFEvi8KE4h8YaAxKgLfMWLU3dH+3PgIz7OG5FM30tgrxQLsKiapPcz7W53+Lr/fwSaTGU64KValjXDezXvjidQJtkUfwAJ9lj360WDd44iIEUM4Nf4A0ilzB5iZ0BIsJSauMu6am+Ms9O6gZGa1hJsPV/edvFSC14DKs+FeHeG0lzWc/13mPmkM8J+AvovGOC30E7VwHfYEw2/5gB/AcMlhsUeVwFpAAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>À vous de jouer</strong>
     </span></div>
     <div style="padding:.3em .6em;font-size:.95em;">
+    <strong>Structures de données</strong>
+
     <ol type="1">
-    <li>Créez un dictionnaire <code>metadonnees</code> décrivant une image (capteur, nombre de bandes, résolution) puis affichez chaque paire clé-valeur.
+    <li><em>(listes)</em> Créez <code>bandes = ["bleu", "vert", "rouge", "PIR"]</code>, ajoutez <code>"SWIR"</code>, inversez l’ordre de la liste, puis affichez ses deux premiers éléments.
     </li>
-    <li>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.10</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.
+    <li><em>(dictionnaires)</em> Créez un dictionnaire <code>metadonnees</code> décrivant une image (capteur, nombre de bandes, résolution), ajoutez-y une date, puis affichez chaque paire clé-valeur.
     </li>
+    <li><em>(ensembles)</em> À partir de <code>["eau", "forêt", "eau", "urbain", "forêt"]</code>, trouvez les classes uniques et affichez leur nombre.
+    </li>
+    <li><em>(tuples)</em> Stockez les dimensions <code>(512, 512)</code> d’une image dans un tuple, dépaquetez-les en <code>lignes</code> et <code>colonnes</code>, puis calculez le nombre total de pixels.
+    </li>
+    </ol>
+    <strong>Boucles et conditions</strong>
+
+    <ol start="5" type="1">
+    <li>Parcourez une liste de valeurs de réflectance et comptez combien dépassent <code>0.3</code>.
+    </li>
+    <li>Dans une boucle, classez chaque valeur de réflectance en <code>"eau"</code>, <code>"végétation"</code> ou <code>"autre"</code> selon des seuils (<code>if</code>/<code>elif</code>/<code>else</code>).
+    </li>
+    </ol>
+    <strong>Fonctions</strong>
+
+    <ol start="7" type="1">
     <li>Écrivez une fonction <code>ratio(a, b)</code> renvoyant <code>(a - b) / (a + b)</code>, et utilisez-la pour un NDVI avec PIR = 0,55 et Rouge = 0,18.
     </li>
+    <li>Écrivez <code>normaliser(valeur, maximum=255)</code> avec un argument par défaut ; testez-la en 8 bits, puis en 12 bits (<code>maximum=4095</code>).
+    </li>
+    <li><em>(avancé)</em> Écrivez une fonction qui reçoit une liste de bandes et renvoie un dictionnaire <code>{nom_bande: indice}</code> (indice <code>enumerate</code>).
+    </li>
+    </ol>
+    <strong>NumPy</strong>
+
+    <ol start="10" type="1">
+    <li>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.10</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.
+    </li>
+    <li>Créez un tableau NumPy 4 × 4 et, par <strong>masquage booléen</strong>, remplacez par <code>0</code> toutes les valeurs inférieures à 10.
+    </li>
+    <li>Sur le tableau <code>image</code>, calculez la moyenne <strong>par ligne</strong> puis <strong>par colonne</strong> (paramètre <code>axis</code>).
+    </li>
+    </ol>
+    <strong>Programmation objet</strong>
+
+    <ol start="13" type="1">
+    <li><em>(avancé)</em> Ajoutez à la classe <code>Image</code> une méthode <code>est_multispectrale()</code> qui renvoie <code>True</code> si l’image possède plus de 3 bandes.</li>
     </ol>
     </div>
     </div>
@@ -442,20 +479,91 @@ def _(mo):
     <summary>Afficher les solutions</summary>
 
     ``` python
-    # 1. Dictionnaire de métadonnées
+    import numpy as np
+
+    # --- Structures de données ---
+    # 1. Listes
+    bandes = ["bleu", "vert", "rouge", "PIR"]
+    bandes.append("SWIR")
+    bandes.reverse()
+    print(bandes[:2])
+
+    # 2. Dictionnaire de métadonnées
     metadonnees = {"capteur": "Sentinel-2", "bandes": 13, "resolution_m": 10}
+    metadonnees["date"] = "2024-07-01"
     for cle, valeur in metadonnees.items():
         print(cle, ":", valeur)
 
-    # 2. Statistiques et dernière colonne du tableau `image`
+    # 3. Ensembles : classes uniques
+    classes = ["eau", "forêt", "eau", "urbain", "forêt"]
+    uniques = set(classes)
+    print(uniques, "->", len(uniques), "classes")
+
+    # 4. Tuples : dépaquetage et nombre de pixels
+    dimensions = (512, 512)
+    lignes, colonnes = dimensions
+    print("pixels :", lignes * colonnes)
+
+    # --- Boucles et conditions ---
+    reflectances = [0.12, 0.45, 0.33, 0.28, 0.51]
+    # 5. Compter les valeurs > 0.3
+    print(sum(1 for r in reflectances if r > 0.3))
+
+    # 6. Classer selon des seuils
+    for r in reflectances:
+        if r < 0.15:
+            print(r, "-> eau")
+        elif r > 0.3:
+            print(r, "-> végétation")
+        else:
+            print(r, "-> autre")
+
+    # --- Fonctions ---
+    # 7. ratio / NDVI
+    def ratio(a, b):
+        return (a - b) / (a + b)
+    print("NDVI :", round(ratio(0.55, 0.18), 3))
+
+    # 8. normaliser avec argument par défaut
+    def normaliser(valeur, maximum=255):
+        return valeur / maximum
+    print(normaliser(128))
+    print(normaliser(1000, maximum=4095))   # 12 bits
+
+    # 9. dict {nom_bande: indice}
+    def indexer(bandes):
+        return {nom: i for i, nom in enumerate(bandes)}
+    print(indexer(["bleu", "vert", "rouge", "PIR"]))
+
+    # --- NumPy ---
+    image = np.array([[10, 12, 11,  9],
+                      [ 8, 20, 22,  7],
+                      [ 9, 21, 23,  8]])
+    # 10. min, écart-type, dernière colonne
     print("min :", image.min(), "| écart-type :", round(image.std(), 2))
     print("dernière colonne :", image[:, -1])
 
-    # 3. Fonction ratio et calcul du NDVI
-    def ratio(a, b):
-        return (a - b) / (a + b)
+    # 11. Masquage booléen : valeurs < 10 -> 0
+    arr = np.array([[ 3, 12,  8, 15],
+                    [20,  5,  9, 11],
+                    [ 7, 14,  2, 18],
+                    [10,  6, 13,  4]])
+    arr[arr < 10] = 0
+    print(arr)
 
-    print("NDVI :", round(ratio(0.55, 0.18), 3))
+    # 12. Moyennes par axe
+    print("par ligne   :", image.mean(axis=1).round(1))
+    print("par colonne :", image.mean(axis=0).round(1))
+
+    # --- Programmation objet ---
+    # 13. Méthode est_multispectrale
+    class Image:
+        def __init__(self, capteur, bandes):
+            self.capteur = capteur
+            self.bandes = bandes
+        def est_multispectrale(self):
+            return self.bandes > 3
+    print(Image("Landsat-8", 11).est_multispectrale())
     ```
 
     </details>

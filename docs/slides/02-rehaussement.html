@@ -252,7 +252,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="histogramme" class="slide level2 smaller">
 <h2>Histogramme</h2>
-<div id="234ed971" class="cell" data-execution_count="1">
+<div id="7e8e94e0" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, numpy <span class="im">as</span> np, matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>)</span>
 <span id="cb1-3"><a href=""></a>vals <span class="op">=</span> img.sel(band<span class="op">=</span><span class="dv">4</span>).values.ravel()          <span class="co"># bande PIR</span></span>
@@ -282,7 +282,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="histogrammes-asymétriques-les-percentiles" class="slide level2 smaller">
 <h2>Histogrammes asymétriques : les percentiles</h2>
 <p>Cas des images SAR (longue queue) → borner avec des percentiles :</p>
-<div id="c359fbdb" class="cell" data-execution_count="2">
+<div id="a8508ee5" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a>sar <span class="op">=</span> rxr.open_rasterio(<span class="st">'../SAR.tif'</span>).sel(band<span class="op">=</span><span class="dv">1</span>).values</span>
 <span id="cb2-2"><a href=""></a>valid <span class="op">=</span> (sar <span class="op">!=</span> <span class="op">-</span><span class="fl">999.0</span>) <span class="op">&amp;</span> (sar <span class="op">&gt;</span> <span class="dv">0</span>)            <span class="co"># masque no_data</span></span>
 <span id="cb2-3"><a href=""></a>v <span class="op">=</span> sar[valid]</span>
@@ -303,7 +303,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="réhaussement-non-linéaire-décibels" class="slide level2 smaller">
 <h2>Réhaussement non linéaire — décibels</h2>
 <p>Pour le radar : passage en <strong>dB</strong> (<code>10·log10</code>) → distribution ~gaussienne.</p>
-<div id="c37f621a" class="cell" data-execution_count="3">
+<div id="f37e0fe5" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>sar_db <span class="op">=</span> <span class="dv">10</span> <span class="op">*</span> np.log10(np.where(valid, sar, np.nan))</span>
 <span id="cb3-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.2</span>))</span>
 <span id="cb3-3"><a href=""></a>im <span class="op">=</span> ax.imshow(sar_db, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax.set_title(<span class="st">"SAR en dB"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
@@ -327,7 +327,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="palettes-de-couleur" class="slide level2 smaller">
 <h2>Palettes de couleur</h2>
-<div id="8a26370c" class="cell" data-execution_count="4">
+<div id="bfd385d9" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
 <span id="cb4-2"><a href=""></a><span class="cf">for</span> a, cmap <span class="kw">in</span> <span class="bu">zip</span>(ax, [<span class="st">'gray'</span>, <span class="st">'viridis'</span>, <span class="st">'terrain'</span>]):   <span class="co"># viridis &gt; jet (perceptuel)</span></span>
 <span id="cb4-3"><a href=""></a>    a.imshow(sar, vmin<span class="op">=</span>p[<span class="dv">2</span>], vmax<span class="op">=</span>p[<span class="dv">98</span>], cmap<span class="op">=</span>cmap)</span>
@@ -345,7 +345,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="composés-colorés" class="slide level2 smaller">
 <h2>Composés colorés</h2>
 <p>Ordre des bandes <strong>B, V, R, PIR</strong> → vraies vs fausses couleurs :</p>
-<div id="65cc6af0" class="cell" data-execution_count="5">
+<div id="35b35a80" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">3.3</span>))</span>
 <span id="cb5-2"><a href=""></a>img.sel(band<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]).plot.imshow(vmin<span class="op">=</span><span class="dv">86</span>, vmax<span class="op">=</span><span class="dv">5000</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])   <span class="co"># R,V,B</span></span>
 <span id="cb5-3"><a href=""></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Vraies couleurs"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
