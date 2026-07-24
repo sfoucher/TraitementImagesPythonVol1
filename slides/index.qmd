@@ -1,0 +1,33 @@
+---
+title: "Diapositives de cours"
+subtitle: "Traitement d'images satellites avec Python — Volume 1"
+format:
+  html:
+    theme: cosmo
+    toc: false
+---
+
+Diapositives [reveal.js](https://quarto.org/docs/presentations/revealjs/) pour
+l'enseignement, une par chapitre. Chaque présentation contient des **démos de
+code exécutées** (figures réelles).
+
+::: {.callout-tip collapse="false"}
+## Navigation
+Flèches ← → pour naviguer · **`f`** plein écran · **`s`** notes du présentateur ·
+**`b`** tableau blanc · **`o`** vue d'ensemble · **`?`** aide.
+:::
+
+| Chapitre | Présentation | Contenu |
+|:--------:|--------------|---------|
+| **0** | [Introduction au langage Python](00-priseenmain.html) | structures, boucles, fonctions, POO, NumPy |
+| **1** | [Importation et manipulation d'images](01-importation.html) | formats, métadonnées, `rioxarray`/`xarray` |
+| **2** | [Réhaussement et visualisation](02-rehaussement.html) | histogrammes, percentiles, dB, composés colorés |
+| **3** | [Transformations spectrales](03-spectrales.html) | signatures, indices spectraux, `spyndex` |
+| **4** | [Transformations spatiales](04-spatiales.html) | Fourier, filtrage, Lee, segmentation SLIC |
+| **5** | [Classifications supervisées](05-classifications.html) | pipeline, K-NN, arbres, MLP, cartes |
+
+: {tbl-colwidths="[12,45,43]"}
+
+---
+
+Retour au [livre](../index.html) · code source sur [GitHub](https://github.com/sfoucher/TraitementImagesPythonVol1).
