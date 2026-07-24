@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build book (HTML + LaTeX PDF + Typst PDF) in the mlsysbook docker container, export notebooks.
+# Build book (HTML + LaTeX PDF + Typst PDF + revealjs slides) in the mlsysbook docker container, export notebooks.
 set -euo pipefail
 
 # Image tag encodes the Quarto version. Override: QUARTO_VERSION=1.10.x ./process.sh
@@ -47,6 +47,11 @@ cp -f "./pdf/$PDF_NAME" ./docs/
 q quarto render --profile typst --to orange-book-typst --cache --no-clean \
   -M subtitle="Version ${BOOK_VERSION}" --output-dir ./typst-out \
   || echo "WARN: typst render failed (experimental format); continuing"
+
+# 2c. Teaching slides (revealjs) -> docs/slides/ (own project: slides/_quarto.yml).
+# Non-fatal: a slide-deck error must not abort the book build.
+q quarto render slides --to revealjs --cache \
+  || echo "WARN: slides render failed; continuing"
 
 # 3. DOCX (optional)
 # mkdir -p docx
