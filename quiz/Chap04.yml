@@ -1,53 +1,117 @@
-- label: "L'algorithme DBSCAN est basé sur :"
-  type: uc
-  response: 2
-  answers:
-     - "La distance entre les points"
-     - "La densité des points"
-  help: "Relisez au besoin la [section @sec-041]."
-
-- label : "Avec l'algorithme DBSCAN, vous devez spécifier le nombre de groupes (agrégats)."
-  type: uc
-  response: 2
-  answers:
-     - "Vrai"
-     - "Faux"
-  help: "Relisez au besoin la [section @sec-041]."
-
-- label: "Quels sont les trois types de points identifiés par DBSCAN?"
-  type: mc
-  response: [1,3,4]
-  answers:
-    - "Points centraux"
-    - "Points médians"
-    - "Points frontières"
-    - "Points aberrants"
-  help: "Relisez au besoin l'encadré à la [section @sec-041]."
-
-- label: "Quels sont les deux paramètres de l'algorithme DBSCAN?"
-  type: mc
-  response: [1,2]
-  answers:
-     - "Le nombre de points minimum pour identifier les points centraux (MinPts)"
-     - "Le rayon de recherche (epsilon)"
-     - "La distance standard (DS)"
-  help: "Relisez au besoin la [section @sec-041]."
-  
-- label : "Plus la valeur d'epsilon est grande, plus le nombre d'agrégats diminue."
+- label: "La transformée de Fourier d'une image est complètement réversible."
   type: uc
   response: 1
   answers:
      - "Vrai"
      - "Faux"
-  help: "Relisez au besoin la [section @sec-042]."
-  
-- label: "Quels sont les trois paramètres de l'algorithme ST-DBSCAN?"
-  type: mc
-  response: [1,2,3]
+  help: "Relisez au besoin la section « La transformée de Fourier »."
+
+- label: "À quoi sert un filtre passe-bas ?"
+  type: uc
+  response: 2
   answers:
-     - "Le nombre de points minimum pour identifier les points centraux (MinPts)"
-     - "Le rayon de recherche pour la proximité spatiale (eps1)"
-     - "Le rayon de recherche pour la proximité temporelle (eps2)"
-     - "La région d'étude"
-  help: "Relisez au besoin la [section @sec-042]."
-  
+     - "À ne préserver que les hautes fréquences (détails, contours)"
+     - "À lisser l'image en ne préservant que les basses fréquences"
+     - "À géoréférencer l'image"
+     - "À augmenter la résolution spatiale"
+  help: "Relisez au besoin la section « Filtrage fréquentiel »."
+
+- label: "Quelle est la cause de l'aliasing (repliement de spectre) ?"
+  type: uc
+  response: 2
+  answers:
+     - "Une fréquence d'échantillonnage trop élevée"
+     - "Une fréquence d'échantillonnage trop faible par rapport au contenu fréquentiel"
+     - "Un mauvais géoréférencement"
+     - "Un excès de bandes spectrales"
+  help: "Relisez au besoin la section « L'aliasing »."
+
+- label: "Une convolution dans l'espace image correspond à quelle opération dans l'espace de Fourier ?"
+  type: uc
+  response: 1
+  answers:
+     - "Une multiplication"
+     - "Une addition"
+     - "Une division"
+     - "Une transposition"
+  help: "Relisez au besoin la section « Filtrage fréquentiel »."
+
+- label: "Avant de décimer fortement une image, pourquoi appliquer un filtre passe-bas (p. ex. gaussien) ?"
+  type: uc
+  response: 2
+  answers:
+     - "Pour augmenter le contraste"
+     - "Pour réduire les hautes fréquences et éviter l'aliasing"
+     - "Pour géoréférencer l'image"
+     - "Pour convertir l'image en dB"
+  help: "Relisez au besoin la section « L'aliasing »."
+
+- label: "À quoi sert le filtre de Scharr utilisé dans le chapitre ?"
+  type: uc
+  response: 3
+  answers:
+     - "À lisser le bruit"
+     - "À égaliser l'histogramme"
+     - "À détecter les contours (gradients horizontaux et verticaux)"
+     - "À segmenter l'image en objets"
+  help: "Relisez au besoin la section « Filtrage par convolution »."
+
+- label: "Pour quel type d'images le filtre de Lee est-il particulièrement utile ?"
+  type: uc
+  response: 2
+  answers:
+     - "Les images optiques RVB"
+     - "Les images SAR dégradées par le speckle (bruit multiplicatif)"
+     - "Les images hyperspectrales"
+     - "Les images thermiques"
+  help: "Relisez au besoin la section « Filtrage adaptatif »."
+
+- label: "Dans le filtre de Lee, lorsque la variance locale est élevée, le coefficient K s'approche de 1, ce qui :"
+  type: uc
+  response: 1
+  answers:
+     - "préserve les détails de l'image d'origine"
+     - "applique la moyenne locale (lissage maximal)"
+     - "met le pixel à zéro"
+     - "inverse le contraste"
+  help: "Relisez au besoin la section « Filtrage adaptatif »."
+
+- label: "Sur quels critères la méthode SLIC regroupe-t-elle les pixels en super-pixels ?"
+  type: mc
+  response: [1, 2]
+  answers:
+     - "La similarité de couleur entre pixels"
+     - "La distance spatiale au centre du super-pixel"
+     - "La date d'acquisition de l'image"
+     - "Le système de projection cartographique"
+  help: "Relisez au besoin la section « Super-pixel »."
+
+- label: "Dans SLIC, quel est l'effet d'une valeur de compacité (m) élevée ?"
+  type: uc
+  response: 1
+  answers:
+     - "Les super-pixels sont plus réguliers/compacts et suivent moins le contenu de l'image"
+     - "Les super-pixels épousent parfaitement les contours des objets"
+     - "Le nombre de super-pixels augmente automatiquement"
+     - "La segmentation devient aléatoire"
+  help: "Relisez au besoin la section « Super-pixel »."
+
+- label: "À quoi sert un graphe d'adjacence de régions (RAG) après une segmentation ?"
+  type: uc
+  response: 2
+  answers:
+     - "À augmenter le nombre de segments"
+     - "À fusionner les segments similaires selon leur distance radiométrique"
+     - "À géoréférencer les segments"
+     - "À calculer la transformée de Fourier"
+  help: "Relisez au besoin la section « Fusion des segments par graphe de proximité »."
+
+- label: "Que permet l'approche objet avec `regionprops_table` de `skimage` ?"
+  type: uc
+  response: 1
+  answers:
+     - "Extraire des propriétés par segment (aire, centroïde, intensité moyenne…) dans un tableau"
+     - "Appliquer un filtre de Fourier"
+     - "Réduire le speckle"
+     - "Décimer l'image"
+  help: "Relisez au besoin la section « Approche objet »."

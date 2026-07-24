@@ -375,11 +375,11 @@ nchannels= normalized_img.size()[0] # nombre de canaux de l'image
 # On forme une couche convolutionnelle
 conv_layer = nn.Conv2d(in_channels= nchannels, out_channels=2, kernel_size=3, padding=1, stride=1, dilation= 1)
 
-# Filtre de Sobel
-sobel_x = np.array([[-3, 0, 3], [-10, 0, 10], [-3, 0, 3]])
-sobel_y = np.array([[-3, -10, -3], [0, 0, 0], [3, 10, 3]])
+# Filtre de Scharr (coefficients 3/10/3, cf. l'exemple de convolution ci-dessus)
+scharr_x = np.array([[-3, 0, 3], [-10, 0, 10], [-3, 0, 3]])
+scharr_y = np.array([[-3, -10, -3], [0, 0, 0], [3, 10, 3]])
 # Le filtre (kernel) est formé de deux filtres
-kernel = np.stack([sobel_x, sobel_y])
+kernel = np.stack([scharr_x, scharr_y])
 kernel = kernel.reshape(2, 1, 3, 3)
 # On répète le filtre pour chaque bande
 kernel = np.tile(kernel,(1,nchannels,1,1))
@@ -431,7 +431,7 @@ axs.set_title("Image SAR Sentinel-1 (dB)")
 Un des filtres les plus simples pour réduire le bruit est d'appliquer un filtre moyen, par exemple un $5 \times 5$ ci-dessous:
 
 ```{python}
-rolling_win = img_SAR.sel(band=2).rolling(x=5, y=5,  min_periods= 3, center= True).construct(x="x_win", y="y_win", keep_attrs= True)
+rolling_win = img_SAR.sel(band=1).rolling(x=5, y=5,  min_periods= 3, center= True).construct(x="x_win", y="y_win", keep_attrs= True)
 filtre_moyen= rolling_win.mean(dim= ['x_win', 'y_win'], skipna= True)
 fig, axs = plt.subplots(1, 1, figsize=(6, 4))
 xr.ufuncs.log10(filtre_moyen).plot.imshow()
@@ -450,7 +450,7 @@ $$ {#eq-lee-filter}
 De la sorte, si la variance locale est élevée $K$ s'approche de $1$ préservant ainsi les détails de l'image $I$ sinon l'image moyenne $I_M$ est appliquée.
 
 ```{python}
-rolling_win = img_SAR.sel(band=2).rolling(x=5, y=5,  min_periods= 3, center= True).construct(x="x_win", y="y_win", keep_attrs= True)
+rolling_win = img_SAR.sel(band=1).rolling(x=5, y=5,  min_periods= 3, center= True).construct(x="x_win", y="y_win", keep_attrs= True)
 filtre_moyen= rolling_win.mean(dim= ['x_win', 'y_win'], skipna= True)
 ecart_type= rolling_win.std(dim= ['x_win', 'y_win'], skipna= True)
 cv= ecart_type/filtre_moyen
@@ -634,3 +634,62 @@ table.head(10)
 ```
 
 Ce tableau pourra être exploiter pour une tâche de classification par la suite (on parle alors de classification objet).
+
+## Points clés
+
+:::::: bloc_notes
+:::: bloc_notes-header
+::: bloc_notes-icon
+:::
+
+**À retenir**
+::::
+
+::: bloc_notes-body
+-   La **transformée de Fourier** offre un point de vue fréquentiel réversible ; modifier le spectre filtre **globalement** l'image.
+-   Trois familles de filtres fréquentiels : **passe-bas** (lissage), **passe-haut** (détails/contours) et **passe-bande**.
+-   L'**aliasing** provient d'un sous-échantillonnage : appliquer un filtre passe-bas **avant** de décimer.
+-   Le **filtrage local** par fenêtre glissante : filtre **moyen** (lissage), filtre de **Scharr** (contours) ; la **convolution** est efficace car calculable dans le domaine fréquentiel.
+-   Le filtre de **Lee** est **adaptatif** : il préserve les détails ($K \to 1$) là où la variance locale est forte — utile contre le *speckle* des images SAR.
+-   La **segmentation** (SLIC) réduit l'image en **super-pixels** homogènes ; le **graphe d'adjacence (RAG)** fusionne les segments ; l'**approche objet** (`regionprops`) décrit chaque segment par des propriétés.
+:::
+::::::
+
+## Exercices
+
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
+
+**À vous de jouer**
+::::
+
+::: bloc_exercice-body
+1.  Décimez `img_rgb` par un facteur 8, **avec** et **sans** filtre passe-bas gaussien préalable, et comparez l'aliasing obtenu.
+
+2.  Appliquez le filtre de Scharr sur les **trois bandes** RVB (plutôt qu'une seule) et combinez les amplitudes de gradient (p. ex. la norme euclidienne).
+
+3.  Faites varier la taille de la fenêtre (3×3, 7×7, 11×11) du filtre de Lee sur `img_SAR` et observez l'effet sur la préservation des détails.
+
+4.  Reprenez SLIC avec plusieurs valeurs de `compactness` (1, 10, 50) et décrivez l'effet sur la forme des super-pixels.
+:::
+::::::
+
+## Quiz
+
+
+::: {.content-visible when-profile="production"}
+
+Utilisez la version html.
+:::
+
+
+```{python .content-visible when-format="html"}
+#| echo: false
+#| eval: true
+#| results: asis
+from code_complementaire.quizz_functions import Quiz, render_quizz
+Chap04Quiz = Quiz("quiz/Chap04.yml", "Chap04")
+render_quizz(Chap04Quiz)
+```
