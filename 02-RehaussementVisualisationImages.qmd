@@ -156,8 +156,8 @@ Pour un affichage à trois bandes, les valeurs seront ramenées sur une échelle
 ```{python}
 import matplotlib.pyplot as plt
 fig, ax= plt.subplots(figsize=(6, 5))
-# on garde les 3 premières bandes (R,V,B) : une 4e bande serait lue comme canal alpha
-plt.imshow(img_rgbnir.data[0:3].transpose(1,2,0)/2500.0)
+# ordre des bandes B,V,R,PIR -> on réordonne en R,V,B pour un affichage en vraies couleurs
+plt.imshow(img_rgbnir.sel(band=[3,2,1]).data.transpose(1,2,0)/2500.0)
 plt.show()
 ```
 
@@ -166,7 +166,7 @@ On remarquera les valeurs des axes `x` et `y` avec une origine en haut à gauche
 ```{python}
 import rioxarray as rxr
 fig, ax= plt.subplots(figsize=(6, 5))
-img_rgbnir.sel(band=[1,2,3]).plot.imshow(vmin=86, vmax=5000)
+img_rgbnir.sel(band=[3,2,1]).plot.imshow(vmin=86, vmax=5000)  # R,V,B (ordre stocké B,V,R,PIR)
 ax.set_title('Imshow avec rioxarray')
 plt.show()
 ```

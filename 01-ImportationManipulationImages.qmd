@@ -370,7 +370,7 @@ Une opération très courante consiste à combiner deux bandes pixel par pixel. 
 import rioxarray as rxr
 
 img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
-rouge = img.sel(band=1)     # bande 1 : rouge
+rouge = img.sel(band=3)     # bande 3 : rouge (ordre des bandes : B, V, R, PIR)
 pir   = img.sel(band=4)     # bande 4 : proche-infrarouge
 
 # Rapport normalisé (NIR - Rouge) / (NIR + Rouge)
@@ -387,7 +387,7 @@ Une image chargée avec `rioxarray` peut être réécrite sur le disque au forma
 import rioxarray as rxr
 
 img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
-# On ne conserve que les trois premières bandes (rouge, vert, bleu)
+# On ne conserve que les trois premières bandes visibles (bleu, vert, rouge)
 img_rvb = img.sel(band=[1, 2, 3])
 img_rvb.rio.to_raster('RGBNIR_rvb.tif')
 print("Image exportée :", tuple(img_rvb.sizes.values()))
