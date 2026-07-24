@@ -462,7 +462,7 @@ def _(mo):
 @app.cell
 def _(rxr):
     _img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
-    rouge = _img.sel(band=1)
+    rouge = _img.sel(band=3)
     _pir = _img.sel(band=4)
     rapport = (_pir - rouge) / (_pir + rouge)
     print('Forme du rapport :', rapport.shape)

@@ -217,7 +217,7 @@ def _(mo):
 @app.cell
 def _(img_rgbnir, plt):
     (_fig, _ax) = plt.subplots(figsize=(6, 5))
-    plt.imshow(img_rgbnir.data[0:3].transpose(1, 2, 0) / 2500.0)
+    plt.imshow(img_rgbnir.sel(band=[3, 2, 1]).data.transpose(1, 2, 0) / 2500.0)
     plt.show()
     return
 
@@ -233,7 +233,7 @@ def _(mo):
 @app.cell
 def _(img_rgbnir, plt):
     (_fig, _ax) = plt.subplots(figsize=(6, 5))
-    img_rgbnir.sel(band=[1, 2, 3]).plot.imshow(vmin=86, vmax=5000)
+    img_rgbnir.sel(band=[3, 2, 1]).plot.imshow(vmin=86, vmax=5000)
     _ax.set_title('Imshow avec rioxarray')
     plt.show()
     return
