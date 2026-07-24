@@ -23,6 +23,7 @@ Quarto book: *Traitement d'images satellites avec Python* (French). Chapters are
 - xarray `.plot()` (pcolormesh) on a full-res raster makes a huge **vector** `figure-pdf/*.pdf` (a 1188×1599 SAR image = 40MB, and it bloats the book PDF too). Use `.plot.imshow()` (raster, ~100KB) or `artist.set_rasterized(True)`. `#| fig-format: png` is **ignored per-cell** by the jupyter engine.
 - process.sh renders PDF with `--no-clean`, so renamed/removed figures linger as orphans in `*_files/figure-pdf/`. When a cell's figure outputs change, clear the chapter's `*_files/` and `docs/*_files/` before rebuilding.
 - Quarto converts apostrophes in prose/headings to curly `'` in HTML — `grep` with a straight `'` misses them; verify with apostrophe-free fragments.
+- **pdflatex chokes on some Unicode in prose** (e.g. `≤` U+2264, `≥`) → `LaTeX Error: Unicode character …`, the LaTeX PDF fails, and `docs/*.pdf` gets dropped (a following `git add -A` then commits its deletion). Use words ("au plus"/"au moins") or add a mapping to `tex-hacks/fix-unicode-chars.tex`. `×` (U+00D7) and accented Latin are fine; typst/HTML handle all of these. After a build, verify `docs/…​.pdf` still exists before committing.
 
 ## Deps
 
