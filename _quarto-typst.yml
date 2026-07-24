@@ -2,3 +2,4 @@ format:
   orange-book-typst:
     toc: true
     citeproc: true
+    keep-typ: true
