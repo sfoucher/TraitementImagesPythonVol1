@@ -103,7 +103,7 @@ with rxr.open_rasterio('RGBNIR_of_S2A.tif', mask_and_scale= True) as img_rgbnir:
 
 ## Importation d'images
 
-La première étape avant tout traitement est d'accéder à la donnée image pour qu'elle soit manipulée par le langage Python. L'imagerie satellite présente certains défis notamment en raison de la taille parfois très importante des images. Il existe maintenant certaines bibliothèques, comme [Xarray](https://docs.xarray.dev/en/stable/), qui visent à optimiser la lecture et l'écriture de grandes images. Il est donc conseillé de toujours garder un oeil sur l'espace mémoire occupé par les variables Python représentant les images. La librairie principale en géomatique qui permettre d'importer (et d'exporter) de l'imagerie est la librairie [GDAL](https://gdal.org) qui rassemble la plupart des formats sous forme de *driver* (ou pilote en français).
+La première étape avant tout traitement est d'accéder à la donnée image pour qu'elle soit manipulée par le langage Python. L'imagerie satellite présente certains défis notamment en raison de la taille parfois très importante des images. Il existe maintenant certaines bibliothèques, comme [Xarray](https://docs.xarray.dev/en/stable/), qui visent à optimiser la lecture et l'écriture de grandes images. Il est donc conseillé de toujours garder un oeil sur l'espace mémoire occupé par les variables Python représentant les images. La librairie principale en géomatique qui permet d'importer (et d'exporter) de l'imagerie est la librairie [GDAL](https://gdal.org) qui rassemble la plupart des formats sous forme de *driver* (ou pilote en français).
 
 Dans le domaine de la géomatique, il faut prêter attention à quatre caractéristiques principales des images:
 
@@ -280,7 +280,7 @@ Markdown(tabulate(table, headers=["dtype", "Nom", "Taille (bits)", "Min", "Max"]
 
 ### Découpage et indexation de la matrice
 
-L'indexation et le découpage (*slicing*) des matrices dans NumPy sont des techniques essentielles pour manipuler efficacement les données multidimensionnelles en Python, offrant une syntaxe puissante et flexible pour accéder et modifier des sous-ensembles spécifiques d'éléments dans les tableaux (voir @fig-naturenumpy2). Indexer une matrice consiste à accéder à une valeur dans la matrice pour une position particulière, la syntaxe générale est `matrice[ligne, colonne, bande]` et est similaire à la manipulation des [listes](https://docs.python.org/fr/3/tutorial/introduction.html#lists) en Python. Les indices commencent à `0` et se termine à la `taille-1` de l'axe considéré.
+L'indexation et le découpage (*slicing*) des matrices dans NumPy sont des techniques essentielles pour manipuler efficacement les données multidimensionnelles en Python, offrant une syntaxe puissante et flexible pour accéder et modifier des sous-ensembles spécifiques d'éléments dans les tableaux (voir @fig-naturenumpy2). Indexer une matrice consiste à accéder à une valeur dans la matrice pour une position particulière, la syntaxe générale est `matrice[ligne, colonne, bande]` et est similaire à la manipulation des [listes](https://docs.python.org/fr/3/tutorial/introduction.html#lists) en Python. Les indices commencent à `0` et se terminent à la `taille-1` de l'axe considéré.
 
 ![Vue d'ensemble des opérations de base des matrices avec NumPy](images/41586_2020_2649_Fig1_HTML.png){#fig-naturenumpy2 width="100%" fig-align="center"}
 
@@ -296,7 +296,7 @@ Si l'un de ces paramètres est omis, NumPy utilise des valeurs par défaut : 0 p
 ```{python}
 import cv2
 img = cv2.imread('modis-aqua.PNG')
-img_col = img[:,1,:]
+img_col = img[:,2,:]   # troisième colonne (indice 2), toutes les bandes
 print('Nombre de dimensions: ',img_col.ndim)
 print('Dimensions de la matrice: ',img_col.shape)
 ```
@@ -521,6 +521,48 @@ Données météos, exemple avec SWOT.
 ## Exercices de révision
 -->
 ```
+
+## Points clés
+
+:::::: bloc_notes
+:::: bloc_notes-header
+::: bloc_notes-icon
+:::
+
+**À retenir**
+::::
+
+::: bloc_notes-body
+-   **GDAL** est la librairie de référence pour lire/écrire l'imagerie (elle rassemble les formats sous forme de *drivers*).
+-   Deux familles de formats : **RVB** (JPEG, PNG — ≤ 3 bandes, 8 bits, peu de métadonnées) et **géo-formats** (GeoTIFF, NetCDF, HDF5 — multi-bandes, 16 bits/float, géoréférence). Le **COG** permet l'accès partiel à distance.
+-   Quatre caractéristiques à surveiller : la **matrice de pixels**, la **dynamique** (`dtype`), le **nombre de bandes** et les **métadonnées / géoréférence**.
+-   Consulter les **métadonnées avant de lire** (`rio info`, `gdalinfo`, ou les attributs de `rasterio`).
+-   `OpenCV` lit les canaux en **BGR** : convertir en RGB (`cv2.cvtColor`) avant l'affichage.
+-   Une image est un **tableau NumPy** : indexation/découpage `[ligne, colonne, bande]` ; attention à la distinction **vue vs copie** (`np.shares_memory`, `.copy()`).
+-   `rioxarray`/`xarray` ajoutent **dimensions nommées, coordonnées et géoréférence** (accesseur `.rio`) : sélection par étiquette, reprojection (`rio.reproject`), export (`rio.to_raster`).
+:::
+::::::
+
+## Exercices
+
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
+
+**À vous de jouer**
+::::
+
+::: bloc_exercice-body
+1.  Ouvrez `RGBNIR_of_S2A.tif` avec `rasterio` et affichez son nombre de bandes, son type de pixels, son système de coordonnées et sa résolution.
+
+2.  À l'aide du découpage NumPy, extrayez une fenêtre de 100 × 100 pixels au centre d'une image et affichez-la.
+
+3.  Vérifiez avec `np.shares_memory` si un découpage crée une **vue** ou une **copie**, puis forcez une copie avec `.copy()`.
+
+4.  Reprojetez `RGBNIR_of_S2A.tif` en `EPSG:4326` avec `rioxarray`, puis sauvegardez le résultat en GeoTIFF avec `rio.to_raster`.
+:::
+::::::
 
 ## Quiz
 
