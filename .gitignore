@@ -4,7 +4,6 @@
 .Ruserdata
 .jupyter_cache/
 tex-hacks/*
-book/*
 lua/*
 /.quarto/
 *.tif
