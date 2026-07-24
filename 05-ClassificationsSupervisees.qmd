@@ -984,17 +984,88 @@ plt.show()
 ```
 
 
-<!--- 
-### Réseaux de neurones
+## Réseaux de neurones
 
-Les réseaux de neurones artificiels (RNA) ont connu un essor très important depuis les années 2010 avec des approches dites profondes. Ces aspects seront surtout abordés dans le tome 2 consacré à l'intelligence artificielle. On abordera ici seulement le perceptron simple et le perceptron multi-couches (MLP).
+Les réseaux de neurones artificiels (RNA) ont connu un essor très important depuis les années 2010 avec des approches dites profondes. Ces aspects seront surtout abordés dans le tome 2 consacré à l'intelligence artificielle. On aborde ici seulement le **perceptron** et le **perceptron multi-couches** (MLP).
 
-Le perceptron est l'unité de base d'un RNA et consiste en N connections, une unité de calcul (le neurone) avec une fonction d'activation et une sortie. Le perceptron ne permet de construire que des frontières de décision linéaires.
+Le perceptron est l'unité de base d'un RNA : il consiste en $N$ connexions, une unité de calcul (le neurone) avec une fonction d'activation et une sortie. Le perceptron ne permet de construire que des frontières de décision **linéaires**.
 
-Le perceptron multi-couches est un réseau dense (*fully connected*) avec des couches cachées entre la couche d'entrée et la couche de sortie. qui permet de construire des frontières de décision beaucoup plus complexes via une hiérarchie de frontières de décision.
+Le perceptron multi-couches est un réseau dense (*fully connected*) avec des **couches cachées** entre la couche d'entrée et la couche de sortie, ce qui permet de construire des frontières de décision beaucoup plus complexes via une hiérarchie de frontières de décision. Ces réseaux sont entraînés par descente de gradient avec une correction des poids par **rétro-propagation** de l'erreur, mesurée par une fonction de coût que l'on cherche à réduire.
 
-Ces réseaux sont entraînés via des techniques itératives d'optimisation de type descente en gradient avec une correction des paramètres (les poids) à l'aide de la rétro-propagation de l'erreur. L'erreur est mesurée via une fonction de coût que l'on cherche à réduire.
---->
+Comme pour le K-NN, il est important de **normaliser** les données (`StandardScaler`) avant d'entraîner un MLP. On forme donc un pipeline combinant la normalisation et le classificateur :
+
+```{python}
+from sklearn.neural_network import MLPClassifier
+
+clf = Pipeline(
+    steps=[("scaler", StandardScaler()),
+           ("mlp", MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=1000, random_state=0))]
+)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+print("Nombre de points misclassifiés sur %d points : %d"
+  % (X_test.shape[0], (y_test != y_pred).sum()))
+```
+
+En faisant varier l'architecture (nombre et taille des couches cachées), on observe le passage d'une frontière linéaire (perceptron sans couche cachée) à des frontières de plus en plus complexes :
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-cap: "Frontières de décision d'un MLP selon l'architecture (bandes Rouge et NIR)"
+
+_, axs = plt.subplots(nrows=2, ncols=2, figsize=(9, 9))
+couleurs_classes2= [couleurs_classes[c] for c in np.unique(y).tolist()]
+cmap_classes2 = ListedColormap(couleurs_classes2)
+archis = [(), (10,), (50, 50), (100, 100)]
+titres = ["Perceptron (0 couche cachée)", "1 couche (10)", "2 couches (50, 50)", "2 couches (100, 100)"]
+for ax, hl, titre in zip(axs.flatten(), archis, titres):
+    clf.set_params(mlp__hidden_layer_sizes=hl).fit(X_train[:, 2:4], y_train)
+    y_pred = clf.predict(X_test[:, 2:4])
+    disp = DecisionBoundaryDisplay.from_estimator(
+        clf, X[:, 2:4], response_method="predict", plot_method="contourf",
+        shading="auto", alpha=0.5, ax=ax, cmap=cmap_classes2,
+    )
+    disp.ax_.scatter(X_test[:, 2], X_test[:, 3], c=y_test, edgecolors="k", cmap=cmap_classes2)
+    disp.ax_.set_xlabel('Rouge', fontsize="small")
+    disp.ax_.set_ylabel('Proche infra-rouge', fontsize="small")
+    disp.ax_.set_title(
+        f"{titre}\nerreur={(y_test != y_pred).sum()/X_test.shape[0]*100:3.1f}%", fontsize="small"
+    )
+plt.show()
+```
+
+Le perceptron sans couche cachée produit une frontière linéaire, comparable à un classificateur linéaire, tandis que l'ajout de couches cachées permet des frontières non linéaires plus souples — au risque de sur-apprendre.
+
+Le rapport de performance et la matrice de confusion du modèle à deux couches (sur les 4 bandes) :
+
+```{python}
+#| echo: false
+#| warning: false
+clf.set_params(mlp__hidden_layer_sizes=(50, 50)).fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+print(classification_report(y_test, y_pred, target_names=nom_classes2, zero_division=np.nan))
+```
+
+```{python}
+#| echo: false
+#| warning: false
+disp= ConfusionMatrixDisplay.from_predictions(y_test, y_pred, display_labels=nom_classes2, xticks_rotation='vertical')
+```
+
+Enfin, la prédiction peut s'appliquer sur toute l'image :
+
+```{python}
+#| echo: false
+#| warning: false
+data_image= img_rgbnir.to_numpy().transpose(1,2,0).reshape(img_rgbnir.shape[1]*img_rgbnir.shape[2],4)
+y_classe= clf.predict(data_image)
+y_classe= y_classe.reshape(img_rgbnir.shape[1],img_rgbnir.shape[2])
+fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(8, 6))
+plt.imshow(y_classe, cmap=cmap_classes2)
+ax.set_title("Carte d'occupation des sols avec un MLP", fontsize="small")
+plt.show()
+```
 
 ## Points clés
 
