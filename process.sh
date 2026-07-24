@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build book (HTML + PDF) in the mlsysbook docker container, export notebooks.
+# Build book (HTML + LaTeX PDF + Typst PDF) in the mlsysbook docker container, export notebooks.
 set -euo pipefail
 
 # Image tag encodes the Quarto version. Override: QUARTO_VERSION=1.10.x ./process.sh
@@ -30,7 +30,7 @@ AUX=(index 00-auteurs references)
 # is /root, unwritable for a non-root uid).
 q() { docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/workspace "$IMAGE" "$@"; }
 
-mkdir -p docs pdf notebooks marimo
+mkdir -p docs pdf notebooks marimo typst-out
 
 # 1. HTML site (landing-page subtitle carries the version alongside the edition)
 q quarto render --cache --to html \
@@ -40,6 +40,13 @@ q quarto render --cache --to html \
 q quarto render --profile production --cache --no-clean --to pdf \
   -M subtitle="Version ${BOOK_VERSION}" --output-dir ./pdf
 cp -f "./pdf/$PDF_NAME" ./docs/
+
+# 2b. Typst PDF (experimental, orange-book layout) -> typst-out/.
+# Not published to docs (LaTeX PDF stays canonical); non-fatal so an
+# experimental-format failure never aborts the HTML/PDF build.
+q quarto render --profile typst --to orange-book-typst --cache --no-clean \
+  -M subtitle="Version ${BOOK_VERSION}" --output-dir ./typst-out \
+  || echo "WARN: typst render failed (experimental format); continuing"
 
 # 3. DOCX (optional)
 # mkdir -p docx
