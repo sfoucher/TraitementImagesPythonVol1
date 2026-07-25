@@ -827,6 +827,45 @@ def _(X_2, train_test_split, y_new_1):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    #### Le principe : distances et plus proche voisin
+
+    Le cœur du K-NN est le calcul de **distances**. La fonction `scipy.spatial.distance.cdist` calcule d'un seul appel toutes les distances entre les points de test et les points d'entraînement. Le plus proche voisin s'obtient alors par un simple `argmin` ; pour $K = 1$, le résultat est identique à celui de `scikit-learn` :
+    """)
+    return
+
+
+@app.cell
+def _(
+    KNeighborsClassifier,
+    Pipeline,
+    StandardScaler,
+    X_test_1,
+    X_train,
+    y_test_1,
+    y_train,
+):
+    from scipy.spatial.distance import cdist
+    scaler = StandardScaler().fit(X_train)
+    # Normalisation (comme pour le K-NN), ajustée sur l'entraînement
+    (Xtr_n, Xte_n) = (scaler.transform(X_train), scaler.transform(X_test_1))
+    D = cdist(Xte_n, Xtr_n, metric='euclidean')
+    print('Matrice des distances :', D.shape)
+    # Distance de chaque point de test à chaque point d'entraînement
+    plus_proche = D.argmin(axis=1)  # (n_test, n_train)
+    y_pred_manuel = y_train[plus_proche]
+    print('Exactitude (1-PPV « à la main ») :', round((y_pred_manuel == y_test_1).mean(), 3))
+    # Plus proche voisin : indice du minimum sur chaque ligne
+    knn1 = Pipeline([('scaler', StandardScaler()), ('knn', KNeighborsClassifier(n_neighbors=1))]).fit(X_train, y_train)
+    # Comparaison avec le K-NN de scikit-learn (K = 1)
+    print('Exactitude (scikit-learn, K = 1) :', round((knn1.predict(X_test_1) == y_test_1).mean(), 3))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Passer à $K > 1$ revient à considérer les $K$ plus petites distances (via `np.argsort`) et à voter parmi leurs classes. La même notion de distance, appliquée cette fois aux **centres de classes**, fonde aussi la mesure de séparabilité JM vue plus haut.
+
     On peut visualiser les frontières de décision du K-NN pour différentes valeurs de $K$ lorsque seulement deux bandes sont utilisées (Rouge et proche infra-rouge ici) :
     """)
     return
@@ -1342,6 +1381,47 @@ def _(clf_4, cmap_classes2_4, img_rgbnir, plt):
     plt.imshow(y_classe_4, cmap=cmap_classes2_4)
     _ax.set_title("Carte d'occupation des sols avec un MLP", fontsize='small')
     plt.show()
+    return (y_classe_4,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Analyse post-classification
+
+    Une fois la carte produite, on quantifie la **superficie** occupée par chaque classe. Comme les étiquettes sont des entiers consécutifs, `np.bincount` compte les pixels par classe encore plus directement que `np.unique`. En multipliant ces comptes par la surface d'un pixel — déduite de la résolution de l'image — on obtient un bilan en kilomètres carrés :
+    """)
+    return
+
+
+@app.cell
+def _(img_rgbnir, nom_classes2_3, np, pd, y_classe_4):
+    # Comptage des pixels par classe sur la carte produite (ici le MLP)
+    comptes_1 = np.bincount(y_classe_4.ravel(), minlength=len(nom_classes2_3))
+    (xres, yres) = img_rgbnir.rio.resolution()
+    # Surface d'un pixel à partir de la résolution (10 m x 10 m ici)
+    pixel_km2 = abs(xres * yres) / 1000000.0
+    superficies = pd.DataFrame({'Classe': nom_classes2_3, 'Pixels': comptes_1, 'Superficie (km2)': (comptes_1 * pixel_km2).round(2)})
+    superficies
+    return comptes_1, pixel_km2
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Ce tableau est le produit final le plus courant d'une classification : un bilan surfacique par classe d'occupation du sol. On peut le visualiser sous forme de diagramme en barres :
+    """)
+    return
+
+
+@app.cell
+def _(comptes_1, nom_classes2_3, pixel_km2, plt):
+    plt.figure(figsize=(5, 3))
+    plt.bar(nom_classes2_3, comptes_1 * pixel_km2)
+    plt.ylabel('km2')
+    plt.title('Superficie par classe (MLP)', fontsize='small')
+    plt.xticks(rotation=45, ha='right')
+    plt.show()
     return
 
 
@@ -1361,6 +1441,8 @@ def _(mo):
     <li>La performance se lit dans la <strong>matrice de confusion</strong> : <strong>rappel</strong> (omission, lignes), <strong>précision</strong> (fausses alarmes, colonnes), <strong>f1-score</strong>.</li>
     <li>Méthodes <strong>non paramétriques</strong> (parallélépipèdes, K-NN, arbres) vs <strong>paramétriques</strong> (Bayésien naïf, ADQ) ; le K-NN exige une <strong>normalisation</strong> (<code>StandardScaler</code>).</li>
     <li>La <strong>malédiction de la dimensionnalité</strong> : le nombre de points requis croît exponentiellement avec le nombre de dimensions <span class="math inline">\(D\)</span>.</li>
+    <li>Le <strong>K-NN</strong> repose sur des <strong>distances</strong> (<code>scipy.spatial.distance.cdist</code>) : le plus proche voisin (<code>argmin</code>) reproduit le 1-NN, le vote sur <span class="math inline">\(K\)</span> voisins généralise ; la distance entre <strong>centres de classes</strong> mesure la séparabilité (JM).</li>
+    <li>Après classification, <code>np.bincount</code> combiné à la <strong>résolution</strong> de l’image donne un <strong>bilan surfacique</strong> (superficie par classe).</li>
     </ul>
     </div>
     </div>
@@ -1379,6 +1461,10 @@ def _(mo):
     <li>Entraînez un arbre de décision avec plusieurs <code>max_depth</code> (3, 5, 10, <code>None</code>) et repérez à partir de quelle profondeur le sur-apprentissage apparaît.
     </li>
     <li>Utilisez les <strong>4 bandes</strong> (au lieu de Rouge–NIR) pour l’ADQ et comparez la carte d’occupation des sols obtenue.
+    </li>
+    <li><em>(distances)</em> Avec <code>cdist</code>, calculez la distance de chaque point de test à chaque point d’entraînement, classez par plus proche voisin (<code>argmin</code>, <span class="math inline">\(K = 1\)</span>), et vérifiez que l’exactitude correspond à celle du K-NN de <code>scikit-learn</code>.
+    </li>
+    <li><em>(post-classification)</em> À partir d’une carte produite (K-NN, arbre ou MLP), calculez la superficie de chaque classe avec <code>np.bincount</code> et la résolution de l’image ; identifiez les deux classes les plus étendues.
     </li>
     </ol>
     </div>
