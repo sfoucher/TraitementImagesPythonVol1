@@ -1,221 +1,313 @@
-# Correction des exercices {#sec-chap10}
+---
+eval: false
+---
 
-## Exercices du chapitre 1 {#sec-0801}
+<!-- GÉNÉRÉ par make_exercices.py — NE PAS ÉDITER À LA MAIN. Modifier les exercices dans les chapitres, puis régénérer. -->
 
-### Exercice 1 {#sec-08011}
+# Exercices {#sec-exercices}
 
-```{python}
-#| echo: true 
-#| message: false 
-#| eval: false
-library(sf)
-library(terra)
+Ce chapitre regroupe l'ensemble des exercices proposés au fil des chapitres, à des fins de révision. Il est **généré automatiquement** à partir des chapitres (script `make_exercices.py`) : les solutions et le corrigé se trouvent dans chaque chapitre d'origine.
+
+## Introduction au langage Python
+
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
+
+**À vous de jouer**
+::::
+
+::: bloc_exercice-body
+**Structures de données**
+
+1.  *(listes)* Créez `bandes = ["bleu", "vert", "rouge", "PIR"]`, ajoutez `"SWIR"`, inversez l'ordre de la liste, puis affichez ses deux premiers éléments.
+
+2.  *(dictionnaires)* Créez un dictionnaire `metadonnees` décrivant une image (capteur, nombre de bandes, résolution), ajoutez-y une date, puis affichez chaque paire clé-valeur.
+
+3.  *(ensembles)* À partir de `["eau", "forêt", "eau", "urbain", "forêt"]`, trouvez les classes uniques et affichez leur nombre.
+
+4.  *(tuples)* Stockez les dimensions `(512, 512)` d'une image dans un tuple, dépaquetez-les en `lignes` et `colonnes`, puis calculez le nombre total de pixels.
+
+**Boucles et conditions**
+
+5.  Parcourez une liste de valeurs de réflectance et comptez combien dépassent `0.3`.
+
+6.  Dans une boucle, classez chaque valeur de réflectance en `"eau"`, `"végétation"` ou `"autre"` selon des seuils (`if`/`elif`/`else`).
+
+**Fonctions**
+
+7.  Écrivez une fonction `ratio(a, b)` renvoyant `(a - b) / (a + b)`, et utilisez-la pour un NDVI avec PIR = 0,55 et Rouge = 0,18.
+
+8.  Écrivez `normaliser(valeur, maximum=255)` avec un argument par défaut ; testez-la en 8 bits, puis en 12 bits (`maximum=4095`).
+
+9.  *(avancé)* Écrivez une fonction qui reçoit une liste de bandes et renvoie un dictionnaire `{nom_bande: indice}` (indice `enumerate`).
+
+**NumPy**
+
+10. À partir du tableau `image` de la @sec-00-02, calculez la valeur **minimale** et l'**écart-type** (`image.std()`), puis extrayez la dernière colonne.
+
+11. Créez un tableau NumPy 4 × 4 et, par **masquage booléen**, remplacez par `0` toutes les valeurs inférieures à 10.
+
+12. Sur le tableau `image`, calculez la moyenne **par ligne** puis **par colonne** (paramètre `axis`).
+
+13. *(attributs)* Sur `image`, affichez `ndim`, `size` et `dtype`. Convertissez-le en réflectance `float32` (divisez par le maximum) et vérifiez le nouveau `dtype`.
+
+14. *(création)* Avec `np.linspace`, construisez un axe de 6 longueurs d'onde entre 490 et 2190 nm. Créez ensuite un masque `np.zeros((3, 4))` et mettez sa **première ligne** à `1`.
+
+15. *(broadcasting)* Sur le `cube` à 2 bandes de la @sec-00-02, multipliez chaque bande par un gain différent `[1.0, 0.8]` à l'aide d'une forme `(2, 1, 1)`.
+
+16. *(reshape/transpose)* Transformez le `cube` `(2, 3, 4)` en une table `(12, 2)` (pixels × bandes), puis revenez à la forme d'origine `(2, 3, 4)`.
+
+**Programmation objet**
+
+17. *(avancé)* Ajoutez à la classe `Image` une méthode `est_multispectrale()` qui renvoie `True` si l'image possède plus de 3 bandes.
+:::
+::::::
+<details>
+<summary>Afficher les solutions</summary>
+
+``` python
+import numpy as np
+
+# --- Structures de données ---
+# 1. Listes
+bandes = ["bleu", "vert", "rouge", "PIR"]
+bandes.append("SWIR")
+bandes.reverse()
+print(bandes[:2])
+
+# 2. Dictionnaire de métadonnées
+metadonnees = {"capteur": "Sentinel-2", "bandes": 13, "resolution_m": 10}
+metadonnees["date"] = "2024-07-01"
+for cle, valeur in metadonnees.items():
+    print(cle, ":", valeur)
+
+# 3. Ensembles : classes uniques
+classes = ["eau", "forêt", "eau", "urbain", "forêt"]
+uniques = set(classes)
+print(uniques, "->", len(uniques), "classes")
+
+# 4. Tuples : dépaquetage et nombre de pixels
+dimensions = (512, 512)
+lignes, colonnes = dimensions
+print("pixels :", lignes * colonnes)
+
+# --- Boucles et conditions ---
+reflectances = [0.12, 0.45, 0.33, 0.28, 0.51]
+# 5. Compter les valeurs > 0.3
+print(sum(1 for r in reflectances if r > 0.3))
+
+# 6. Classer selon des seuils
+for r in reflectances:
+    if r < 0.15:
+        print(r, "-> eau")
+    elif r > 0.3:
+        print(r, "-> végétation")
+    else:
+        print(r, "-> autre")
+
+# --- Fonctions ---
+# 7. ratio / NDVI
+def ratio(a, b):
+    return (a - b) / (a + b)
+print("NDVI :", round(ratio(0.55, 0.18), 3))
+
+# 8. normaliser avec argument par défaut
+def normaliser(valeur, maximum=255):
+    return valeur / maximum
+print(normaliser(128))
+print(normaliser(1000, maximum=4095))   # 12 bits
+
+# 9. dict {nom_bande: indice}
+def indexer(bandes):
+    return {nom: i for i, nom in enumerate(bandes)}
+print(indexer(["bleu", "vert", "rouge", "PIR"]))
+
+# --- NumPy ---
+image = np.array([[10, 12, 11,  9],
+                  [ 8, 20, 22,  7],
+                  [ 9, 21, 23,  8]])
+cube = np.array([[[10, 12, 11,  9],
+                  [ 8, 20, 22,  7],
+                  [ 9, 21, 23,  8]],
+                 [[30, 35, 33, 28],
+                  [25, 60, 66, 22],
+                  [27, 63, 69, 24]]])
+# 10. min, écart-type, dernière colonne
+print("min :", image.min(), "| écart-type :", round(image.std(), 2))
+print("dernière colonne :", image[:, -1])
+
+# 11. Masquage booléen : valeurs < 10 -> 0
+arr = np.array([[ 3, 12,  8, 15],
+                [20,  5,  9, 11],
+                [ 7, 14,  2, 18],
+                [10,  6, 13,  4]])
+arr[arr < 10] = 0
+print(arr)
+
+# 12. Moyennes par axe
+print("par ligne   :", image.mean(axis=1).round(1))
+print("par colonne :", image.mean(axis=0).round(1))
+
+# 13. Attributs et dtype
+print(image.ndim, image.size, image.dtype)
+refl = (image / image.max()).astype("float32")
+print(refl.dtype)
+
+# 14. Création : axe de longueurs d'onde et masque
+print(np.linspace(490, 2190, 6))
+masque = np.zeros((3, 4))
+masque[0] = 1
+print(masque)
+
+# 15. Broadcasting par bande
+gains = np.array([1.0, 0.8]).reshape(2, 1, 1)
+print((cube * gains)[:, 0, 0])
+
+# 16. reshape / transpose
+table = cube.transpose(1, 2, 0).reshape(-1, 2)
+print(table.shape)                      # (12, 2)
+retour = table.reshape(3, 4, 2).transpose(2, 0, 1)
+print(retour.shape)                     # (2, 3, 4)
+
+# --- Programmation objet ---
+# 17. Méthode est_multispectrale
+class Image:
+    def __init__(self, capteur, bandes):
+        self.capteur = capteur
+        self.bandes = bandes
+    def est_multispectrale(self):
+        return self.bandes > 3
+print(Image("Landsat-8", 11).est_multispectrale())
 ```
 
-### Exercice 2 {#sec-08012}
+</details>
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+## Importation et manipulation de données spatiales
 
-### Exercice 3 {#sec-08013}
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+**À vous de jouer**
+::::
 
-## Exercices du chapitre 2 {#sec-0802}
+::: bloc_exercice-body
+1.  Ouvrez `RGBNIR_of_S2A.tif` avec `rasterio` et affichez son nombre de bandes, son type de pixels, son système de coordonnées et sa résolution.
 
-### Exercice 1 {#sec-08021}
+2.  À l'aide du découpage NumPy, extrayez une fenêtre de 100 × 100 pixels au centre d'une image et affichez-la.
 
-![Exercice sur la contiguïté et les ordres d'adjacence](images/Chap10/ExoMatriceDeContiguiteCorrection.png){#fig-ExoMatriceDeContiguite width="65%" fig-align="center"}
+3.  Vérifiez avec `np.shares_memory` si un découpage crée une **vue** ou une **copie**, puis forcez une copie avec `.copy()`.
 
-### Exercice 2 {#sec-08022}
+4.  Reprojetez `RGBNIR_of_S2A.tif` en `EPSG:4326` avec `rioxarray`, puis sauvegardez le résultat en GeoTIFF avec `rio.to_raster`.
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+5.  *(indexation avancée)* Sur `RGBNIR_of_S2A.tif`, construisez la carte de la **bande dominante** (`argmax`), puis affichez le pourcentage de pixels où le proche-infrarouge (indice 3) domine.
 
-### Exercice 3 {#sec-08023}
+6.  *(masquage)* Calculez le NDVI, masquez les pixels d'eau (NDVI < 0) avec `np.ma.masked_where`, puis comparez le NDVI moyen **avec** et **sans** masque.
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+7.  *(sauvegarde)* Sauvegardez votre carte de NDVI dans un fichier `.npy`, rechargez-la, et vérifiez l'égalité avec `np.allclose` (option `equal_nan=True`).
 
-Les valeurs du *I* de Moran sont les suivantes : 0,69 pour la matrice *Rook*, 0,52 pour la matrice inverse de la distance au carré réduite et 0,75 pour la matrice selon le critère des deux plus proches voisins.
+8.  *(découpage)* Découpez `RGBNIR_of_S2A.tif` sur son **quart supérieur gauche** avec `clip_box` et affichez la sous-image.
 
-## Exercices du chapitre 3 {#sec-0803}
+9.  *(rééchantillonnage)* Rééchantillonnez l'image à **30 m** par moyenne (`reproject` avec `Resampling.average`) et comparez le nombre de pixels à l'original.
 
-### Exercice 1 {#sec-08031}
+10. *(xarray)* Nommez les bandes (`B`, `V`, `R`, `PIR`), sélectionnez `PIR` par étiquette, puis calculez la moyenne de chaque bande sur les dimensions `y` et `x`.
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+11. *(écriture)* Calculez un masque d'eau (NDVI < 0), écrivez-le comme un GeoTIFF à une bande en réutilisant le profil de `RGBNIR_of_S2A.tif`, puis relisez-le pour vérifier son CRS.
+:::
+::::::
 
-### Exercice 2 {#sec-08032}
+## Réhaussement et visualisation d'images
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
 
-### Exercice 3 {#sec-08033}
+**À vous de jouer**
+::::
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+::: bloc_exercice-body
+1.  Proposez une autre transformation non linéaire pour l'image SAR (p. ex. la racine carrée ou `np.arcsinh`) et comparez son histogramme à celui obtenu en décibels.
 
-## Exercices du chapitre 4 {#sec-0804}
+2.  Reprenez l'égalisation d'histogramme en remplaçant la CDF cible équiprobable par une **CDF gaussienne** (avec `scipy.stats.norm.cdf`), puis observez l'effet sur l'image SAR.
 
-### Exercice 1 {#sec-08041}
+3.  À partir de `img_s2`, construisez un nouveau composé coloré (p. ex. `[11, 8, 4]` ou `[8, 4, 3]`) et décrivez les surfaces qu'il met en valeur.
 
-```{python}
-library(sf)
-library(terra)
-```
+4.  *(visualisation web)* Dans Colab, installez `leafmap`, chargez `RGBNIR_of_S2A.tif` en composé infrarouge (`indexes=[4, 3, 2]`) sur un fond `Esri.WorldImagery`, puis comparez vraie couleur et infrarouge avec `split_map`.
+:::
+::::::
 
-### Exercice 2 {#sec-08042}
+## Transformations spectrales
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
 
-### Exercice 3 {#sec-08043}
+**À vous de jouer**
+::::
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+::: bloc_exercice-body
+1.  Calculez le **NDWI** (eau) et le **NDBI** (bâti) avec `spyndex` sur `img_s2`, puis affichez-les côte à côte avec le NDVI.
 
-## Exercices du chapitre 5 {#sec-0805}
+2.  Comparez les **signatures spectrales** de deux surfaces supplémentaires de la base USGS (p. ex. neige, végétation sèche) sur les bandes Sentinel-2.
 
-### Exercice 1 {#sec-08051}
+3.  Parcourez `spyndex.indices`, choisissez un indice adapté à l'eau ou aux sols, identifiez les bandes qu'il requiert, et calculez-le sur `img_s2`.
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+4.  Renommez les bandes de `img_s2` avec la nomenclature `spyndex` et vérifiez le résultat avec `img_s2.coords['band']`.
 
-### Exercice 2 {#sec-08052}
+5.  *(produit matriciel)* Construisez une matrice `2 × 4` transformant les 4 bandes de `RGBNIR_of_S2A.tif` en deux nouvelles bandes (brillance moyenne et différence PIR - Rouge) à l'aide de l'opérateur `@`, puis affichez-les.
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-## Construction du réseau
-library(sf)
-library(terra)
-```
+6.  *(ACP)* Réalisez l'ACP de `img_s2`, affichez la **variance expliquée** par chaque composante (éboulis), et vérifiez combien de composantes sont nécessaires pour atteindre 95 % de variance cumulée.
+:::
+::::::
 
-### Exercice 3 {#sec-08053}
+## Transformations spatiales
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
 
-## Exercices du chapitre 6 {#sec-0806}
+**À vous de jouer**
+::::
 
-### Exercice 1 {#sec-08061}
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+::: bloc_exercice-body
+1.  Décimez `img_rgb` par un facteur 8, **avec** et **sans** filtre passe-bas gaussien préalable, et comparez l'aliasing obtenu.
 
+2.  Appliquez le filtre de Scharr sur les **trois bandes** RVB (plutôt qu'une seule) et combinez les amplitudes de gradient (p. ex. la norme euclidienne).
 
-### Exercice 2 {#sec-08062}
+3.  Faites varier la taille de la fenêtre (3×3, 7×7, 11×11) du filtre de Lee sur `img_SAR` et observez l'effet sur la préservation des détails.
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+4.  Reprenez SLIC avec plusieurs valeurs de `compactness` (1, 10, 50) et décrivez l'effet sur la forme des super-pixels.
+:::
+::::::
 
+## Classifications d'images supervisées
 
-### Exercice 3 {#sec-08063}
+:::::: bloc_exercice
+:::: bloc_exercice-header
+::: bloc_exercice-icon
+:::
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+**À vous de jouer**
+::::
 
+::: bloc_exercice-body
+1.  Comparez les rapports de performance (`classification_report`) du K-NN, de l'arbre de décision et de l'ADQ sur le même ensemble de test : quelle méthode l'emporte, et pour quelles classes ?
 
-## Exercices du chapitre 7 {#sec-0807}
+2.  Faites varier `test_size` (0.1, 0.3, 0.5) dans `train_test_split` et observez l'effet sur l'erreur de test du K-NN.
 
-### Exercice 1 {#sec-08071}
+3.  Entraînez un arbre de décision avec plusieurs `max_depth` (3, 5, 10, `None`) et repérez à partir de quelle profondeur le sur-apprentissage apparaît.
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+4.  Utilisez les **4 bandes** (au lieu de Rouge–NIR) pour l'ADQ et comparez la carte d'occupation des sols obtenue.
 
-### Exercice 2 {#sec-08072}
+5.  *(distances)* Avec `cdist`, calculez la distance de chaque point de test à chaque point d'entraînement, classez par plus proche voisin (`argmin`, $K = 1$), et vérifiez que l'exactitude correspond à celle du K-NN de `scikit-learn`.
 
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
+6.  *(post-classification)* À partir d'une carte produite (K-NN, arbre ou MLP), calculez la superficie de chaque classe avec `np.bincount` et la résolution de l'image ; identifiez les deux classes les plus étendues.
+:::
+::::::
 
-### Exercice 3 {#sec-08073}
-
-```{python}
-#| echo: true 
-#| message: false
-#| eval: false
-library(sf)
-library(terra)
-```
