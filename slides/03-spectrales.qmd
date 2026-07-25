@@ -95,27 +95,50 @@ plt.show()
 - Chaque indice met en valeur une **thématique** (végétation, eau, bâti)
 :::
 
-## Réduction de dimension — ACP {.smaller}
+## Transformation linéaire — produit matriciel {.smaller}
 
-Combiner des bandes = **produit matriciel** ; l'**ACP** apprend les poids qui maximisent la variance.
+Combiner des bandes par sommes pondérées = un **produit matriciel** (`@`).
+
+```{python}
+import numpy as np
+pixels = np.array([[10., 40.], [20., 10.], [5., 25.]])   # 3 pixels x 2 bandes
+M = np.array([[0.5, 0.5],       # moyenne des deux bandes
+              [1.0, -1.0]])      # différence des deux bandes
+print(pixels @ M.T)             # (3 pixels x 2 sorties)
+```
+
+L'**ACP** apprend automatiquement ces poids pour **maximiser la variance** retenue.
+
+## ACP — variance expliquée {.smaller}
+
+On centre les données, puis on diagonalise la **matrice de covariance** :
 
 ```{python}
 #| fig-align: center
-import numpy as np, rioxarray as rxr, matplotlib.pyplot as plt
-cube = rxr.open_rasterio('../RGBNIR_of_S2A.tif').to_numpy().astype('float32')  # (4,H,W)
+import rioxarray as rxr, matplotlib.pyplot as plt
+cube = rxr.open_rasterio('../RGBNIR_of_S2A.tif').to_numpy().astype('float32')  # (4, H, W)
 B, H, W = cube.shape
 Xc = cube.reshape(B, H * W).T - cube.reshape(B, H * W).T.mean(0)   # centrage
 val, vec = np.linalg.eigh(np.cov(Xc, rowvar=False))
 o = np.argsort(val)[::-1]; val, vec = val[o], vec[:, o]
-comp = (Xc @ vec).T.reshape(B, H, W)                              # projection = @
-etir = lambda x: (x - x.min()) / (x.max() - x.min())
-fig, ax = plt.subplots(1, 2, figsize=(8, 3.2))
-ax[0].bar(range(1, B + 1), val / val.sum()); ax[0].set_title("Variance expliquée")
-ax[1].imshow(np.dstack([etir(comp[i]) for i in range(3)]))
-ax[1].set_title("Composantes 1-2-3"); ax[1].axis('off'); plt.show()
+fig, ax = plt.subplots(figsize=(5, 3))
+ax.bar(range(1, B + 1), val / val.sum())
+ax.set_xlabel("Composante"); ax.set_ylabel("Variance expliquée"); plt.show()
+print("3 premières composantes :", round((val / val.sum())[:3].sum() * 100, 1), "% de la variance")
 ```
 
-Les 3 premières composantes concentrent **> 99 %** de la variance.
+## ACP — composantes principales {.smaller}
+
+La projection sur les vecteurs propres (un produit matriciel) donne les composantes, rangées par variance décroissante :
+
+```{python}
+#| fig-align: center
+comp = (Xc @ vec).T.reshape(B, H, W)          # projection = produit matriciel
+etir = lambda x: (x - x.min()) / (x.max() - x.min())
+fig, ax = plt.subplots(figsize=(5, 4))
+ax.imshow(np.dstack([etir(comp[i]) for i in range(3)]))
+ax.set_title("Composantes 1-2-3 (RVB)"); ax.axis('off'); plt.show()
+```
 
 ## Points clés {.smaller}
 

@@ -77,31 +77,46 @@ fig.colorbar(im, ax=ax, ticks=[0, 1, 2, 3], shrink=0.7); plt.show()
 
 Le PIR domine sur la **végétation**. Masquer (`np.ma`) et sauvegarder (`np.save`/`.npz`) complètent la boîte à outils.
 
-## Découper, rééchantillonner, étiqueter {.smaller}
+## Découpage — `clip_box` {.smaller}
 
-`rioxarray` découpe (`clip_box`) et rééchantillonne (`reproject`) ; `xarray` sélectionne par **étiquette** :
+Extraire une emprise plus petite (boîte englobante, dans le CRS de l'image) :
 
 ```{python}
 #| fig-align: center
 import numpy as np
-from rasterio.enums import Resampling
-
 img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')
 minx, miny, maxx, maxy = img.rio.bounds()
 cx, cy = (minx + maxx) / 2, (miny + maxy) / 2
 dx, dy = (maxx - minx) / 4, (maxy - miny) / 4
-sous = img.rio.clip_box(cx - dx, cy - dy, cx + dx, cy + dy)                  # découpage
-bas = img.rio.reproject(img.rio.crs, resolution=20, resampling=Resampling.average)  # 10->20 m
-print("clip :", tuple(img.sizes.values()), "->", tuple(sous.sizes.values()),
-      "| resample 20 m :", tuple(bas.sizes.values()))
-print("sel(band=4) == isel(band=3) :", bool((img.sel(band=4) == img.isel(band=3)).all()))
-
-fig, ax = plt.subplots(figsize=(4, 2.8))
+sous = img.rio.clip_box(cx - dx, cy - dy, cx + dx, cy + dy)
+print("forme :", tuple(img.sizes.values()), "->", tuple(sous.sizes.values()))
+fig, ax = plt.subplots(figsize=(4.5, 3))
 sous.sel(band=[3, 2, 1]).plot.imshow(vmin=86, vmax=5000, ax=ax)
-ax.set_title("Quart central (clip_box)"); ax.axis('off'); plt.show()
+ax.set_title("Quart central"); ax.axis('off'); plt.show()
 ```
 
-Un résultat se réécrit en GeoTIFF géoréférencé avec `rasterio` (`profil` de la source + `dst.write`).
+## Rééchantillonnage — `reproject` {.smaller}
+
+Changer la résolution spatiale ; méthode d'agrégation au choix (moyenne pour réduire) :
+
+```{python}
+from rasterio.enums import Resampling
+bas = img.rio.reproject(img.rio.crs, resolution=20, resampling=Resampling.average)
+print("résolution :", img.rio.resolution(), "->", bas.rio.resolution())
+print("forme      :", tuple(img.sizes.values()), "->", tuple(bas.sizes.values()))
+```
+
+## Sélection par étiquette — `sel` / `isel` {.smaller}
+
+`xarray` sélectionne par **valeur** (`sel`) ou par **position** (`isel`) ; on peut nommer les bandes :
+
+```{python}
+print("sel(band=4) == isel(band=3) :", bool((img.sel(band=4) == img.isel(band=3)).all()))
+img_n = img.assign_coords(band=['B', 'V', 'R', 'PIR'])
+print("bande PIR par étiquette :", img_n.sel(band='PIR').shape)
+```
+
+Un résultat se réécrit en GeoTIFF géoréférencé avec `rasterio` (`profil` source + `dst.write`).
 
 ## Points clés {.smaller}
 

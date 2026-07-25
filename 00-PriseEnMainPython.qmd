@@ -23,6 +23,7 @@ Dans ce chapitre, nous présentons quelques éléments essentiels du langage Pyt
 -   comprendre les structures de base du langage Python (listes, tuples, ensembles, dictionnaires);
 -   écrire des boucles, des conditions et des fonctions;
 -   aborder la programmation orientée objet;
+-   organiser du code en modules et packages;
 -   manipuler un tableau `NumPy`.
 :::
 ::::::
@@ -331,6 +332,54 @@ print(np.array([1, 2, 3]))
 print(round(pi, 4), sqrt(16))
 ```
 
+## Modules et packages
+
+Jusqu'ici, nous avons *importé* des bibliothèques existantes. Comprendre comment le code Python est **organisé** permet de structurer ses propres projets et de réutiliser du code.
+
+-   Un **module** est simplement un fichier `.py` contenant des fonctions, des classes ou des variables. Le nom du module est celui du fichier, sans l'extension.
+-   Un **package** (ou paquet) est un **dossier** regroupant plusieurs modules. Ce dossier contient un fichier spécial `__init__.py` qui indique à Python qu'il s'agit d'un package.
+
+Par exemple, un package `teledetection` pourrait s'organiser ainsi :
+
+```
+teledetection/
+    __init__.py       # marque le dossier comme un package
+    indices.py        # fonctions d'indices spectraux (ndvi, ...)
+    filtres.py        # fonctions de filtrage spatial
+```
+
+On accède au contenu avec la notation pointée `package.module.fonction` :
+
+```{python}
+#| eval: false
+import teledetection.indices                   # importe le module
+from teledetection.indices import ndvi         # importe une fonction précise
+from teledetection import filtres as f         # importe un module sous un alias
+
+resultat = teledetection.indices.ndvi(0.6, 0.2)
+```
+
+### Le fichier `__init__.py`
+
+Le fichier `__init__.py` est exécuté **automatiquement** la première fois que le package est importé. Souvent vide, il peut aussi :
+
+-   exposer une **interface simplifiée**. Si `__init__.py` contient `from .indices import ndvi`, on peut alors écrire directement `from teledetection import ndvi` au lieu de `from teledetection.indices import ndvi`. Le point (`.`) dans `from .indices` désigne le package courant : c'est un **import relatif**.
+-   initialiser des données ou vérifier des dépendances au chargement du package.
+
+Ce mécanisme n'est pas qu'une abstraction : ce manuel l'utilise lui-même. Les quiz de fin de chapitre proviennent d'un package local `code_complementaire`, importé exactement de cette façon :
+
+```{python}
+#| eval: false
+from code_complementaire.quizz_functions import Quiz, render_quizz
+```
+
+Enfin, un module peut contenir un bloc `if __name__ == "__main__":` dont le code ne s'exécute **que** si le fichier est lancé directement (`python indices.py`), et **pas** lorsqu'il est importé. C'est la façon habituelle de séparer le code exécutable des fonctions réutilisables. La variable `__name__` vaut `"__main__"` dans le premier cas, et le nom du module dans le second :
+
+```{python}
+#| eval: true
+print("Nom du contexte courant :", __name__)
+```
+
 ## Un avant-goût de NumPy {#sec-00-02}
 
 Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque [NumPy](https://numpy.org/) fournit l'objet `ndarray` qui représente efficacement ces tableaux à plusieurs dimensions : c'est la brique de base de tous les chapitres suivants.
@@ -435,6 +484,7 @@ print("Table pixels x bandes :", table.shape)  # (12, 2)
 -   Installez Python via un **environnement virtuel** (`conda` ou `venv`) pour isoler chaque projet.
 -   Quatre structures de base : **listes** (ordonnées, modifiables), **tuples** (immuables), **ensembles** (sans doublons) et **dictionnaires** (paires clé-valeur).
 -   `if`/`for`/`while` contrôlent le déroulement du programme ; les **fonctions** (`def`) regroupent du code réutilisable.
+-   Le code s'organise en **modules** (fichiers `.py`) et **packages** (dossiers avec `__init__.py`), accessibles par la notation pointée (`package.module.fonction`).
 -   Une image est avant tout un **tableau `NumPy`** : c'est la structure centrale de tout le manuel.
 -   Un tableau se caractérise par sa **forme** (`shape`) et son **type** (`dtype`, la profondeur radiométrique) ; le ***broadcasting***, `reshape` et `transpose` permettent de calculer et de réorganiser les axes sans boucle.
 :::

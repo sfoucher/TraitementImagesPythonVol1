@@ -147,25 +147,49 @@ print("Forme :", image.shape, "| max :", image.max(), "| moyenne :", image.mean(
 print(image[:2, :2])          # découpage d'une sous-image
 ```
 
-## NumPy — type, *broadcasting*, remodelage {.smaller}
+## NumPy — type et attributs {.smaller}
+
+Un tableau se décrit par sa **forme** et son **type** (`dtype`), qui encode la profondeur radiométrique.
 
 ```{python}
 import numpy as np
 image = np.array([[10, 12, 11, 9], [8, 20, 22, 7], [9, 21, 23, 8]])
 print("dtype :", image.dtype, "| ndim :", image.ndim, "| size :", image.size)
 
-# broadcasting : une opération sur tout le tableau, sans boucle
-print("réflectance :", (image / 10000).round(4)[0])
+# uint8 (0-255) vs float32 (réflectance) : conversion avec astype
+reflectance = (image / image.max()).astype("float32")
+print("nouveau dtype :", reflectance.dtype)
+```
 
-# reshape + transpose sur un cube (bandes, lignes, colonnes)
-cube = np.stack([image, image * 3])                       # 2 bandes
-print("cube :", cube.shape,
-      "-> HWC :", cube.transpose(1, 2, 0).shape,          # affichage
-      "-> table :", cube.transpose(1, 2, 0).reshape(-1, 2).shape)  # pixels x bandes
+## NumPy — le *broadcasting* {.smaller}
+
+Une opération s'applique à **tout le tableau sans boucle** : NumPy « étire » les formes compatibles.
+
+```{python}
+image = np.array([[10, 12, 11, 9], [8, 20, 22, 7], [9, 21, 23, 8]])
+
+# scalaire : convertir des comptes numériques en réflectance
+print("scalaire :", (image / 10000).round(4)[0])
+
+# par bande : un gain différent par bande via une forme (bandes, 1, 1)
+cube = np.stack([image, image * 3])            # 2 bandes
+gains = np.array([1.0, 0.5]).reshape(2, 1, 1)
+print("par bande :", (cube * gains)[:, 0, 0])
+```
+
+## NumPy — remodeler et réordonner {.smaller}
+
+`reshape` change la forme ; `transpose` réordonne les axes — l'idiome du pipeline de classification.
+
+```{python}
+cube = np.stack([image, image * 3])            # (2, 3, 4) = (bandes, lignes, colonnes)
+print("cube  :", cube.shape)
+print("HWC (pour l'affichage)  :", cube.transpose(1, 2, 0).shape)          # (3, 4, 2)
+print("table pixels x bandes   :", cube.transpose(1, 2, 0).reshape(-1, 2).shape)  # (12, 2)
 ```
 
 ::: {.notes}
-`transpose(1,2,0)` + `reshape(-1, bandes)` = l'idiome exact du pipeline de classification (chapitre 5).
+`transpose(1,2,0)` + `reshape(-1, bandes)` = l'entrée exacte d'un classificateur (chapitre 5).
 :::
 
 ## Points clés {.smaller}
