@@ -147,13 +147,34 @@ print("Forme :", image.shape, "| max :", image.max(), "| moyenne :", image.mean(
 print(image[:2, :2])          # découpage d'une sous-image
 ```
 
+## NumPy — type, *broadcasting*, remodelage {.smaller}
+
+```{python}
+import numpy as np
+image = np.array([[10, 12, 11, 9], [8, 20, 22, 7], [9, 21, 23, 8]])
+print("dtype :", image.dtype, "| ndim :", image.ndim, "| size :", image.size)
+
+# broadcasting : une opération sur tout le tableau, sans boucle
+print("réflectance :", (image / 10000).round(4)[0])
+
+# reshape + transpose sur un cube (bandes, lignes, colonnes)
+cube = np.stack([image, image * 3])                       # 2 bandes
+print("cube :", cube.shape,
+      "-> HWC :", cube.transpose(1, 2, 0).shape,          # affichage
+      "-> table :", cube.transpose(1, 2, 0).reshape(-1, 2).shape)  # pixels x bandes
+```
+
+::: {.notes}
+`transpose(1,2,0)` + `reshape(-1, bandes)` = l'idiome exact du pipeline de classification (chapitre 5).
+:::
+
 ## Points clés {.smaller}
 
 ::: {.incremental}
 - Installez Python via un **environnement virtuel** (`conda` / `venv`)
 - Quatre structures : **listes**, **tuples**, **ensembles**, **dictionnaires**
 - `if`/`for`/`while` + **fonctions** (`def`) structurent le code
-- Une image est avant tout un **tableau NumPy**
+- Une image est avant tout un **tableau NumPy** : `dtype`, ***broadcasting***, `reshape`/`transpose` calculent et réorganisent sans boucle
 :::
 
 ## À vous de jouer {.smaller}

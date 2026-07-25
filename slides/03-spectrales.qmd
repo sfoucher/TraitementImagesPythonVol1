@@ -11,6 +11,7 @@ jupyter: python3
 - Comprendre le principe des **indices spectraux**
 - Calculer différents indices avec **`spyndex`**
 - Analyser le **gain en information** des indices
+- Réduire la **dimension spectrale** (ACP / produit matriciel)
 :::
 
 ## Qu'est-ce que l'information spectrale ? {.smaller}
@@ -94,6 +95,28 @@ plt.show()
 - Chaque indice met en valeur une **thématique** (végétation, eau, bâti)
 :::
 
+## Réduction de dimension — ACP {.smaller}
+
+Combiner des bandes = **produit matriciel** ; l'**ACP** apprend les poids qui maximisent la variance.
+
+```{python}
+#| fig-align: center
+import numpy as np, rioxarray as rxr, matplotlib.pyplot as plt
+cube = rxr.open_rasterio('../RGBNIR_of_S2A.tif').to_numpy().astype('float32')  # (4,H,W)
+B, H, W = cube.shape
+Xc = cube.reshape(B, H * W).T - cube.reshape(B, H * W).T.mean(0)   # centrage
+val, vec = np.linalg.eigh(np.cov(Xc, rowvar=False))
+o = np.argsort(val)[::-1]; val, vec = val[o], vec[:, o]
+comp = (Xc @ vec).T.reshape(B, H, W)                              # projection = @
+etir = lambda x: (x - x.min()) / (x.max() - x.min())
+fig, ax = plt.subplots(1, 2, figsize=(8, 3.2))
+ax[0].bar(range(1, B + 1), val / val.sum()); ax[0].set_title("Variance expliquée")
+ax[1].imshow(np.dstack([etir(comp[i]) for i in range(3)]))
+ax[1].set_title("Composantes 1-2-3"); ax[1].axis('off'); plt.show()
+```
+
+Les 3 premières composantes concentrent **> 99 %** de la variance.
+
 ## Points clés {.smaller}
 
 ::: {.incremental}
@@ -101,6 +124,7 @@ plt.show()
 - Un **indice** met en valeur le spectre et améliore la **séparabilité**
 - **`spyndex`** : 200+ indices, nomenclature de bandes (`N`, `R`, `G`…)
 - **NDVI** $=(N-R)/(N+R)$ : élevé pour la végétation
+- L'**ACP** (produit matriciel + covariance) range l'information par variance décroissante → **réduction de dimension**
 :::
 
 ## À vous de jouer {.smaller}

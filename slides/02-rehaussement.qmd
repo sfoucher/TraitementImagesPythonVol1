@@ -122,6 +122,22 @@ ax[1].set_title("Fausses couleurs (végétation en rouge)"); ax[1].axis('off')
 plt.show()
 ```
 
+## Visualisation interactive — leafmap {.smaller}
+
+Placer une image géoréférencée sur une **carte web** : zoom, fond de carte, comparaison avant/après.
+
+```{python}
+#| eval: false
+import leafmap
+m = leafmap.Map()
+m.add_raster('RGBNIR_of_S2A.tif', indexes=[3, 2, 1])       # vraie couleur
+m.split_map(left_layer='RGBNIR_of_S2A.tif', right_layer='RGBNIR_of_S2A.tif',
+            left_args={'indexes': [3, 2, 1]}, right_args={'indexes': [4, 3, 2]})
+m
+```
+
+Carte **JavaScript** : interactive dans un notebook (Colab) ou en HTML — **jamais dans le PDF**. Cellule non exécutée ici (`eval: false`).
+
 ## Points clés {.smaller}
 
 ::: {.incremental}
@@ -129,6 +145,7 @@ plt.show()
 - **Percentiles** (2–98 %) = bornes robustes pour histogrammes asymétriques
 - Transformations non linéaires : **dB**, **égalisation d'histogramme**
 - **Palettes** perceptuelles (`viridis`) et **composés colorés** révèlent l'information
+- **`leafmap`** : exploration **interactive** d'une image sur une carte web (notebook / HTML)
 :::
 
 ## À vous de jouer {.smaller}
