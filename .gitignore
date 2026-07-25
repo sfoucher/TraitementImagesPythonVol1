@@ -7,6 +7,7 @@
 /ndvi.npy
 /bandes.npz
 tex-hacks/*
+tutorial-example/*
 lua/*
 /.quarto/
 *.tif

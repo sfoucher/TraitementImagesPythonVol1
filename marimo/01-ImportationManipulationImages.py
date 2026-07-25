@@ -314,15 +314,15 @@ def _(mo):
 
 @app.cell
 def _(rasterio):
-    with rasterio.open('RGBNIR_of_S2A.tif') as src:
-        print('Nombre de bandes :', src.count)
-        print('Dimensions (lignes, colonnes) :', src.height, src.width)
-        print('Type des pixels :', src.dtypes[0])
-        print('Système de coordonnées :', src.crs)
-        print('Résolution (m) :', src.res)
-        print('Emprise :', src.bounds)
-        meta = src.meta
-    meta  # toutes les métadonnées dans un dictionnaire
+    with rasterio.open('RGBNIR_of_S2A.tif') as _src:
+        print('Nombre de bandes :', _src.count)
+        print('Dimensions (lignes, colonnes) :', _src.height, _src.width)
+        print('Type des pixels :', _src.dtypes[0])
+        print('Système de coordonnées :', _src.crs)
+        print('Résolution (m) :', _src.res)
+        print('Emprise :', _src.bounds)
+        meta = _src.meta
+    meta
     return
 
 
@@ -603,6 +603,51 @@ def _(mo):
     mo.md(r"""
     Contrairement au GeoTIFF, ces fichiers ne contiennent **ni géoréférence ni métadonnée** : ils ne servent qu'à un stockage temporaire au sein d'une chaîne de traitement Python.
 
+    ### Créer un raster à partir d'un tableau NumPy
+
+    À l'inverse, on souhaite souvent écrire un **résultat** calculé (un indice, un masque, une classification) dans un GeoTIFF **géoréférencé**. Avec `rasterio`, on part du **profil** de l'image source — qui transporte le système de coordonnées, la transformation affine et les dimensions — que l'on adapte au produit dérivé (ici une seule bande en `float32`) :
+    """)
+    return
+
+
+@app.cell
+def _(rasterio):
+    with rasterio.open('RGBNIR_of_S2A.tif') as _src:
+        _rouge = _src.read(3).astype('float32')
+        _pir = _src.read(4).astype('float32')
+        profil = _src.profile
+    _ndvi = (_pir - _rouge) / (_pir + _rouge)
+    profil.update(count=1, dtype='float32')
+    with rasterio.open('ndvi.tif', 'w', **profil) as _dst:
+        _dst.write(_ndvi, 1)
+    with rasterio.open('ndvi.tif') as check:
+        print('CRS :', check.crs, '| bandes :', check.count, '| type :', check.dtypes[0])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Lorsqu'il n'y a pas d'image source, on construit la géoréférence de toutes pièces. `from_origin` définit la transformation affine à partir du coin supérieur gauche et de la taille des pixels :
+    """)
+    return
+
+
+@app.cell
+def _(np, rasterio):
+    from rasterio.transform import from_origin
+    donnee = np.random.default_rng(0).random((100, 100)).astype('float32')
+    # Tableau synthétique 100 x 100 et géoréférence construite manuellement
+    transform = from_origin(500000, 5000000, 10, 10)
+    with rasterio.open('synthetique.tif', 'w', driver='GTiff', height=100, width=100, count=1, dtype='float32', crs='EPSG:32618', transform=transform) as _dst:  # origine (x, y) + pixel de 10 m
+        _dst.write(donnee, 1)
+    print('Raster synthétique écrit :', donnee.shape, '| pixel 10 m, EPSG:32618')
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ### Changement de projection cartographique
 
     Une image géoréférencée peut être reprojetée dans un autre système de coordonnées avec `rio.reproject`. `rioxarray` recalcule alors la grille de pixels et met à jour la géoréférence :
@@ -816,6 +861,7 @@ def _(mo):
     <li><code>rioxarray</code>/<code>xarray</code> ajoutent <strong>dimensions nommées, coordonnées et géoréférence</strong> (accesseur <code>.rio</code>) : sélection par étiquette, reprojection (<code>rio.reproject</code>), export (<code>rio.to_raster</code>).</li>
     <li><code>rioxarray</code> <strong>découpe</strong> (<code>clip_box</code>/<code>clip</code>) et <strong>rééchantillonne</strong> (<code>reproject(resolution=…)</code>, méthode d’agrégation au choix) une image géoréférencée.</li>
     <li><code>xarray</code> sélectionne par <strong>étiquette</strong> (<code>sel</code>) ou position (<code>isel</code>), réduit sur des <strong>dimensions nommées</strong>, et ses calculs <strong>préservent la géoréférence</strong>.</li>
+    <li><code>rasterio</code> <strong>écrit</strong> un tableau NumPy dans un GeoTIFF géoréférencé : hériter le <strong>profil</strong> de la source (CRS + transformation) ou le construire (<code>from_origin</code>), puis <code>dst.write</code>.</li>
     </ul>
     </div>
     </div>
@@ -846,6 +892,8 @@ def _(mo):
     <li><em>(rééchantillonnage)</em> Rééchantillonnez l’image à <strong>30 m</strong> par moyenne (<code>reproject</code> avec <code>Resampling.average</code>) et comparez le nombre de pixels à l’original.
     </li>
     <li><em>(xarray)</em> Nommez les bandes (<code>B</code>, <code>V</code>, <code>R</code>, <code>PIR</code>), sélectionnez <code>PIR</code> par étiquette, puis calculez la moyenne de chaque bande sur les dimensions <code>y</code> et <code>x</code>.
+    </li>
+    <li><em>(écriture)</em> Calculez un masque d’eau (NDVI < 0), écrivez-le comme un GeoTIFF à une bande en réutilisant le profil de <code>RGBNIR_of_S2A.tif</code>, puis relisez-le pour vérifier son CRS.
     </li>
     </ol>
     </div>
