@@ -252,7 +252,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="histogramme" class="slide level2 smaller">
 <h2>Histogramme</h2>
-<div id="7e8e94e0" class="cell" data-execution_count="2">
+<div id="7d774a76" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, numpy <span class="im">as</span> np, matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>)</span>
 <span id="cb1-3"><a href=""></a>vals <span class="op">=</span> img.sel(band<span class="op">=</span><span class="dv">4</span>).values.ravel()          <span class="co"># bande PIR</span></span>
@@ -282,7 +282,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="histogrammes-asymétriques-les-percentiles" class="slide level2 smaller">
 <h2>Histogrammes asymétriques : les percentiles</h2>
 <p>Cas des images SAR (longue queue) → borner avec des percentiles :</p>
-<div id="a8508ee5" class="cell" data-execution_count="3">
+<div id="c8929d75" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a>sar <span class="op">=</span> rxr.open_rasterio(<span class="st">'../SAR.tif'</span>).sel(band<span class="op">=</span><span class="dv">1</span>).values</span>
 <span id="cb2-2"><a href=""></a>valid <span class="op">=</span> (sar <span class="op">!=</span> <span class="op">-</span><span class="fl">999.0</span>) <span class="op">&amp;</span> (sar <span class="op">&gt;</span> <span class="dv">0</span>)            <span class="co"># masque no_data</span></span>
 <span id="cb2-3"><a href=""></a>v <span class="op">=</span> sar[valid]</span>
@@ -303,7 +303,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="réhaussement-non-linéaire-décibels" class="slide level2 smaller">
 <h2>Réhaussement non linéaire — décibels</h2>
 <p>Pour le radar : passage en <strong>dB</strong> (<code>10·log10</code>) → distribution ~gaussienne.</p>
-<div id="f37e0fe5" class="cell" data-execution_count="4">
+<div id="d959b101" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>sar_db <span class="op">=</span> <span class="dv">10</span> <span class="op">*</span> np.log10(np.where(valid, sar, np.nan))</span>
 <span id="cb3-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.2</span>))</span>
 <span id="cb3-3"><a href=""></a>im <span class="op">=</span> ax.imshow(sar_db, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax.set_title(<span class="st">"SAR en dB"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
@@ -327,7 +327,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="palettes-de-couleur" class="slide level2 smaller">
 <h2>Palettes de couleur</h2>
-<div id="bfd385d9" class="cell" data-execution_count="5">
+<div id="cf29f3b9" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
 <span id="cb4-2"><a href=""></a><span class="cf">for</span> a, cmap <span class="kw">in</span> <span class="bu">zip</span>(ax, [<span class="st">'gray'</span>, <span class="st">'viridis'</span>, <span class="st">'terrain'</span>]):   <span class="co"># viridis &gt; jet (perceptuel)</span></span>
 <span id="cb4-3"><a href=""></a>    a.imshow(sar, vmin<span class="op">=</span>p[<span class="dv">2</span>], vmax<span class="op">=</span>p[<span class="dv">98</span>], cmap<span class="op">=</span>cmap)</span>
@@ -345,7 +345,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="composés-colorés" class="slide level2 smaller">
 <h2>Composés colorés</h2>
 <p>Ordre des bandes <strong>B, V, R, PIR</strong> → vraies vs fausses couleurs :</p>
-<div id="35b35a80" class="cell" data-execution_count="6">
+<div id="0cc6b6ae" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">3.3</span>))</span>
 <span id="cb5-2"><a href=""></a>img.sel(band<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]).plot.imshow(vmin<span class="op">=</span><span class="dv">86</span>, vmax<span class="op">=</span><span class="dv">5000</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])   <span class="co"># R,V,B</span></span>
 <span id="cb5-3"><a href=""></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Vraies couleurs"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
@@ -361,6 +361,19 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </div>
 </div>
 </section>
+<section id="visualisation-interactive-leafmap" class="slide level2 smaller">
+<h2>Visualisation interactive — leafmap</h2>
+<p>Placer une image géoréférencée sur une <strong>carte web</strong> : zoom, fond de carte, comparaison avant/après.</p>
+<div id="e10680ac" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a><span class="im">import</span> leafmap</span>
+<span id="cb6-2"><a href=""></a>m <span class="op">=</span> leafmap.Map()</span>
+<span id="cb6-3"><a href=""></a>m.add_raster(<span class="st">'RGBNIR_of_S2A.tif'</span>, indexes<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>])       <span class="co"># vraie couleur</span></span>
+<span id="cb6-4"><a href=""></a>m.split_map(left_layer<span class="op">=</span><span class="st">'RGBNIR_of_S2A.tif'</span>, right_layer<span class="op">=</span><span class="st">'RGBNIR_of_S2A.tif'</span>,</span>
+<span id="cb6-5"><a href=""></a>            left_args<span class="op">=</span>{<span class="st">'indexes'</span>: [<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]}, right_args<span class="op">=</span>{<span class="st">'indexes'</span>: [<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>]})</span>
+<span id="cb6-6"><a href=""></a>m</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Carte <strong>JavaScript</strong> : interactive dans un notebook (Colab) ou en HTML — <strong>jamais dans le PDF</strong>. Cellule non exécutée ici (<code>eval: false</code>).</p>
+</section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>
 <ul>
@@ -368,6 +381,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong>Percentiles</strong> (2–98 %) = bornes robustes pour histogrammes asymétriques</li>
 <li class="fragment">Transformations non linéaires : <strong>dB</strong>, <strong>égalisation d’histogramme</strong></li>
 <li class="fragment"><strong>Palettes</strong> perceptuelles (<code>viridis</code>) et <strong>composés colorés</strong> révèlent l’information</li>
+<li class="fragment"><strong><code>leafmap</code></strong> : exploration <strong>interactive</strong> d’une image sur une carte web (notebook / HTML)</li>
 </ul>
 </section>
 <section id="à-vous-de-jouer" class="slide level2 smaller">

@@ -338,7 +338,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="listes" class="slide level2 smaller">
 <h2>Listes</h2>
-<div id="59d96c5e" class="cell" data-execution_count="2">
+<div id="31999ae4" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb2-2"><a href=""></a><span class="bu">print</span>(bandes[<span class="dv">0</span>], <span class="st">"|"</span>, bandes[<span class="op">-</span><span class="dv">1</span>], <span class="st">"|"</span>, bandes[<span class="dv">1</span>:<span class="dv">3</span>])   <span class="co"># index, tranche</span></span>
 <span id="cb2-3"><a href=""></a>bandes.append(<span class="st">"SWIR"</span>)</span>
@@ -351,7 +351,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="tuples-ensembles" class="slide level2 smaller">
 <h2>Tuples &amp; ensembles</h2>
-<div id="39b5b369" class="cell" data-execution_count="3">
+<div id="38dd51cc" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>dimensions <span class="op">=</span> (<span class="dv">512</span>, <span class="dv">512</span>)          <span class="co"># immuable : dimensions d'une image</span></span>
 <span id="cb4-2"><a href=""></a>lignes, colonnes <span class="op">=</span> dimensions    <span class="co"># dépaquetage</span></span>
 <span id="cb4-3"><a href=""></a><span class="bu">print</span>(lignes, colonnes)</span>
@@ -360,13 +360,13 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <span id="cb4-6"><a href=""></a><span class="bu">print</span>(<span class="bu">set</span>(classes))              <span class="co"># doublons éliminés</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>512 512
-{'eau', 'forêt', 'urbain'}</code></pre>
+{'eau', 'urbain', 'forêt'}</code></pre>
 </div>
 </div>
 </section>
 <section id="dictionnaires" class="slide level2 smaller">
 <h2>Dictionnaires</h2>
-<div id="d3a9ba75" class="cell" data-execution_count="4">
+<div id="66345c64" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
 <span id="cb6-2"><a href=""></a>image[<span class="st">"date"</span>] <span class="op">=</span> <span class="st">"2024-07-01"</span>                 <span class="co"># ajout d'une paire</span></span>
 <span id="cb6-3"><a href=""></a><span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items():</span>
@@ -381,7 +381,7 @@ date : 2024-07-01</code></pre>
 </section>
 <section id="boucles-conditions" class="slide level2 smaller">
 <h2>Boucles &amp; conditions</h2>
-<div id="72fce63f" class="cell" data-execution_count="5">
+<div id="40684353" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]):</span>
 <span id="cb8-2"><a href=""></a>    <span class="bu">print</span>(i, nom)</span>
 <span id="cb8-3"><a href=""></a></span>
@@ -400,7 +400,7 @@ moyenne</code></pre>
 </section>
 <section id="fonctions" class="slide level2 smaller">
 <h2>Fonctions</h2>
-<div id="0ad76a86" class="cell" data-execution_count="6">
+<div id="80397f5a" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a><span class="kw">def</span> ndvi(nir, rouge):</span>
 <span id="cb10-2"><a href=""></a>    <span class="co">"""NDVI = (PIR - Rouge) / (PIR + Rouge)."""</span></span>
 <span id="cb10-3"><a href=""></a>    <span class="cf">return</span> (nir <span class="op">-</span> rouge) <span class="op">/</span> (nir <span class="op">+</span> rouge)</span>
@@ -426,7 +426,7 @@ moyenne</code></pre>
 </section>
 <section id="programmation-objet" class="slide level2 smaller">
 <h2>Programmation objet</h2>
-<div id="8ca33fab" class="cell" data-execution_count="7">
+<div id="66bc2fa8" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a><span class="kw">class</span> Image:</span>
 <span id="cb12-2"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capteur, bandes):   <span class="co"># constructeur + attributs</span></span>
 <span id="cb12-3"><a href=""></a>        <span class="va">self</span>.capteur <span class="op">=</span> capteur</span>
@@ -443,7 +443,7 @@ moyenne</code></pre>
 <section id="un-avant-goût-de-numpy" class="slide level2 smaller">
 <h2>Un avant-goût de NumPy</h2>
 <p>Une image = un <strong>tableau de nombres</strong> (<code>ndarray</code>), la brique de tous les chapitres.</p>
-<div id="e03bc6a4" class="cell" data-execution_count="8">
+<div id="88e90a0e" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb14-2"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
 <span id="cb14-3"><a href=""></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
@@ -457,13 +457,48 @@ moyenne</code></pre>
 </div>
 </div>
 </section>
+<section id="numpy-type-broadcasting-remodelage" class="slide level2 smaller">
+<h2>NumPy — type, <em>broadcasting</em>, remodelage</h2>
+<div id="7ad41ef2" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-2"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>, <span class="dv">9</span>], [<span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">7</span>], [<span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">8</span>]])</span>
+<span id="cb16-3"><a href=""></a><span class="bu">print</span>(<span class="st">"dtype :"</span>, image.dtype, <span class="st">"| ndim :"</span>, image.ndim, <span class="st">"| size :"</span>, image.size)</span>
+<span id="cb16-4"><a href=""></a></span>
+<span id="cb16-5"><a href=""></a><span class="co"># broadcasting : une opération sur tout le tableau, sans boucle</span></span>
+<span id="cb16-6"><a href=""></a><span class="bu">print</span>(<span class="st">"réflectance :"</span>, (image <span class="op">/</span> <span class="dv">10000</span>).<span class="bu">round</span>(<span class="dv">4</span>)[<span class="dv">0</span>])</span>
+<span id="cb16-7"><a href=""></a></span>
+<span id="cb16-8"><a href=""></a><span class="co"># reshape + transpose sur un cube (bandes, lignes, colonnes)</span></span>
+<span id="cb16-9"><a href=""></a>cube <span class="op">=</span> np.stack([image, image <span class="op">*</span> <span class="dv">3</span>])                       <span class="co"># 2 bandes</span></span>
+<span id="cb16-10"><a href=""></a><span class="bu">print</span>(<span class="st">"cube :"</span>, cube.shape,</span>
+<span id="cb16-11"><a href=""></a>      <span class="st">"-&gt; HWC :"</span>, cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).shape,          <span class="co"># affichage</span></span>
+<span id="cb16-12"><a href=""></a>      <span class="st">"-&gt; table :"</span>, cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>).shape)  <span class="co"># pixels x bandes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>dtype : int64 | ndim : 2 | size : 12
+réflectance : [0.001  0.0012 0.0011 0.0009]
+cube : (2, 3, 4) -&gt; HWC : (3, 4, 2) -&gt; table : (12, 2)</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p><code>transpose(1,2,0)</code> + <code>reshape(-1, bandes)</code> = l’idiome exact du pipeline de classification (chapitre 5).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>
 <ul>
 <li class="fragment">Installez Python via un <strong>environnement virtuel</strong> (<code>conda</code> / <code>venv</code>)</li>
 <li class="fragment">Quatre structures : <strong>listes</strong>, <strong>tuples</strong>, <strong>ensembles</strong>, <strong>dictionnaires</strong></li>
 <li class="fragment"><code>if</code>/<code>for</code>/<code>while</code> + <strong>fonctions</strong> (<code>def</code>) structurent le code</li>
-<li class="fragment">Une image est avant tout un <strong>tableau NumPy</strong></li>
+<li class="fragment">Une image est avant tout un <strong>tableau NumPy</strong> : <code>dtype</code>, <strong><em>broadcasting</em></strong>, <code>reshape</code>/<code>transpose</code> calculent et réorganisent sans boucle</li>
 </ul>
 </section>
 <section id="à-vous-de-jouer" class="slide level2 smaller">

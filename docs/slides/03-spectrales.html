@@ -216,6 +216,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Comprendre le principe des <strong>indices spectraux</strong></li>
 <li class="fragment">Calculer différents indices avec <strong><code>spyndex</code></strong></li>
 <li class="fragment">Analyser le <strong>gain en information</strong> des indices</li>
+<li class="fragment">Réduire la <strong>dimension spectrale</strong> (ACP / produit matriciel)</li>
 </ul>
 </section>
 <section id="quest-ce-que-linformation-spectrale" class="slide level2 smaller">
@@ -229,7 +230,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="signatures-spectrales" class="slide level2 smaller">
 <h2>Signatures spectrales</h2>
-<div id="bb463334" class="cell" data-execution_count="2">
+<div id="0c8f185d" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>base <span class="op">=</span> <span class="st">'../ASCIIdata_splib07b_rsSentinel2'</span></span>
 <span id="cb1-3"><a href=""></a><span class="kw">def</span> lire(f):</span>
@@ -310,7 +311,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="calcul-dindices-computeindex" class="slide level2 smaller">
 <h2>Calcul d’indices — <code>computeIndex</code></h2>
-<div id="a537f99d" class="cell" data-execution_count="3">
+<div id="c226186c" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, spyndex</span>
 <span id="cb2-2"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).astype(<span class="st">'float32'</span>) <span class="op">/</span> <span class="dv">10000</span>   <span class="co"># ordre B,V,R,PIR</span></span>
 <span id="cb2-3"><a href=""></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
@@ -338,6 +339,32 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Chaque indice met en valeur une <strong>thématique</strong> (végétation, eau, bâti)</li>
 </ul>
 </section>
+<section id="réduction-de-dimension-acp" class="slide level2 smaller">
+<h2>Réduction de dimension — ACP</h2>
+<p>Combiner des bandes = <strong>produit matriciel</strong> ; l’<strong>ACP</strong> apprend les poids qui maximisent la variance.</p>
+<div id="6d358422" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np, rioxarray <span class="im">as</span> rxr, matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-2"><a href=""></a>cube <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy().astype(<span class="st">'float32'</span>)  <span class="co"># (4,H,W)</span></span>
+<span id="cb3-3"><a href=""></a>B, H, W <span class="op">=</span> cube.shape</span>
+<span id="cb3-4"><a href=""></a>Xc <span class="op">=</span> cube.reshape(B, H <span class="op">*</span> W).T <span class="op">-</span> cube.reshape(B, H <span class="op">*</span> W).T.mean(<span class="dv">0</span>)   <span class="co"># centrage</span></span>
+<span id="cb3-5"><a href=""></a>val, vec <span class="op">=</span> np.linalg.eigh(np.cov(Xc, rowvar<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb3-6"><a href=""></a>o <span class="op">=</span> np.argsort(val)[::<span class="op">-</span><span class="dv">1</span>]<span class="op">;</span> val, vec <span class="op">=</span> val[o], vec[:, o]</span>
+<span id="cb3-7"><a href=""></a>comp <span class="op">=</span> (Xc <span class="op">@</span> vec).T.reshape(B, H, W)                              <span class="co"># projection = @</span></span>
+<span id="cb3-8"><a href=""></a>etir <span class="op">=</span> <span class="kw">lambda</span> x: (x <span class="op">-</span> x.<span class="bu">min</span>()) <span class="op">/</span> (x.<span class="bu">max</span>() <span class="op">-</span> x.<span class="bu">min</span>())</span>
+<span id="cb3-9"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">3.2</span>))</span>
+<span id="cb3-10"><a href=""></a>ax[<span class="dv">0</span>].bar(<span class="bu">range</span>(<span class="dv">1</span>, B <span class="op">+</span> <span class="dv">1</span>), val <span class="op">/</span> val.<span class="bu">sum</span>())<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Variance expliquée"</span>)</span>
+<span id="cb3-11"><a href=""></a>ax[<span class="dv">1</span>].imshow(np.dstack([etir(comp[i]) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]))</span>
+<span id="cb3-12"><a href=""></a>ax[<span class="dv">1</span>].set_title(<span class="st">"Composantes 1-2-3"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="03-spectrales_files/figure-revealjs/cell-4-output-1.png" class="quarto-figure quarto-figure-center" width="637" height="299"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Les 3 premières composantes concentrent <strong>&gt; 99 %</strong> de la variance.</p>
+</section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>
 <ul>
@@ -345,6 +372,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Un <strong>indice</strong> met en valeur le spectre et améliore la <strong>séparabilité</strong></li>
 <li class="fragment"><strong><code>spyndex</code></strong> : 200+ indices, nomenclature de bandes (<code>N</code>, <code>R</code>, <code>G</code>…)</li>
 <li class="fragment"><strong>NDVI</strong> <span class="math inline">\(=(N-R)/(N+R)\)</span> : élevé pour la végétation</li>
+<li class="fragment">L’<strong>ACP</strong> (produit matriciel + covariance) range l’information par variance décroissante → <strong>réduction de dimension</strong></li>
 </ul>
 </section>
 <section id="à-vous-de-jouer" class="slide level2 smaller">

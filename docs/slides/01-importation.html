@@ -249,7 +249,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="démo-lecture-et-vraies-couleurs" class="slide level2 smaller">
 <h2>Démo — lecture et vraies couleurs</h2>
 <p>L’ordre des bandes de <code>RGBNIR_of_S2A.tif</code> est <strong>B, V, R, PIR</strong> → on réordonne en R, V, B :</p>
-<div id="cb719b95" class="cell" data-execution_count="2">
+<div id="8e001b34" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb1-2"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href=""></a></span>
@@ -269,7 +269,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="regarder-les-métadonnées-avant-de-lire" class="slide level2 smaller">
 <h2>Regarder les métadonnées avant de lire</h2>
-<div id="41a3dde0" class="cell" data-execution_count="3">
+<div id="620e5566" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" data-code-line-numbers="2-6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rasterio</span>
 <span id="cb2-2"><a href=""></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">'../RGBNIR_of_S2A.tif'</span>) <span class="im">as</span> src:</span>
 <span id="cb2-3"><a href=""></a>    <span class="bu">print</span>(<span class="st">"Bandes     :"</span>, src.count, <span class="st">"| type :"</span>, src.dtypes[<span class="dv">0</span>])</span>
@@ -284,6 +284,27 @@ Résolution : (10.0, 10.0) m</code></pre>
 </div>
 </div>
 </section>
+<section id="indexation-avancée-bande-dominante" class="slide level2 smaller">
+<h2>Indexation avancée — bande dominante</h2>
+<p><code>argmax</code> sur l’axe des bandes → la bande la plus brillante en chaque pixel :</p>
+<div id="f2060513" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href=""></a>cube <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy()   <span class="co"># (4, H, W) ; B,V,R,PIR</span></span>
+<span id="cb4-3"><a href=""></a>dominante <span class="op">=</span> cube.argmax(axis<span class="op">=</span><span class="dv">0</span>)                               <span class="co"># 0..3</span></span>
+<span id="cb4-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.6</span>))</span>
+<span id="cb4-5"><a href=""></a>im <span class="op">=</span> ax.imshow(dominante, cmap<span class="op">=</span><span class="st">'viridis'</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
+<span id="cb4-6"><a href=""></a>ax.set_title(<span class="st">"Bande dominante (0=B, 1=V, 2=R, 3=PIR)"</span>)</span>
+<span id="cb4-7"><a href=""></a>fig.colorbar(im, ax<span class="op">=</span>ax, ticks<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], shrink<span class="op">=</span><span class="fl">0.7</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="01-importation_files/figure-revealjs/cell-4-output-1.png" class="quarto-figure quarto-figure-center" width="380" height="305"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Le PIR domine sur la <strong>végétation</strong>. Masquer (<code>np.ma</code>) et sauvegarder (<code>np.save</code>/<code>.npz</code>) complètent la boîte à outils.</p>
+</section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>
 <ul>
@@ -291,6 +312,7 @@ Résolution : (10.0, 10.0) m</code></pre>
 <li class="fragment"><strong>RVB</strong> (au plus 3 bandes, 8 bits) vs <strong>géo-formats</strong> (multi-bandes, géoréférence)</li>
 <li class="fragment">Consulter les <strong>métadonnées avant</strong> de lire (<code>rio info</code>, <code>gdalinfo</code>, <code>rasterio</code>)</li>
 <li class="fragment">Une image est un <strong>tableau NumPy</strong> — découpage, vue vs copie</li>
+<li class="fragment"><strong>Indexation avancée</strong> (<code>argmax</code>, tableaux d’indices), <strong>tableaux masqués</strong> (<code>np.ma</code>), <strong>sauvegarde</strong> (<code>.npy</code>/<code>.npz</code>)</li>
 <li class="fragment"><code>rioxarray</code> / <code>xarray</code> : dimensions nommées + géoréférence via <code>.rio</code></li>
 </ul>
 </section>
