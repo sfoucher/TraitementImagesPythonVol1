@@ -194,8 +194,8 @@ def _(mo):
 @app.cell
 def _():
     from PIL import Image
-    _img = Image.open('modis-aqua.PNG')
-    _img
+    img = Image.open('modis-aqua.PNG')
+    img
     return
 
 
@@ -212,8 +212,8 @@ def _(mo):
 @app.cell
 def _():
     import cv2
-    _img = cv2.imread('modis-aqua.PNG')
-    _img
+    img_1 = cv2.imread('modis-aqua.PNG')
+    img_1
     return (cv2,)
 
 
@@ -253,8 +253,8 @@ def _(mo):
 @app.cell
 def _():
     import rasterio
-    _img = rasterio.open('modis-aqua.PNG')
-    _img
+    img_2 = rasterio.open('modis-aqua.PNG')
+    img_2
     return (rasterio,)
 
 
@@ -346,10 +346,10 @@ def _(mo):
 
 @app.cell
 def _(cv2):
-    _img = cv2.imread('modis-aqua.PNG')
-    print('Nombre de dimensions: ', _img.ndim)
-    print('Dimensions de la matrice: ', _img.shape)
-    print('Type de la donnée: ', _img.dtype)
+    img_3 = cv2.imread('modis-aqua.PNG')
+    print('Nombre de dimensions: ', img_3.ndim)
+    print('Dimensions de la matrice: ', img_3.shape)
+    print('Type de la donnée: ', img_3.dtype)
     return
 
 
@@ -392,9 +392,9 @@ def _(mo):
 
 @app.cell
 def _(cv2):
-    _img = cv2.imread('modis-aqua.PNG')
-    img_col = _img[:, 2, :]
-    print('Nombre de dimensions: ', img_col.ndim)
+    img_4 = cv2.imread('modis-aqua.PNG')
+    img_col = img_4[:, 2, :]
+    print('Nombre de dimensions: ', img_col.ndim)  # troisième colonne (indice 2), toutes les bandes
     print('Dimensions de la matrice: ', img_col.shape)
     return
 
@@ -499,11 +499,14 @@ def _(mo):
 
 @app.cell
 def _(np):
-    _img = np.array([[12, 0, 15], [8, 20, 0], [0, 21, 23]], dtype=float)
-    img_masque = np.ma.masked_equal(_img, 0)
-    print('Moyenne sans masque :', round(_img.mean(), 2))
+    img_5 = np.array([[12, 0, 15], [8, 20, 0], [0, 21, 23]], dtype=float)
+    img_masque = np.ma.masked_equal(img_5, 0)
+    # Une petite image dont la valeur 0 représente le "no data"
+    print('Moyenne sans masque :', round(img_5.mean(), 2))
     print('Moyenne avec masque :', round(img_masque.mean(), 2))
-    img_nan = np.where(_img == 0, np.nan, _img)
+    img_nan = np.where(img_5 == 0, np.nan, img_5)
+    # Masquer les pixels égaux à 0 : ils seront ignorés par les statistiques
+    # Approche équivalente avec des NaN et les fonctions « nan » de NumPy
     print('Moyenne (nanmean)   :', round(np.nanmean(img_nan), 2))
     return
 
@@ -518,8 +521,8 @@ def _(mo):
 
 @app.cell
 def _(np, rxr):
-    _img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
-    (_rouge, _pir) = (_img.sel(band=3).to_numpy(), _img.sel(band=4).to_numpy())
+    img_6 = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
+    (_rouge, _pir) = (img_6.sel(band=3).to_numpy(), img_6.sel(band=4).to_numpy())
     _ndvi = (_pir - _rouge) / (_pir + _rouge)
     ndvi_veg = np.ma.masked_where(_ndvi < 0, _ndvi)
     print('Pixels totaux  :', _ndvi.size)
@@ -541,9 +544,9 @@ def _(mo):
 
 @app.cell
 def _(rxr):
-    _img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
-    _rouge = _img.sel(band=3)
-    _pir = _img.sel(band=4)
+    img_7 = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
+    _rouge = img_7.sel(band=3)
+    _pir = img_7.sel(band=4)
     rapport = (_pir - _rouge) / (_pir + _rouge)
     print('Forme du rapport :', rapport.shape)
     print('Valeurs min/max  :', round(float(rapport.min()), 2), round(float(rapport.max()), 2))
@@ -562,9 +565,10 @@ def _(mo):
 
 @app.cell
 def _(rxr):
-    _img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
-    img_rvb = _img.sel(band=[1, 2, 3])
+    img_8 = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+    img_rvb = img_8.sel(band=[1, 2, 3])
     img_rvb.rio.to_raster('RGBNIR_rvb.tif')
+    # On ne conserve que les trois premières bandes visibles (bleu, vert, rouge)
     print('Image exportée :', tuple(img_rvb.sizes.values()))
     return
 
@@ -581,8 +585,8 @@ def _(mo):
 
 @app.cell
 def _(np, rxr):
-    _img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
-    (_rouge, _pir) = (_img.sel(band=3).to_numpy(), _img.sel(band=4).to_numpy())
+    img_9 = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
+    (_rouge, _pir) = (img_9.sel(band=3).to_numpy(), img_9.sel(band=4).to_numpy())
     _ndvi = (_pir - _rouge) / (_pir + _rouge)
     np.save('ndvi.npy', _ndvi)
     recharge = np.load('ndvi.npy')
@@ -608,11 +612,52 @@ def _(mo):
 
 @app.cell
 def _(rxr):
-    _img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
-    print("CRS d'origine :", _img.rio.crs)
-    img_wgs84 = _img.rio.reproject('EPSG:4326')
-    print('Après reprojection :', img_wgs84.rio.crs)
+    img_10 = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+    print("CRS d'origine :", img_10.rio.crs)
+    img_wgs84 = img_10.rio.reproject('EPSG:4326')
+    print('Après reprojection :', img_wgs84.rio.crs)  # EPSG:32618 (UTM)
+    # Reprojection en coordonnées géographiques (latitude/longitude)
     print('Nouvelle forme :', dict(img_wgs84.sizes))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Découpage et rééchantillonnage
+
+    Deux opérations géospatiales complètent la reprojection. Le **découpage** (*clip*) extrait une emprise plus petite : `clip_box` prend une boîte englobante exprimée dans le système de coordonnées de l'image, tandis que `rio.clip` accepte une géométrie quelconque (le polygone d'une zone d'intérêt).
+    """)
+    return
+
+
+@app.cell
+def _(rxr):
+    img_11 = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+    (_minx, _miny, _maxx, _maxy) = img_11.rio.bounds()
+    (cx, cy) = ((_minx + _maxx) / 2, (_miny + _maxy) / 2)
+    (dx, dy) = ((_maxx - _minx) / 4, (_maxy - _miny) / 4)
+    sous_image = img_11.rio.clip_box(cx - dx, cy - dy, cx + dx, cy + dy)
+    print("Forme d'origine :", tuple(img_11.sizes.values()))
+    print('Après découpage :', tuple(sous_image.sizes.values()))
+    return (img_11,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Le **rééchantillonnage** change la résolution spatiale. `rio.reproject` avec un paramètre `resolution` recalcule la grille de pixels ; on choisit une méthode d'agrégation adaptée — la **moyenne** pour réduire une image continue, le **plus proche voisin** pour une carte de classes :
+    """)
+    return
+
+
+@app.cell
+def _(img_11):
+    from rasterio.enums import Resampling
+    img_20m = img_11.rio.reproject(img_11.rio.crs, resolution=20, resampling=Resampling.average)
+    # Passage de 10 m à 20 m par moyenne (sous-échantillonnage)
+    print("Résolution d'origine     :", img_11.rio.resolution())
+    print('Après rééchantillonnage  :', img_20m.rio.resolution(), '| forme :', tuple(img_20m.sizes.values()))
     return
 
 
@@ -694,12 +739,50 @@ def _(mo):
 
 @app.cell
 def _(rxr):
-    _img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
-    print('Dimensions :', dict(_img.sizes))
-    print('Système de coordonnées :', _img.rio.crs)
-    print('Résolution (m) :', _img.rio.resolution())
-    _pir = _img.sel(band=4)
+    img_12 = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+    print('Dimensions :', dict(img_12.sizes))
+    print('Système de coordonnées :', img_12.rio.crs)
+    print('Résolution (m) :', img_12.rio.resolution())
+    _pir = img_12.sel(band=4)
     print('Bande PIR — forme :', _pir.shape, '| valeur maximale :', int(_pir.max()))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    #### Sélection et opérations par étiquette
+
+    L'intérêt principal de `xarray` est de travailler par **étiquette** plutôt que par numéro d'axe. On sélectionne une bande par sa position (`isel`) ou par sa valeur (`sel`), et on peut même nommer les bandes pour les désigner explicitement :
+    """)
+    return
+
+
+@app.cell
+def _(rxr):
+    img_13 = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+    print('sel == isel :', bool((img_13.sel(band=4) == img_13.isel(band=3)).all()))
+    img_n = img_13.assign_coords(band=['B', 'V', 'R', 'PIR'])
+    print('Forme de la bande PIR :', img_n.sel(band='PIR').shape)
+    (_minx, _miny, _maxx, _maxy) = img_13.rio.bounds()
+    centre = img_13.sel(x=(_minx + _maxx) / 2, y=(_miny + _maxy) / 2, method='nearest')
+    print('Valeurs au centre :', centre.values.tolist())
+    return img_13, img_n
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Les opérations respectent les **dimensions nommées** : on calcule la moyenne de chaque bande en réduisant selon `y` et `x`, et un calcul entre bandes (comme le NDVI) renvoie un `DataArray` qui **conserve les coordonnées et la géoréférence** :
+    """)
+    return
+
+
+@app.cell
+def _(img_13, img_n):
+    print('Moyenne par bande :', img_13.mean(dim=['y', 'x']).values.round(1).tolist())
+    _ndvi = (img_n.sel(band='PIR') - img_n.sel(band='R')) / (img_n.sel(band='PIR') + img_n.sel(band='R'))
+    print('NDVI —', 'type :', type(_ndvi).__name__, '| dimensions :', _ndvi.dims)
     return
 
 
@@ -731,6 +814,8 @@ def _(mo):
     <li>Les <strong>tableaux masqués</strong> (<code>numpy.ma</code>) excluent les pixels non valides des statistiques : <code>masked_equal</code>/<code>masked_where</code>, puis <code>count()</code> et <code>compressed()</code>.</li>
     <li><code>np.save</code> (<code>.npy</code>) et <code>np.savez_compressed</code> (<code>.npz</code>) stockent des tableaux intermédiaires — <strong>sans</strong> géoréférence, au contraire du GeoTIFF.</li>
     <li><code>rioxarray</code>/<code>xarray</code> ajoutent <strong>dimensions nommées, coordonnées et géoréférence</strong> (accesseur <code>.rio</code>) : sélection par étiquette, reprojection (<code>rio.reproject</code>), export (<code>rio.to_raster</code>).</li>
+    <li><code>rioxarray</code> <strong>découpe</strong> (<code>clip_box</code>/<code>clip</code>) et <strong>rééchantillonne</strong> (<code>reproject(resolution=…)</code>, méthode d’agrégation au choix) une image géoréférencée.</li>
+    <li><code>xarray</code> sélectionne par <strong>étiquette</strong> (<code>sel</code>) ou position (<code>isel</code>), réduit sur des <strong>dimensions nommées</strong>, et ses calculs <strong>préservent la géoréférence</strong>.</li>
     </ul>
     </div>
     </div>
@@ -755,6 +840,12 @@ def _(mo):
     <li><em>(masquage)</em> Calculez le NDVI, masquez les pixels d’eau (NDVI < 0) avec <code>np.ma.masked_where</code>, puis comparez le NDVI moyen <strong>avec</strong> et <strong>sans</strong> masque.
     </li>
     <li><em>(sauvegarde)</em> Sauvegardez votre carte de NDVI dans un fichier <code>.npy</code>, rechargez-la, et vérifiez l’égalité avec <code>np.allclose</code> (option <code>equal_nan=True</code>).
+    </li>
+    <li><em>(découpage)</em> Découpez <code>RGBNIR_of_S2A.tif</code> sur son <strong>quart supérieur gauche</strong> avec <code>clip_box</code> et affichez la sous-image.
+    </li>
+    <li><em>(rééchantillonnage)</em> Rééchantillonnez l’image à <strong>30 m</strong> par moyenne (<code>reproject</code> avec <code>Resampling.average</code>) et comparez le nombre de pixels à l’original.
+    </li>
+    <li><em>(xarray)</em> Nommez les bandes (<code>B</code>, <code>V</code>, <code>R</code>, <code>PIR</code>), sélectionnez <code>PIR</code> par étiquette, puis calculez la moyenne de chaque bande sur les dimensions <code>y</code> et <code>x</code>.
     </li>
     </ol>
     </div>

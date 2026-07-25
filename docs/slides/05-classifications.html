@@ -232,7 +232,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="sur--et-sous-apprentissage" class="slide level2 smaller">
 <h2>Sur- et sous-apprentissage</h2>
-<div id="0a2d600c" class="cell" data-execution_count="2">
+<div id="0a2d600c" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
 <span id="cb1-2"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> PolynomialFeatures</span>
 <span id="cb1-3"><a href=""></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
@@ -278,7 +278,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="k-nn-frontières-de-décision" class="slide level2 smaller">
 <h2>K-NN — frontières de décision</h2>
 <p>Vote parmi les <span class="math inline">\(K\)</span> voisins les plus proches (bandes Rouge–PIR) :</p>
-<div id="77805f53" class="cell" data-execution_count="3">
+<div id="77805f53" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
 <span id="cb2-2"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb2-3"><a href=""></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
@@ -305,7 +305,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="distances-et-plus-proche-voisin" class="slide level2 smaller">
 <h2>Distances et plus proche voisin</h2>
 <p>Le K-NN repose sur des <strong>distances</strong> : <code>cdist</code> les calcule toutes, <code>argmin</code> donne le plus proche voisin — identique à <code>scikit-learn</code> pour <span class="math inline">\(K = 1\)</span>.</p>
-<div id="977212ee" class="cell" data-execution_count="4">
+<div id="977212ee" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">from</span> scipy.spatial.distance <span class="im">import</span> cdist</span>
 <span id="cb3-2"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb3-3"><a href=""></a></span>
@@ -322,7 +322,7 @@ Exactitude 1-PPV « à la main » : 0.39</code></pre>
 </section>
 <section id="comparer-les-classificateurs" class="slide level2 smaller">
 <h2>Comparer les classificateurs</h2>
-<div id="36770b01" class="cell" data-execution_count="5">
+<div id="36770b01" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
 <span id="cb5-2"><a href=""></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPClassifier</span>
 <span id="cb5-3"><a href=""></a></span>
@@ -351,7 +351,7 @@ Exactitude 1-PPV « à la main » : 0.39</code></pre>
 <section id="carte-doccupation-des-sols" class="slide level2 smaller">
 <h2>Carte d’occupation des sols</h2>
 <p>On applique le modèle (4 bandes) à toute l’image :</p>
-<div id="99095af6" class="cell" data-execution_count="6">
+<div id="99095af6" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb6-2"><a href=""></a>clf <span class="op">=</span> Pipeline([(<span class="st">"s"</span>, StandardScaler()), (<span class="st">"c"</span>, KNeighborsClassifier(<span class="dv">7</span>, weights<span class="op">=</span><span class="st">'distance'</span>))]).fit(Xtr, ytr)</span>
 <span id="cb6-3"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy()          <span class="co"># (4, H, W)</span></span>
@@ -372,7 +372,7 @@ Exactitude 1-PPV « à la main » : 0.39</code></pre>
 <section id="bilan-surfacique" class="slide level2 smaller">
 <h2>Bilan surfacique</h2>
 <p><code>np.bincount</code> compte les pixels par classe ; multiplié par la surface d’un pixel (10 m) → superficie.</p>
-<div id="b8e95f6d" class="cell" data-execution_count="7">
+<div id="b8e95f6d" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>res <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).rio.resolution()</span>
 <span id="cb7-2"><a href=""></a>pix_km2 <span class="op">=</span> <span class="bu">abs</span>(res[<span class="dv">0</span>] <span class="op">*</span> res[<span class="dv">1</span>]) <span class="op">/</span> <span class="fl">1e6</span></span>
 <span id="cb7-3"><a href=""></a>comptes <span class="op">=</span> np.bincount(carte.ravel(), minlength<span class="op">=</span><span class="bu">len</span>(noms2))</span>
