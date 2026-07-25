@@ -35,7 +35,7 @@ mkdir -p docs pdf notebooks marimo typst-out
 # 0. Consolidated exercises chapter (08-Exercices.qmd) — DERIVED from each
 # chapter's « Exercices » block. Regenerate before rendering so it stays in
 # sync; it is listed in _quarto.yml. Stdlib only, runs on the host.
-python3 make_exercices.py
+#python3 make_exercices.py
 
 # 1. HTML site (landing-page subtitle carries the version alongside the edition)
 q quarto render --cache --to html \

@@ -81,8 +81,8 @@ book:
 #  - 06-ClassificationsNonSupervisees.qmd
 #  - part: Partie 4. Données massives
 #  - 07-PlateformesMegadonnees.qmd
-  - part: Partie 5. Exercices et bibliographie
-  - 08-Exercices.qmd   # généré par make_exercices.py (voir process.sh)
+#  - part: Partie 5. Exercices et bibliographie
+#  - 08-Exercices.qmd   # généré par make_exercices.py (voir process.sh) — désactivé pour l'instant
   - references.qmd
       
 bibliography: references.bib
