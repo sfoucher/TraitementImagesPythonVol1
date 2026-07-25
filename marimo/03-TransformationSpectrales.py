@@ -388,6 +388,107 @@ def _(mo):
     mo.md(r"""
     ![Visualisation des points d'une image Sentinel-2 pour trois classes](images/fig-classes-indices.png){fig-align="center"}
 
+    ## Réduction de dimension
+
+    La réduction de dimension vise à ne retenir que l'information principale d'un jeu de données. L'objectif est parfois d'éliminer le bruit d'un capteur ou de faciliter la visualisation en ne retenant que 3 bandes principales. Le degré d'information est souvent mesuré par la variance d'une bande, c'est-à-dire son contraste. L'analyse en composantes principales vise alors à ranger l'information contenue dans une image en ordre de variance décroissante.
+
+    ### Transformations linéaires et produit matriciel
+
+    Une **transformation linéaire de bandes** consiste à produire de nouvelles bandes par sommes pondérées des bandes d'origine. Chaque pixel étant un vecteur de valeurs (une par bande), appliquer les mêmes poids à tous les pixels revient à un simple **produit matriciel** (opérateur `@` dans NumPy). Sur un petit exemple, une matrice `M` transforme 2 bandes en 2 nouvelles combinaisons :
+    """)
+    return
+
+
+@app.cell
+def _(np):
+    pixels = np.array([[10.0, 40.0], [20.0, 10.0], [5.0, 25.0]])
+    M = np.array([[0.5, 0.5], [1.0, -1.0]])
+    # 3 pixels (en lignes), 2 bandes (en colonnes)
+    # Deux combinaisons de bandes définies par une matrice (2 sorties x 2 bandes)
+    print(pixels @ M.T)  # moyenne des deux bandes  # différence des deux bandes  # produit matriciel : (3 pixels x 2 sorties)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    L'analyse en composantes principales pousse cette idée plus loin : au lieu de choisir les poids à la main, elle les **apprend des données** pour maximiser la variance retenue.
+
+    ### Analyse en composantes principales (ACP)
+
+    L'analyse en composantes principales (ACP) est probablement la plus employée. En théorie, l'ACP n'est valide que sur des données gaussiennes, c'est-à-dire que le nuage de points des données a la forme d'une ellipse à $N$ dimensions. Cette ellipse est caractérisée par des directions principales (grand axe versus petit axe). La première composante est celle du grand axe de l'ellipse, pour laquelle la donnée présente le maximum de variation. L'ACP est une décomposition **linéaire** : les composantes principales sont des sommes pondérées des valeurs originales.
+
+    Concrètement, on aplatit le cube en une table `pixels × bandes`, on **centre** les données, puis on diagonalise la **matrice de covariance** (`np.linalg.eigh`, adaptée aux matrices symétriques). Les vecteurs propres donnent les directions principales, et les valeurs propres la variance portée par chacune :
+    """)
+    return
+
+
+@app.cell
+def _(img_s2_1, np):
+    # On aplatit le cube (bandes x pixels) en une table (pixels x bandes)
+    cube = img_s2_1.to_numpy()  # (12, lignes, colonnes), réflectance
+    (B, H, W) = cube.shape
+    X = cube.reshape(B, H * W).T  # (pixels, bandes)
+    X_c = X - X.mean(axis=0)  # centrage : moyenne nulle par bande
+    cov = np.cov(X_c, rowvar=False)
+    # Matrice de covariance (12 x 12), puis vecteurs et valeurs propres
+    (valeurs, vecteurs) = np.linalg.eigh(cov)
+    ordre = np.argsort(valeurs)[::-1]  # eigh : matrice symétrique
+    (valeurs, vecteurs) = (valeurs[ordre], vecteurs[:, ordre])  # variance décroissante
+    ratio = valeurs / valeurs.sum()
+    print('Variance expliquée (5 premières) :', ratio[:5].round(3))
+    print('Cumul des 3 premières composantes :', round(ratio[:3].sum(), 3))
+    return B, H, W, X_c, ratio, vecteurs
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    La projection des pixels sur les vecteurs propres est, elle aussi, un **produit matriciel**. On récupère ensuite un cube de composantes rangées par variance décroissante :
+    """)
+    return
+
+
+@app.cell
+def _(B, H, W, X_c, vecteurs):
+    # Projection des pixels sur les directions principales
+    composantes = (X_c @ vecteurs).T.reshape(B, H, W)   # (composantes, lignes, colonnes)
+    print("Cube des composantes :", composantes.shape)
+    return (composantes,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Les trois premières composantes concentrent l'essentiel de l'information (ici plus de 98 % de la variance). On les visualise sous forme d'un composé coloré, à côté de l'éboulis (*scree plot*) des variances :
+    """)
+    return
+
+
+@app.cell
+def _(B, composantes, np, plt, ratio):
+    (fig_1, ax_1) = plt.subplots(1, 2, figsize=(10, 4))
+    ax_1[0].bar(range(1, B + 1), ratio)
+    ax_1[0].set_xlabel('Composante')
+    ax_1[0].set_ylabel('Variance expliquée')
+    ax_1[0].set_title('Éboulis (scree plot)')
+    # Composé coloré des 3 premières composantes (étirement min-max par composante)
+
+    def etirer(x):
+        return (x - x.min()) / (x.max() - x.min())
+    rgb = np.dstack([etirer(composantes[i]) for i in range(3)])
+    ax_1[1].imshow(rgb)
+    ax_1[1].set_title('Composantes 1-2-3 (RGB)')
+    ax_1[1].axis('off')
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    La première composante ressemble souvent à une image de brillance globale, tandis que les suivantes isolent des contrastes plus fins (végétation, eau). La même décomposition s'obtient de façon numériquement plus stable par **décomposition en valeurs singulières** (`np.linalg.svd`) appliquée aux données centrées. La réduction de dimension prépare aussi la classification (@sec-chap05) en concentrant l'information utile dans quelques bandes.
+
     ## Points clés
 
     <div style="border:0.5px solid silver;border-left:.3rem solid #357cc0;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
@@ -401,6 +502,7 @@ def _(mo):
     <li>La librairie <strong><code>spyndex</code></strong> (Awesome Spectral Indices) donne accès à plus de 200 indices ; elle suppose une <strong>nomenclature de bandes</strong> (<code>N</code>, <code>R</code>, <code>G</code>, <code>S1</code>…).</li>
     <li><code>spyndex.computeIndex</code> applique un indice à partir des bandes nommées ; renommer les bandes (<code>assign_coords</code>) facilite l’usage.</li>
     <li>Le <strong>NDVI</strong> <span class="math inline">\(= (N - R)/(N + R)\)</span> est élevé pour la végétation dense.</li>
+    <li>Une <strong>transformation linéaire de bandes</strong> est un <strong>produit matriciel</strong> (<code>@</code>) ; l’<strong>ACP</strong> apprend les poids optimaux (covariance + vecteurs propres) pour ranger l’information par variance décroissante et <strong>réduire la dimension</strong>.</li>
     </ul>
     </div>
     </div>
@@ -419,6 +521,10 @@ def _(mo):
     <li>Parcourez <code>spyndex.indices</code>, choisissez un indice adapté à l’eau ou aux sols, identifiez les bandes qu’il requiert, et calculez-le sur <code>img_s2</code>.
     </li>
     <li>Renommez les bandes de <code>img_s2</code> avec la nomenclature <code>spyndex</code> et vérifiez le résultat avec <code>img_s2.coords['band']</code>.
+    </li>
+    <li><em>(produit matriciel)</em> Construisez une matrice <code>2 × 4</code> transformant les 4 bandes de <code>RGBNIR_of_S2A.tif</code> en deux nouvelles bandes (brillance moyenne et différence PIR - Rouge) à l’aide de l’opérateur <code>@</code>, puis affichez-les.
+    </li>
+    <li><em>(ACP)</em> Réalisez l’ACP de <code>img_s2</code>, affichez la <strong>variance expliquée</strong> par chaque composante (éboulis), et vérifiez combien de composantes sont nécessaires pour atteindre 95 % de variance cumulée.
     </li>
     </ol>
     </div>
