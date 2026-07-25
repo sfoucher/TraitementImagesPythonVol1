@@ -230,7 +230,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="signatures-spectrales" class="slide level2 smaller">
 <h2>Signatures spectrales</h2>
-<div id="0c8f185d" class="cell" data-execution_count="2">
+<div id="304d8f5b" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>base <span class="op">=</span> <span class="st">'../ASCIIdata_splib07b_rsSentinel2'</span></span>
 <span id="cb1-3"><a href=""></a><span class="kw">def</span> lire(f):</span>
@@ -311,7 +311,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="calcul-dindices-computeindex" class="slide level2 smaller">
 <h2>Calcul d’indices — <code>computeIndex</code></h2>
-<div id="c226186c" class="cell" data-execution_count="3">
+<div id="3b9ab4b2" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, spyndex</span>
 <span id="cb2-2"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).astype(<span class="st">'float32'</span>) <span class="op">/</span> <span class="dv">10000</span>   <span class="co"># ordre B,V,R,PIR</span></span>
 <span id="cb2-3"><a href=""></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
@@ -339,31 +339,66 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Chaque indice met en valeur une <strong>thématique</strong> (végétation, eau, bâti)</li>
 </ul>
 </section>
-<section id="réduction-de-dimension-acp" class="slide level2 smaller">
-<h2>Réduction de dimension — ACP</h2>
-<p>Combiner des bandes = <strong>produit matriciel</strong> ; l’<strong>ACP</strong> apprend les poids qui maximisent la variance.</p>
-<div id="6d358422" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np, rioxarray <span class="im">as</span> rxr, matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb3-2"><a href=""></a>cube <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy().astype(<span class="st">'float32'</span>)  <span class="co"># (4,H,W)</span></span>
-<span id="cb3-3"><a href=""></a>B, H, W <span class="op">=</span> cube.shape</span>
-<span id="cb3-4"><a href=""></a>Xc <span class="op">=</span> cube.reshape(B, H <span class="op">*</span> W).T <span class="op">-</span> cube.reshape(B, H <span class="op">*</span> W).T.mean(<span class="dv">0</span>)   <span class="co"># centrage</span></span>
-<span id="cb3-5"><a href=""></a>val, vec <span class="op">=</span> np.linalg.eigh(np.cov(Xc, rowvar<span class="op">=</span><span class="va">False</span>))</span>
-<span id="cb3-6"><a href=""></a>o <span class="op">=</span> np.argsort(val)[::<span class="op">-</span><span class="dv">1</span>]<span class="op">;</span> val, vec <span class="op">=</span> val[o], vec[:, o]</span>
-<span id="cb3-7"><a href=""></a>comp <span class="op">=</span> (Xc <span class="op">@</span> vec).T.reshape(B, H, W)                              <span class="co"># projection = @</span></span>
-<span id="cb3-8"><a href=""></a>etir <span class="op">=</span> <span class="kw">lambda</span> x: (x <span class="op">-</span> x.<span class="bu">min</span>()) <span class="op">/</span> (x.<span class="bu">max</span>() <span class="op">-</span> x.<span class="bu">min</span>())</span>
-<span id="cb3-9"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">3.2</span>))</span>
-<span id="cb3-10"><a href=""></a>ax[<span class="dv">0</span>].bar(<span class="bu">range</span>(<span class="dv">1</span>, B <span class="op">+</span> <span class="dv">1</span>), val <span class="op">/</span> val.<span class="bu">sum</span>())<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Variance expliquée"</span>)</span>
-<span id="cb3-11"><a href=""></a>ax[<span class="dv">1</span>].imshow(np.dstack([etir(comp[i]) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]))</span>
-<span id="cb3-12"><a href=""></a>ax[<span class="dv">1</span>].set_title(<span class="st">"Composantes 1-2-3"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="transformation-linéaire-produit-matriciel" class="slide level2 smaller">
+<h2>Transformation linéaire — produit matriciel</h2>
+<p>Combiner des bandes par sommes pondérées = un <strong>produit matriciel</strong> (<code>@</code>).</p>
+<div id="9ac166ee" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href=""></a>pixels <span class="op">=</span> np.array([[<span class="fl">10.</span>, <span class="fl">40.</span>], [<span class="fl">20.</span>, <span class="fl">10.</span>], [<span class="fl">5.</span>, <span class="fl">25.</span>]])   <span class="co"># 3 pixels x 2 bandes</span></span>
+<span id="cb3-3"><a href=""></a>M <span class="op">=</span> np.array([[<span class="fl">0.5</span>, <span class="fl">0.5</span>],       <span class="co"># moyenne des deux bandes</span></span>
+<span id="cb3-4"><a href=""></a>              [<span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>]])      <span class="co"># différence des deux bandes</span></span>
+<span id="cb3-5"><a href=""></a><span class="bu">print</span>(pixels <span class="op">@</span> M.T)             <span class="co"># (3 pixels x 2 sorties)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 25. -30.]
+ [ 15.  10.]
+ [ 15. -20.]]</code></pre>
+</div>
+</div>
+<p>L’<strong>ACP</strong> apprend automatiquement ces poids pour <strong>maximiser la variance</strong> retenue.</p>
+</section>
+<section id="acp-variance-expliquée" class="slide level2 smaller">
+<h2>ACP — variance expliquée</h2>
+<p>On centre les données, puis on diagonalise la <strong>matrice de covariance</strong> :</p>
+<div id="92a7dae3" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-2"><a href=""></a>cube <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy().astype(<span class="st">'float32'</span>)  <span class="co"># (4, H, W)</span></span>
+<span id="cb5-3"><a href=""></a>B, H, W <span class="op">=</span> cube.shape</span>
+<span id="cb5-4"><a href=""></a>Xc <span class="op">=</span> cube.reshape(B, H <span class="op">*</span> W).T <span class="op">-</span> cube.reshape(B, H <span class="op">*</span> W).T.mean(<span class="dv">0</span>)   <span class="co"># centrage</span></span>
+<span id="cb5-5"><a href=""></a>val, vec <span class="op">=</span> np.linalg.eigh(np.cov(Xc, rowvar<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb5-6"><a href=""></a>o <span class="op">=</span> np.argsort(val)[::<span class="op">-</span><span class="dv">1</span>]<span class="op">;</span> val, vec <span class="op">=</span> val[o], vec[:, o]</span>
+<span id="cb5-7"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">3</span>))</span>
+<span id="cb5-8"><a href=""></a>ax.bar(<span class="bu">range</span>(<span class="dv">1</span>, B <span class="op">+</span> <span class="dv">1</span>), val <span class="op">/</span> val.<span class="bu">sum</span>())</span>
+<span id="cb5-9"><a href=""></a>ax.set_xlabel(<span class="st">"Composante"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"Variance expliquée"</span>)<span class="op">;</span> plt.show()</span>
+<span id="cb5-10"><a href=""></a><span class="bu">print</span>(<span class="st">"3 premières composantes :"</span>, <span class="bu">round</span>((val <span class="op">/</span> val.<span class="bu">sum</span>())[:<span class="dv">3</span>].<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"</span><span class="sc">% d</span><span class="st">e la variance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="03-spectrales_files/figure-revealjs/cell-4-output-1.png" class="quarto-figure quarto-figure-center" width="637" height="299"></p>
+<p><img data-src="03-spectrales_files/figure-revealjs/cell-5-output-1.png" class="quarto-figure quarto-figure-center" width="444" height="282"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3 premières composantes : 99.9 % de la variance</code></pre>
+</div>
+</div>
+</section>
+<section id="acp-composantes-principales" class="slide level2 smaller">
+<h2>ACP — composantes principales</h2>
+<p>La projection sur les vecteurs propres (un produit matriciel) donne les composantes, rangées par variance décroissante :</p>
+<div id="0cf3e272" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>comp <span class="op">=</span> (Xc <span class="op">@</span> vec).T.reshape(B, H, W)          <span class="co"># projection = produit matriciel</span></span>
+<span id="cb7-2"><a href=""></a>etir <span class="op">=</span> <span class="kw">lambda</span> x: (x <span class="op">-</span> x.<span class="bu">min</span>()) <span class="op">/</span> (x.<span class="bu">max</span>() <span class="op">-</span> x.<span class="bu">min</span>())</span>
+<span id="cb7-3"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb7-4"><a href=""></a>ax.imshow(np.dstack([etir(comp[i]) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]))</span>
+<span id="cb7-5"><a href=""></a>ax.set_title(<span class="st">"Composantes 1-2-3 (RVB)"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="03-spectrales_files/figure-revealjs/cell-6-output-1.png" class="quarto-figure quarto-figure-center" width="338" height="335"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Les 3 premières composantes concentrent <strong>&gt; 99 %</strong> de la variance.</p>
 </section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>

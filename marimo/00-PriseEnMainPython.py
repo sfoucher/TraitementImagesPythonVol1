@@ -30,6 +30,7 @@ def _(mo):
     <li>comprendre les structures de base du langage Python (listes, tuples, ensembles, dictionnaires);</li>
     <li>écrire des boucles, des conditions et des fonctions;</li>
     <li>aborder la programmation orientée objet;</li>
+    <li>organiser du code en modules et packages;</li>
     <li>manipuler un tableau <code>NumPy</code>.</li>
     </ul>
     </div>
@@ -383,6 +384,74 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ## Modules et packages
+
+    Jusqu'ici, nous avons *importé* des bibliothèques existantes. Comprendre comment le code Python est **organisé** permet de structurer ses propres projets et de réutiliser du code.
+
+    -   Un **module** est simplement un fichier `.py` contenant des fonctions, des classes ou des variables. Le nom du module est celui du fichier, sans l'extension.
+    -   Un **package** (ou paquet) est un **dossier** regroupant plusieurs modules. Ce dossier contient un fichier spécial `__init__.py` qui indique à Python qu'il s'agit d'un package.
+
+    Par exemple, un package `teledetection` pourrait s'organiser ainsi :
+
+    ```
+    teledetection/
+        __init__.py       # marque le dossier comme un package
+        indices.py        # fonctions d'indices spectraux (ndvi, ...)
+        filtres.py        # fonctions de filtrage spatial
+    ```
+
+    On accède au contenu avec la notation pointée `package.module.fonction` :
+    """)
+    return
+
+
+@app.cell
+def _():
+    import teledetection.indices  # importe le module
+    from teledetection import filtres as f  # importe une fonction précise
+    resultat = teledetection.indices.ndvi(0.6, 0.2)  # importe un module sous un alias
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Le fichier `__init__.py`
+
+    Le fichier `__init__.py` est exécuté **automatiquement** la première fois que le package est importé. Souvent vide, il peut aussi :
+
+    -   exposer une **interface simplifiée**. Si `__init__.py` contient `from .indices import ndvi`, on peut alors écrire directement `from teledetection import ndvi` au lieu de `from teledetection.indices import ndvi`. Le point (`.`) dans `from .indices` désigne le package courant : c'est un **import relatif**.
+    -   initialiser des données ou vérifier des dépendances au chargement du package.
+
+    Ce mécanisme n'est pas qu'une abstraction : ce manuel l'utilise lui-même. Les quiz de fin de chapitre proviennent d'un package local `code_complementaire`, importé exactement de cette façon :
+    """)
+    return
+
+
+@app.cell
+def _():
+    from code_complementaire.quizz_functions import Quiz, render_quizz
+
+    return Quiz, render_quizz
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Enfin, un module peut contenir un bloc `if __name__ == "__main__":` dont le code ne s'exécute **que** si le fichier est lancé directement (`python indices.py`), et **pas** lorsqu'il est importé. C'est la façon habituelle de séparer le code exécutable des fonctions réutilisables. La variable `__name__` vaut `"__main__"` dans le premier cas, et le nom du module dans le second :
+    """)
+    return
+
+
+@app.cell
+def _():
+    print("Nom du contexte courant :", __name__)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ## Un avant-goût de NumPy {#sec-00-02}
 
     Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque [NumPy](https://numpy.org/) fournit l'objet `ndarray` qui représente efficacement ces tableaux à plusieurs dimensions : c'est la brique de base de tous les chapitres suivants.
@@ -501,6 +570,7 @@ def _(mo):
     <li>Installez Python via un <strong>environnement virtuel</strong> (<code>conda</code> ou <code>venv</code>) pour isoler chaque projet.</li>
     <li>Quatre structures de base : <strong>listes</strong> (ordonnées, modifiables), <strong>tuples</strong> (immuables), <strong>ensembles</strong> (sans doublons) et <strong>dictionnaires</strong> (paires clé-valeur).</li>
     <li><code>if</code>/<code>for</code>/<code>while</code> contrôlent le déroulement du programme ; les <strong>fonctions</strong> (<code>def</code>) regroupent du code réutilisable.</li>
+    <li>Le code s’organise en <strong>modules</strong> (fichiers <code>.py</code>) et <strong>packages</strong> (dossiers avec <code>__init__.py</code>), accessibles par la notation pointée (<code>package.module.fonction</code>).</li>
     <li>Une image est avant tout un <strong>tableau <code>NumPy</code></strong> : c’est la structure centrale de tout le manuel.</li>
     <li>Un tableau se caractérise par sa <strong>forme</strong> (<code>shape</code>) et son <strong>type</strong> (<code>dtype</code>, la profondeur radiométrique) ; le <strong><em>broadcasting</em></strong>, <code>reshape</code> et <code>transpose</code> permettent de calculer et de réorganiser les axes sans boucle.</li>
     </ul>
@@ -546,7 +616,7 @@ def _(mo):
     <strong>NumPy</strong>
 
     <ol start="10" type="1">
-    <li>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.10</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.
+    <li>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.11</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.
     </li>
     <li>Créez un tableau NumPy 4 × 4 et, par <strong>masquage booléen</strong>, remplacez par <code>0</code> toutes les valeurs inférieures à 10.
     </li>
@@ -556,7 +626,7 @@ def _(mo):
     </li>
     <li><em>(création)</em> Avec <code>np.linspace</code>, construisez un axe de 6 longueurs d’onde entre 490 et 2190 nm. Créez ensuite un masque <code>np.zeros((3, 4))</code> et mettez sa <strong>première ligne</strong> à <code>1</code>.
     </li>
-    <li><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.10</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.
+    <li><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.11</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.
     </li>
     <li><em>(reshape/transpose)</em> Transformez le <code>cube</code> <code>(2, 3, 4)</code> en une table <code>(12, 2)</code> (pixels × bandes), puis revenez à la forme d’origine <code>(2, 3, 4)</code>.
     </li>
@@ -719,9 +789,8 @@ def _(mo):
 
 
 @app.cell
-def _():
-    from code_complementaire.quizz_functions import Quiz, render_quizz
-    Chap00Quiz = Quiz("quiz/Chap00.yml", "Chap00")
+def _(Quiz, render_quizz):
+    Chap00Quiz = Quiz('quiz/Chap00.yml', 'Chap00')
     render_quizz(Chap00Quiz)
     return
 

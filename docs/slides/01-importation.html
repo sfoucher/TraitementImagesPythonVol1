@@ -249,7 +249,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="démo-lecture-et-vraies-couleurs" class="slide level2 smaller">
 <h2>Démo — lecture et vraies couleurs</h2>
 <p>L’ordre des bandes de <code>RGBNIR_of_S2A.tif</code> est <strong>B, V, R, PIR</strong> → on réordonne en R, V, B :</p>
-<div id="453d8439" class="cell" data-execution_count="2">
+<div id="3a25ae55" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb1-2"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href=""></a></span>
@@ -269,7 +269,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="regarder-les-métadonnées-avant-de-lire" class="slide level2 smaller">
 <h2>Regarder les métadonnées avant de lire</h2>
-<div id="200f18f4" class="cell" data-execution_count="3">
+<div id="02d5b71c" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" data-code-line-numbers="2-6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rasterio</span>
 <span id="cb2-2"><a href=""></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">'../RGBNIR_of_S2A.tif'</span>) <span class="im">as</span> src:</span>
 <span id="cb2-3"><a href=""></a>    <span class="bu">print</span>(<span class="st">"Bandes     :"</span>, src.count, <span class="st">"| type :"</span>, src.dtypes[<span class="dv">0</span>])</span>
@@ -287,7 +287,7 @@ Résolution : (10.0, 10.0) m</code></pre>
 <section id="indexation-avancée-bande-dominante" class="slide level2 smaller">
 <h2>Indexation avancée — bande dominante</h2>
 <p><code>argmax</code> sur l’axe des bandes → la bande la plus brillante en chaque pixel :</p>
-<div id="a3d9c47d" class="cell" data-execution_count="4">
+<div id="298dc532" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-2"><a href=""></a>cube <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy()   <span class="co"># (4, H, W) ; B,V,R,PIR</span></span>
 <span id="cb4-3"><a href=""></a>dominante <span class="op">=</span> cube.argmax(axis<span class="op">=</span><span class="dv">0</span>)                               <span class="co"># 0..3</span></span>
@@ -305,39 +305,59 @@ Résolution : (10.0, 10.0) m</code></pre>
 </div>
 <p>Le PIR domine sur la <strong>végétation</strong>. Masquer (<code>np.ma</code>) et sauvegarder (<code>np.save</code>/<code>.npz</code>) complètent la boîte à outils.</p>
 </section>
-<section id="découper-rééchantillonner-étiqueter" class="slide level2 smaller">
-<h2>Découper, rééchantillonner, étiqueter</h2>
-<p><code>rioxarray</code> découpe (<code>clip_box</code>) et rééchantillonne (<code>reproject</code>) ; <code>xarray</code> sélectionne par <strong>étiquette</strong> :</p>
-<div id="ca57c732" class="cell" data-execution_count="5">
+<section id="découpage-clip_box" class="slide level2 smaller">
+<h2>Découpage — <code>clip_box</code></h2>
+<p>Extraire une emprise plus petite (boîte englobante, dans le CRS de l’image) :</p>
+<div id="21ee56fa" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb5-2"><a href=""></a><span class="im">from</span> rasterio.enums <span class="im">import</span> Resampling</span>
-<span id="cb5-3"><a href=""></a></span>
-<span id="cb5-4"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>)</span>
-<span id="cb5-5"><a href=""></a>minx, miny, maxx, maxy <span class="op">=</span> img.rio.bounds()</span>
-<span id="cb5-6"><a href=""></a>cx, cy <span class="op">=</span> (minx <span class="op">+</span> maxx) <span class="op">/</span> <span class="dv">2</span>, (miny <span class="op">+</span> maxy) <span class="op">/</span> <span class="dv">2</span></span>
-<span id="cb5-7"><a href=""></a>dx, dy <span class="op">=</span> (maxx <span class="op">-</span> minx) <span class="op">/</span> <span class="dv">4</span>, (maxy <span class="op">-</span> miny) <span class="op">/</span> <span class="dv">4</span></span>
-<span id="cb5-8"><a href=""></a>sous <span class="op">=</span> img.rio.clip_box(cx <span class="op">-</span> dx, cy <span class="op">-</span> dy, cx <span class="op">+</span> dx, cy <span class="op">+</span> dy)                  <span class="co"># découpage</span></span>
-<span id="cb5-9"><a href=""></a>bas <span class="op">=</span> img.rio.reproject(img.rio.crs, resolution<span class="op">=</span><span class="dv">20</span>, resampling<span class="op">=</span>Resampling.average)  <span class="co"># 10-&gt;20 m</span></span>
-<span id="cb5-10"><a href=""></a><span class="bu">print</span>(<span class="st">"clip :"</span>, <span class="bu">tuple</span>(img.sizes.values()), <span class="st">"-&gt;"</span>, <span class="bu">tuple</span>(sous.sizes.values()),</span>
-<span id="cb5-11"><a href=""></a>      <span class="st">"| resample 20 m :"</span>, <span class="bu">tuple</span>(bas.sizes.values()))</span>
-<span id="cb5-12"><a href=""></a><span class="bu">print</span>(<span class="st">"sel(band=4) == isel(band=3) :"</span>, <span class="bu">bool</span>((img.sel(band<span class="op">=</span><span class="dv">4</span>) <span class="op">==</span> img.isel(band<span class="op">=</span><span class="dv">3</span>)).<span class="bu">all</span>()))</span>
-<span id="cb5-13"><a href=""></a></span>
-<span id="cb5-14"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="fl">2.8</span>))</span>
-<span id="cb5-15"><a href=""></a>sous.sel(band<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]).plot.imshow(vmin<span class="op">=</span><span class="dv">86</span>, vmax<span class="op">=</span><span class="dv">5000</span>, ax<span class="op">=</span>ax)</span>
-<span id="cb5-16"><a href=""></a>ax.set_title(<span class="st">"Quart central (clip_box)"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-2"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>)</span>
+<span id="cb5-3"><a href=""></a>minx, miny, maxx, maxy <span class="op">=</span> img.rio.bounds()</span>
+<span id="cb5-4"><a href=""></a>cx, cy <span class="op">=</span> (minx <span class="op">+</span> maxx) <span class="op">/</span> <span class="dv">2</span>, (miny <span class="op">+</span> maxy) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb5-5"><a href=""></a>dx, dy <span class="op">=</span> (maxx <span class="op">-</span> minx) <span class="op">/</span> <span class="dv">4</span>, (maxy <span class="op">-</span> miny) <span class="op">/</span> <span class="dv">4</span></span>
+<span id="cb5-6"><a href=""></a>sous <span class="op">=</span> img.rio.clip_box(cx <span class="op">-</span> dx, cy <span class="op">-</span> dy, cx <span class="op">+</span> dx, cy <span class="op">+</span> dy)</span>
+<span id="cb5-7"><a href=""></a><span class="bu">print</span>(<span class="st">"forme :"</span>, <span class="bu">tuple</span>(img.sizes.values()), <span class="st">"-&gt;"</span>, <span class="bu">tuple</span>(sous.sizes.values()))</span>
+<span id="cb5-8"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">4.5</span>, <span class="dv">3</span>))</span>
+<span id="cb5-9"><a href=""></a>sous.sel(band<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]).plot.imshow(vmin<span class="op">=</span><span class="dv">86</span>, vmax<span class="op">=</span><span class="dv">5000</span>, ax<span class="op">=</span>ax)</span>
+<span id="cb5-10"><a href=""></a>ax.set_title(<span class="st">"Quart central"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>clip : (4, 1926, 2074) -&gt; (4, 964, 1038) | resample 20 m : (4, 963, 1037)
-sel(band=4) == isel(band=3) : True</code></pre>
+<pre><code>forme : (4, 1926, 2074) -&gt; (4, 964, 1038)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="01-importation_files/figure-revealjs/cell-5-output-2.png" class="quarto-figure quarto-figure-center" width="317" height="246"></p>
+<p><img data-src="01-importation_files/figure-revealjs/cell-5-output-2.png" class="quarto-figure quarto-figure-center" width="354" height="261"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Un résultat se réécrit en GeoTIFF géoréférencé avec <code>rasterio</code> (<code>profil</code> de la source + <code>dst.write</code>).</p>
+</section>
+<section id="rééchantillonnage-reproject" class="slide level2 smaller">
+<h2>Rééchantillonnage — <code>reproject</code></h2>
+<p>Changer la résolution spatiale ; méthode d’agrégation au choix (moyenne pour réduire) :</p>
+<div id="915c29f1" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="im">from</span> rasterio.enums <span class="im">import</span> Resampling</span>
+<span id="cb7-2"><a href=""></a>bas <span class="op">=</span> img.rio.reproject(img.rio.crs, resolution<span class="op">=</span><span class="dv">20</span>, resampling<span class="op">=</span>Resampling.average)</span>
+<span id="cb7-3"><a href=""></a><span class="bu">print</span>(<span class="st">"résolution :"</span>, img.rio.resolution(), <span class="st">"-&gt;"</span>, bas.rio.resolution())</span>
+<span id="cb7-4"><a href=""></a><span class="bu">print</span>(<span class="st">"forme      :"</span>, <span class="bu">tuple</span>(img.sizes.values()), <span class="st">"-&gt;"</span>, <span class="bu">tuple</span>(bas.sizes.values()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>résolution : (10.0, -10.0) -&gt; (20.0, -20.0)
+forme      : (4, 1926, 2074) -&gt; (4, 963, 1037)</code></pre>
+</div>
+</div>
+</section>
+<section id="sélection-par-étiquette-sel-isel" class="slide level2 smaller">
+<h2>Sélection par étiquette — <code>sel</code> / <code>isel</code></h2>
+<p><code>xarray</code> sélectionne par <strong>valeur</strong> (<code>sel</code>) ou par <strong>position</strong> (<code>isel</code>) ; on peut nommer les bandes :</p>
+<div id="fbdbed6a" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a><span class="bu">print</span>(<span class="st">"sel(band=4) == isel(band=3) :"</span>, <span class="bu">bool</span>((img.sel(band<span class="op">=</span><span class="dv">4</span>) <span class="op">==</span> img.isel(band<span class="op">=</span><span class="dv">3</span>)).<span class="bu">all</span>()))</span>
+<span id="cb9-2"><a href=""></a>img_n <span class="op">=</span> img.assign_coords(band<span class="op">=</span>[<span class="st">'B'</span>, <span class="st">'V'</span>, <span class="st">'R'</span>, <span class="st">'PIR'</span>])</span>
+<span id="cb9-3"><a href=""></a><span class="bu">print</span>(<span class="st">"bande PIR par étiquette :"</span>, img_n.sel(band<span class="op">=</span><span class="st">'PIR'</span>).shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>sel(band=4) == isel(band=3) : True
+bande PIR par étiquette : (1926, 2074)</code></pre>
+</div>
+</div>
+<p>Un résultat se réécrit en GeoTIFF géoréférencé avec <code>rasterio</code> (<code>profil</code> source + <code>dst.write</code>).</p>
 </section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>
