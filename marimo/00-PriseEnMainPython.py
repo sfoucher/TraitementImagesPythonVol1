@@ -257,10 +257,10 @@ def _(mo):
 @app.cell
 def _():
     # Un dictionnaire : les métadonnées d'une image satellite
-    _image = {'capteur': 'Sentinel-2', 'bandes': 13, 'resolution_m': 10}
-    print(_image['capteur'])  # accès par clé
-    _image['date'] = '2024-07-01'
-    for (cle, _valeur) in _image.items():  # ajout d'une paire clé-valeur
+    image = {'capteur': 'Sentinel-2', 'bandes': 13, 'resolution_m': 10}
+    print(image['capteur'])  # accès par clé
+    image['date'] = '2024-07-01'
+    for (cle, _valeur) in image.items():  # ajout d'une paire clé-valeur
         print(f'{cle} : {_valeur}')  # parcours des paires clé-valeur
     return
 
@@ -279,20 +279,17 @@ def _(mo):
 def _():
     _bandes = ['bleu', 'vert', 'rouge', 'PIR']
     for (i, nom) in enumerate(_bandes):
-    # Boucle for : parcourir chaque bande avec son indice
         print(i, nom)
-    reflectance = 0.42
-    if reflectance > 0.5:
-    # Condition if / elif / else
+    _reflectance = 0.42
+    if _reflectance > 0.5:
         print('forte réflectance')
-    elif reflectance > 0.3:
+    elif _reflectance > 0.3:
         print('réflectance moyenne')
     else:
         print('faible réflectance')
     (seuil, _valeur) = (0.5, 0.1)
     while _valeur < seuil:
-        _valeur += 0.2
-    # Boucle while : tant qu'une condition est vraie
+        _valeur = _valeur + 0.2
     print('valeur finale :', round(_valeur, 1))
     return
 
@@ -395,11 +392,99 @@ def _(mo):
 
 @app.cell
 def _(np):
-    _image = np.array([[10, 12, 11, 9], [8, 20, 22, 7], [9, 21, 23, 8]])
-    print('Forme (lignes, colonnes) :', _image.shape)
-    print('Valeur maximale :', _image.max())
-    print('Moyenne :', _image.mean().round(2))
-    print(_image[:2, :2])
+    image_1 = np.array([[10, 12, 11, 9], [8, 20, 22, 7], [9, 21, 23, 8]])
+    print('Forme (lignes, colonnes) :', image_1.shape)
+    # Une petite image à une bande : 3 lignes x 4 colonnes
+    print('Valeur maximale :', image_1.max())
+    print('Moyenne :', image_1.mean().round(2))
+    # Découpage d'une sous-image (2 premières lignes, 2 premières colonnes)
+    print(image_1[:2, :2])
+    return (image_1,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Attributs et type de données
+
+    Au-delà de la forme (`shape`), un tableau expose son nombre de dimensions (`ndim`), son nombre total d'éléments (`size`) et surtout son **type de données** (`dtype`). Ce dernier encode la *profondeur radiométrique* de l'image : un capteur 8 bits produit des entiers `uint8` (0 à 255), tandis qu'une réflectance se stocke en `float32`. La méthode `astype` convertit d'un type à l'autre.
+    """)
+    return
+
+
+@app.cell
+def _(image_1):
+    print('Dimensions (ndim) :', image_1.ndim)
+    print('Nombre de pixels  :', image_1.size)
+    print('Type de données   :', image_1.dtype)
+    _reflectance = (image_1 / image_1.max()).astype('float32')
+    print('Nouveau type      :', _reflectance.dtype)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Créer des tableaux
+
+    On construit souvent un tableau sans l'écrire à la main : un masque rempli de zéros, une bande constante, un axe régulier de longueurs d'onde. NumPy fournit `zeros`, `ones`, `arange` (pas fixe) et `linspace` (nombre de points fixe).
+    """)
+    return
+
+
+@app.cell
+def _(np):
+    print(np.zeros((2, 3)))                 # masque vide (2 x 3)
+    print(np.ones(4, dtype="uint8"))        # bande constante
+    print(np.arange(0, 10, 2))              # 0, 2, 4, 6, 8
+    print(np.linspace(490, 2190, 6))        # 6 longueurs d'onde (nm)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Le *broadcasting*
+
+    Le *broadcasting* applique une opération entre tableaux de formes différentes sans boucle : NumPy « étire » automatiquement la plus petite forme. C'est le mécanisme derrière presque tous les calculs vectorisés du manuel — appliquer un gain scalaire à toute l'image, ou un gain **par bande**.
+    """)
+    return
+
+
+@app.cell
+def _(image_1, np):
+    # Un petit cube à 2 bandes : (bandes, lignes, colonnes)
+    cube = np.array([[[10, 12, 11, 9], [8, 20, 22, 7], [9, 21, 23, 8]], [[30, 35, 33, 28], [25, 60, 66, 22], [27, 63, 69, 24]]])
+    print('Forme du cube :', cube.shape)
+    print((image_1 / 10000).round(4)[0])
+    gains = np.array([1.0, 0.5]).reshape(2, 1, 1)
+    # Scalaire : convertir des comptes numériques en réflectance
+    # Par bande : un gain différent par bande via une forme (bandes, 1, 1)
+    print((cube * gains)[:, 0, 0])  # (2, 3, 4)  # applique 1.0 et 0.5 aux 2 bandes
+    return (cube,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Remodeler et réordonner les axes
+
+    Deux opérations reviennent constamment sur les images. `reshape` change la forme sans toucher aux données (le nombre total d'éléments est conservé) : c'est ainsi qu'on aplatit une image en une table `pixels × bandes` pour l'entrée d'un classificateur (chapitre 5). `transpose` réordonne les axes : les rasters se chargent en `(bandes, lignes, colonnes)` mais l'affichage attend `(lignes, colonnes, bandes)`.
+    """)
+    return
+
+
+@app.cell
+def _(cube, image_1):
+    # reshape : aplatir puis restaurer une image à une bande
+    plat = image_1.reshape(-1)  # 1D : 12 valeurs
+    print(plat.shape, '->', plat.reshape(3, 4).shape)
+    image_hwc = cube.transpose(1, 2, 0)
+    # transpose : (bandes, lignes, colonnes) -> (lignes, colonnes, bandes)
+    print('Ordre affichage :', image_hwc.shape)
+    table = cube.transpose(1, 2, 0).reshape(-1, 2)  # (3, 4, 2)
+    # Aplatir un cube en table (pixels x bandes) pour un classificateur
+    print('Table pixels x bandes :', table.shape)  # (12, 2)
     return
 
 
@@ -417,6 +502,7 @@ def _(mo):
     <li>Quatre structures de base : <strong>listes</strong> (ordonnées, modifiables), <strong>tuples</strong> (immuables), <strong>ensembles</strong> (sans doublons) et <strong>dictionnaires</strong> (paires clé-valeur).</li>
     <li><code>if</code>/<code>for</code>/<code>while</code> contrôlent le déroulement du programme ; les <strong>fonctions</strong> (<code>def</code>) regroupent du code réutilisable.</li>
     <li>Une image est avant tout un <strong>tableau <code>NumPy</code></strong> : c’est la structure centrale de tout le manuel.</li>
+    <li>Un tableau se caractérise par sa <strong>forme</strong> (<code>shape</code>) et son <strong>type</strong> (<code>dtype</code>, la profondeur radiométrique) ; le <strong><em>broadcasting</em></strong>, <code>reshape</code> et <code>transpose</code> permettent de calculer et de réorganiser les axes sans boucle.</li>
     </ul>
     </div>
     </div>
@@ -466,10 +552,18 @@ def _(mo):
     </li>
     <li>Sur le tableau <code>image</code>, calculez la moyenne <strong>par ligne</strong> puis <strong>par colonne</strong> (paramètre <code>axis</code>).
     </li>
+    <li><em>(attributs)</em> Sur <code>image</code>, affichez <code>ndim</code>, <code>size</code> et <code>dtype</code>. Convertissez-le en réflectance <code>float32</code> (divisez par le maximum) et vérifiez le nouveau <code>dtype</code>.
+    </li>
+    <li><em>(création)</em> Avec <code>np.linspace</code>, construisez un axe de 6 longueurs d’onde entre 490 et 2190 nm. Créez ensuite un masque <code>np.zeros((3, 4))</code> et mettez sa <strong>première ligne</strong> à <code>1</code>.
+    </li>
+    <li><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.10</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.
+    </li>
+    <li><em>(reshape/transpose)</em> Transformez le <code>cube</code> <code>(2, 3, 4)</code> en une table <code>(12, 2)</code> (pixels × bandes), puis revenez à la forme d’origine <code>(2, 3, 4)</code>.
+    </li>
     </ol>
     <strong>Programmation objet</strong>
 
-    <ol start="13" type="1">
+    <ol start="17" type="1">
     <li><em>(avancé)</em> Ajoutez à la classe <code>Image</code> une méthode <code>est_multispectrale()</code> qui renvoie <code>True</code> si l’image possède plus de 3 bandes.</li>
     </ol>
     </div>
@@ -539,6 +633,12 @@ def _(mo):
     image = np.array([[10, 12, 11,  9],
                       [ 8, 20, 22,  7],
                       [ 9, 21, 23,  8]])
+    cube = np.array([[[10, 12, 11,  9],
+                      [ 8, 20, 22,  7],
+                      [ 9, 21, 23,  8]],
+                     [[30, 35, 33, 28],
+                      [25, 60, 66, 22],
+                      [27, 63, 69, 24]]])
     # 10. min, écart-type, dernière colonne
     print("min :", image.min(), "| écart-type :", round(image.std(), 2))
     print("dernière colonne :", image[:, -1])
@@ -555,8 +655,29 @@ def _(mo):
     print("par ligne   :", image.mean(axis=1).round(1))
     print("par colonne :", image.mean(axis=0).round(1))
 
+    # 13. Attributs et dtype
+    print(image.ndim, image.size, image.dtype)
+    refl = (image / image.max()).astype("float32")
+    print(refl.dtype)
+
+    # 14. Création : axe de longueurs d'onde et masque
+    print(np.linspace(490, 2190, 6))
+    masque = np.zeros((3, 4))
+    masque[0] = 1
+    print(masque)
+
+    # 15. Broadcasting par bande
+    gains = np.array([1.0, 0.8]).reshape(2, 1, 1)
+    print((cube * gains)[:, 0, 0])
+
+    # 16. reshape / transpose
+    table = cube.transpose(1, 2, 0).reshape(-1, 2)
+    print(table.shape)                      # (12, 2)
+    retour = table.reshape(3, 4, 2).transpose(2, 0, 1)
+    print(retour.shape)                     # (2, 3, 4)
+
     # --- Programmation objet ---
-    # 13. Méthode est_multispectrale
+    # 17. Méthode est_multispectrale
     class Image:
         def __init__(self, capteur, bandes):
             self.capteur = capteur

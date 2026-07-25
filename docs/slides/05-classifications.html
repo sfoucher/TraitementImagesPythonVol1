@@ -231,7 +231,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="sur--et-sous-apprentissage" class="slide level2 smaller">
 <h2>Sur- et sous-apprentissage</h2>
-<div id="73ad9d6a" class="cell" data-execution_count="2">
+<div id="73ad9d6a" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
 <span id="cb1-2"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> PolynomialFeatures</span>
 <span id="cb1-3"><a href=""></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
@@ -277,7 +277,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="k-nn-frontières-de-décision" class="slide level2 smaller">
 <h2>K-NN — frontières de décision</h2>
 <p>Vote parmi les <span class="math inline">\(K\)</span> voisins les plus proches (bandes Rouge–PIR) :</p>
-<div id="563fd4f2" class="cell" data-execution_count="3">
+<div id="563fd4f2" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
 <span id="cb2-2"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb2-3"><a href=""></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
@@ -303,7 +303,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="comparer-les-classificateurs" class="slide level2 smaller">
 <h2>Comparer les classificateurs</h2>
-<div id="ac4741c7" class="cell" data-execution_count="4">
+<div id="ac4741c7" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
 <span id="cb3-2"><a href=""></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPClassifier</span>
 <span id="cb3-3"><a href=""></a></span>
@@ -332,7 +332,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="carte-doccupation-des-sols" class="slide level2 smaller">
 <h2>Carte d’occupation des sols</h2>
 <p>On applique le modèle (4 bandes) à toute l’image :</p>
-<div id="4b01fab6" class="cell" data-execution_count="5">
+<div id="4b01fab6" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb4-2"><a href=""></a>clf <span class="op">=</span> Pipeline([(<span class="st">"s"</span>, StandardScaler()), (<span class="st">"c"</span>, KNeighborsClassifier(<span class="dv">7</span>, weights<span class="op">=</span><span class="st">'distance'</span>))]).fit(Xtr, ytr)</span>
 <span id="cb4-3"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy()          <span class="co"># (4, H, W)</span></span>
