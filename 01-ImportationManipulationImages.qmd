@@ -34,6 +34,9 @@ Dans ce chapitre, nous abordons quelques formats d'images ainsi que leur lecture
 -   accéder à l'information d'une image avant de la lire;
 -   comprendre les principaux formats pour une image;
 -   manipuler la matrice de la donnée d'une image avec `numpy`;
+-   sélectionner et réorganiser des bandes par **indexation avancée** (tableaux d'indices, `argmax`);
+-   exclure les pixels non valides à l'aide de **tableaux masqués** (`numpy.ma`);
+-   **sauvegarder et recharger** des tableaux au format binaire (`.npy`, `.npz`);
 -   exploiter les métadonnées et la géoréférence avec `rioxarray` et `xarray`.
 :::::
 
@@ -326,8 +329,53 @@ On peut toujours forcer une copie avec la méthode `copy()`
 
 #### Exemple 2: application d'un filtrage spatial
 
-### Mosaïquage, masquage et découpage 
+### Mosaïquage, masquage et découpage
 -->
+```
+
+### Indexation avancée
+
+Au-delà du découpage, NumPy permet de sélectionner des éléments à l'aide de **tableaux d'indices** (*fancy indexing*) : on peut choisir une liste de bandes dans un ordre arbitraire, ou récupérer une valeur différente pour chaque pixel. Contrairement au découpage, l'indexation avancée renvoie toujours une **copie**.
+
+```{python}
+import numpy as np
+
+# Un indice de bande choisi pour chacun des 3 pixels (3 pixels x 3 bandes)
+petit = np.array([[10, 50, 30],
+                  [70, 20, 40],
+                  [ 5, 15, 90]])
+choix = np.array([1, 0, 2])            # bande retenue pour chaque pixel
+print(petit[np.arange(3), choix])      # -> [50, 70, 90]
+```
+
+Appliqué à une image réelle, ce mécanisme permet de réordonner les bandes, ou de construire une carte de la **bande dominante** (la bande la plus brillante en chaque pixel) grâce à `argmax` le long de l'axe spectral :
+
+```{python}
+import rioxarray as rxr
+
+cube = rxr.open_rasterio('RGBNIR_of_S2A.tif').to_numpy()   # (4, lignes, colonnes) ; bandes B, V, R, PIR
+
+# Sélection de bandes par liste d'indices : passage en ordre vrai-couleur (R, V, B)
+vraie_couleur = cube[[2, 1, 0]]
+print("Bandes réordonnées :", vraie_couleur.shape)
+
+# argmax sur l'axe des bandes : indice de la bande la plus brillante par pixel
+bande_dominante = cube.argmax(axis=0)         # (lignes, colonnes), valeurs 0..3
+print("Carte des bandes dominantes :", bande_dominante.shape)
+print("Bandes présentes :", np.unique(bande_dominante))
+```
+
+La bande dominante donne un premier aperçu de la nature des surfaces : le proche-infrarouge (indice 3) domine généralement sur la végétation, tandis que le bleu ou le rouge l'emporte sur l'eau et les surfaces artificielles.
+
+```{python}
+#| fig-align: center
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(6, 5))
+im = ax.imshow(bande_dominante, cmap='viridis')
+ax.set_title("Bande dominante par pixel (0=B, 1=V, 2=R, 3=PIR)"); ax.axis('off')
+fig.colorbar(im, ax=ax, ticks=[0, 1, 2, 3], shrink=0.7)
+plt.show()
 ```
 
 ### Masquage
@@ -362,6 +410,23 @@ img_nan = np.where(img == 0, np.nan, img)
 print("Moyenne (nanmean)   :", round(np.nanmean(img_nan), 2))
 ```
 
+Sur une image réelle, on masque le plus souvent selon un **critère** plutôt qu'une valeur exacte. Ici, on exclut l'eau et les surfaces artificielles (NDVI négatif) pour ne calculer une statistique que sur la végétation. `np.ma.masked_where` masque les pixels remplissant la condition ; `count()` compte les pixels valides et `compressed()` renvoie ces derniers sous forme de tableau 1D :
+
+```{python}
+import rioxarray as rxr
+
+img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
+rouge, pir = img.sel(band=3).to_numpy(), img.sel(band=4).to_numpy()
+ndvi = (pir - rouge) / (pir + rouge)
+
+# Masquer les pixels non végétalisés (NDVI < 0 : eau, bâti)
+ndvi_veg = np.ma.masked_where(ndvi < 0, ndvi)
+print("Pixels totaux  :", ndvi.size)
+print("Pixels valides :", ndvi_veg.count())
+print("NDVI moyen (tous)       :", round(float(ndvi.mean()), 3))
+print("NDVI moyen (végétation) :", round(float(ndvi_veg.mean()), 3))
+```
+
 ### Calcul d'un rapport de bandes
 
 Une opération très courante consiste à combiner deux bandes pixel par pixel. Par exemple, un rapport normalisé entre le proche-infrarouge et le rouge met en évidence la végétation (ce type d'indice spectral est approfondi au chapitre @sec-chap03) :
@@ -392,6 +457,32 @@ img_rvb = img.sel(band=[1, 2, 3])
 img_rvb.rio.to_raster('RGBNIR_rvb.tif')
 print("Image exportée :", tuple(img_rvb.sizes.values()))
 ```
+
+### Sauvegarde de tableaux NumPy
+
+L'export GeoTIFF conserve la géoréférence, mais on souhaite parfois simplement **mettre de côté un tableau intermédiaire** (un indice calculé, un masque) pour le recharger plus tard sans tout recalculer. NumPy propose pour cela un format binaire propre : `np.save` écrit un tableau unique (`.npy`), tandis que `np.savez_compressed` regroupe plusieurs tableaux nommés dans une archive compressée (`.npz`).
+
+```{python}
+import numpy as np
+import rioxarray as rxr
+
+img = rxr.open_rasterio('RGBNIR_of_S2A.tif').astype('float32')
+rouge, pir = img.sel(band=3).to_numpy(), img.sel(band=4).to_numpy()
+ndvi = (pir - rouge) / (pir + rouge)
+
+# Un seul tableau -> fichier .npy
+np.save('ndvi.npy', ndvi)
+recharge = np.load('ndvi.npy')
+print("Rechargement identique :", np.allclose(ndvi, recharge, equal_nan=True))
+
+# Plusieurs tableaux nommés -> archive .npz (compressée)
+np.savez_compressed('bandes.npz', rouge=rouge, pir=pir)
+archive = np.load('bandes.npz')
+print("Tableaux dans l'archive :", list(archive.keys()))
+print("Forme de 'pir' :", archive['pir'].shape)
+```
+
+Contrairement au GeoTIFF, ces fichiers ne contiennent **ni géoréférence ni métadonnée** : ils ne servent qu'à un stockage temporaire au sein d'une chaîne de traitement Python.
 
 ### Changement de projection cartographique
 
@@ -539,6 +630,9 @@ Données météos, exemple avec SWOT.
 -   Consulter les **métadonnées avant de lire** (`rio info`, `gdalinfo`, ou les attributs de `rasterio`).
 -   `OpenCV` lit les canaux en **BGR** : convertir en RGB (`cv2.cvtColor`) avant l'affichage.
 -   Une image est un **tableau NumPy** : indexation/découpage `[ligne, colonne, bande]` ; attention à la distinction **vue vs copie** (`np.shares_memory`, `.copy()`).
+-   L'**indexation avancée** (tableaux d'indices, `argmax(axis=…)`) sélectionne des éléments par condition ou construit des cartes dérivées (bande dominante) — elle renvoie une **copie**.
+-   Les **tableaux masqués** (`numpy.ma`) excluent les pixels non valides des statistiques : `masked_equal`/`masked_where`, puis `count()` et `compressed()`.
+-   `np.save` (`.npy`) et `np.savez_compressed` (`.npz`) stockent des tableaux intermédiaires — **sans** géoréférence, au contraire du GeoTIFF.
 -   `rioxarray`/`xarray` ajoutent **dimensions nommées, coordonnées et géoréférence** (accesseur `.rio`) : sélection par étiquette, reprojection (`rio.reproject`), export (`rio.to_raster`).
 :::
 ::::::
@@ -561,6 +655,12 @@ Données météos, exemple avec SWOT.
 3.  Vérifiez avec `np.shares_memory` si un découpage crée une **vue** ou une **copie**, puis forcez une copie avec `.copy()`.
 
 4.  Reprojetez `RGBNIR_of_S2A.tif` en `EPSG:4326` avec `rioxarray`, puis sauvegardez le résultat en GeoTIFF avec `rio.to_raster`.
+
+5.  *(indexation avancée)* Sur `RGBNIR_of_S2A.tif`, construisez la carte de la **bande dominante** (`argmax`), puis affichez le pourcentage de pixels où le proche-infrarouge (indice 3) domine.
+
+6.  *(masquage)* Calculez le NDVI, masquez les pixels d'eau (NDVI < 0) avec `np.ma.masked_where`, puis comparez le NDVI moyen **avec** et **sans** masque.
+
+7.  *(sauvegarde)* Sauvegardez votre carte de NDVI dans un fichier `.npy`, rechargez-la, et vérifiez l'égalité avec `np.allclose` (option `equal_nan=True`).
 :::
 ::::::
 
