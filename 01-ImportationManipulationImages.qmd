@@ -37,6 +37,8 @@ Dans ce chapitre, nous abordons quelques formats d'images ainsi que leur lecture
 -   sélectionner et réorganiser des bandes par **indexation avancée** (tableaux d'indices, `argmax`);
 -   exclure les pixels non valides à l'aide de **tableaux masqués** (`numpy.ma`);
 -   **sauvegarder et recharger** des tableaux au format binaire (`.npy`, `.npz`);
+-   **découper** et **rééchantillonner** une image géoréférencée (`clip_box`, `reproject`);
+-   sélectionner et calculer par **étiquette** avec `xarray` (dimensions nommées);
 -   exploiter les métadonnées et la géoréférence avec `rioxarray` et `xarray`.
 :::::
 
@@ -500,6 +502,36 @@ print("Après reprojection :", img_wgs84.rio.crs)
 print("Nouvelle forme :", dict(img_wgs84.sizes))
 ```
 
+### Découpage et rééchantillonnage
+
+Deux opérations géospatiales complètent la reprojection. Le **découpage** (*clip*) extrait une emprise plus petite : `clip_box` prend une boîte englobante exprimée dans le système de coordonnées de l'image, tandis que `rio.clip` accepte une géométrie quelconque (le polygone d'une zone d'intérêt).
+
+```{python}
+import rioxarray as rxr
+
+img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+minx, miny, maxx, maxy = img.rio.bounds()
+cx, cy = (minx + maxx) / 2, (miny + maxy) / 2
+dx, dy = (maxx - minx) / 4, (maxy - miny) / 4
+
+# Découpage sur le quart central de l'image
+sous_image = img.rio.clip_box(cx - dx, cy - dy, cx + dx, cy + dy)
+print("Forme d'origine :", tuple(img.sizes.values()))
+print("Après découpage :", tuple(sous_image.sizes.values()))
+```
+
+Le **rééchantillonnage** change la résolution spatiale. `rio.reproject` avec un paramètre `resolution` recalcule la grille de pixels ; on choisit une méthode d'agrégation adaptée — la **moyenne** pour réduire une image continue, le **plus proche voisin** pour une carte de classes :
+
+```{python}
+from rasterio.enums import Resampling
+
+# Passage de 10 m à 20 m par moyenne (sous-échantillonnage)
+img_20m = img.rio.reproject(img.rio.crs, resolution=20, resampling=Resampling.average)
+print("Résolution d'origine     :", img.rio.resolution())
+print("Après rééchantillonnage  :", img_20m.rio.resolution(),
+      "| forme :", tuple(img_20m.sizes.values()))
+```
+
 ```{=html}
 <!--
 ### Recalage d'images et co-registration
@@ -585,6 +617,37 @@ pir = img.sel(band=4)
 print("Bande PIR — forme :", pir.shape, "| valeur maximale :", int(pir.max()))
 ```
 
+#### Sélection et opérations par étiquette
+
+L'intérêt principal de `xarray` est de travailler par **étiquette** plutôt que par numéro d'axe. On sélectionne une bande par sa position (`isel`) ou par sa valeur (`sel`), et on peut même nommer les bandes pour les désigner explicitement :
+
+```{python}
+img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+
+# Position vs étiquette : la bande PIR est la 4e (étiquette 4, indice 3)
+print("sel == isel :", bool((img.sel(band=4) == img.isel(band=3)).all()))
+
+# Nommer les bandes rend la sélection explicite
+img_n = img.assign_coords(band=['B', 'V', 'R', 'PIR'])
+print("Forme de la bande PIR :", img_n.sel(band='PIR').shape)
+
+# Sélection par coordonnée cartographique (pixel le plus proche)
+minx, miny, maxx, maxy = img.rio.bounds()
+centre = img.sel(x=(minx + maxx) / 2, y=(miny + maxy) / 2, method='nearest')
+print("Valeurs au centre :", centre.values.tolist())
+```
+
+Les opérations respectent les **dimensions nommées** : on calcule la moyenne de chaque bande en réduisant selon `y` et `x`, et un calcul entre bandes (comme le NDVI) renvoie un `DataArray` qui **conserve les coordonnées et la géoréférence** :
+
+```{python}
+# Moyenne de chaque bande (réduction sur les dimensions spatiales)
+print("Moyenne par bande :", img.mean(dim=['y', 'x']).values.round(1).tolist())
+
+# NDVI : le résultat reste un DataArray géoréférencé (dimensions y, x)
+ndvi = (img_n.sel(band='PIR') - img_n.sel(band='R')) / (img_n.sel(band='PIR') + img_n.sel(band='R'))
+print("NDVI —", "type :", type(ndvi).__name__, "| dimensions :", ndvi.dims)
+```
+
 ```{=html}
 <!--
 netcdf, xarray, GRIB.
@@ -634,6 +697,8 @@ Données météos, exemple avec SWOT.
 -   Les **tableaux masqués** (`numpy.ma`) excluent les pixels non valides des statistiques : `masked_equal`/`masked_where`, puis `count()` et `compressed()`.
 -   `np.save` (`.npy`) et `np.savez_compressed` (`.npz`) stockent des tableaux intermédiaires — **sans** géoréférence, au contraire du GeoTIFF.
 -   `rioxarray`/`xarray` ajoutent **dimensions nommées, coordonnées et géoréférence** (accesseur `.rio`) : sélection par étiquette, reprojection (`rio.reproject`), export (`rio.to_raster`).
+-   `rioxarray` **découpe** (`clip_box`/`clip`) et **rééchantillonne** (`reproject(resolution=…)`, méthode d'agrégation au choix) une image géoréférencée.
+-   `xarray` sélectionne par **étiquette** (`sel`) ou position (`isel`), réduit sur des **dimensions nommées**, et ses calculs **préservent la géoréférence**.
 :::
 ::::::
 
@@ -661,6 +726,12 @@ Données météos, exemple avec SWOT.
 6.  *(masquage)* Calculez le NDVI, masquez les pixels d'eau (NDVI < 0) avec `np.ma.masked_where`, puis comparez le NDVI moyen **avec** et **sans** masque.
 
 7.  *(sauvegarde)* Sauvegardez votre carte de NDVI dans un fichier `.npy`, rechargez-la, et vérifiez l'égalité avec `np.allclose` (option `equal_nan=True`).
+
+8.  *(découpage)* Découpez `RGBNIR_of_S2A.tif` sur son **quart supérieur gauche** avec `clip_box` et affichez la sous-image.
+
+9.  *(rééchantillonnage)* Rééchantillonnez l'image à **30 m** par moyenne (`reproject` avec `Resampling.average`) et comparez le nombre de pixels à l'original.
+
+10. *(xarray)* Nommez les bandes (`B`, `V`, `R`, `PIR`), sélectionnez `PIR` par étiquette, puis calculez la moyenne de chaque bande sur les dimensions `y` et `x`.
 :::
 ::::::
 
