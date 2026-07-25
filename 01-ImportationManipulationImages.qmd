@@ -39,6 +39,7 @@ Dans ce chapitre, nous abordons quelques formats d'images ainsi que leur lecture
 -   **sauvegarder et recharger** des tableaux au format binaire (`.npy`, `.npz`);
 -   **découper** et **rééchantillonner** une image géoréférencée (`clip_box`, `reproject`);
 -   sélectionner et calculer par **étiquette** avec `xarray` (dimensions nommées);
+-   écrire un résultat dans un **GeoTIFF géoréférencé** (`rasterio`, profil / transformation affine);
 -   exploiter les métadonnées et la géoréférence avec `rioxarray` et `xarray`.
 :::::
 
@@ -486,6 +487,45 @@ print("Forme de 'pir' :", archive['pir'].shape)
 
 Contrairement au GeoTIFF, ces fichiers ne contiennent **ni géoréférence ni métadonnée** : ils ne servent qu'à un stockage temporaire au sein d'une chaîne de traitement Python.
 
+### Créer un raster à partir d'un tableau NumPy
+
+À l'inverse, on souhaite souvent écrire un **résultat** calculé (un indice, un masque, une classification) dans un GeoTIFF **géoréférencé**. Avec `rasterio`, on part du **profil** de l'image source — qui transporte le système de coordonnées, la transformation affine et les dimensions — que l'on adapte au produit dérivé (ici une seule bande en `float32`) :
+
+```{python}
+import rasterio
+import numpy as np
+
+with rasterio.open('RGBNIR_of_S2A.tif') as src:
+    rouge = src.read(3).astype('float32')     # bande 3 : rouge
+    pir   = src.read(4).astype('float32')     # bande 4 : proche-infrarouge
+    profil = src.profile                        # hérite CRS, transformation, dimensions
+
+ndvi = (pir - rouge) / (pir + rouge)
+
+profil.update(count=1, dtype='float32')         # une seule bande, en float
+with rasterio.open('ndvi.tif', 'w', **profil) as dst:
+    dst.write(ndvi, 1)                           # écriture dans la bande 1
+
+# Vérification : la géoréférence a bien été conservée
+with rasterio.open('ndvi.tif') as check:
+    print("CRS :", check.crs, "| bandes :", check.count, "| type :", check.dtypes[0])
+```
+
+Lorsqu'il n'y a pas d'image source, on construit la géoréférence de toutes pièces. `from_origin` définit la transformation affine à partir du coin supérieur gauche et de la taille des pixels :
+
+```{python}
+from rasterio.transform import from_origin
+
+# Tableau synthétique 100 x 100 et géoréférence construite manuellement
+donnee = np.random.default_rng(0).random((100, 100)).astype('float32')
+transform = from_origin(500000, 5000000, 10, 10)   # origine (x, y) + pixel de 10 m
+
+with rasterio.open('synthetique.tif', 'w', driver='GTiff', height=100, width=100,
+                   count=1, dtype='float32', crs='EPSG:32618', transform=transform) as dst:
+    dst.write(donnee, 1)
+print("Raster synthétique écrit :", donnee.shape, "| pixel 10 m, EPSG:32618")
+```
+
 ### Changement de projection cartographique
 
 Une image géoréférencée peut être reprojetée dans un autre système de coordonnées avec `rio.reproject`. `rioxarray` recalcule alors la grille de pixels et met à jour la géoréférence :
@@ -699,6 +739,7 @@ Données météos, exemple avec SWOT.
 -   `rioxarray`/`xarray` ajoutent **dimensions nommées, coordonnées et géoréférence** (accesseur `.rio`) : sélection par étiquette, reprojection (`rio.reproject`), export (`rio.to_raster`).
 -   `rioxarray` **découpe** (`clip_box`/`clip`) et **rééchantillonne** (`reproject(resolution=…)`, méthode d'agrégation au choix) une image géoréférencée.
 -   `xarray` sélectionne par **étiquette** (`sel`) ou position (`isel`), réduit sur des **dimensions nommées**, et ses calculs **préservent la géoréférence**.
+-   `rasterio` **écrit** un tableau NumPy dans un GeoTIFF géoréférencé : hériter le **profil** de la source (CRS + transformation) ou le construire (`from_origin`), puis `dst.write`.
 :::
 ::::::
 
@@ -732,6 +773,8 @@ Données météos, exemple avec SWOT.
 9.  *(rééchantillonnage)* Rééchantillonnez l'image à **30 m** par moyenne (`reproject` avec `Resampling.average`) et comparez le nombre de pixels à l'original.
 
 10. *(xarray)* Nommez les bandes (`B`, `V`, `R`, `PIR`), sélectionnez `PIR` par étiquette, puis calculez la moyenne de chaque bande sur les dimensions `y` et `x`.
+
+11. *(écriture)* Calculez un masque d'eau (NDVI < 0), écrivez-le comme un GeoTIFF à une bande en réutilisant le profil de `RGBNIR_of_S2A.tif`, puis relisez-le pour vérifier son CRS.
 :::
 ::::::
 
