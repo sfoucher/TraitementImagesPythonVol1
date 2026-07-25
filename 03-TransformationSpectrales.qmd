@@ -6,7 +6,6 @@ execute:
   eval: true
   message: false
   warning: false
-  keep-ipynb: true
 code-overflow: wrap
 ---
 
