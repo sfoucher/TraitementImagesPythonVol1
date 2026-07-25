@@ -53,6 +53,13 @@ q quarto render --profile typst --to orange-book-typst --cache --no-clean \
 q quarto render slides --to revealjs --cache \
   || echo "WARN: slides render failed; continuing"
 
+# The landing page must be a normal HTML page, not a deck. The `--to revealjs`
+# above force-overrides index.qmd's own `format: html`, so re-render it to HTML
+# afterwards (this pass wins). Clear its _files first to drop orphan revealjs libs.
+rm -rf docs/slides/index_files
+q quarto render slides/index.qmd --to html --cache \
+  || echo "WARN: slides index (html) render failed; continuing"
+
 # 3. DOCX (optional)
 # mkdir -p docx
 # q quarto render --cache --no-clean --to docx --output-dir ./docx
