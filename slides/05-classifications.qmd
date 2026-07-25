@@ -82,13 +82,21 @@ Degré 1 → **sous-apprentissage** · degré 15 → **sur-apprentissage**.
 5. **Tester** sur des données indépendantes
 :::
 
-## Séparabilité & performance {.smaller}
+## Séparabilité des classes {.smaller}
 
 ::: {.incremental}
-- Ensembles réels souvent **déséquilibrés**
-- **Séparabilité** (distance JM) sous hypothèse gaussienne
-- **Matrice de confusion** → **rappel** (omission, lignes), **précision** (fausses alarmes, colonnes)
-- **f1-score** = moyenne harmonique rappel/précision
+- Ensembles réels souvent **déséquilibrés** (fréquences de classes très inégales)
+- **Séparabilité** mesurée par la distance **JM** sous hypothèse gaussienne
+- Guide le choix des bandes et indices les plus **discriminants**
+:::
+
+## Mesures de performance {.smaller}
+
+::: {.incremental}
+- **Matrice de confusion** : vérité terrain vs prédiction
+- **Rappel** — erreurs d'omission (normalisation par lignes)
+- **Précision** — fausses alarmes (normalisation par colonnes)
+- **f1-score** = moyenne harmonique du rappel et de la précision
 :::
 
 ## K-NN — frontières de décision {.smaller}

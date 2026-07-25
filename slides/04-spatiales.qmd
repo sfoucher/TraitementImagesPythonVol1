@@ -72,7 +72,24 @@ plt.show()
 - **Stationnaire** vs **adaptatif**
 :::
 
-## Filtre moyen & contours (Scharr) {.smaller}
+## Filtre moyen (lissage) {.smaller}
+
+Un **filtre moyen** remplace chaque pixel par la moyenne de son voisinage → réduit le bruit, adoucit les détails.
+
+```{python}
+#| fig-align: center
+from scipy.ndimage import uniform_filter
+gris = img[0]                                    # une bande
+lisse = uniform_filter(gris, size=5)             # moyenne sur une fenêtre 5x5
+fig, ax = plt.subplots(1, 2, figsize=(7, 3))
+ax[0].imshow(gris, cmap='gray'); ax[0].set_title("Originale"); ax[0].axis('off')
+ax[1].imshow(lisse, cmap='gray'); ax[1].set_title("Filtre moyen 5x5"); ax[1].axis('off')
+plt.show()
+```
+
+## Contours — filtre de Scharr {.smaller}
+
+Un **filtre de gradient** (Scharr) met en valeur les **contours** — les fortes variations locales :
 
 ```{python}
 #| fig-align: center
@@ -82,7 +99,7 @@ gris = img[0]                                    # une bande
 grad = np.abs(signal.convolve2d(gris, scharr, boundary='symm', mode='same'))
 fig, ax = plt.subplots(1, 2, figsize=(7, 3))
 ax[0].imshow(gris, cmap='gray'); ax[0].set_title("Originale"); ax[0].axis('off')
-ax[1].imshow(grad, cmap='gray'); ax[1].set_title("Contours — filtre de Scharr"); ax[1].axis('off')
+ax[1].imshow(grad, cmap='gray'); ax[1].set_title("Contours (Scharr)"); ax[1].axis('off')
 plt.show()
 ```
 
