@@ -50,6 +50,7 @@ Dans ce chapitre, nous abordons quelques techniques de réhaussement et de visua
 -   calculer les histogrammes de valeurs;
 -   appliquer une transformation linéaire ou non linéaire pour améliorer une visualisation;
 -   comprendre le principe des composés colorés;
+-   explorer une image sur une carte web interactive (`leafmap`);
 :::::
 
 ### 
@@ -172,18 +173,59 @@ plt.show()
 ```
 
 
-<!---
 ### Visualisation sur le Web
 
-Une des meilleures pratiques pour visualiser une image de grande taille est d'utiliser un service de type Web Mapping Service (WMS). Cependant, type de service nécessite une architecture client-serveur qui est plus complexe à mettre en place.
+Les affichages `matplotlib` précédents sont **statiques**. Pour explorer une image de manière **interactive** — zoomer, se déplacer, superposer un fond de carte, comparer deux visualisations — on peut la placer sur une carte web. La librairie [`leafmap`](https://leafmap.org/) offre une interface Python unifiée au-dessus de `folium` et `ipyleaflet` et permet, en quelques lignes, d'afficher un GeoTIFF géoréférencé sur une carte glissante (*slippy map*).
 
-Google Earth Engine offre des moyens de visualiser de la donnée locale:
-_Working with Local Geospatial Data_ — via [17. Geemap — Introduction to GIS Programming](https://geog-312.gishub.org/book/geospatial/geemap.html#working-with-local-geospatial-data)
+:::::: bloc_attention
+:::: bloc_attention-header
+::: bloc_attention-icon
+:::
 
-via [data/raster at main · opengeos/data](https://github.com/opengeos/data/tree/main/raster)
+**Cartes interactives et formats de sortie**
+::::
 
+::: bloc_attention-body
+Les cartes `leafmap` sont des composants **JavaScript** : elles s'affichent dans un **notebook** (Google Colab, Jupyter) ou dans la **version HTML** de ce livre, mais **pas dans le PDF**. Les cellules ci-dessous ne sont donc pas exécutées à la compilation (`#| eval: false`) — ouvrez ce chapitre dans [![](images/colab.png)](https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/02-RehaussementVisualisationImages.ipynb) pour les manipuler.
+:::
+::::::
 
+L'installation se fait une seule fois dans l'environnement :
 
+```{python}
+#| eval: false
+%pip install -U leafmap
+```
+
+On crée une carte, puis on ajoute directement notre image locale. Comme les bandes sont stockées dans l'ordre B, V, R, PIR, on demande les indices `[3, 2, 1]` pour un composé **vraie couleur** :
+
+```{python}
+#| eval: false
+import leafmap
+
+m = leafmap.Map()
+m.add_raster('RGBNIR_of_S2A.tif', indexes=[3, 2, 1], layer_name='Vraie couleur')
+m
+```
+
+La méthode `split_map` crée un **comparateur à volet glissant**, idéal pour opposer deux visualisations de la même scène — ici la vraie couleur (`[3, 2, 1]`) et l'infrarouge fausses couleurs (`[4, 3, 2]`), qui fait ressortir la végétation en rouge :
+
+```{python}
+#| eval: false
+m = leafmap.Map()
+m.split_map(
+    left_layer='RGBNIR_of_S2A.tif',
+    right_layer='RGBNIR_of_S2A.tif',
+    left_args={'indexes': [3, 2, 1]},
+    right_args={'indexes': [4, 3, 2]},
+    left_label='Vraie couleur', right_label='Infrarouge',
+)
+m
+```
+
+`leafmap` permet aussi d'ajouter un fond satellite (`m.add_basemap('Esri.WorldImagery')`), de charger des images distantes au format *Cloud Optimized GeoTIFF* (`m.add_cog_layer(url)`), ou d'inspecter les valeurs de pixels au clic (`m.add('inspector')`). C'est un outil précieux pour situer une image ou un résultat de traitement (comme une classification, @sec-chap05) dans son contexte géographique.
+
+<!---
 ### Visualisation 3D
 
 drapper une image satellite sur un DEM
@@ -536,6 +578,7 @@ plt.show()
 -   Le **stretch linéaire** remappe la dynamique ; pour les histogrammes **asymétriques** (images SAR), les **percentiles** (p. ex. 2 %–98 %) fournissent des bornes d'affichage robustes.
 -   Les transformations **non linéaires** — passage en **dB** (`10·log10`) et **égalisation d'histogramme** — rétablissent une distribution exploitable.
 -   Les **palettes de couleur** et les **composés colorés** (choix des bandes) révèlent des propriétés différentes de la surface ; `vmin`/`vmax` contrôlent la dynamique affichée.
+-   Pour une exploration **interactive** (zoom, fond de carte, comparaison avant/après avec `split_map`), **`leafmap`** superpose une image géoréférencée sur une carte web — dans un notebook ou la version HTML, jamais dans le PDF.
 :::
 ::::::
 
@@ -555,6 +598,8 @@ plt.show()
 2.  Reprenez l'égalisation d'histogramme en remplaçant la CDF cible équiprobable par une **CDF gaussienne** (avec `scipy.stats.norm.cdf`), puis observez l'effet sur l'image SAR.
 
 3.  À partir de `img_s2`, construisez un nouveau composé coloré (p. ex. `[11, 8, 4]` ou `[8, 4, 3]`) et décrivez les surfaces qu'il met en valeur.
+
+4.  *(visualisation web)* Dans Colab, installez `leafmap`, chargez `RGBNIR_of_S2A.tif` en composé infrarouge (`indexes=[4, 3, 2]`) sur un fond `Esri.WorldImagery`, puis comparez vraie couleur et infrarouge avec `split_map`.
 :::
 ::::::
 
