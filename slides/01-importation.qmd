@@ -77,6 +77,32 @@ fig.colorbar(im, ax=ax, ticks=[0, 1, 2, 3], shrink=0.7); plt.show()
 
 Le PIR domine sur la **végétation**. Masquer (`np.ma`) et sauvegarder (`np.save`/`.npz`) complètent la boîte à outils.
 
+## Découper, rééchantillonner, étiqueter {.smaller}
+
+`rioxarray` découpe (`clip_box`) et rééchantillonne (`reproject`) ; `xarray` sélectionne par **étiquette** :
+
+```{python}
+#| fig-align: center
+import numpy as np
+from rasterio.enums import Resampling
+
+img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')
+minx, miny, maxx, maxy = img.rio.bounds()
+cx, cy = (minx + maxx) / 2, (miny + maxy) / 2
+dx, dy = (maxx - minx) / 4, (maxy - miny) / 4
+sous = img.rio.clip_box(cx - dx, cy - dy, cx + dx, cy + dy)                  # découpage
+bas = img.rio.reproject(img.rio.crs, resolution=20, resampling=Resampling.average)  # 10->20 m
+print("clip :", tuple(img.sizes.values()), "->", tuple(sous.sizes.values()),
+      "| resample 20 m :", tuple(bas.sizes.values()))
+print("sel(band=4) == isel(band=3) :", bool((img.sel(band=4) == img.isel(band=3)).all()))
+
+fig, ax = plt.subplots(figsize=(4, 2.8))
+sous.sel(band=[3, 2, 1]).plot.imshow(vmin=86, vmax=5000, ax=ax)
+ax.set_title("Quart central (clip_box)"); ax.axis('off'); plt.show()
+```
+
+Un résultat se réécrit en GeoTIFF géoréférencé avec `rasterio` (`profil` de la source + `dst.write`).
+
 ## Points clés {.smaller}
 
 ::: {.incremental}
@@ -86,6 +112,7 @@ Le PIR domine sur la **végétation**. Masquer (`np.ma`) et sauvegarder (`np.sav
 - Une image est un **tableau NumPy** — découpage, vue vs copie
 - **Indexation avancée** (`argmax`, tableaux d'indices), **tableaux masqués** (`np.ma`), **sauvegarde** (`.npy`/`.npz`)
 - `rioxarray` / `xarray` : dimensions nommées + géoréférence via `.rio`
+- **Découper** (`clip_box`), **rééchantillonner** (`reproject`), sélectionner par **étiquette** (`sel`/`isel`), **écrire** un GeoTIFF (`rasterio`)
 :::
 
 ## À vous de jouer {.smaller}
@@ -93,6 +120,7 @@ Le PIR domine sur la **végétation**. Masquer (`np.ma`) et sauvegarder (`np.sav
 - Ouvrez `RGBNIR_of_S2A.tif`, affichez ses bandes, type, CRS et résolution
 - Extrayez une fenêtre de 100 × 100 pixels au centre et affichez-la
 - Reprojetez en `EPSG:4326` puis sauvegardez en GeoTIFF (`rio.to_raster`)
+- Découpez au quart central (`clip_box`), rééchantillonnez à 20 m, et écrivez un NDVI en GeoTIFF (`rasterio`)
 
 ##  {background-color="#357cc0"}
 
