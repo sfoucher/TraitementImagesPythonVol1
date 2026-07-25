@@ -266,13 +266,21 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong>Tester</strong> sur des données indépendantes</li>
 </ol>
 </section>
-<section id="séparabilité-performance" class="slide level2 smaller">
-<h2>Séparabilité &amp; performance</h2>
+<section id="séparabilité-des-classes" class="slide level2 smaller">
+<h2>Séparabilité des classes</h2>
 <ul>
-<li class="fragment">Ensembles réels souvent <strong>déséquilibrés</strong></li>
-<li class="fragment"><strong>Séparabilité</strong> (distance JM) sous hypothèse gaussienne</li>
-<li class="fragment"><strong>Matrice de confusion</strong> → <strong>rappel</strong> (omission, lignes), <strong>précision</strong> (fausses alarmes, colonnes)</li>
-<li class="fragment"><strong>f1-score</strong> = moyenne harmonique rappel/précision</li>
+<li class="fragment">Ensembles réels souvent <strong>déséquilibrés</strong> (fréquences de classes très inégales)</li>
+<li class="fragment"><strong>Séparabilité</strong> mesurée par la distance <strong>JM</strong> sous hypothèse gaussienne</li>
+<li class="fragment">Guide le choix des bandes et indices les plus <strong>discriminants</strong></li>
+</ul>
+</section>
+<section id="mesures-de-performance" class="slide level2 smaller">
+<h2>Mesures de performance</h2>
+<ul>
+<li class="fragment"><strong>Matrice de confusion</strong> : vérité terrain vs prédiction</li>
+<li class="fragment"><strong>Rappel</strong> — erreurs d’omission (normalisation par lignes)</li>
+<li class="fragment"><strong>Précision</strong> — fausses alarmes (normalisation par colonnes)</li>
+<li class="fragment"><strong>f1-score</strong> = moyenne harmonique du rappel et de la précision</li>
 </ul>
 </section>
 <section id="k-nn-frontières-de-décision" class="slide level2 smaller">
