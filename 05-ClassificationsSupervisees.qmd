@@ -50,6 +50,7 @@ Dans ce chapitre, nous ferons une introduction générale à l'apprentissage aut
 -   savoir comment évaluer les résultats d'un classificateur;
 -   visualiser les frontières de décision;
 -   mettre en place des techniques de classifications comme K-NN et les arbres de décision;
+-   comprendre le rôle des **distances** dans le K-NN (`cdist`) et dresser un **bilan surfacique** par classe (`bincount`);
 :::::
 
 ### Librairies
@@ -672,6 +673,34 @@ Avant d'effectuer un entraînement, on met généralement une portion des donné
 X_train, X_test, y_train, y_test = train_test_split(X, y_new, test_size=0.2, random_state=0)
 ```
 
+#### Le principe : distances et plus proche voisin
+
+Le cœur du K-NN est le calcul de **distances**. La fonction `scipy.spatial.distance.cdist` calcule d'un seul appel toutes les distances entre les points de test et les points d'entraînement. Le plus proche voisin s'obtient alors par un simple `argmin` ; pour $K = 1$, le résultat est identique à celui de `scikit-learn` :
+
+```{python}
+from scipy.spatial.distance import cdist
+
+# Normalisation (comme pour le K-NN), ajustée sur l'entraînement
+scaler = StandardScaler().fit(X_train)
+Xtr_n, Xte_n = scaler.transform(X_train), scaler.transform(X_test)
+
+# Distance de chaque point de test à chaque point d'entraînement
+D = cdist(Xte_n, Xtr_n, metric='euclidean')    # (n_test, n_train)
+print("Matrice des distances :", D.shape)
+
+# Plus proche voisin : indice du minimum sur chaque ligne
+plus_proche = D.argmin(axis=1)
+y_pred_manuel = y_train[plus_proche]
+print("Exactitude (1-PPV « à la main ») :", round((y_pred_manuel == y_test).mean(), 3))
+
+# Comparaison avec le K-NN de scikit-learn (K = 1)
+knn1 = Pipeline([("scaler", StandardScaler()),
+                 ("knn", KNeighborsClassifier(n_neighbors=1))]).fit(X_train, y_train)
+print("Exactitude (scikit-learn, K = 1) :", round((knn1.predict(X_test) == y_test).mean(), 3))
+```
+
+Passer à $K > 1$ revient à considérer les $K$ plus petites distances (via `np.argsort`) et à voter parmi leurs classes. La même notion de distance, appliquée cette fois aux **centres de classes**, fonde aussi la mesure de séparabilité JM vue plus haut.
+
 On peut visualiser les frontières de décision du K-NN pour différentes valeurs de $K$ lorsque seulement deux bandes sont utilisées (Rouge et proche infra-rouge ici) :
 
 ```{python}
@@ -1067,6 +1096,37 @@ ax.set_title("Carte d'occupation des sols avec un MLP", fontsize="small")
 plt.show()
 ```
 
+## Analyse post-classification
+
+Une fois la carte produite, on quantifie la **superficie** occupée par chaque classe. Comme les étiquettes sont des entiers consécutifs, `np.bincount` compte les pixels par classe encore plus directement que `np.unique`. En multipliant ces comptes par la surface d'un pixel — déduite de la résolution de l'image — on obtient un bilan en kilomètres carrés :
+
+```{python}
+# Comptage des pixels par classe sur la carte produite (ici le MLP)
+comptes = np.bincount(y_classe.ravel(), minlength=len(nom_classes2))
+
+# Surface d'un pixel à partir de la résolution (10 m x 10 m ici)
+xres, yres = img_rgbnir.rio.resolution()
+pixel_km2 = abs(xres * yres) / 1e6
+
+superficies = pd.DataFrame({
+    "Classe": nom_classes2,
+    "Pixels": comptes,
+    "Superficie (km2)": (comptes * pixel_km2).round(2),
+})
+superficies
+```
+
+Ce tableau est le produit final le plus courant d'une classification : un bilan surfacique par classe d'occupation du sol. On peut le visualiser sous forme de diagramme en barres :
+
+```{python}
+#| echo: false
+plt.figure(figsize=(5, 3))
+plt.bar(nom_classes2, comptes * pixel_km2)
+plt.ylabel("km2"); plt.title("Superficie par classe (MLP)", fontsize="small")
+plt.xticks(rotation=45, ha='right')
+plt.show()
+```
+
 ## Points clés
 
 :::::: bloc_notes
@@ -1084,6 +1144,8 @@ plt.show()
 -   La performance se lit dans la **matrice de confusion** : **rappel** (omission, lignes), **précision** (fausses alarmes, colonnes), **f1-score**.
 -   Méthodes **non paramétriques** (parallélépipèdes, K-NN, arbres) vs **paramétriques** (Bayésien naïf, ADQ) ; le K-NN exige une **normalisation** (`StandardScaler`).
 -   La **malédiction de la dimensionnalité** : le nombre de points requis croît exponentiellement avec le nombre de dimensions $D$.
+-   Le **K-NN** repose sur des **distances** (`scipy.spatial.distance.cdist`) : le plus proche voisin (`argmin`) reproduit le 1-NN, le vote sur $K$ voisins généralise ; la distance entre **centres de classes** mesure la séparabilité (JM).
+-   Après classification, `np.bincount` combiné à la **résolution** de l'image donne un **bilan surfacique** (superficie par classe).
 :::
 ::::::
 
@@ -1105,6 +1167,10 @@ plt.show()
 3.  Entraînez un arbre de décision avec plusieurs `max_depth` (3, 5, 10, `None`) et repérez à partir de quelle profondeur le sur-apprentissage apparaît.
 
 4.  Utilisez les **4 bandes** (au lieu de Rouge–NIR) pour l'ADQ et comparez la carte d'occupation des sols obtenue.
+
+5.  *(distances)* Avec `cdist`, calculez la distance de chaque point de test à chaque point d'entraînement, classez par plus proche voisin (`argmin`, $K = 1$), et vérifiez que l'exactitude correspond à celle du K-NN de `scikit-learn`.
+
+6.  *(post-classification)* À partir d'une carte produite (K-NN, arbre ou MLP), calculez la superficie de chaque classe avec `np.bincount` et la résolution de l'image ; identifiez les deux classes les plus étendues.
 :::
 ::::::
 
