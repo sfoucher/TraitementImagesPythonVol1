@@ -265,7 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sec-00-02" id="toc-sec-00-02" class="nav-link" data-scroll-target="#sec-00-02"><span class="header-section-number">1.12</span> Un avant-goût de NumPy</a>
   <ul class="collapse">
   <li><a href="#attributs-et-type-de-données" id="toc-attributs-et-type-de-données" class="nav-link" data-scroll-target="#attributs-et-type-de-données"><span class="header-section-number">1.12.1</span> Attributs et type de données</a></li>
-  <li><a href="#créer-des-tableaux" id="toc-créer-des-tableaux" class="nav-link" data-scroll-target="#créer-des-tableaux"><span class="header-section-number">1.12.2</span> Créer des tableaux</a></li>
+  <li><a href="#créer-des-matrices" id="toc-créer-des-matrices" class="nav-link" data-scroll-target="#créer-des-matrices"><span class="header-section-number">1.12.2</span> Créer des matrices</a></li>
   <li><a href="#le-broadcasting" id="toc-le-broadcasting" class="nav-link" data-scroll-target="#le-broadcasting"><span class="header-section-number">1.12.3</span> Le <em>broadcasting</em></a></li>
   <li><a href="#remodeler-et-réordonner-les-axes" id="toc-remodeler-et-réordonner-les-axes" class="nav-link" data-scroll-target="#remodeler-et-réordonner-les-axes"><span class="header-section-number">1.12.4</span> Remodeler et réordonner les axes</a></li>
   </ul></li>
@@ -281,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title"><span id="sec-chap00" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction au langage Python</span></span></h1>
-<p class="subtitle lead">Première édition · Version 1.341</p>
+<p class="subtitle lead">Première édition · Version 1.343</p>
 </div>
 
 
@@ -315,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>écrire des boucles, des conditions et des fonctions;</li>
 <li>aborder la programmation orientée objet;</li>
 <li>organiser du code en modules et packages;</li>
-<li>manipuler un tableau <code>NumPy</code>.</li>
+<li>manipuler une matrice <code>NumPy</code>.</li>
 </ul>
 </div>
 </div>
@@ -466,7 +466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>7. Activer le nouvel environnement: <code>conda activate jupyter_env</code></p>
 <p>8. Le serveur jupyter peut ensuite être lancé avec la commande suivante: <code>jupyter lab --ip='*' --NotebookApp.token='' --NotebookApp.password=''</code></p>
 <p>Une fenêtre devrait alors apparaître dans votre fureteur. Dans le menu de gauche vous pouvez accéder aux notebooks dans le répertoire <code>notebooks</code>:</p>
-<div id="fig-jupyterlab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Client Jupyter Lab" data-fig-align="center">
+<div id="fig-jupyterlab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-scap="Client Jupyter Lab">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jupyterlab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/jupyter-accueil.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-scap="Client Jupyter Lab">
@@ -616,38 +616,6 @@ date : 2024-07-01</code></pre>
 <p>À retenir : <code>**d</code> sert à <em>fournir</em> ou <em>fusionner</em> des paires clé-valeur (appels de fonction, construction de dictionnaires), alors que <code>**kwargs</code> dans une <strong>définition</strong> de fonction fait l’inverse — il <em>collecte</em> les arguments nommés dans un dictionnaire. À partir de Python 3.9, <code>a | b</code> fusionne aussi deux dictionnaires, en équivalent plus lisible de <code>{**a, **b}</code>.</p>
 </div>
 </div>
-<div class="bloc_aller_loin">
-<div class="bloc_aller_loin-header">
-<div class="bloc_aller_loin-icon">
-
-</div>
-<p><strong>Les compréhensions de liste et de dictionnaire</strong></p>
-</div>
-<div class="bloc_aller_loin-body">
-<p>Une <strong>compréhension</strong> construit une collection en une seule ligne, à la place d’une boucle <code>for</code> suivie d’un <code>append</code>. Le code est plus court, plus lisible et souvent plus rapide. Le patron est toujours le même : une <strong>expression</strong>, un parcours (<code>for</code>), et un <strong>filtre</strong> optionnel (<code>if</code>).</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de LISTE : [expression for élément in itérable if condition]</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>majuscules <span class="op">=</span> [b.upper() <span class="cf">for</span> b <span class="kw">in</span> bandes]           <span class="co"># transforme chaque élément</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>courtes    <span class="op">=</span> [b <span class="cf">for</span> b <span class="kw">in</span> bandes <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op">&lt;=</span> <span class="dv">4</span>]    <span class="co"># ne garde que certains éléments</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># équivalent avec une boucle classique :</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>courtes <span class="op">=</span> []</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> bandes:</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op">&lt;=</span> <span class="dv">4</span>:</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        courtes.append(b)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de DICTIONNAIRE : {clé: valeur for ...}</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> {nom: i <span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes)}  <span class="co"># {'bleu': 0, 'vert': 1, ...}</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>inverse <span class="op">=</span> {valeur: cle <span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items()}   <span class="co"># échange clés et valeurs</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension d'ENSEMBLE : {expression for ...} -&gt; doublons éliminés</span></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>]</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> {c <span class="cf">for</span> c <span class="kw">in</span> classes}                      <span class="co"># {'eau', 'forêt', 'urbain'}</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<p>On peut aussi choisir la valeur selon une condition, en plaçant un <code>if</code>/<code>else</code> dans l’<strong>expression</strong> (et non comme filtre en fin) : <code>["vég." if b == "PIR" else "visible" for b in bandes]</code>.</p>
-</div>
-</div>
 <div class="bloc_attention">
 <div class="bloc_attention-header">
 <div class="bloc_attention-icon">
@@ -658,22 +626,22 @@ date : 2024-07-01</code></pre>
 <div class="bloc_attention-body">
 <p>En Python, une variable est une <strong>étiquette</strong> qui pointe vers un objet, et non une boîte qui contient une valeur. Cette distinction est source d’erreurs fréquentes.</p>
 <p>Les types <strong>immuables</strong> (<code>int</code>, <code>float</code>, <code>str</code>, <code>tuple</code>) ne peuvent pas être modifiés sur place : les réaffecter crée un <strong>nouvel</strong> objet. Les types <strong>muables</strong> (<code>list</code>, <code>dict</code>, <code>set</code>) peuvent, eux, être modifiés en place — et une simple affectation <code>b = a</code> ne fait que créer une <strong>seconde étiquette sur le même objet</strong> :</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a                 <span class="co"># b et a désignent le MÊME objet</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>b.append(<span class="dv">4</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)              <span class="co"># [1, 2, 3, 4]  &lt;- a est modifiée aussi !</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="kw">is</span> b)         <span class="co"># True (même objet en mémoire)</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> a.copy()          <span class="co"># copie superficielle : un nouvel objet</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>c.append(<span class="dv">5</span>)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a, a <span class="kw">is</span> c)      <span class="co"># [1, 2, 3, 4] False  (a reste inchangée)</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Pour un tableau <code>NumPy</code>, c’est la méthode <code>.copy()</code> qui joue ce rôle (le découpage renvoie une <strong>vue</strong>, pas une copie). Attention enfin à la <strong>copie superficielle</strong> : elle duplique le conteneur mais <strong>partage</strong> les objets imbriqués. Pour une indépendance totale, on utilise <code>copy.deepcopy</code> :</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> copy</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>grille <span class="op">=</span> [[<span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>]]</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>sup <span class="op">=</span> grille.copy()             <span class="co"># copie superficielle : sous-listes PARTAGÉES</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>sup[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">=</span> <span class="dv">9</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grille)                   <span class="co"># [[9, 0], [0, 0]]  &lt;- affectée malgré la copie !</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> copy.deepcopy(grille)    <span class="co"># copie profonde : totalement indépendante</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a                 <span class="co"># b et a désignent le MÊME objet</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>b.append(<span class="dv">4</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)              <span class="co"># [1, 2, 3, 4]  &lt;- a est modifiée aussi !</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="kw">is</span> b)         <span class="co"># True (même objet en mémoire)</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> a.copy()          <span class="co"># copie superficielle : un nouvel objet</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>c.append(<span class="dv">5</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a, a <span class="kw">is</span> c)      <span class="co"># [1, 2, 3, 4] False  (a reste inchangée)</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pour une matrice <code>NumPy</code>, c’est la méthode <code>.copy()</code> qui joue ce rôle (le découpage renvoie une <strong>vue</strong>, pas une copie). Attention enfin à la <strong>copie superficielle</strong> : elle duplique le conteneur mais <strong>partage</strong> les objets imbriqués. Pour une indépendance totale, on utilise <code>copy.deepcopy</code> :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> copy</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>grille <span class="op">=</span> [[<span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>]]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>sup <span class="op">=</span> grille.copy()             <span class="co"># copie superficielle : sous-listes PARTAGÉES</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>sup[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">=</span> <span class="dv">9</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grille)                   <span class="co"># [[9, 0], [0, 0]]  &lt;- affectée malgré la copie !</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> copy.deepcopy(grille)    <span class="co"># copie profonde : totalement indépendante</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <p>À retenir : <code>is</code> compare l’<strong>identité</strong> (le même objet), <code>==</code> compare la <strong>valeur</strong>. En cas de doute sur un objet muable, copiez avant de modifier.</p>
 </div>
 </div>
@@ -682,26 +650,26 @@ date : 2024-07-01</code></pre>
 <h2 data-number="1.6" class="anchored" data-anchor-id="boucles-et-conditions"><span class="header-section-number">1.6</span> Boucles et conditions</h2>
 <p>Un programme prend des décisions (<code>if</code>) et répète des opérations (<code>for</code>, <code>while</code>). Ces structures de contrôle sont au cœur de tout traitement automatisé.</p>
 <div id="4c322c72" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle for : parcourir chaque bande avec son indice</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes):</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i, nom)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Condition if / elif / else</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>reflectance <span class="op">=</span> <span class="fl">0.42</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> reflectance <span class="op">&gt;</span> <span class="fl">0.5</span>:</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"forte réflectance"</span>)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> reflectance <span class="op">&gt;</span> <span class="fl">0.3</span>:</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"réflectance moyenne"</span>)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"faible réflectance"</span>)</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle while : tant qu'une condition est vraie</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>seuil, valeur <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">0.1</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> valeur <span class="op">&lt;</span> seuil:</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    valeur <span class="op">+=</span> <span class="fl">0.2</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"valeur finale :"</span>, <span class="bu">round</span>(valeur, <span class="dv">1</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle for : parcourir chaque bande avec son indice</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i, nom)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Condition if / elif / else</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>reflectance <span class="op">=</span> <span class="fl">0.42</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> reflectance <span class="op">&gt;</span> <span class="fl">0.5</span>:</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"forte réflectance"</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> reflectance <span class="op">&gt;</span> <span class="fl">0.3</span>:</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"réflectance moyenne"</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"faible réflectance"</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle while : tant qu'une condition est vraie</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>seuil, valeur <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">0.1</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> valeur <span class="op">&lt;</span> seuil:</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    valeur <span class="op">+=</span> <span class="fl">0.2</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"valeur finale :"</span>, <span class="bu">round</span>(valeur, <span class="dv">1</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0 bleu
 1 vert
@@ -709,6 +677,38 @@ date : 2024-07-01</code></pre>
 3 PIR
 réflectance moyenne
 valeur finale : 0.5</code></pre>
+</div>
+</div>
+<div class="bloc_aller_loin">
+<div class="bloc_aller_loin-header">
+<div class="bloc_aller_loin-icon">
+
+</div>
+<p><strong>Les compréhensions de liste et de dictionnaire</strong></p>
+</div>
+<div class="bloc_aller_loin-body">
+<p>Une <strong>compréhension</strong> construit une collection en une seule ligne, à la place d’une boucle <code>for</code> suivie d’un <code>append</code>. Le code est plus court, plus lisible et souvent plus rapide. Le patron est toujours le même : une <strong>expression</strong>, un parcours (<code>for</code>), et un <strong>filtre</strong> optionnel (<code>if</code>).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de LISTE : [expression for élément in itérable if condition]</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>majuscules <span class="op">=</span> [b.upper() <span class="cf">for</span> b <span class="kw">in</span> bandes]           <span class="co"># transforme chaque élément</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>courtes    <span class="op">=</span> [b <span class="cf">for</span> b <span class="kw">in</span> bandes <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op">&lt;=</span> <span class="dv">4</span>]    <span class="co"># ne garde que certains éléments</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># équivalent avec une boucle classique :</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>courtes <span class="op">=</span> []</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> bandes:</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op">&lt;=</span> <span class="dv">4</span>:</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        courtes.append(b)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de DICTIONNAIRE : {clé: valeur for ...}</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> {nom: i <span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes)}  <span class="co"># {'bleu': 0, 'vert': 1, ...}</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>inverse <span class="op">=</span> {valeur: cle <span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items()}   <span class="co"># échange clés et valeurs</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension d'ENSEMBLE : {expression for ...} -&gt; doublons éliminés</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>]</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> {c <span class="cf">for</span> c <span class="kw">in</span> classes}                      <span class="co"># {'eau', 'forêt', 'urbain'}</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On peut aussi choisir la valeur selon une condition, en plaçant un <code>if</code>/<code>else</code> dans l’<strong>expression</strong> (et non comme filtre en fin) : <code>["vég." if b == "PIR" else "visible" for b in bandes]</code>.</p>
 </div>
 </div>
 </section>
@@ -922,7 +922,7 @@ Landsat-8</code></pre>
 </section>
 <section id="sec-00-02" class="level2" data-number="1.12">
 <h2 data-number="1.12" class="anchored" data-anchor-id="sec-00-02"><span class="header-section-number">1.12</span> Un avant-goût de NumPy</h2>
-<p>Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque <a href="https://numpy.org/">NumPy</a> fournit l’objet <code>ndarray</code> qui représente efficacement ces tableaux à plusieurs dimensions : c’est la brique de base de tous les chapitres suivants.</p>
+<p>Dans ce manuel, une image est avant tout une matrice de nombres. La bibliothèque <a href="https://numpy.org/">NumPy</a> fournit l’objet <code>ndarray</code> qui représente efficacement ces matrices à plusieurs dimensions : c’est la brique de base de tous les chapitres suivants.</p>
 <div id="8497acdc" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -947,7 +947,7 @@ Moyenne : 13.33
 </div>
 <section id="attributs-et-type-de-données" class="level3" data-number="1.12.1">
 <h3 data-number="1.12.1" class="anchored" data-anchor-id="attributs-et-type-de-données"><span class="header-section-number">1.12.1</span> Attributs et type de données</h3>
-<p>Au-delà de la forme (<code>shape</code>), un tableau expose son nombre de dimensions (<code>ndim</code>), son nombre total d’éléments (<code>size</code>) et surtout son <strong>type de données</strong> (<code>dtype</code>). Ce dernier encode la <em>profondeur radiométrique</em> de l’image : un capteur 8 bits produit des entiers <code>uint8</code> (0 à 255), tandis qu’une réflectance se stocke en <code>float32</code>. La méthode <code>astype</code> convertit d’un type à l’autre.</p>
+<p>Au-delà de la forme (<code>shape</code>), une matrice expose son nombre de dimensions (<code>ndim</code>), son nombre total d’éléments (<code>size</code>) et surtout son <strong>type de données</strong> (<code>dtype</code>). Ce dernier encode la <em>profondeur radiométrique</em> de l’image : un capteur 8 bits produit des entiers <code>uint8</code> (0 à 255), tandis qu’une réflectance se stocke en <code>float32</code>. La méthode <code>astype</code> convertit d’un type à l’autre.</p>
 <div id="4a70e131" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensions (ndim) :"</span>, image.ndim)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nombre de pixels  :"</span>, image.size)</span>
@@ -964,9 +964,9 @@ Nouveau type      : float32</code></pre>
 </div>
 </div>
 </section>
-<section id="créer-des-tableaux" class="level3" data-number="1.12.2">
-<h3 data-number="1.12.2" class="anchored" data-anchor-id="créer-des-tableaux"><span class="header-section-number">1.12.2</span> Créer des tableaux</h3>
-<p>On construit souvent un tableau sans l’écrire à la main : un masque rempli de zéros, une bande constante, un axe régulier de longueurs d’onde. NumPy fournit <code>zeros</code>, <code>ones</code>, <code>arange</code> (pas fixe) et <code>linspace</code> (nombre de points fixe).</p>
+<section id="créer-des-matrices" class="level3" data-number="1.12.2">
+<h3 data-number="1.12.2" class="anchored" data-anchor-id="créer-des-matrices"><span class="header-section-number">1.12.2</span> Créer des matrices</h3>
+<p>On construit souvent une matrice sans l’écrire à la main : un masque rempli de zéros, une bande constante, un axe régulier de longueurs d’onde. NumPy fournit <code>zeros</code>, <code>ones</code>, <code>arange</code> (pas fixe) et <code>linspace</code> (nombre de points fixe).</p>
 <div id="1e9133cc" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.zeros((<span class="dv">2</span>, <span class="dv">3</span>)))                 <span class="co"># masque vide (2 x 3)</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.ones(<span class="dv">4</span>, dtype<span class="op">=</span><span class="st">"uint8"</span>))        <span class="co"># bande constante</span></span>
@@ -983,7 +983,7 @@ Nouveau type      : float32</code></pre>
 </section>
 <section id="le-broadcasting" class="level3" data-number="1.12.3">
 <h3 data-number="1.12.3" class="anchored" data-anchor-id="le-broadcasting"><span class="header-section-number">1.12.3</span> Le <em>broadcasting</em></h3>
-<p>Le <em>broadcasting</em> applique une opération entre tableaux de formes différentes sans boucle : NumPy « étire » automatiquement la plus petite forme. C’est le mécanisme derrière presque tous les calculs vectorisés du manuel — appliquer un gain scalaire à toute l’image, ou un gain <strong>par bande</strong>.</p>
+<p>Le <em>broadcasting</em> applique une opération entre matrices de formes différentes sans boucle : NumPy « étire » automatiquement la plus petite forme. C’est le mécanisme derrière presque tous les calculs vectorisés du manuel — appliquer un gain scalaire à toute l’image, ou un gain <strong>par bande</strong>.</p>
 <div id="0a0abb66" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Un petit cube à 2 bandes : (bandes, lignes, colonnes)</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> np.array([[[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
@@ -1045,8 +1045,8 @@ Table pixels x bandes : (12, 2)</code></pre>
 <li>Quatre structures de base : <strong>listes</strong> (ordonnées, modifiables), <strong>tuples</strong> (immuables), <strong>ensembles</strong> (sans doublons) et <strong>dictionnaires</strong> (paires clé-valeur).</li>
 <li><code>if</code>/<code>for</code>/<code>while</code> contrôlent le déroulement du programme ; les <strong>fonctions</strong> (<code>def</code>) regroupent du code réutilisable.</li>
 <li>Le code s’organise en <strong>modules</strong> (fichiers <code>.py</code>) et <strong>packages</strong> (dossiers avec <code>__init__.py</code>), accessibles par la notation pointée (<code>package.module.fonction</code>).</li>
-<li>Une image est avant tout un <strong>tableau <code>NumPy</code></strong> : c’est la structure centrale de tout le manuel.</li>
-<li>Un tableau se caractérise par sa <strong>forme</strong> (<code>shape</code>) et son <strong>type</strong> (<code>dtype</code>, la profondeur radiométrique) ; le <strong><em>broadcasting</em></strong>, <code>reshape</code> et <code>transpose</code> permettent de calculer et de réorganiser les axes sans boucle.</li>
+<li>Une image est avant tout une <strong>matrice <code>NumPy</code></strong> : c’est la structure centrale de tout le manuel.</li>
+<li>Une matrice se caractérise par sa <strong>forme</strong> (<code>shape</code>) et son <strong>type</strong> (<code>dtype</code>, la profondeur radiométrique) ; le <strong><em>broadcasting</em></strong>, <code>reshape</code> et <code>transpose</code> permettent de calculer et de réorganiser les axes sans boucle.</li>
 </ul>
 </div>
 </div>
@@ -1081,9 +1081,9 @@ Table pixels x bandes : (12, 2)</code></pre>
 </ol>
 <p><strong>NumPy</strong></p>
 <ol start="10" type="1">
-<li><p>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.</p></li>
-<li><p>Créez un tableau NumPy 4 × 4 et, par <strong>masquage booléen</strong>, remplacez par <code>0</code> toutes les valeurs inférieures à 10.</p></li>
-<li><p>Sur le tableau <code>image</code>, calculez la moyenne <strong>par ligne</strong> puis <strong>par colonne</strong> (paramètre <code>axis</code>).</p></li>
+<li><p>À partir de la matrice <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.</p></li>
+<li><p>Créez une matrice NumPy 4 × 4 et, par <strong>masquage booléen</strong>, remplacez par <code>0</code> toutes les valeurs inférieures à 10.</p></li>
+<li><p>Sur la matrice <code>image</code>, calculez la moyenne <strong>par ligne</strong> puis <strong>par colonne</strong> (paramètre <code>axis</code>).</p></li>
 <li><p><em>(attributs)</em> Sur <code>image</code>, affichez <code>ndim</code>, <code>size</code> et <code>dtype</code>. Convertissez-le en réflectance <code>float32</code> (divisez par le maximum) et vérifiez le nouveau <code>dtype</code>.</p></li>
 <li><p><em>(création)</em> Avec <code>np.linspace</code>, construisez un axe de 6 longueurs d’onde entre 490 et 2190 nm. Créez ensuite un masque <code>np.zeros((3, 4))</code> et mettez sa <strong>première ligne</strong> à <code>1</code>.</p></li>
 <li><p><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.</p></li>
