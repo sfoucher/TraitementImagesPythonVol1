@@ -229,11 +229,7 @@ m
 ### Visualisation 3D
 
 drapper une image satellite sur un DEM
-
-
-## Exercices de révision 
 --->
-
 
 ## Réhaussements visuels
 
@@ -465,11 +461,26 @@ ax[1,1].set_title(f"2% - 98%={percentiles_db[2]:2.1f} - {percentiles_db[98]:2.1f
 plt.tight_layout()
 ```
 
+#### Réhaussement gamma (loi de puissance)
 
-<!---
-Exercise: trouver une autre transformation possible pour l'image SAR.
---->
+Une autre famille de réhaussements non linéaires très utilisée est la correction gamma (ou loi de puissance), qui applique un exposant $\gamma$ aux valeurs normalisées de l'image [@Jensen2016; @richards2022remote]:
 
+$$ j = \left(\frac{i}{i_{max}}\right)^{\gamma} \times j_{max} $$ {#eq-rehauss-gamma}
+
+Un $\gamma < 1$ éclaircit les tons foncés (utile pour une image sous-exposée) alors qu'un $\gamma > 1$ assombrit les tons clairs (utile pour une image surexposée); $\gamma = 1$ correspond à l'identité. Contrairement à l'étirement linéaire, cette transformation n'est pas symétrique entre les ombres et les hautes lumières:
+
+```{python}
+gammas = (0.5, 1.0, 2.0)
+img_norm = np.clip(img_rgb.data.transpose(1, 2, 0) / 255.0, 0, 1)
+
+fig, ax = plt.subplots(ncols=3, figsize=(9, 3))
+for a, g in zip(ax, gammas):
+    a.imshow(img_norm ** g)
+    a.set_title(f"$\\gamma$={g}")
+    a.axis('off')
+plt.tight_layout()
+plt.show()
+```
 
 #### Égalisation d'histogramme
 
@@ -500,10 +511,49 @@ plt.imshow(values_eq)
 plt.axis('off')
 ```
 
+#### Égalisation adaptative (CLAHE)
 
-<!---
-Exercise: changer la CDF cible pour une Gaussienne
---->
+L'égalisation globale calcule une seule CDF pour toute l'image, ce qui peut mal fonctionner lorsque le contraste varie localement (zones d'ombre et de forte lumière dans une même scène). L'égalisation adaptative à contraste limité (*Contrast Limited Adaptive Histogram Equalization*, CLAHE) découpe l'image en tuiles et égalise l'histogramme de chacune séparément, avec un plafond (`clip_limit`) qui évite d'amplifier le bruit dans les zones homogènes [@Jensen2016]. La librairie `scikit-image` en fournit une implémentation directe:
+
+```{python}
+from skimage import exposure
+
+gray = img_rgb.data.transpose(1, 2, 0).mean(axis=2) / 255.0
+img_global = exposure.equalize_hist(gray)
+img_clahe = exposure.equalize_adapthist(gray, clip_limit=0.03)
+
+fig, ax = plt.subplots(ncols=3, figsize=(9, 3))
+for a, im, title in zip(ax, (gray, img_global, img_clahe),
+                         ('originale', 'égalisation globale', 'CLAHE')):
+    a.imshow(im, vmin=0, vmax=1)
+    a.set_title(title)
+    a.axis('off')
+plt.tight_layout()
+plt.show()
+```
+
+La CLAHE fait ressortir davantage de détails locaux (textures, zones d'ombre) sans saturer les zones déjà bien contrastées, contrairement à l'égalisation globale.
+
+#### Correspondance d'histogrammes
+
+L'égalisation d'histogramme est en fait un cas particulier d'un problème plus général: faire correspondre la CDF d'une image source à une CDF cible arbitraire, et non uniquement à une distribution uniforme. Cette technique, la correspondance d'histogrammes (*histogram matching*), est notamment utile pour harmoniser la dynamique entre deux acquisitions, par exemple deux scènes adjacentes à mosaïquer [@richards2022remote; @Schowengerdt2007]. La fonction `match_histograms` de `scikit-image` implémente directement $j = CDF_{cible}^{-1}(CDF_{source}(i))$ pour une CDF cible quelconque, ici une distribution gaussienne:
+
+```{python}
+from skimage.exposure import match_histograms
+
+source = np.log10(img_SAR[0].data)
+cible = np.random.normal(loc=source.mean(), scale=source.std(), size=source.shape)
+source_matched = match_histograms(source, cible)
+
+fig, ax = plt.subplots(ncols=2, figsize=(7, 3.5))
+ax[0].imshow(source)
+ax[0].set_title("originale (dB)")
+ax[1].imshow(source_matched)
+ax[1].set_title("après correspondance (cible gaussienne)")
+[a.axis('off') for a in ax]
+plt.tight_layout()
+plt.show()
+```
 
 #### Palettes de couleur
 
@@ -562,6 +612,37 @@ plt.tight_layout()
 plt.show()
 ```
 
+#### Étirement par décorrélation
+
+Les bandes d'une image multispectrale sont souvent fortement corrélées entre elles, ce qui donne des composés couleurs peu contrastés (dominante grisâtre). L'étirement par décorrélation (*decorrelation stretch*) corrige ce problème en décorrélant les bandes dans l'espace des composantes principales, en égalisant leur variance, puis en revenant dans l'espace original [@Schowengerdt2007; @richards2022remote]:
+
+```{python}
+def decorrelation_stretch(img):
+    # img: (bandes, y, x)
+    X = img.reshape(img.shape[0], -1).astype(float)
+    X -= X.mean(axis=1, keepdims=True)
+    valeurs, vecteurs = np.linalg.eigh(np.cov(X))
+    X_pca = (vecteurs.T @ X) / np.sqrt(valeurs)[:, None]
+    X_stretch = vecteurs @ X_pca
+    X_stretch -= X_stretch.min(axis=1, keepdims=True)
+    X_stretch /= X_stretch.max(axis=1, keepdims=True)
+    return X_stretch.reshape(img.shape)
+
+composite = img_s2.sel(band=[4, 3, 2]).data
+composite_stretch = decorrelation_stretch(composite)
+
+fig, ax = plt.subplots(ncols=2, figsize=(8, 4))
+ax[0].imshow(np.clip(composite.transpose(1, 2, 0) / 4000.0, 0, 1))
+ax[0].set_title("composé RVB original")
+ax[1].imshow(composite_stretch.transpose(1, 2, 0))
+ax[1].set_title("après étirement par décorrélation")
+[a.axis('off') for a in ax]
+plt.tight_layout()
+plt.show()
+```
+
+Le résultat conserve les teintes relatives entre bandes tout en maximisant le contraste de chacune des composantes principales, ce qui fait ressortir davantage de détails que le composé original.
+
 ## Points clés
 
 :::::: bloc_notes
@@ -595,11 +676,15 @@ plt.show()
 ::: bloc_exercice-body
 1.  Proposez une autre transformation non linéaire pour l'image SAR (p. ex. la racine carrée ou `np.arcsinh`) et comparez son histogramme à celui obtenu en décibels.
 
-2.  Reprenez l'égalisation d'histogramme en remplaçant la CDF cible équiprobable par une **CDF gaussienne** (avec `scipy.stats.norm.cdf`), puis observez l'effet sur l'image SAR.
+2.  À l'aide de `skimage.exposure.match_histograms`, faites correspondre l'histogramme de la bande proche infrarouge de `RGBNIR_of_S2A.tif` à celui d'une bande de `sentinel2.tif`. Discutez du résultat.
 
 3.  À partir de `img_s2`, construisez un nouveau composé coloré (p. ex. `[11, 8, 4]` ou `[8, 4, 3]`) et décrivez les surfaces qu'il met en valeur.
 
 4.  *(visualisation web)* Dans Colab, installez `leafmap`, chargez `RGBNIR_of_S2A.tif` en composé infrarouge (`indexes=[4, 3, 2]`) sur un fond `Esri.WorldImagery`, puis comparez vraie couleur et infrarouge avec `split_map`.
+
+5.  Comparez une égalisation d'histogramme globale et une égalisation adaptative (CLAHE) sur une image de votre choix. Dans quels cas la CLAHE fait-elle ressortir des détails invisibles avec l'égalisation globale?
+
+6.  Appliquez un étirement par décorrélation sur le composé SWIR2, NIR, R de `sentinel2.tif` et comparez-le au composé sans étirement. La corrélation entre bandes est-elle plus ou moins forte que pour le composé RVB naturel?
 :::
 ::::::
 
