@@ -333,6 +333,46 @@ On peut aussi choisir la valeur selon une condition, en plaçant un `if`/`else` 
 :::
 ::::::
 
+:::::: bloc_attention
+:::: bloc_attention-header
+::: bloc_attention-icon
+:::
+
+**Types de variables et copie**
+::::
+
+::: bloc_attention-body
+En Python, une variable est une **étiquette** qui pointe vers un objet, et non une boîte qui contient une valeur. Cette distinction est source d'erreurs fréquentes.
+
+Les types **immuables** (`int`, `float`, `str`, `tuple`) ne peuvent pas être modifiés sur place : les réaffecter crée un **nouvel** objet. Les types **muables** (`list`, `dict`, `set`) peuvent, eux, être modifiés en place — et une simple affectation `b = a` ne fait que créer une **seconde étiquette sur le même objet** :
+
+``` python
+a = [1, 2, 3]
+b = a                 # b et a désignent le MÊME objet
+b.append(4)
+print(a)              # [1, 2, 3, 4]  <- a est modifiée aussi !
+print(a is b)         # True (même objet en mémoire)
+
+c = a.copy()          # copie superficielle : un nouvel objet
+c.append(5)
+print(a, a is c)      # [1, 2, 3, 4] False  (a reste inchangée)
+```
+
+Pour un tableau `NumPy`, c'est la méthode `.copy()` qui joue ce rôle (le découpage renvoie une **vue**, pas une copie). Attention enfin à la **copie superficielle** : elle duplique le conteneur mais **partage** les objets imbriqués. Pour une indépendance totale, on utilise `copy.deepcopy` :
+
+``` python
+import copy
+grille = [[0, 0], [0, 0]]
+sup = grille.copy()             # copie superficielle : sous-listes PARTAGÉES
+sup[0][0] = 9
+print(grille)                   # [[9, 0], [0, 0]]  <- affectée malgré la copie !
+prof = copy.deepcopy(grille)    # copie profonde : totalement indépendante
+```
+
+À retenir : `is` compare l'**identité** (le même objet), `==` compare la **valeur**. En cas de doute sur un objet muable, copiez avant de modifier.
+:::
+::::::
+
 ## Boucles et conditions
 
 Un programme prend des décisions (`if`) et répète des opérations (`for`, `while`). Ces structures de contrôle sont au cœur de tout traitement automatisé.

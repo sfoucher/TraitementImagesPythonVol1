@@ -103,6 +103,26 @@ ax[1].imshow(grad, cmap='gray'); ax[1].set_title("Contours (Scharr)"); ax[1].axi
 plt.show()
 ```
 
+## Gestion des bordures {.smaller}
+
+Une fenêtre glissante **déborde** aux bords ; il faut décider quoi faire des pixels manquants.
+
+::: {.incremental}
+- **Ignorer** (`nan`) → l'image de sortie rétrécit
+- **Miroir** (`reflect`, `mirror`) → prolonge par symétrie
+- **Constante** (`constant`) ou **réplication** du bord (`nearest`)
+:::
+
+```{python}
+#| fig-align: center
+from scipy.ndimage import uniform_filter
+fig, ax = plt.subplots(1, 3, figsize=(9, 3))
+for a, mode in zip(ax, ['reflect', 'constant', 'nearest']):
+    a.imshow(uniform_filter(img[0], size=15, mode=mode), cmap='gray')
+    a.set_title(f"bordure : {mode}"); a.axis('off')
+plt.show()
+```
+
 ## Du filtre à la couche convolutionnelle {.smaller}
 
 Une **couche convolutionnelle** applique des filtres comme celui de Scharr — mais dans un réseau de neurones, ces filtres sont **appris** à partir des données.

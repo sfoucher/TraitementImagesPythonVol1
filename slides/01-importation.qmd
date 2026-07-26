@@ -24,6 +24,15 @@ jupyter: python3
 4. **Métadonnées** — dimensions, date, et surtout la **géoréférence**
 :::
 
+## Formats d'image {.smaller}
+
+::: {.incremental}
+- **GDAL** regroupe la plupart des formats matriciels (ses *drivers*)
+- **RVB** (JPEG, PNG) : au plus 3 bandes, 8 bits (`uint8`), peu de métadonnées
+- **Géo-formats** (GeoTIFF, HDF5, NetCDF) : multi-bandes, 16 bits/float, **géoréférencés**
+- RVB → vision par ordinateur (OpenCV, PyTorch) ; géo-formats → télédétection
+:::
+
 ## NumPy, le fondement {.smaller}
 
 ![Opérations de base sur les matrices NumPy](../images/41586_2020_2649_Fig1_HTML.png){width="72%" fig-align="center"}
@@ -77,6 +86,35 @@ fig.colorbar(im, ax=ax, ticks=[0, 1, 2, 3], shrink=0.7); plt.show()
 
 Le PIR domine sur la **végétation**. Masquer (`np.ma`) et sauvegarder (`np.save`/`.npz`) complètent la boîte à outils.
 
+## Rapport de bandes — le NDVI {.smaller}
+
+Combiner deux bandes pixel par pixel met en valeur un thème (ici la végétation) :
+
+```{python}
+#| fig-align: center
+import rioxarray as rxr, matplotlib.pyplot as plt
+img = rxr.open_rasterio('../RGBNIR_of_S2A.tif').astype('float32')   # B,V,R,PIR
+ndvi = (img.sel(band=4) - img.sel(band=3)) / (img.sel(band=4) + img.sel(band=3))
+fig, ax = plt.subplots(figsize=(4.6, 3.2))
+ndvi.plot.imshow(vmin=-0.2, vmax=0.8, cmap='RdYlGn', ax=ax)
+ax.set_title("NDVI = (PIR - R) / (PIR + R)"); ax.axis('off'); plt.show()
+```
+
+## Masquer les pixels non valides — `np.ma` {.smaller}
+
+Exclure des pixels (*no data*, nuages, eau) d'un calcul statistique :
+
+```{python}
+import numpy as np, rioxarray as rxr
+img = rxr.open_rasterio('../RGBNIR_of_S2A.tif').astype('float32')
+rouge, pir = img.sel(band=3).to_numpy(), img.sel(band=4).to_numpy()
+ndvi = (pir - rouge) / (pir + rouge)
+ndvi_veg = np.ma.masked_where(ndvi < 0, ndvi)      # exclut eau/bâti (NDVI < 0)
+print("Pixels valides :", ndvi_veg.count(), "/", ndvi.size)
+print("NDVI moyen (tous)       :", round(float(ndvi.mean()), 3))
+print("NDVI moyen (végétation) :", round(float(ndvi_veg.mean()), 3))
+```
+
 ## Découpage — `clip_box` {.smaller}
 
 Extraire une emprise plus petite (boîte englobante, dans le CRS de l'image) :
@@ -106,6 +144,18 @@ print("résolution :", img.rio.resolution(), "->", bas.rio.resolution())
 print("forme      :", tuple(img.sizes.values()), "->", tuple(bas.sizes.values()))
 ```
 
+## Reprojection cartographique — `reproject` {.smaller}
+
+Changer de système de coordonnées ; `rioxarray` recalcule la grille et la géoréférence :
+
+```{python}
+img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')
+print("CRS d'origine :", img.rio.crs)            # EPSG:32618 (UTM)
+img_wgs84 = img.rio.reproject("EPSG:4326")        # -> latitude / longitude
+print("Après reprojection :", img_wgs84.rio.crs)
+print("Nouvelle forme :", dict(img_wgs84.sizes))
+```
+
 ## Sélection par étiquette — `sel` / `isel` {.smaller}
 
 `xarray` sélectionne par **valeur** (`sel`) ou par **position** (`isel`) ; on peut nommer les bandes :
@@ -117,6 +167,36 @@ print("bande PIR par étiquette :", img_n.sel(band='PIR').shape)
 ```
 
 Un résultat se réécrit en GeoTIFF géoréférencé avec `rasterio` (`profil` source + `dst.write`).
+
+## Écrire un GeoTIFF — `rasterio` {.smaller}
+
+Sauver un résultat calculé en **conservant** la géoréférence de l'image source :
+
+```{python}
+#| eval: false
+import rasterio
+with rasterio.open('RGBNIR_of_S2A.tif') as src:
+    rouge, pir = src.read(3).astype('float32'), src.read(4).astype('float32')
+    profil = src.profile                        # hérite CRS, transform, dimensions
+ndvi = (pir - rouge) / (pir + rouge)
+profil.update(count=1, dtype='float32')         # une bande, en float
+with rasterio.open('ndvi.tif', 'w', **profil) as dst:
+    dst.write(ndvi, 1)                           # GeoTIFF géoréférencé
+```
+
+## Sauvegarder un tableau NumPy — `.npy` / `.npz` {.smaller}
+
+Stockage temporaire (sans géoréférence) d'un résultat intermédiaire :
+
+```{python}
+#| eval: false
+import numpy as np
+np.save('ndvi.npy', ndvi)                        # un tableau -> .npy
+recharge = np.load('ndvi.npy')
+np.savez_compressed('bandes.npz', rouge=rouge, pir=pir)   # plusieurs -> .npz
+archive = np.load('bandes.npz')
+print(list(archive.keys()))                      # ['rouge', 'pir']
+```
 
 ## Points clés {.smaller}
 

@@ -136,6 +136,56 @@ print("Matrice des distances :", D.shape)
 print("Exactitude 1-PPV « à la main » :", round((y_ppv == yte).mean(), 3))
 ```
 
+## Méthode des parallélépipèdes {.smaller}
+
+La plus simple des méthodes **non paramétriques** : une **boîte** par classe.
+
+::: {.incremental}
+- Bornes `[min, max]` de chaque bande, classe par classe
+- Un pixel est assigné si **toutes** ses bandes tombent dans la boîte
+- Rapide, mais laisse des **trous** et des **recouvrements** entre classes
+:::
+
+```{python}
+bornes = {c: (Xtr[ytr == c].min(0), Xtr[ytr == c].max(0)) for c in np.unique(ytr)}
+c0 = np.unique(ytr)[0]
+print("Nombre de classes :", len(bornes))
+print("Boîte de la classe", c0, "- min :", bornes[c0][0].round(1))
+```
+
+## Méthodes paramétriques — Bayésien & ADQ {.smaller}
+
+On suppose une **distribution** (gaussienne) par classe et on estime ses paramètres.
+
+```{python}
+import warnings; warnings.filterwarnings('ignore')
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
+
+for nom, m in [("Bayésien naïf", GaussianNB()), ("ADQ", QDA())]:
+    m.fit(Xtr, ytr)
+    print(f"{nom:14s} - exactitude : {m.score(Xte, yte):.3f}")
+```
+
+L'**ADQ** modélise la covariance complète de chaque classe ; le **Bayésien naïf** suppose les bandes indépendantes.
+
+## Réseaux de neurones — le MLP {.smaller}
+
+Un **perceptron multicouche** enchaîne des couches dont les poids sont **appris** :
+
+```{python}
+from sklearn.neural_network import MLPClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+mlp = Pipeline([("s", StandardScaler()),
+                ("c", MLPClassifier((50, 50), max_iter=1000, random_state=0))])
+mlp.fit(Xtr, ytr)
+print("MLP (50, 50) - exactitude :", round(mlp.score(Xte, yte), 3))
+```
+
+Base de l'**apprentissage profond** (réseaux convolutionnels, tome 2).
+
 ## Comparer les classificateurs {.smaller}
 
 ```{python}
