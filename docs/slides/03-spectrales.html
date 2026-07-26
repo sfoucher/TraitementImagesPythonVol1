@@ -230,7 +230,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="signatures-spectrales" class="slide level2 smaller">
 <h2>Signatures spectrales</h2>
-<div id="304d8f5b" class="cell" data-execution_count="1">
+<div id="304d8f5b" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>base <span class="op">=</span> <span class="st">'../ASCIIdata_splib07b_rsSentinel2'</span></span>
 <span id="cb1-3"><a href=""></a><span class="kw">def</span> lire(f):</span>
@@ -311,7 +311,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="calcul-dindices-computeindex" class="slide level2 smaller">
 <h2>Calcul d’indices — <code>computeIndex</code></h2>
-<div id="3b9ab4b2" class="cell" data-execution_count="2">
+<div id="3b9ab4b2" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, spyndex</span>
 <span id="cb2-2"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).astype(<span class="st">'float32'</span>) <span class="op">/</span> <span class="dv">10000</span>   <span class="co"># ordre B,V,R,PIR</span></span>
 <span id="cb2-3"><a href=""></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
@@ -342,7 +342,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="transformation-linéaire-produit-matriciel" class="slide level2 smaller">
 <h2>Transformation linéaire — produit matriciel</h2>
 <p>Combiner des bandes par sommes pondérées = un <strong>produit matriciel</strong> (<code>@</code>).</p>
-<div id="9ac166ee" class="cell" data-execution_count="3">
+<div id="9ac166ee" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href=""></a>pixels <span class="op">=</span> np.array([[<span class="fl">10.</span>, <span class="fl">40.</span>], [<span class="fl">20.</span>, <span class="fl">10.</span>], [<span class="fl">5.</span>, <span class="fl">25.</span>]])   <span class="co"># 3 pixels x 2 bandes</span></span>
 <span id="cb3-3"><a href=""></a>M <span class="op">=</span> np.array([[<span class="fl">0.5</span>, <span class="fl">0.5</span>],       <span class="co"># moyenne des deux bandes</span></span>
@@ -359,7 +359,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="acp-variance-expliquée" class="slide level2 smaller">
 <h2>ACP — variance expliquée</h2>
 <p>On centre les données, puis on diagonalise la <strong>matrice de covariance</strong> :</p>
-<div id="92a7dae3" class="cell" data-execution_count="4">
+<div id="92a7dae3" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb5-2"><a href=""></a>cube <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy().astype(<span class="st">'float32'</span>)  <span class="co"># (4, H, W)</span></span>
 <span id="cb5-3"><a href=""></a>B, H, W <span class="op">=</span> cube.shape</span>
@@ -385,7 +385,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="acp-composantes-principales" class="slide level2 smaller">
 <h2>ACP — composantes principales</h2>
 <p>La projection sur les vecteurs propres (un produit matriciel) donne les composantes, rangées par variance décroissante :</p>
-<div id="0cf3e272" class="cell" data-execution_count="5">
+<div id="0cf3e272" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>comp <span class="op">=</span> (Xc <span class="op">@</span> vec).T.reshape(B, H, W)          <span class="co"># projection = produit matriciel</span></span>
 <span id="cb7-2"><a href=""></a>etir <span class="op">=</span> <span class="kw">lambda</span> x: (x <span class="op">-</span> x.<span class="bu">min</span>()) <span class="op">/</span> (x.<span class="bu">max</span>() <span class="op">-</span> x.<span class="bu">min</span>())</span>
 <span id="cb7-3"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>

@@ -44,24 +44,24 @@ def _(mo):
 
     ## Les distributions
 
-    Il existe plusieurs [distributions](https://wiki.python.org/moin/PythonDistributions) du langage Python, ces distributions sont comme différentes saveurs de votre glace préférée - chacune a ses propres caractéristiques uniques, mais elles sont toutes fondamentalement Python. Voici un aperçu des principales distributions :
+    Il existe plusieurs [distributions](https://wiki.python.org/moin/PythonDistributions) du langage Python, ces distributions sont des variantes plus ou moins volumineuses - chacune a ses propres caractéristiques uniques, mais elles sont toutes fondamentalement Python. Voici un aperçu des principales distributions :
 
     | Distribution | Description | Idéale pour |
-    |---|---|---|
+    |------------------------|------------------------|------------------------|
     | [CPython](https://www.python.org/downloads/) | L'implémentation officielle « vanille » | La compatibilité et la conformité aux standards |
     | [Anaconda](https://www.anaconda.com/download) | Livrée avec de nombreuses bibliothèques scientifiques | L'analyse de données et l'apprentissage automatique (*machine learning*) |
     | [Miniconda](https://docs.anaconda.com/miniconda/miniconda-install/) | Version légère ; on ajoute les bibliothèques au besoin | Un environnement minimal et contrôlé |
     | [PyPy](https://pypy.org/) | Implémentation optimisée pour la vitesse d'exécution | Les programmes gourmands en calcul |
 
-    Chaque distribution a ses forces, que ce soit la simplicité, la vitesse ou des fonctionnalités spécifiques. Le choix dépend donc de vos besoins, comme choisir entre une glace simple ou une glace royale (banana split) élaborée.
+    Chaque distribution a ses forces, que ce soit la simplicité, la vitesse ou des fonctionnalités spécifiques. Le choix dépend donc de vos besoins, la version Anaconda est par exemple très volumineuse et contiendra la plupart des librairies de base (Numpy, Scikit, etc.). Au contraire, Miniconda ne contient que le cœur de Python et les librairies seront ajoutées une par une au besoin.
 
     ## Les styles de programmation en Python
 
-    Il existe plusieurs approches pour programmer en Python. La plus directe est en version interactive en tapant `python` et de rentrer des commandes ligne par ligne.
+    Il existe plusieurs approches pour programmer en Python. La plus directe est en version interactive en tapant `python` et de rentrer des commandes ligne par ligne. On parle de mode REPL (“Read-Eval-Print Loop”) ou l'interpréteur Python vous donne une rétroaction immédiate commande par commande.
 
     ### Les outils de programmation
 
-    Un code python prend la forme d'un simple fichier texte avec l'extension `.py` et peut être modifié avec un simple éditeur de texte. Cependant, il n'y aura pas de rétroactions immédiates de l'interpréteur Python, ce qui rend la correction d'erreurs (débogage) beaucoup plus laborieux.
+    Un code python prend la forme d'un simple fichier texte avec l'extension `.py` et peut être modifié avec un simple éditeur de texte. On parle alors de *script* Python. Cependant, il n'y aura pas de rétroactions immédiates de l'interpréteur Python, ce qui rend la correction d'erreurs (débogage) beaucoup plus laborieux.
 
     Un IDE (*Integrated Development Environment*) est comme une boîte à outils complète pour les programmeurs, vous trouverez :
 
@@ -80,18 +80,37 @@ def _(mo):
     Voici quelques options populaires :
 
     | Outil | Type | Points forts |
-    |---|---|---|
+    |------------------------|------------------------|------------------------|
     | [PyCharm](https://www.jetbrains.com/pycharm/) | IDE complet | Autocomplétion, débogage intégré ; idéal pour les grands projets (gourmand en ressources) |
     | [Visual Studio Code](https://code.visualstudio.com/) | Éditeur extensible | Gratuit, léger, personnalisable par extensions |
     | [Spyder](https://www.spyder-ide.org/) | IDE scientifique | Libre et gratuit, orienté calcul scientifique |
     | [Jupyter](https://jupyter.org/) | Notebook | Mélange code, texte et visualisations ; gratuit sur Colab/Kaggle (reproductibilité limitée) |
     | [Marimo](https://marimo.io/) | Notebook réactif | Réexécute automatiquement les cellules dépendantes ; évite l'état caché |
 
+    ### Le principe du serveur Jupyter et des notebooks
+
+    Les chapitres de ce livre sont fournis sous forme de *notebooks* (carnets), le format le plus répandu pour l'analyse de données scientifiques. Un **notebook** est un fichier (extension `.ipynb`) organisé en **cellules** que l'on exécute une à une :
+
+    -   des cellules de **code** Python, dont le résultat (texte, tableau, figure) s'affiche juste en dessous ;
+    -   des cellules de **texte** (Markdown) pour la documentation, les titres et les équations.
+
+    On peut ainsi entrelacer le code, les explications et les résultats dans un même document, ce qui en fait un excellent outil pédagogique et un support d'analyse reproductible.
+
+    Un notebook repose sur une **architecture client-serveur** en trois pièces :
+
+    1.  Le **serveur Jupyter** est un programme lancé sur votre machine (ou dans le nuage). Il gère les fichiers de notebooks et fait le pont entre l'interface et le moteur de calcul.
+    2.  L'**interface** s'affiche dans un simple navigateur web : c'est là que vous éditez et lancez les cellules. Aucune installation supplémentaire n'est requise côté affichage.
+    3.  Le **noyau** (*kernel*) est le processus Python qui exécute réellement le code. Il **conserve l'état en mémoire** entre les cellules : une variable définie dans une cellule reste disponible dans les suivantes.
+
+    Quand vous exécutez une cellule, l'interface envoie le code au serveur, qui le transmet au noyau ; le noyau calcule puis renvoie le résultat, affiché sous la cellule. Comme le noyau garde l'état, l'**ordre d'exécution** des cellules compte : réexécuter des cellules dans le désordre peut mener à un état incohérent. En cas de doute, on redémarre le noyau et on réexécute tout depuis le début (menu *Kernel*, puis *Restart & Run All*).
+
+    Le service [Google Colab](https://colab.google/) fournit gratuitement ce trio (serveur, interface, noyau) dans le nuage : c'est la façon la plus simple d'ouvrir les notebooks du livre sans rien installer. Pour travailler localement, il faut lancer soi-même un serveur Jupyter (voir @sec-00-jupyter-local plus bas).
+
     ## Bonnes pratiques
 
     Python est un langage très dynamique, qui évolue constamment. Cela pose certains défis pour la gestion du code à long terme. Il est fortement conseillé d'utiliser des environnements virtuels pour gérer vos différentes bibliothèques (*libraries*). Voici quelques bonnes pratiques à suivre :
 
-    1.  **N'installez pas la toute dernière version de Python** : Il est recommandé d'installer 1 ou 2 version antérieure, par exemple si 3.13 est [la version plus récente](https://www.python.org/downloads/), installer plutôt la version 3.11. Les versions trop récentes peuvent être instables. La version de python désirée peut être spécifiée au moment de la création d'un environnement virtuel (voir plus bas). Vous pouvez afficher la liste des versions de python avec la commande `conda search --full-name python`.
+    1.  **N'installez pas la toute dernière version de Python** : Il est recommandé d'installer 1 ou 2 version antérieure, par exemple si 3.13 est [la version plus récente](https://www.python.org/downloads/), installer plutôt la version 3.11. Les versions trop récentes peuvent être instables surtout au niveau des librairies. La version de python désirée peut être spécifiée au moment de la création d'un environnement virtuel (voir plus bas). Vous pouvez afficher la liste des versions de python avec la commande `conda search --full-name python`.
 
     2.  **N'utilisez pas de version obsolète de Python**. Cela peut sembler contradictoire avec le point précédent mais c'est l'excès inverse. Si vous utilisez une version trop ancienne alors toutes vos librairies cesseront d'évoluer et peuvent devenir obsolètes.
 
@@ -118,9 +137,9 @@ def _(mo):
     pip install --upgrade pip
     ```
 
-    ### Création d'un environnement de travail local (avancé)
+    ### Création d'un environnement de travail local (avancé) {#sec-00-jupyter-local}
 
-    **Note**: les notebooks peuvent fonctionner localement uniquement sous Linux ou avec WSL2.
+    **Note**: les notebooks peuvent fonctionner localement sous Windows ou sous Linux avec WSL2.
 
     Les notebooks Python fonctionnent par défaut dans l'environnement [Google Colab](https://colab.google/). Si vous souhaitez faire fonctionner ces notebook localement, vous pouvez installer un environnement local avec un serveur [Jupyter](https://jupyterlab.readthedocs.io/en/stable/getting_started/starting.html). Il suffit de suivre les étapes suivantes:
 
@@ -269,6 +288,70 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    <div style="border:0.5px solid silver;border-left:.3rem solid #eb5f23;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fef4ec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADSElEQVRYhbWX0W3bMBCGPwd5jwvwPUY1QNQJokxQL1DVmSDuBHEnqDNBFS7QdIJKE9QdgIDzXAFRJnAfeIzPDC05TXuAIZu64//z7ueRHm02G/63tWU2BvLUu+P/BFbIJwfO+/z/GYG2zApgBnyMXjXAWj7aZsDpqwkI8ILtSu+BCrgz1q0G4l5HoC2zJXAlPxtgYayrDwzPgaaXQFtmE2AKpFayBM7wK55p4LbMpmxFV8ekRCcnQLeXQFtmOVCL4z77LuCdiqvY1cF1W2Y3xrq5GivkuTraA14o8E/AhTxvlNutsW4agRcCfi/kGuARuJIFxQTqZxloy2wGfJWfl8a6SsZXQiqAzxLcw8RrY91U4mq8QHUppwDGul0CCvwRmEa1q/A13wc+ZJ1g5MApPkPbPqBq9wgUegu1ZTYH3gPNAPgdcA2ct2W2xu/9XL0DCFqoAEabzUaD/8KLSoNP2KZuomuesqiEyILmxrpK1L8GOmPdBOA4Um0NTGUb1YrxCV4PSXBJa2esWwtQjRKasW4t3xcy1zLEjn5/eNvRv9UA7gPjBPgCn/bPxrrFvgmE5M94rmNj3Vg5jKO4UPslCYt0c5fyEb8xUnO2GvAEwpdU35Z9/Z7oIJEJl2x1UwxoI3TNW2PdDtFkI1IWSFWhkQh4fSi4FnhqB42GLiRRb8jxqT4DbvHq3ifMsfie9xFNElA3mJWxrlNCC9bbjCRblRAFeLOP6LMSqBT/4HkTAdnXPeBziQ/g9JVoh4AwX0lwA6ykBLW4NET7WMfK/v8iQ5fif78PHFQJouP3KcVtmW3YrvpOre5Wxgp5hhtRg++maznAOmNdcUgGdsClFACf8QKqJJUFXlQfgQfgm4A3wIWxrlCd74wBO1Kr7/Bpmwvzh7bMCulueVtm67bMZopEI0QAbgS4DhNLOx+0Y3hqQhMlwDOZfNXuHi6d+HdAIY3qRxhX4Dom2UV3MqCyoAVY4A+P0AMu4y6WsqhvvBuKiTVwitdAAL9iez+oDgCvFHiRau9JArL6E3wtZ/JOgw9NVEd3ivwQcNjVwCh69w5/t+s7ZAp5VvjsHXIwPSeQskNXIBbueLOXgPcSeKH97UX11QSWJP75vMT+AHO9uY9+8Go9AAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>Les opérateurs <code>*</code> et <code>**</code> sur un dictionnaire</strong>
+    </span></div>
+    <div style="padding:.3em .6em;font-size:.95em;">
+    Les opérateurs de <em>déballage</em> (<em>unpacking</em>) donnent accès au contenu d’un dictionnaire sans écrire de boucle. La règle est simple : <code>**</code> déballe les <strong>paires clé-valeur</strong>, tandis que <code>*</code> (une seule étoile) ne déballe que les <strong>clés</strong>.
+
+    <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
+    <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ** : fusionner ou copier des dictionnaires</span></span>
+    <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>complet <span class="op">=</span> {<span class="op">**</span>image, <span class="st">"date"</span>: <span class="st">"2024-07-01"</span>}   <span class="co"># copie + une paire en plus</span></span>
+    <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>fusion  <span class="op">=</span> {<span class="op">**</span>image, <span class="st">"bandes"</span>: <span class="dv">4</span>}            <span class="co"># en cas de collision, la dernière clé gagne</span></span>
+    <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ** : passer un dictionnaire comme arguments nommés d'une fonction</span></span>
+    <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resume(capteur, bandes, resolution_m):</span>
+    <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>capteur<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>bandes<span class="sc">}</span><span class="ss"> bandes à </span><span class="sc">{</span>resolution_m<span class="sc">}</span><span class="ss"> m"</span></span>
+    <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resume(<span class="op">**</span>image))          <span class="co"># équivaut à resume(capteur="Sentinel-2", bandes=13, ...)</span></span>
+    <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># * : ne déballe que les clés</span></span>
+    <span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>([<span class="op">*</span>image])                 <span class="co"># ['capteur', 'bandes', 'resolution_m']</span></span>
+    <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="op">*</span>image, sep<span class="op">=</span><span class="st">", "</span>)         <span class="co"># capteur, bandes, resolution_m</span></span>
+    <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Côté définition d'une fonction : **kwargs collecte les arguments nommés dans un dict</span></span>
+    <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> info(<span class="op">**</span>meta):               <span class="co"># meta est un dictionnaire</span></span>
+    <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> cle, valeur <span class="kw">in</span> meta.items():</span>
+    <span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(cle, <span class="st">":"</span>, valeur)</span>
+    <span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>info(capteur<span class="op">=</span><span class="st">"SPOT"</span>, bandes<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+    À retenir : <code>**d</code> sert à <em>fournir</em> ou <em>fusionner</em> des paires clé-valeur (appels de fonction, construction de dictionnaires), alors que <code>**kwargs</code> dans une <strong>définition</strong> de fonction fait l’inverse — il <em>collecte</em> les arguments nommés dans un dictionnaire. À partir de Python 3.9, <code>a | b</code> fusionne aussi deux dictionnaires, en équivalent plus lisible de <code>{**a, **b}</code>.
+
+    </div>
+    </div>
+
+    <div style="border:0.5px solid silver;border-left:.3rem solid #eb5f23;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fef4ec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADSElEQVRYhbWX0W3bMBCGPwd5jwvwPUY1QNQJokxQL1DVmSDuBHEnqDNBFS7QdIJKE9QdgIDzXAFRJnAfeIzPDC05TXuAIZu64//z7ueRHm02G/63tWU2BvLUu+P/BFbIJwfO+/z/GYG2zApgBnyMXjXAWj7aZsDpqwkI8ILtSu+BCrgz1q0G4l5HoC2zJXAlPxtgYayrDwzPgaaXQFtmE2AKpFayBM7wK55p4LbMpmxFV8ekRCcnQLeXQFtmOVCL4z77LuCdiqvY1cF1W2Y3xrq5GivkuTraA14o8E/AhTxvlNutsW4agRcCfi/kGuARuJIFxQTqZxloy2wGfJWfl8a6SsZXQiqAzxLcw8RrY91U4mq8QHUppwDGul0CCvwRmEa1q/A13wc+ZJ1g5MApPkPbPqBq9wgUegu1ZTYH3gPNAPgdcA2ct2W2xu/9XL0DCFqoAEabzUaD/8KLSoNP2KZuomuesqiEyILmxrpK1L8GOmPdBOA4Um0NTGUb1YrxCV4PSXBJa2esWwtQjRKasW4t3xcy1zLEjn5/eNvRv9UA7gPjBPgCn/bPxrrFvgmE5M94rmNj3Vg5jKO4UPslCYt0c5fyEb8xUnO2GvAEwpdU35Z9/Z7oIJEJl2x1UwxoI3TNW2PdDtFkI1IWSFWhkQh4fSi4FnhqB42GLiRRb8jxqT4DbvHq3ifMsfie9xFNElA3mJWxrlNCC9bbjCRblRAFeLOP6LMSqBT/4HkTAdnXPeBziQ/g9JVoh4AwX0lwA6ykBLW4NET7WMfK/v8iQ5fif78PHFQJouP3KcVtmW3YrvpOre5Wxgp5hhtRg++maznAOmNdcUgGdsClFACf8QKqJJUFXlQfgQfgm4A3wIWxrlCd74wBO1Kr7/Bpmwvzh7bMCulueVtm67bMZopEI0QAbgS4DhNLOx+0Y3hqQhMlwDOZfNXuHi6d+HdAIY3qRxhX4Dom2UV3MqCyoAVY4A+P0AMu4y6WsqhvvBuKiTVwitdAAL9iez+oDgCvFHiRau9JArL6E3wtZ/JOgw9NVEd3ivwQcNjVwCh69w5/t+s7ZAp5VvjsHXIwPSeQskNXIBbueLOXgPcSeKH97UX11QSWJP75vMT+AHO9uY9+8Go9AAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>Les compréhensions de liste et de dictionnaire</strong>
+    </span></div>
+    <div style="padding:.3em .6em;font-size:.95em;">
+    Une <strong>compréhension</strong> construit une collection en une seule ligne, à la place d’une boucle <code>for</code> suivie d’un <code>append</code>. Le code est plus court, plus lisible et souvent plus rapide. Le patron est toujours le même : une <strong>expression</strong>, un parcours (<code>for</code>), et un <strong>filtre</strong> optionnel (<code>if</code>).
+
+    <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
+    <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de LISTE : [expression for élément in itérable if condition]</span></span>
+    <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>majuscules <span class="op">=</span> [b.upper() <span class="cf">for</span> b <span class="kw">in</span> bandes]           <span class="co"># transforme chaque élément</span></span>
+    <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>courtes    <span class="op">=</span> [b <span class="cf">for</span> b <span class="kw">in</span> bandes <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op"><=</span> <span class="dv">4</span>]    <span class="co"># ne garde que certains éléments</span></span>
+    <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># équivalent avec une boucle classique :</span></span>
+    <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>courtes <span class="op">=</span> []</span>
+    <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> bandes:</span>
+    <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op"><=</span> <span class="dv">4</span>:</span>
+    <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        courtes.append(b)</span>
+    <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de DICTIONNAIRE : {clé: valeur for ...}</span></span>
+    <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> {nom: i <span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes)}  <span class="co"># {'bleu': 0, 'vert': 1, ...}</span></span>
+    <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
+    <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>inverse <span class="op">=</span> {valeur: cle <span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items()}   <span class="co"># échange clés et valeurs</span></span>
+    <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension d'ENSEMBLE : {expression for ...} -> doublons éliminés</span></span>
+    <span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>]</span>
+    <span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> {c <span class="cf">for</span> c <span class="kw">in</span> classes}                      <span class="co"># {'eau', 'forêt', 'urbain'}</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+    On peut aussi choisir la valeur selon une condition, en plaçant un <code>if</code>/<code>else</code> dans l’<strong>expression</strong> (et non comme filtre en fin) : <code>["vég." if b == "PIR" else "visible" for b in bandes]</code>.
+
+    </div>
+    </div>
+
     ## Boucles et conditions
 
     Un programme prend des décisions (`if`) et répète des opérations (`for`, `while`). Ces structures de contrôle sont au cœur de tout traitement automatisé.
@@ -307,10 +390,10 @@ def _(mo):
 
 @app.cell
 def _():
-    def ndvi(nir, rouge):
+    def _ndvi(nir, rouge):
         """Indice de végétation NDVI = (PIR - Rouge) / (PIR + Rouge)."""
         return (nir - rouge) / (nir + rouge)
-    print(round(ndvi(0.6, 0.2), 3))
+    print(round(_ndvi(0.6, 0.2), 3))
 
     def normaliser(valeur, maximum=255):
     # Argument par défaut
@@ -351,9 +434,9 @@ def _():
 
         def resume(self):  # méthode
             return f'{self.capteur} — {self.bandes} bandes'
-    img = Image('Landsat-8', 11)
-    print(img.resume())
-    print(img.capteur)
+    _img = Image('Landsat-8', 11)
+    print(_img.resume())
+    print(_img.capteur)
     return
 
 
@@ -452,6 +535,142 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ## Créer un exécutable Python {#sec-00-executable}
+
+    Un *notebook* est idéal pour explorer, mais pour une tâche répétitive — appliquer le même traitement à des centaines d'images — on préfère un **script exécutable** lancé depuis un terminal. Nous construisons ici, en trois étapes, un petit programme qui calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR).
+
+    ### 1. La solution la plus simple
+
+    Un script est un simple fichier `.py` que l'on exécute avec `python`. Le code utile est placé dans le bloc `if __name__ == "__main__":` vu plus haut. Enregistrons ce fichier sous le nom `ndvi.py` :
+    """)
+    return
+
+
+@app.cell
+def _():
+    # ndvi.py
+    import rioxarray as rxr
+    if __name__ == '__main__':
+        _img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
+        rouge = _img.sel(band=3).astype('float32')
+        pir = _img.sel(band=4).astype('float32')
+        _ndvi = (pir - rouge) / (pir + rouge)
+        _ndvi.rio.to_raster('ndvi.tif')
+        print('NDVI enregistré dans ndvi.tif')
+    return (rxr,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    On le lance depuis un terminal :
+
+    ``` bash
+    python ndvi.py
+    ```
+
+    Sur Linux ou macOS, on peut aussi rendre le fichier directement exécutable. Il suffit d'ajouter une ligne *shebang* en tête (`#!/usr/bin/env python3`), puis de donner le droit d'exécution avec `chmod +x ndvi.py` ; le script se lance alors avec `./ndvi.py`.
+
+    Cette version fonctionne, mais tout est **figé** : les noms de fichiers et les numéros de bandes sont écrits en dur dans le code. Pour traiter une autre image, il faut éditer le script.
+
+    ### 2. Bonnes pratiques : fonction `main` et paramètres
+
+    On sépare le **traitement** (une fonction réutilisable, avec des **valeurs par défaut**) de l'**interface en ligne de commande**, gérée par le module `argparse` de la bibliothèque standard. Les valeurs par défaut rendent la plupart des arguments optionnels ; `argparse` génère aussi automatiquement une aide (`-h`).
+    """)
+    return
+
+
+@app.cell
+def _(rxr):
+    """Calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR)."""
+    import argparse
+
+    def _calcule_ndvi(entree, sortie='ndvi.tif', bande_rouge=3, bande_pir=4):
+        """Le traitement : réutilisable, avec des valeurs par défaut."""
+        _img = rxr.open_rasterio(entree)
+        rouge = _img.sel(band=bande_rouge).astype('float32')
+        pir = _img.sel(band=bande_pir).astype('float32')
+        _ndvi = (pir - rouge) / (pir + rouge)
+        _ndvi.rio.to_raster(sortie)
+        return sortie
+
+    def _main():
+        p = argparse.ArgumentParser(description=__doc__)
+        p.add_argument('entree', help="image d'entrée (GeoTIFF)")
+        p.add_argument('-o', '--sortie', default='ndvi.tif', help='fichier de sortie')
+        p.add_argument('--bande-rouge', type=int, default=3, help='indice de la bande rouge')
+        p.add_argument('--bande-pir', type=int, default=4, help='indice de la bande PIR')
+        args = p.parse_args()
+        chemin = _calcule_ndvi(args.entree, args.sortie, args.bande_rouge, args.bande_pir)
+        print('NDVI enregistré dans', chemin)
+    if __name__ == '__main__':
+        _main()
+    return (argparse,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Grâce aux valeurs par défaut, seul le fichier d'entrée est requis :
+
+    ``` bash
+    python ndvi.py RGBNIR_of_S2A.tif                 # utilise tous les défauts
+    python ndvi.py RGBNIR_of_S2A.tif -o mon_ndvi.tif --bande-pir 4
+    python ndvi.py -h                                # affiche l'aide générée
+    ```
+
+    ### 3. Gérer les paramètres avec un fichier YAML
+
+    Dès que les paramètres se multiplient, les passer un à un devient pénible et difficile à **reproduire**. On les regroupe alors dans un fichier de configuration **YAML**, lisible et versionnable. Créons `config.yaml` :
+
+    ``` yaml
+    entree: RGBNIR_of_S2A.tif
+    sortie: ndvi.tif
+    bande_rouge: 3
+    bande_pir: 4
+    ```
+
+    Le script lit ce fichier avec le module `yaml` (`safe_load` — jamais `load`, qui peut exécuter du code arbitraire). On fusionne les valeurs lues avec un dictionnaire de **défauts** grâce au déballage `**` (voir l'encadré plus haut) : ce qui est absent du YAML prend sa valeur par défaut.
+    """)
+    return
+
+
+@app.cell
+def _(argparse, rxr):
+    """Calcule un NDVI, paramétré par un fichier YAML."""
+    import yaml
+    DEFAUTS = {'sortie': 'ndvi.tif', 'bande_rouge': 3, 'bande_pir': 4}
+
+    def _calcule_ndvi(entree, sortie, bande_rouge, bande_pir):
+        _img = rxr.open_rasterio(entree)
+        rouge = _img.sel(band=bande_rouge).astype('float32')
+        pir = _img.sel(band=bande_pir).astype('float32')
+        ((pir - rouge) / (pir + rouge)).rio.to_raster(sortie)
+
+    def _main():
+        p = argparse.ArgumentParser(description=__doc__)
+        p.add_argument('config', help='fichier de configuration YAML')
+        args = p.parse_args()
+        with open(args.config) as f:
+            params = {**DEFAUTS, **yaml.safe_load(f)}
+        _calcule_ndvi(**params)
+        print('NDVI enregistré dans', params['sortie'])
+    if __name__ == '__main__':
+        _main()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Le programme se lance alors simplement avec sa configuration, et rejouer exactement le même traitement ne demande que de conserver le fichier YAML :
+
+    ``` bash
+    python ndvi.py config.yaml
+    ```
+
+    Pour aller plus loin, un script peut être transformé en **commande installable** (accessible partout, sans préciser `python ...`) en déclarant un *point d'entrée* (`entry point`) dans le fichier `pyproject.toml` du package — le mécanisme utilisé par des outils comme `quarto` ou `jupyter`.
+
     ## Un avant-goût de NumPy {#sec-00-02}
 
     Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque [NumPy](https://numpy.org/) fournit l'objet `ndarray` qui représente efficacement ces tableaux à plusieurs dimensions : c'est la brique de base de tous les chapitres suivants.
@@ -616,7 +835,7 @@ def _(mo):
     <strong>NumPy</strong>
 
     <ol start="10" type="1">
-    <li>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.11</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.
+    <li>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.
     </li>
     <li>Créez un tableau NumPy 4 × 4 et, par <strong>masquage booléen</strong>, remplacez par <code>0</code> toutes les valeurs inférieures à 10.
     </li>
@@ -626,7 +845,7 @@ def _(mo):
     </li>
     <li><em>(création)</em> Avec <code>np.linspace</code>, construisez un axe de 6 longueurs d’onde entre 490 et 2190 nm. Créez ensuite un masque <code>np.zeros((3, 4))</code> et mettez sa <strong>première ligne</strong> à <code>1</code>.
     </li>
-    <li><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.11</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.
+    <li><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.
     </li>
     <li><em>(reshape/transpose)</em> Transformez le <code>cube</code> <code>(2, 3, 4)</code> en une table <code>(12, 2)</code> (pixels × bandes), puis revenez à la forme d’origine <code>(2, 3, 4)</code>.
     </li>
@@ -640,6 +859,7 @@ def _(mo):
     </div>
 
     <details>
+
     <summary>Afficher les solutions</summary>
 
     ``` python
@@ -781,7 +1001,6 @@ def _(mo):
     ## Quiz
 
     ::: {.content-visible when-profile="production"}
-
     Utilisez la version html.
     :::
     """)
@@ -792,6 +1011,14 @@ def _(mo):
 def _(Quiz, render_quizz):
     Chap00Quiz = Quiz('quiz/Chap00.yml', 'Chap00')
     render_quizz(Chap00Quiz)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Revise the slides, make sure: 1) one slide per concept 2) make sure that all the sections are mapped on at least one slide 3) explain the concept in a few bullet point 4) include a code exemple if possible
+    """)
     return
 
 

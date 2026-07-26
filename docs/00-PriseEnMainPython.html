@@ -234,11 +234,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#les-styles-de-programmation-en-python" id="toc-les-styles-de-programmation-en-python" class="nav-link" data-scroll-target="#les-styles-de-programmation-en-python"><span class="header-section-number">1.2</span> Les styles de programmation en Python</a>
   <ul class="collapse">
   <li><a href="#les-outils-de-programmation" id="toc-les-outils-de-programmation" class="nav-link" data-scroll-target="#les-outils-de-programmation"><span class="header-section-number">1.2.1</span> Les outils de programmation</a></li>
+  <li><a href="#le-principe-du-serveur-jupyter-et-des-notebooks" id="toc-le-principe-du-serveur-jupyter-et-des-notebooks" class="nav-link" data-scroll-target="#le-principe-du-serveur-jupyter-et-des-notebooks"><span class="header-section-number">1.2.2</span> Le principe du serveur Jupyter et des notebooks</a></li>
   </ul></li>
   <li><a href="#bonnes-pratiques" id="toc-bonnes-pratiques" class="nav-link" data-scroll-target="#bonnes-pratiques"><span class="header-section-number">1.3</span> Bonnes pratiques</a>
   <ul class="collapse">
   <li><a href="#sec-00-01" id="toc-sec-00-01" class="nav-link" data-scroll-target="#sec-00-01"><span class="header-section-number">1.3.1</span> Création d’un environnement virtuel</a></li>
-  <li><a href="#création-dun-environnement-de-travail-local-avancé" id="toc-création-dun-environnement-de-travail-local-avancé" class="nav-link" data-scroll-target="#création-dun-environnement-de-travail-local-avancé"><span class="header-section-number">1.3.2</span> Création d’un environnement de travail local (avancé)</a></li>
+  <li><a href="#sec-00-jupyter-local" id="toc-sec-00-jupyter-local" class="nav-link" data-scroll-target="#sec-00-jupyter-local"><span class="header-section-number">1.3.2</span> Création d’un environnement de travail local (avancé)</a></li>
   </ul></li>
   <li><a href="#les-structures-de-base-en-python" id="toc-les-structures-de-base-en-python" class="nav-link" data-scroll-target="#les-structures-de-base-en-python"><span class="header-section-number">1.4</span> Les structures de base en Python</a>
   <ul class="collapse">
@@ -255,16 +256,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#le-fichier-__init__.py" id="toc-le-fichier-__init__.py" class="nav-link" data-scroll-target="#le-fichier-__init__.py"><span class="header-section-number">1.10.1</span> Le fichier <code>__init__.py</code></a></li>
   </ul></li>
-  <li><a href="#sec-00-02" id="toc-sec-00-02" class="nav-link" data-scroll-target="#sec-00-02"><span class="header-section-number">1.11</span> Un avant-goût de NumPy</a>
+  <li><a href="#sec-00-executable" id="toc-sec-00-executable" class="nav-link" data-scroll-target="#sec-00-executable"><span class="header-section-number">1.11</span> Créer un exécutable Python</a>
   <ul class="collapse">
-  <li><a href="#attributs-et-type-de-données" id="toc-attributs-et-type-de-données" class="nav-link" data-scroll-target="#attributs-et-type-de-données"><span class="header-section-number">1.11.1</span> Attributs et type de données</a></li>
-  <li><a href="#créer-des-tableaux" id="toc-créer-des-tableaux" class="nav-link" data-scroll-target="#créer-des-tableaux"><span class="header-section-number">1.11.2</span> Créer des tableaux</a></li>
-  <li><a href="#le-broadcasting" id="toc-le-broadcasting" class="nav-link" data-scroll-target="#le-broadcasting"><span class="header-section-number">1.11.3</span> Le <em>broadcasting</em></a></li>
-  <li><a href="#remodeler-et-réordonner-les-axes" id="toc-remodeler-et-réordonner-les-axes" class="nav-link" data-scroll-target="#remodeler-et-réordonner-les-axes"><span class="header-section-number">1.11.4</span> Remodeler et réordonner les axes</a></li>
+  <li><a href="#la-solution-la-plus-simple" id="toc-la-solution-la-plus-simple" class="nav-link" data-scroll-target="#la-solution-la-plus-simple"><span class="header-section-number">1.11.1</span> 1. La solution la plus simple</a></li>
+  <li><a href="#bonnes-pratiques-fonction-main-et-paramètres" id="toc-bonnes-pratiques-fonction-main-et-paramètres" class="nav-link" data-scroll-target="#bonnes-pratiques-fonction-main-et-paramètres"><span class="header-section-number">1.11.2</span> 2. Bonnes pratiques : fonction <code>main</code> et paramètres</a></li>
+  <li><a href="#gérer-les-paramètres-avec-un-fichier-yaml" id="toc-gérer-les-paramètres-avec-un-fichier-yaml" class="nav-link" data-scroll-target="#gérer-les-paramètres-avec-un-fichier-yaml"><span class="header-section-number">1.11.3</span> 3. Gérer les paramètres avec un fichier YAML</a></li>
   </ul></li>
-  <li><a href="#points-clés" id="toc-points-clés" class="nav-link" data-scroll-target="#points-clés"><span class="header-section-number">1.12</span> Points clés</a></li>
-  <li><a href="#exercices" id="toc-exercices" class="nav-link" data-scroll-target="#exercices"><span class="header-section-number">1.13</span> Exercices</a></li>
-  <li><a href="#quiz" id="toc-quiz" class="nav-link" data-scroll-target="#quiz"><span class="header-section-number">1.14</span> Quiz</a></li>
+  <li><a href="#sec-00-02" id="toc-sec-00-02" class="nav-link" data-scroll-target="#sec-00-02"><span class="header-section-number">1.12</span> Un avant-goût de NumPy</a>
+  <ul class="collapse">
+  <li><a href="#attributs-et-type-de-données" id="toc-attributs-et-type-de-données" class="nav-link" data-scroll-target="#attributs-et-type-de-données"><span class="header-section-number">1.12.1</span> Attributs et type de données</a></li>
+  <li><a href="#créer-des-tableaux" id="toc-créer-des-tableaux" class="nav-link" data-scroll-target="#créer-des-tableaux"><span class="header-section-number">1.12.2</span> Créer des tableaux</a></li>
+  <li><a href="#le-broadcasting" id="toc-le-broadcasting" class="nav-link" data-scroll-target="#le-broadcasting"><span class="header-section-number">1.12.3</span> Le <em>broadcasting</em></a></li>
+  <li><a href="#remodeler-et-réordonner-les-axes" id="toc-remodeler-et-réordonner-les-axes" class="nav-link" data-scroll-target="#remodeler-et-réordonner-les-axes"><span class="header-section-number">1.12.4</span> Remodeler et réordonner les axes</a></li>
+  </ul></li>
+  <li><a href="#points-clés" id="toc-points-clés" class="nav-link" data-scroll-target="#points-clés"><span class="header-section-number">1.13</span> Points clés</a></li>
+  <li><a href="#exercices" id="toc-exercices" class="nav-link" data-scroll-target="#exercices"><span class="header-section-number">1.14</span> Exercices</a></li>
+  <li><a href="#quiz" id="toc-quiz" class="nav-link" data-scroll-target="#quiz"><span class="header-section-number">1.15</span> Quiz</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/sfoucher/TraitementImagesPythonVol1/issues" class="toc-action"><i class="bi bi-github"></i>Signaler un problème ou<br>formuler une suggestion</a></li></ul></div></nav>
     </div>
@@ -274,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title"><span id="sec-chap00" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction au langage Python</span></span></h1>
-<p class="subtitle lead">Première édition · Version 1.335</p>
+<p class="subtitle lead">Première édition · Version 1.339</p>
 </div>
 
 
@@ -317,7 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Python, créé par <a href="https://en.wikipedia.org/wiki/Guido_van_Rossum">Guido van Rossum</a> en 1991, est un langage de programmation polyvalent et facile à apprendre, souvent comparé à un couteau suisse numérique pour sa simplicité et sa polyvalence. Comme un outil multifonction, Python peut être utilisé pour une variété de tâches, du développement web à l’analyse de données, en passant par l’intelligence artificielle.</p>
 <section id="les-distributions" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="les-distributions"><span class="header-section-number">1.1</span> Les distributions</h2>
-<p>Il existe plusieurs <a href="https://wiki.python.org/moin/PythonDistributions">distributions</a> du langage Python, ces distributions sont comme différentes saveurs de votre glace préférée - chacune a ses propres caractéristiques uniques, mais elles sont toutes fondamentalement Python. Voici un aperçu des principales distributions :</p>
+<p>Il existe plusieurs <a href="https://wiki.python.org/moin/PythonDistributions">distributions</a> du langage Python, ces distributions sont des variantes plus ou moins volumineuses - chacune a ses propres caractéristiques uniques, mais elles sont toutes fondamentalement Python. Voici un aperçu des principales distributions :</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -349,14 +356,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>Chaque distribution a ses forces, que ce soit la simplicité, la vitesse ou des fonctionnalités spécifiques. Le choix dépend donc de vos besoins, comme choisir entre une glace simple ou une glace royale (banana split) élaborée.</p>
+<p>Chaque distribution a ses forces, que ce soit la simplicité, la vitesse ou des fonctionnalités spécifiques. Le choix dépend donc de vos besoins, la version Anaconda est par exemple très volumineuse et contiendra la plupart des librairies de base (Numpy, Scikit, etc.). Au contraire, Miniconda ne contient que le cœur de Python et les librairies seront ajoutées une par une au besoin.</p>
 </section>
 <section id="les-styles-de-programmation-en-python" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="les-styles-de-programmation-en-python"><span class="header-section-number">1.2</span> Les styles de programmation en Python</h2>
-<p>Il existe plusieurs approches pour programmer en Python. La plus directe est en version interactive en tapant <code>python</code> et de rentrer des commandes ligne par ligne.</p>
+<p>Il existe plusieurs approches pour programmer en Python. La plus directe est en version interactive en tapant <code>python</code> et de rentrer des commandes ligne par ligne. On parle de mode REPL (“Read-Eval-Print Loop”) ou l’interpréteur Python vous donne une rétroaction immédiate commande par commande.</p>
 <section id="les-outils-de-programmation" class="level3" data-number="1.2.1">
 <h3 data-number="1.2.1" class="anchored" data-anchor-id="les-outils-de-programmation"><span class="header-section-number">1.2.1</span> Les outils de programmation</h3>
-<p>Un code python prend la forme d’un simple fichier texte avec l’extension <code>.py</code> et peut être modifié avec un simple éditeur de texte. Cependant, il n’y aura pas de rétroactions immédiates de l’interpréteur Python, ce qui rend la correction d’erreurs (débogage) beaucoup plus laborieux.</p>
+<p>Un code python prend la forme d’un simple fichier texte avec l’extension <code>.py</code> et peut être modifié avec un simple éditeur de texte. On parle alors de <em>script</em> Python. Cependant, il n’y aura pas de rétroactions immédiates de l’interpréteur Python, ce qui rend la correction d’erreurs (débogage) beaucoup plus laborieux.</p>
 <p>Un IDE (<em>Integrated Development Environment</em>) est comme une boîte à outils complète pour les programmeurs, vous trouverez :</p>
 <ul>
 <li><p>Un éditeur de texte amélioré pour écrire votre code, avec des fonctionnalités comme la coloration syntaxique qui rend le code plus lisible.</p></li>
@@ -404,12 +411,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="le-principe-du-serveur-jupyter-et-des-notebooks" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="le-principe-du-serveur-jupyter-et-des-notebooks"><span class="header-section-number">1.2.2</span> Le principe du serveur Jupyter et des notebooks</h3>
+<p>Les chapitres de ce livre sont fournis sous forme de <em>notebooks</em> (carnets), le format le plus répandu pour l’analyse de données scientifiques. Un <strong>notebook</strong> est un fichier (extension <code>.ipynb</code>) organisé en <strong>cellules</strong> que l’on exécute une à une :</p>
+<ul>
+<li>des cellules de <strong>code</strong> Python, dont le résultat (texte, tableau, figure) s’affiche juste en dessous ;</li>
+<li>des cellules de <strong>texte</strong> (Markdown) pour la documentation, les titres et les équations.</li>
+</ul>
+<p>On peut ainsi entrelacer le code, les explications et les résultats dans un même document, ce qui en fait un excellent outil pédagogique et un support d’analyse reproductible.</p>
+<p>Un notebook repose sur une <strong>architecture client-serveur</strong> en trois pièces :</p>
+<ol type="1">
+<li>Le <strong>serveur Jupyter</strong> est un programme lancé sur votre machine (ou dans le nuage). Il gère les fichiers de notebooks et fait le pont entre l’interface et le moteur de calcul.</li>
+<li>L’<strong>interface</strong> s’affiche dans un simple navigateur web : c’est là que vous éditez et lancez les cellules. Aucune installation supplémentaire n’est requise côté affichage.</li>
+<li>Le <strong>noyau</strong> (<em>kernel</em>) est le processus Python qui exécute réellement le code. Il <strong>conserve l’état en mémoire</strong> entre les cellules : une variable définie dans une cellule reste disponible dans les suivantes.</li>
+</ol>
+<p>Quand vous exécutez une cellule, l’interface envoie le code au serveur, qui le transmet au noyau ; le noyau calcule puis renvoie le résultat, affiché sous la cellule. Comme le noyau garde l’état, l’<strong>ordre d’exécution</strong> des cellules compte : réexécuter des cellules dans le désordre peut mener à un état incohérent. En cas de doute, on redémarre le noyau et on réexécute tout depuis le début (menu <em>Kernel</em>, puis <em>Restart &amp; Run All</em>).</p>
+<p>Le service <a href="https://colab.google/">Google Colab</a> fournit gratuitement ce trio (serveur, interface, noyau) dans le nuage : c’est la façon la plus simple d’ouvrir les notebooks du livre sans rien installer. Pour travailler localement, il faut lancer soi-même un serveur Jupyter (voir <a href="#sec-00-jupyter-local" class="quarto-xref"><span>Section 1.3.2</span></a> plus bas).</p>
+</section>
 </section>
 <section id="bonnes-pratiques" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="bonnes-pratiques"><span class="header-section-number">1.3</span> Bonnes pratiques</h2>
 <p>Python est un langage très dynamique, qui évolue constamment. Cela pose certains défis pour la gestion du code à long terme. Il est fortement conseillé d’utiliser des environnements virtuels pour gérer vos différentes bibliothèques (<em>libraries</em>). Voici quelques bonnes pratiques à suivre :</p>
 <ol type="1">
-<li><p><strong>N’installez pas la toute dernière version de Python</strong> : Il est recommandé d’installer 1 ou 2 version antérieure, par exemple si 3.13 est <a href="https://www.python.org/downloads/">la version plus récente</a>, installer plutôt la version 3.11. Les versions trop récentes peuvent être instables. La version de python désirée peut être spécifiée au moment de la création d’un environnement virtuel (voir plus bas). Vous pouvez afficher la liste des versions de python avec la commande <code>conda search --full-name python</code>.</p></li>
+<li><p><strong>N’installez pas la toute dernière version de Python</strong> : Il est recommandé d’installer 1 ou 2 version antérieure, par exemple si 3.13 est <a href="https://www.python.org/downloads/">la version plus récente</a>, installer plutôt la version 3.11. Les versions trop récentes peuvent être instables surtout au niveau des librairies. La version de python désirée peut être spécifiée au moment de la création d’un environnement virtuel (voir plus bas). Vous pouvez afficher la liste des versions de python avec la commande <code>conda search --full-name python</code>.</p></li>
 <li><p><strong>N’utilisez pas de version obsolète de Python</strong>. Cela peut sembler contradictoire avec le point précédent mais c’est l’excès inverse. Si vous utilisez une version trop ancienne alors toutes vos librairies cesseront d’évoluer et peuvent devenir obsolètes.</p></li>
 <li><p><strong>Utilisez des environnements virtuels</strong>. Pensez-y comme à des compartiments séparés pour chaque projet. Cela évite les conflits entre les différentes versions de bibliothèques (<em>libraries</em>) et garde votre système propre. Par exemple, si vous souhaitez vérifier une nouvelle version de Python, utilisez un environnement : <code>conda create --name test python=3.11</code></p></li>
 <li><p><strong>Vérifiez l’installation</strong>. Après l’installation, ouvrez un terminal et tapez <code>python --version</code> pour vous assurer que tout fonctionne correctement.</p></li>
@@ -429,9 +453,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> test/bin/activate       <span class="co"># Windows : test\Scripts\activate</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="création-dun-environnement-de-travail-local-avancé" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="création-dun-environnement-de-travail-local-avancé"><span class="header-section-number">1.3.2</span> Création d’un environnement de travail local (avancé)</h3>
-<p><strong>Note</strong>: les notebooks peuvent fonctionner localement uniquement sous Linux ou avec WSL2.</p>
+<section id="sec-00-jupyter-local" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="sec-00-jupyter-local"><span class="header-section-number">1.3.2</span> Création d’un environnement de travail local (avancé)</h3>
+<p><strong>Note</strong>: les notebooks peuvent fonctionner localement sous Windows ou sous Linux avec WSL2.</p>
 <p>Les notebooks Python fonctionnent par défaut dans l’environnement <a href="https://colab.google/">Google Colab</a>. Si vous souhaitez faire fonctionner ces notebook localement, vous pouvez installer un environnement local avec un serveur <a href="https://jupyterlab.readthedocs.io/en/stable/getting_started/starting.html">Jupyter</a>. Il suffit de suivre les étapes suivantes:</p>
 <p>1. Installer <code>WSL2</code> sous <a href="https://learn.microsoft.com/en-us/windows/wsl/install">Windows</a></p>
 <p>2. Installer <a href="https://code.visualstudio.com/docs/setup/windows">vscode</a></p>
@@ -442,7 +466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>7. Activer le nouvel environnement: <code>conda activate jupyter_env</code></p>
 <p>8. Le serveur jupyter peut ensuite être lancé avec la commande suivante: <code>jupyter lab --ip='*' --NotebookApp.token='' --NotebookApp.password=''</code></p>
 <p>Une fenêtre devrait alors apparaître dans votre fureteur. Dans le menu de gauche vous pouvez accéder aux notebooks dans le répertoire <code>notebooks</code>:</p>
-<div id="fig-jupyterlab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-scap="Client Jupyter Lab">
+<div id="fig-jupyterlab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Client Jupyter Lab" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jupyterlab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/jupyter-accueil.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-scap="Client Jupyter Lab">
@@ -466,7 +490,7 @@ Figure&nbsp;1.1: Fenêtre principale du serveur Jupyter Lab.
 <li><p>Permettent les doublons (deux fois la même valeur).</p></li>
 <li><p>Idéales pour stocker des collections d’éléments que vous voulez modifier</p></li>
 </ul>
-<div id="7d0259f3" class="cell" data-execution_count="1">
+<div id="5952c0e6" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Une liste des bandes spectrales d'une image (analogie télédétection)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bandes[<span class="dv">0</span>])          <span class="co"># premier élément</span></span>
@@ -496,7 +520,7 @@ PIR
 <li><p>Permettent les doublons.</p></li>
 <li><p>Souvent utilisés pour stocker des données qui ne doivent pas changer (comme des paramètres).</p></li>
 </ul>
-<div id="dc289df3" class="cell" data-execution_count="2">
+<div id="29de6651" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Les dimensions (lignes, colonnes) d'une image : une donnée qui ne change pas</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dimensions <span class="op">=</span> (<span class="dv">512</span>, <span class="dv">512</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>lignes, colonnes <span class="op">=</span> dimensions        <span class="co"># dépaquetage (unpacking)</span></span>
@@ -517,7 +541,7 @@ PIR
 <li><p>N’autorisent pas les doublons.</p></li>
 <li><p>Utiles pour éliminer les doublons et effectuer des opérations mathématiques sur des ensembles.</p></li>
 </ul>
-<div id="ec2e50c5" class="cell" data-execution_count="3">
+<div id="ba30e01e" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Éliminer les doublons d'une liste de classes d'occupation du sol</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>, <span class="st">"forêt"</span>]</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> <span class="bu">set</span>(classes)</span>
@@ -527,7 +551,7 @@ PIR
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>a, b <span class="op">=</span> {<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>}, {<span class="dv">3</span>, <span class="dv">4</span>}</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"intersection :"</span>, a <span class="op">&amp;</span> b, <span class="st">"| union :"</span>, a <span class="op">|</span> b)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'eau', 'forêt', 'urbain'}
+<pre><code>{'eau', 'urbain', 'forêt'}
 intersection : {3} | union : {1, 2, 3, 4}</code></pre>
 </div>
 </div>
@@ -542,7 +566,7 @@ intersection : {3} | union : {1, 2, 3, 4}</code></pre>
 <li><p>Les clés doivent être uniques, mais les valeurs peuvent être dupliquées</p></li>
 <li><p>Utiles pour stocker des données associatives ou pour créer des tables de recherche rapide</p></li>
 </ul>
-<div id="88a69d48" class="cell" data-execution_count="4">
+<div id="adf77dec" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Un dictionnaire : les métadonnées d'une image satellite</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image[<span class="st">"capteur"</span>])              <span class="co"># accès par clé</span></span>
@@ -558,31 +582,97 @@ resolution_m : 10
 date : 2024-07-01</code></pre>
 </div>
 </div>
+<div class="bloc_aller_loin">
+<div class="bloc_aller_loin-header">
+<div class="bloc_aller_loin-icon">
+
+</div>
+<p><strong>Les opérateurs <code>*</code> et <code>**</code> sur un dictionnaire</strong></p>
+</div>
+<div class="bloc_aller_loin-body">
+<p>Les opérateurs de <em>déballage</em> (<em>unpacking</em>) donnent accès au contenu d’un dictionnaire sans écrire de boucle. La règle est simple : <code>**</code> déballe les <strong>paires clé-valeur</strong>, tandis que <code>*</code> (une seule étoile) ne déballe que les <strong>clés</strong>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ** : fusionner ou copier des dictionnaires</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>complet <span class="op">=</span> {<span class="op">**</span>image, <span class="st">"date"</span>: <span class="st">"2024-07-01"</span>}   <span class="co"># copie + une paire en plus</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>fusion  <span class="op">=</span> {<span class="op">**</span>image, <span class="st">"bandes"</span>: <span class="dv">4</span>}            <span class="co"># en cas de collision, la dernière clé gagne</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ** : passer un dictionnaire comme arguments nommés d'une fonction</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resume(capteur, bandes, resolution_m):</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>capteur<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>bandes<span class="sc">}</span><span class="ss"> bandes à </span><span class="sc">{</span>resolution_m<span class="sc">}</span><span class="ss"> m"</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resume(<span class="op">**</span>image))          <span class="co"># équivaut à resume(capteur="Sentinel-2", bandes=13, ...)</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># * : ne déballe que les clés</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>([<span class="op">*</span>image])                 <span class="co"># ['capteur', 'bandes', 'resolution_m']</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="op">*</span>image, sep<span class="op">=</span><span class="st">", "</span>)         <span class="co"># capteur, bandes, resolution_m</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Côté définition d'une fonction : **kwargs collecte les arguments nommés dans un dict</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> info(<span class="op">**</span>meta):               <span class="co"># meta est un dictionnaire</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> cle, valeur <span class="kw">in</span> meta.items():</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(cle, <span class="st">":"</span>, valeur)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>info(capteur<span class="op">=</span><span class="st">"SPOT"</span>, bandes<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>À retenir : <code>**d</code> sert à <em>fournir</em> ou <em>fusionner</em> des paires clé-valeur (appels de fonction, construction de dictionnaires), alors que <code>**kwargs</code> dans une <strong>définition</strong> de fonction fait l’inverse — il <em>collecte</em> les arguments nommés dans un dictionnaire. À partir de Python 3.9, <code>a | b</code> fusionne aussi deux dictionnaires, en équivalent plus lisible de <code>{**a, **b}</code>.</p>
+</div>
+</div>
+<div class="bloc_aller_loin">
+<div class="bloc_aller_loin-header">
+<div class="bloc_aller_loin-icon">
+
+</div>
+<p><strong>Les compréhensions de liste et de dictionnaire</strong></p>
+</div>
+<div class="bloc_aller_loin-body">
+<p>Une <strong>compréhension</strong> construit une collection en une seule ligne, à la place d’une boucle <code>for</code> suivie d’un <code>append</code>. Le code est plus court, plus lisible et souvent plus rapide. Le patron est toujours le même : une <strong>expression</strong>, un parcours (<code>for</code>), et un <strong>filtre</strong> optionnel (<code>if</code>).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de LISTE : [expression for élément in itérable if condition]</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>majuscules <span class="op">=</span> [b.upper() <span class="cf">for</span> b <span class="kw">in</span> bandes]           <span class="co"># transforme chaque élément</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>courtes    <span class="op">=</span> [b <span class="cf">for</span> b <span class="kw">in</span> bandes <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op">&lt;=</span> <span class="dv">4</span>]    <span class="co"># ne garde que certains éléments</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># équivalent avec une boucle classique :</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>courtes <span class="op">=</span> []</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> bandes:</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op">&lt;=</span> <span class="dv">4</span>:</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        courtes.append(b)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de DICTIONNAIRE : {clé: valeur for ...}</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> {nom: i <span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes)}  <span class="co"># {'bleu': 0, 'vert': 1, ...}</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>inverse <span class="op">=</span> {valeur: cle <span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items()}   <span class="co"># échange clés et valeurs</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension d'ENSEMBLE : {expression for ...} -&gt; doublons éliminés</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>]</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> {c <span class="cf">for</span> c <span class="kw">in</span> classes}                      <span class="co"># {'eau', 'forêt', 'urbain'}</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On peut aussi choisir la valeur selon une condition, en plaçant un <code>if</code>/<code>else</code> dans l’<strong>expression</strong> (et non comme filtre en fin) : <code>["vég." if b == "PIR" else "visible" for b in bandes]</code>.</p>
+</div>
+</div>
 </section>
 <section id="boucles-et-conditions" class="level2" data-number="1.6">
 <h2 data-number="1.6" class="anchored" data-anchor-id="boucles-et-conditions"><span class="header-section-number">1.6</span> Boucles et conditions</h2>
 <p>Un programme prend des décisions (<code>if</code>) et répète des opérations (<code>for</code>, <code>while</code>). Ces structures de contrôle sont au cœur de tout traitement automatisé.</p>
-<div id="471cd268" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle for : parcourir chaque bande avec son indice</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes):</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i, nom)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Condition if / elif / else</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>reflectance <span class="op">=</span> <span class="fl">0.42</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> reflectance <span class="op">&gt;</span> <span class="fl">0.5</span>:</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"forte réflectance"</span>)</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> reflectance <span class="op">&gt;</span> <span class="fl">0.3</span>:</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"réflectance moyenne"</span>)</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"faible réflectance"</span>)</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle while : tant qu'une condition est vraie</span></span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>seuil, valeur <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">0.1</span></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> valeur <span class="op">&lt;</span> seuil:</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    valeur <span class="op">+=</span> <span class="fl">0.2</span></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"valeur finale :"</span>, <span class="bu">round</span>(valeur, <span class="dv">1</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="4c322c72" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle for : parcourir chaque bande avec son indice</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes):</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i, nom)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Condition if / elif / else</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>reflectance <span class="op">=</span> <span class="fl">0.42</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> reflectance <span class="op">&gt;</span> <span class="fl">0.5</span>:</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"forte réflectance"</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> reflectance <span class="op">&gt;</span> <span class="fl">0.3</span>:</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"réflectance moyenne"</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"faible réflectance"</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Boucle while : tant qu'une condition est vraie</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>seuil, valeur <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">0.1</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> valeur <span class="op">&lt;</span> seuil:</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    valeur <span class="op">+=</span> <span class="fl">0.2</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"valeur finale :"</span>, <span class="bu">round</span>(valeur, <span class="dv">1</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0 bleu
 1 vert
@@ -596,19 +686,19 @@ valeur finale : 0.5</code></pre>
 <section id="les-fonctions" class="level2" data-number="1.7">
 <h2 data-number="1.7" class="anchored" data-anchor-id="les-fonctions"><span class="header-section-number">1.7</span> Les fonctions</h2>
 <p>Une fonction regroupe des instructions réutilisables sous un nom. On la définit avec <code>def</code> ; elle reçoit des <em>arguments</em> et renvoie un résultat avec <code>return</code>.</p>
-<div id="21675099" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ndvi(nir, rouge):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Indice de végétation NDVI = (PIR - Rouge) / (PIR + Rouge)."""</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (nir <span class="op">-</span> rouge) <span class="op">/</span> (nir <span class="op">+</span> rouge)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(ndvi(<span class="fl">0.6</span>, <span class="fl">0.2</span>), <span class="dv">3</span>))</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Argument par défaut</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normaliser(valeur, maximum<span class="op">=</span><span class="dv">255</span>):</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> valeur <span class="op">/</span> maximum</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">128</span>))</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">1000</span>, maximum<span class="op">=</span><span class="dv">4095</span>))   <span class="co"># image 12 bits</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="bec59fc2" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ndvi(nir, rouge):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Indice de végétation NDVI = (PIR - Rouge) / (PIR + Rouge)."""</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (nir <span class="op">-</span> rouge) <span class="op">/</span> (nir <span class="op">+</span> rouge)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(ndvi(<span class="fl">0.6</span>, <span class="fl">0.2</span>), <span class="dv">3</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Argument par défaut</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normaliser(valeur, maximum<span class="op">=</span><span class="dv">255</span>):</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> valeur <span class="op">/</span> maximum</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">128</span>))</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">1000</span>, maximum<span class="op">=</span><span class="dv">4095</span>))   <span class="co"># image 12 bits</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.5
 0.5019607843137255
@@ -626,20 +716,20 @@ valeur finale : 0.5</code></pre>
 <li><p><strong>Polymorphisme</strong>: permet à différents objets de répondre au même message de manière unique, comme si différents animaux répondaient différemment à “fais du bruit”.</p></li>
 </ol>
 <p>Ces caractéristiques font de Python un excellent choix pour apprendre et appliquer les concepts de la POO, rendant le code plus organisé et réutilisable</p>
-<div id="ae1c83d7" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Image:</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Une classe minimale décrivant une image satellite."""</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capteur, bandes):   <span class="co"># constructeur</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.capteur <span class="op">=</span> capteur              <span class="co"># attributs</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bandes <span class="op">=</span> bandes</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> resume(<span class="va">self</span>):                       <span class="co"># méthode</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>capteur<span class="sc">}</span><span class="ss"> — </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>bandes<span class="sc">}</span><span class="ss"> bandes"</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image(<span class="st">"Landsat-8"</span>, <span class="dv">11</span>)</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img.resume())</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img.capteur)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="b3be94c2" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Image:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Une classe minimale décrivant une image satellite."""</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capteur, bandes):   <span class="co"># constructeur</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.capteur <span class="op">=</span> capteur              <span class="co"># attributs</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bandes <span class="op">=</span> bandes</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> resume(<span class="va">self</span>):                       <span class="co"># méthode</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>capteur<span class="sc">}</span><span class="ss"> — </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>bandes<span class="sc">}</span><span class="ss"> bandes"</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image(<span class="st">"Landsat-8"</span>, <span class="dv">11</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img.resume())</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img.capteur)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Landsat-8 — 11 bandes
 Landsat-8</code></pre>
@@ -649,13 +739,13 @@ Landsat-8</code></pre>
 <section id="importer-des-bibliothèques" class="level2" data-number="1.9">
 <h2 data-number="1.9" class="anchored" data-anchor-id="importer-des-bibliothèques"><span class="header-section-number">1.9</span> Importer des bibliothèques</h2>
 <p>Python possède une petite bibliothèque standard, mais toute sa puissance vient des <em>packages</em> externes (comme NumPy). On les installe une fois avec <code>pip</code>, puis on les charge dans un script avec <code>import</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install numpy          <span class="co"># une seule fois par environnement</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="7019f32d" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np              <span class="co"># tout le module, sous l'alias np</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> pi, sqrt       <span class="co"># seulement certains éléments</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]))</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(pi, <span class="dv">4</span>), sqrt(<span class="dv">16</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install numpy          <span class="co"># une seule fois par environnement</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="75776577" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np              <span class="co"># tout le module, sous l'alias np</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> pi, sqrt       <span class="co"># seulement certains éléments</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(pi, <span class="dv">4</span>), sqrt(<span class="dv">16</span>))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1 2 3]
 3.1416 4.0</code></pre>
@@ -675,12 +765,12 @@ Landsat-8</code></pre>
     indices.py        # fonctions d'indices spectraux (ndvi, ...)
     filtres.py        # fonctions de filtrage spatial</code></pre>
 <p>On accède au contenu avec la notation pointée <code>package.module.fonction</code> :</p>
-<div id="82cb8871" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> teledetection.indices                   <span class="co"># importe le module</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> teledetection.indices <span class="im">import</span> ndvi         <span class="co"># importe une fonction précise</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> teledetection <span class="im">import</span> filtres <span class="im">as</span> f         <span class="co"># importe un module sous un alias</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>resultat <span class="op">=</span> teledetection.indices.ndvi(<span class="fl">0.6</span>, <span class="fl">0.2</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="7f89ea43" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> teledetection.indices                   <span class="co"># importe le module</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> teledetection.indices <span class="im">import</span> ndvi         <span class="co"># importe une fonction précise</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> teledetection <span class="im">import</span> filtres <span class="im">as</span> f         <span class="co"># importe un module sous un alias</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>resultat <span class="op">=</span> teledetection.indices.ndvi(<span class="fl">0.6</span>, <span class="fl">0.2</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="le-fichier-__init__.py" class="level3" data-number="1.10.1">
 <h3 data-number="1.10.1" class="anchored" data-anchor-id="le-fichier-__init__.py"><span class="header-section-number">1.10.1</span> Le fichier <code>__init__.py</code></h3>
@@ -690,35 +780,134 @@ Landsat-8</code></pre>
 <li>initialiser des données ou vérifier des dépendances au chargement du package.</li>
 </ul>
 <p>Ce mécanisme n’est pas qu’une abstraction : ce manuel l’utilise lui-même. Les quiz de fin de chapitre proviennent d’un package local <code>code_complementaire</code>, importé exactement de cette façon :</p>
-<div id="ab09f294" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> code_complementaire.quizz_functions <span class="im">import</span> Quiz, render_quizz</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="7b69ee9f" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> code_complementaire.quizz_functions <span class="im">import</span> Quiz, render_quizz</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Enfin, un module peut contenir un bloc <code>if __name__ == "__main__":</code> dont le code ne s’exécute <strong>que</strong> si le fichier est lancé directement (<code>python indices.py</code>), et <strong>pas</strong> lorsqu’il est importé. C’est la façon habituelle de séparer le code exécutable des fonctions réutilisables. La variable <code>__name__</code> vaut <code>"__main__"</code> dans le premier cas, et le nom du module dans le second :</p>
-<div id="ed6db107" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nom du contexte courant :"</span>, <span class="va">__name__</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="830467d2" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nom du contexte courant :"</span>, <span class="va">__name__</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Nom du contexte courant : __main__</code></pre>
 </div>
 </div>
 </section>
 </section>
-<section id="sec-00-02" class="level2" data-number="1.11">
-<h2 data-number="1.11" class="anchored" data-anchor-id="sec-00-02"><span class="header-section-number">1.11</span> Un avant-goût de NumPy</h2>
+<section id="sec-00-executable" class="level2" data-number="1.11">
+<h2 data-number="1.11" class="anchored" data-anchor-id="sec-00-executable"><span class="header-section-number">1.11</span> Créer un exécutable Python</h2>
+<p>Un <em>notebook</em> est idéal pour explorer, mais pour une tâche répétitive — appliquer le même traitement à des centaines d’images — on préfère un <strong>script exécutable</strong> lancé depuis un terminal. Nous construisons ici, en trois étapes, un petit programme qui calcule un NDVI à partir d’une image à quatre bandes (B, V, R, PIR).</p>
+<section id="la-solution-la-plus-simple" class="level3" data-number="1.11.1">
+<h3 data-number="1.11.1" class="anchored" data-anchor-id="la-solution-la-plus-simple"><span class="header-section-number">1.11.1</span> 1. La solution la plus simple</h3>
+<p>Un script est un simple fichier <code>.py</code> que l’on exécute avec <code>python</code>. Le code utile est placé dans le bloc <code>if __name__ == "__main__":</code> vu plus haut. Enregistrons ce fichier sous le nom <code>ndvi.py</code> :</p>
+<div id="e5e86abc" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ndvi.py</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    img   <span class="op">=</span> rxr.open_rasterio(<span class="st">"RGBNIR_of_S2A.tif"</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    rouge <span class="op">=</span> img.sel(band<span class="op">=</span><span class="dv">3</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    pir   <span class="op">=</span> img.sel(band<span class="op">=</span><span class="dv">4</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    ndvi  <span class="op">=</span> (pir <span class="op">-</span> rouge) <span class="op">/</span> (pir <span class="op">+</span> rouge)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    ndvi.rio.to_raster(<span class="st">"ndvi.tif"</span>)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"NDVI enregistré dans ndvi.tif"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>On le lance depuis un terminal :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ndvi.py</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sur Linux ou macOS, on peut aussi rendre le fichier directement exécutable. Il suffit d’ajouter une ligne <em>shebang</em> en tête (<code>#!/usr/bin/env python3</code>), puis de donner le droit d’exécution avec <code>chmod +x ndvi.py</code> ; le script se lance alors avec <code>./ndvi.py</code>.</p>
+<p>Cette version fonctionne, mais tout est <strong>figé</strong> : les noms de fichiers et les numéros de bandes sont écrits en dur dans le code. Pour traiter une autre image, il faut éditer le script.</p>
+</section>
+<section id="bonnes-pratiques-fonction-main-et-paramètres" class="level3" data-number="1.11.2">
+<h3 data-number="1.11.2" class="anchored" data-anchor-id="bonnes-pratiques-fonction-main-et-paramètres"><span class="header-section-number">1.11.2</span> 2. Bonnes pratiques : fonction <code>main</code> et paramètres</h3>
+<p>On sépare le <strong>traitement</strong> (une fonction réutilisable, avec des <strong>valeurs par défaut</strong>) de l’<strong>interface en ligne de commande</strong>, gérée par le module <code>argparse</code> de la bibliothèque standard. Les valeurs par défaut rendent la plupart des arguments optionnels ; <code>argparse</code> génère aussi automatiquement une aide (<code>-h</code>).</p>
+<div id="96962e4f" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co">"""Calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR)."""</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calcule_ndvi(entree, sortie<span class="op">=</span><span class="st">"ndvi.tif"</span>, bande_rouge<span class="op">=</span><span class="dv">3</span>, bande_pir<span class="op">=</span><span class="dv">4</span>):</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Le traitement : réutilisable, avec des valeurs par défaut."""</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    img   <span class="op">=</span> rxr.open_rasterio(entree)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    rouge <span class="op">=</span> img.sel(band<span class="op">=</span>bande_rouge).astype(<span class="st">"float32"</span>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    pir   <span class="op">=</span> img.sel(band<span class="op">=</span>bande_pir).astype(<span class="st">"float32"</span>)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    ndvi  <span class="op">=</span> (pir <span class="op">-</span> rouge) <span class="op">/</span> (pir <span class="op">+</span> rouge)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    ndvi.rio.to_raster(sortie)</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sortie</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> argparse.ArgumentParser(description<span class="op">=</span>__doc__)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    p.add_argument(<span class="st">"entree"</span>, <span class="bu">help</span><span class="op">=</span><span class="st">"image d'entrée (GeoTIFF)"</span>)          <span class="co"># argument obligatoire</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    p.add_argument(<span class="st">"-o"</span>, <span class="st">"--sortie"</span>, default<span class="op">=</span><span class="st">"ndvi.tif"</span>, <span class="bu">help</span><span class="op">=</span><span class="st">"fichier de sortie"</span>)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    p.add_argument(<span class="st">"--bande-rouge"</span>, <span class="bu">type</span><span class="op">=</span><span class="bu">int</span>, default<span class="op">=</span><span class="dv">3</span>, <span class="bu">help</span><span class="op">=</span><span class="st">"indice de la bande rouge"</span>)</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    p.add_argument(<span class="st">"--bande-pir"</span>,  <span class="bu">type</span><span class="op">=</span><span class="bu">int</span>, default<span class="op">=</span><span class="dv">4</span>, <span class="bu">help</span><span class="op">=</span><span class="st">"indice de la bande PIR"</span>)</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    args <span class="op">=</span> p.parse_args()</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>    chemin <span class="op">=</span> calcule_ndvi(args.entree, args.sortie, args.bande_rouge, args.bande_pir)</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"NDVI enregistré dans"</span>, chemin)</span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Grâce aux valeurs par défaut, seul le fichier d’entrée est requis :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ndvi.py RGBNIR_of_S2A.tif                 <span class="co"># utilise tous les défauts</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ndvi.py RGBNIR_of_S2A.tif <span class="at">-o</span> mon_ndvi.tif <span class="at">--bande-pir</span> 4</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ndvi.py <span class="at">-h</span>                                <span class="co"># affiche l'aide générée</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="gérer-les-paramètres-avec-un-fichier-yaml" class="level3" data-number="1.11.3">
+<h3 data-number="1.11.3" class="anchored" data-anchor-id="gérer-les-paramètres-avec-un-fichier-yaml"><span class="header-section-number">1.11.3</span> 3. Gérer les paramètres avec un fichier YAML</h3>
+<p>Dès que les paramètres se multiplient, les passer un à un devient pénible et difficile à <strong>reproduire</strong>. On les regroupe alors dans un fichier de configuration <strong>YAML</strong>, lisible et versionnable. Créons <code>config.yaml</code> :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">entree</span><span class="kw">:</span><span class="at"> RGBNIR_of_S2A.tif</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sortie</span><span class="kw">:</span><span class="at"> ndvi.tif</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bande_rouge</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">bande_pir</span><span class="kw">:</span><span class="at"> </span><span class="dv">4</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Le script lit ce fichier avec le module <code>yaml</code> (<code>safe_load</code> — jamais <code>load</code>, qui peut exécuter du code arbitraire). On fusionne les valeurs lues avec un dictionnaire de <strong>défauts</strong> grâce au déballage <code>**</code> (voir l’encadré plus haut) : ce qui est absent du YAML prend sa valeur par défaut.</p>
+<div id="91568b47" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co">"""Calcule un NDVI, paramétré par un fichier YAML."""</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> yaml</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>DEFAUTS <span class="op">=</span> {<span class="st">"sortie"</span>: <span class="st">"ndvi.tif"</span>, <span class="st">"bande_rouge"</span>: <span class="dv">3</span>, <span class="st">"bande_pir"</span>: <span class="dv">4</span>}</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calcule_ndvi(entree, sortie, bande_rouge, bande_pir):</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    img   <span class="op">=</span> rxr.open_rasterio(entree)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    rouge <span class="op">=</span> img.sel(band<span class="op">=</span>bande_rouge).astype(<span class="st">"float32"</span>)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    pir   <span class="op">=</span> img.sel(band<span class="op">=</span>bande_pir).astype(<span class="st">"float32"</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    ((pir <span class="op">-</span> rouge) <span class="op">/</span> (pir <span class="op">+</span> rouge)).rio.to_raster(sortie)</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> argparse.ArgumentParser(description<span class="op">=</span>__doc__)</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    p.add_argument(<span class="st">"config"</span>, <span class="bu">help</span><span class="op">=</span><span class="st">"fichier de configuration YAML"</span>)</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>    args <span class="op">=</span> p.parse_args()</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(args.config) <span class="im">as</span> f:</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> {<span class="op">**</span>DEFAUTS, <span class="op">**</span>yaml.safe_load(f)}   <span class="co"># défauts, écrasés par le YAML</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    calcule_ndvi(<span class="op">**</span>params)                          <span class="co"># déballage des paramètres</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"NDVI enregistré dans"</span>, params[<span class="st">"sortie"</span>])</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Le programme se lance alors simplement avec sa configuration, et rejouer exactement le même traitement ne demande que de conserver le fichier YAML :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ndvi.py config.yaml</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pour aller plus loin, un script peut être transformé en <strong>commande installable</strong> (accessible partout, sans préciser <code>python ...</code>) en déclarant un <em>point d’entrée</em> (<code>entry point</code>) dans le fichier <code>pyproject.toml</code> du package — le mécanisme utilisé par des outils comme <code>quarto</code> ou <code>jupyter</code>.</p>
+</section>
+</section>
+<section id="sec-00-02" class="level2" data-number="1.12">
+<h2 data-number="1.12" class="anchored" data-anchor-id="sec-00-02"><span class="header-section-number">1.12</span> Un avant-goût de NumPy</h2>
 <p>Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque <a href="https://numpy.org/">NumPy</a> fournit l’objet <code>ndarray</code> qui représente efficacement ces tableaux à plusieurs dimensions : c’est la brique de base de tous les chapitres suivants.</p>
-<div id="c6828eca" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Une petite image à une bande : 3 lignes x 4 colonnes</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>,  <span class="dv">8</span>]])</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Forme (lignes, colonnes) :"</span>, image.shape)</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Valeur maximale :"</span>, image.<span class="bu">max</span>())</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Moyenne :"</span>, image.mean().<span class="bu">round</span>(<span class="dv">2</span>))</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Découpage d'une sous-image (2 premières lignes, 2 premières colonnes)</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image[:<span class="dv">2</span>, :<span class="dv">2</span>])</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8497acdc" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Une petite image à une bande : 3 lignes x 4 colonnes</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>,  <span class="dv">8</span>]])</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Forme (lignes, colonnes) :"</span>, image.shape)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Valeur maximale :"</span>, image.<span class="bu">max</span>())</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Moyenne :"</span>, image.mean().<span class="bu">round</span>(<span class="dv">2</span>))</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Découpage d'une sous-image (2 premières lignes, 2 premières colonnes)</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image[:<span class="dv">2</span>, :<span class="dv">2</span>])</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Forme (lignes, colonnes) : (3, 4)
 Valeur maximale : 23
@@ -727,17 +916,17 @@ Moyenne : 13.33
  [ 8 20]]</code></pre>
 </div>
 </div>
-<section id="attributs-et-type-de-données" class="level3" data-number="1.11.1">
-<h3 data-number="1.11.1" class="anchored" data-anchor-id="attributs-et-type-de-données"><span class="header-section-number">1.11.1</span> Attributs et type de données</h3>
+<section id="attributs-et-type-de-données" class="level3" data-number="1.12.1">
+<h3 data-number="1.12.1" class="anchored" data-anchor-id="attributs-et-type-de-données"><span class="header-section-number">1.12.1</span> Attributs et type de données</h3>
 <p>Au-delà de la forme (<code>shape</code>), un tableau expose son nombre de dimensions (<code>ndim</code>), son nombre total d’éléments (<code>size</code>) et surtout son <strong>type de données</strong> (<code>dtype</code>). Ce dernier encode la <em>profondeur radiométrique</em> de l’image : un capteur 8 bits produit des entiers <code>uint8</code> (0 à 255), tandis qu’une réflectance se stocke en <code>float32</code>. La méthode <code>astype</code> convertit d’un type à l’autre.</p>
-<div id="ce17028f" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensions (ndim) :"</span>, image.ndim)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nombre de pixels  :"</span>, image.size)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Type de données   :"</span>, image.dtype)     <span class="co"># entier par défaut</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Conversion en réflectance flottante (float32)</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>reflectance <span class="op">=</span> (image <span class="op">/</span> image.<span class="bu">max</span>()).astype(<span class="st">"float32"</span>)</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nouveau type      :"</span>, reflectance.dtype)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="4a70e131" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensions (ndim) :"</span>, image.ndim)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nombre de pixels  :"</span>, image.size)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Type de données   :"</span>, image.dtype)     <span class="co"># entier par défaut</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Conversion en réflectance flottante (float32)</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>reflectance <span class="op">=</span> (image <span class="op">/</span> image.<span class="bu">max</span>()).astype(<span class="st">"float32"</span>)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nouveau type      :"</span>, reflectance.dtype)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dimensions (ndim) : 2
 Nombre de pixels  : 12
@@ -746,14 +935,14 @@ Nouveau type      : float32</code></pre>
 </div>
 </div>
 </section>
-<section id="créer-des-tableaux" class="level3" data-number="1.11.2">
-<h3 data-number="1.11.2" class="anchored" data-anchor-id="créer-des-tableaux"><span class="header-section-number">1.11.2</span> Créer des tableaux</h3>
+<section id="créer-des-tableaux" class="level3" data-number="1.12.2">
+<h3 data-number="1.12.2" class="anchored" data-anchor-id="créer-des-tableaux"><span class="header-section-number">1.12.2</span> Créer des tableaux</h3>
 <p>On construit souvent un tableau sans l’écrire à la main : un masque rempli de zéros, une bande constante, un axe régulier de longueurs d’onde. NumPy fournit <code>zeros</code>, <code>ones</code>, <code>arange</code> (pas fixe) et <code>linspace</code> (nombre de points fixe).</p>
-<div id="cad8076c" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.zeros((<span class="dv">2</span>, <span class="dv">3</span>)))                 <span class="co"># masque vide (2 x 3)</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.ones(<span class="dv">4</span>, dtype<span class="op">=</span><span class="st">"uint8"</span>))        <span class="co"># bande constante</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.arange(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">2</span>))              <span class="co"># 0, 2, 4, 6, 8</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.linspace(<span class="dv">490</span>, <span class="dv">2190</span>, <span class="dv">6</span>))        <span class="co"># 6 longueurs d'onde (nm)</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="1e9133cc" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.zeros((<span class="dv">2</span>, <span class="dv">3</span>)))                 <span class="co"># masque vide (2 x 3)</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.ones(<span class="dv">4</span>, dtype<span class="op">=</span><span class="st">"uint8"</span>))        <span class="co"># bande constante</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.arange(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">2</span>))              <span class="co"># 0, 2, 4, 6, 8</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.linspace(<span class="dv">490</span>, <span class="dv">2190</span>, <span class="dv">6</span>))        <span class="co"># 6 longueurs d'onde (nm)</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[0. 0. 0.]
  [0. 0. 0.]]
@@ -763,25 +952,25 @@ Nouveau type      : float32</code></pre>
 </div>
 </div>
 </section>
-<section id="le-broadcasting" class="level3" data-number="1.11.3">
-<h3 data-number="1.11.3" class="anchored" data-anchor-id="le-broadcasting"><span class="header-section-number">1.11.3</span> Le <em>broadcasting</em></h3>
+<section id="le-broadcasting" class="level3" data-number="1.12.3">
+<h3 data-number="1.12.3" class="anchored" data-anchor-id="le-broadcasting"><span class="header-section-number">1.12.3</span> Le <em>broadcasting</em></h3>
 <p>Le <em>broadcasting</em> applique une opération entre tableaux de formes différentes sans boucle : NumPy « étire » automatiquement la plus petite forme. C’est le mécanisme derrière presque tous les calculs vectorisés du manuel — appliquer un gain scalaire à toute l’image, ou un gain <strong>par bande</strong>.</p>
-<div id="7a351031" class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Un petit cube à 2 bandes : (bandes, lignes, colonnes)</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> np.array([[[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>,  <span class="dv">8</span>]],</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                 [[<span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">33</span>, <span class="dv">28</span>],</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">25</span>, <span class="dv">60</span>, <span class="dv">66</span>, <span class="dv">22</span>],</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">27</span>, <span class="dv">63</span>, <span class="dv">69</span>, <span class="dv">24</span>]]])</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Forme du cube :"</span>, cube.shape)    <span class="co"># (2, 3, 4)</span></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Scalaire : convertir des comptes numériques en réflectance</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((image <span class="op">/</span> <span class="dv">10000</span>).<span class="bu">round</span>(<span class="dv">4</span>)[<span class="dv">0</span>])</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Par bande : un gain différent par bande via une forme (bandes, 1, 1)</span></span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>gains <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">0.5</span>]).reshape(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((cube <span class="op">*</span> gains)[:, <span class="dv">0</span>, <span class="dv">0</span>])          <span class="co"># applique 1.0 et 0.5 aux 2 bandes</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0a0abb66" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Un petit cube à 2 bandes : (bandes, lignes, colonnes)</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> np.array([[[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>,  <span class="dv">8</span>]],</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                 [[<span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">33</span>, <span class="dv">28</span>],</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">25</span>, <span class="dv">60</span>, <span class="dv">66</span>, <span class="dv">22</span>],</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">27</span>, <span class="dv">63</span>, <span class="dv">69</span>, <span class="dv">24</span>]]])</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Forme du cube :"</span>, cube.shape)    <span class="co"># (2, 3, 4)</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Scalaire : convertir des comptes numériques en réflectance</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((image <span class="op">/</span> <span class="dv">10000</span>).<span class="bu">round</span>(<span class="dv">4</span>)[<span class="dv">0</span>])</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Par bande : un gain différent par bande via une forme (bandes, 1, 1)</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>gains <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">0.5</span>]).reshape(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((cube <span class="op">*</span> gains)[:, <span class="dv">0</span>, <span class="dv">0</span>])          <span class="co"># applique 1.0 et 0.5 aux 2 bandes</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Forme du cube : (2, 3, 4)
 [0.001  0.0012 0.0011 0.0009]
@@ -789,21 +978,21 @@ Nouveau type      : float32</code></pre>
 </div>
 </div>
 </section>
-<section id="remodeler-et-réordonner-les-axes" class="level3" data-number="1.11.4">
-<h3 data-number="1.11.4" class="anchored" data-anchor-id="remodeler-et-réordonner-les-axes"><span class="header-section-number">1.11.4</span> Remodeler et réordonner les axes</h3>
+<section id="remodeler-et-réordonner-les-axes" class="level3" data-number="1.12.4">
+<h3 data-number="1.12.4" class="anchored" data-anchor-id="remodeler-et-réordonner-les-axes"><span class="header-section-number">1.12.4</span> Remodeler et réordonner les axes</h3>
 <p>Deux opérations reviennent constamment sur les images. <code>reshape</code> change la forme sans toucher aux données (le nombre total d’éléments est conservé) : c’est ainsi qu’on aplatit une image en une table <code>pixels × bandes</code> pour l’entrée d’un classificateur (chapitre 5). <code>transpose</code> réordonne les axes : les rasters se chargent en <code>(bandes, lignes, colonnes)</code> mais l’affichage attend <code>(lignes, colonnes, bandes)</code>.</p>
-<div id="01852643" class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># reshape : aplatir puis restaurer une image à une bande</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>plat <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>)                <span class="co"># 1D : 12 valeurs</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(plat.shape, <span class="st">"-&gt;"</span>, plat.reshape(<span class="dv">3</span>, <span class="dv">4</span>).shape)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># transpose : (bandes, lignes, colonnes) -&gt; (lignes, colonnes, bandes)</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>image_hwc <span class="op">=</span> cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>)</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ordre affichage :"</span>, image_hwc.shape)   <span class="co"># (3, 4, 2)</span></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplatir un cube en table (pixels x bandes) pour un classificateur</span></span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Table pixels x bandes :"</span>, table.shape)  <span class="co"># (12, 2)</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ca1ba0ca" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># reshape : aplatir puis restaurer une image à une bande</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>plat <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>)                <span class="co"># 1D : 12 valeurs</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(plat.shape, <span class="st">"-&gt;"</span>, plat.reshape(<span class="dv">3</span>, <span class="dv">4</span>).shape)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="co"># transpose : (bandes, lignes, colonnes) -&gt; (lignes, colonnes, bandes)</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>image_hwc <span class="op">=</span> cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ordre affichage :"</span>, image_hwc.shape)   <span class="co"># (3, 4, 2)</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplatir un cube en table (pixels x bandes) pour un classificateur</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Table pixels x bandes :"</span>, table.shape)  <span class="co"># (12, 2)</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(12,) -&gt; (3, 4)
 Ordre affichage : (3, 4, 2)
@@ -812,8 +1001,8 @@ Table pixels x bandes : (12, 2)</code></pre>
 </div>
 </section>
 </section>
-<section id="points-clés" class="level2" data-number="1.12">
-<h2 data-number="1.12" class="anchored" data-anchor-id="points-clés"><span class="header-section-number">1.12</span> Points clés</h2>
+<section id="points-clés" class="level2" data-number="1.13">
+<h2 data-number="1.13" class="anchored" data-anchor-id="points-clés"><span class="header-section-number">1.13</span> Points clés</h2>
 <div class="bloc_notes">
 <div class="bloc_notes-header">
 <div class="bloc_notes-icon">
@@ -833,8 +1022,8 @@ Table pixels x bandes : (12, 2)</code></pre>
 </div>
 </div>
 </section>
-<section id="exercices" class="level2" data-number="1.13">
-<h2 data-number="1.13" class="anchored" data-anchor-id="exercices"><span class="header-section-number">1.13</span> Exercices</h2>
+<section id="exercices" class="level2" data-number="1.14">
+<h2 data-number="1.14" class="anchored" data-anchor-id="exercices"><span class="header-section-number">1.14</span> Exercices</h2>
 <div class="bloc_exercice">
 <div class="bloc_exercice-header">
 <div class="bloc_exercice-icon">
@@ -863,12 +1052,12 @@ Table pixels x bandes : (12, 2)</code></pre>
 </ol>
 <p><strong>NumPy</strong></p>
 <ol start="10" type="1">
-<li><p>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.11</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.</p></li>
+<li><p>À partir du tableau <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.</p></li>
 <li><p>Créez un tableau NumPy 4 × 4 et, par <strong>masquage booléen</strong>, remplacez par <code>0</code> toutes les valeurs inférieures à 10.</p></li>
 <li><p>Sur le tableau <code>image</code>, calculez la moyenne <strong>par ligne</strong> puis <strong>par colonne</strong> (paramètre <code>axis</code>).</p></li>
 <li><p><em>(attributs)</em> Sur <code>image</code>, affichez <code>ndim</code>, <code>size</code> et <code>dtype</code>. Convertissez-le en réflectance <code>float32</code> (divisez par le maximum) et vérifiez le nouveau <code>dtype</code>.</p></li>
 <li><p><em>(création)</em> Avec <code>np.linspace</code>, construisez un axe de 6 longueurs d’onde entre 490 et 2190 nm. Créez ensuite un masque <code>np.zeros((3, 4))</code> et mettez sa <strong>première ligne</strong> à <code>1</code>.</p></li>
-<li><p><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.11</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.</p></li>
+<li><p><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.</p></li>
 <li><p><em>(reshape/transpose)</em> Transformez le <code>cube</code> <code>(2, 3, 4)</code> en une table <code>(12, 2)</code> (pixels × bandes), puis revenez à la forme d’origine <code>(2, 3, 4)</code>.</p></li>
 </ol>
 <p><strong>Programmation objet</strong></p>
@@ -881,118 +1070,118 @@ Table pixels x bandes : (12, 2)</code></pre>
 <summary>
 Afficher les solutions
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Structures de données ---</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Listes</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>bandes.append(<span class="st">"SWIR"</span>)</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>bandes.reverse()</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bandes[:<span class="dv">2</span>])</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Dictionnaire de métadonnées</span></span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>metadonnees <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>metadonnees[<span class="st">"date"</span>] <span class="op">=</span> <span class="st">"2024-07-01"</span></span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cle, valeur <span class="kw">in</span> metadonnees.items():</span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(cle, <span class="st">":"</span>, valeur)</span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Ensembles : classes uniques</span></span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>, <span class="st">"forêt"</span>]</span>
-<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> <span class="bu">set</span>(classes)</span>
-<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(uniques, <span class="st">"-&gt;"</span>, <span class="bu">len</span>(uniques), <span class="st">"classes"</span>)</span>
-<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Tuples : dépaquetage et nombre de pixels</span></span>
-<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>dimensions <span class="op">=</span> (<span class="dv">512</span>, <span class="dv">512</span>)</span>
-<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>lignes, colonnes <span class="op">=</span> dimensions</span>
-<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"pixels :"</span>, lignes <span class="op">*</span> colonnes)</span>
-<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Boucles et conditions ---</span></span>
-<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>reflectances <span class="op">=</span> [<span class="fl">0.12</span>, <span class="fl">0.45</span>, <span class="fl">0.33</span>, <span class="fl">0.28</span>, <span class="fl">0.51</span>]</span>
-<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Compter les valeurs &gt; 0.3</span></span>
-<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> r <span class="kw">in</span> reflectances <span class="cf">if</span> r <span class="op">&gt;</span> <span class="fl">0.3</span>))</span>
-<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Classer selon des seuils</span></span>
-<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> reflectances:</span>
-<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> r <span class="op">&lt;</span> <span class="fl">0.15</span>:</span>
-<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(r, <span class="st">"-&gt; eau"</span>)</span>
-<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> r <span class="op">&gt;</span> <span class="fl">0.3</span>:</span>
-<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(r, <span class="st">"-&gt; végétation"</span>)</span>
-<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(r, <span class="st">"-&gt; autre"</span>)</span>
-<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-40"><a href="#cb35-40" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Fonctions ---</span></span>
-<span id="cb35-41"><a href="#cb35-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. ratio / NDVI</span></span>
-<span id="cb35-42"><a href="#cb35-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ratio(a, b):</span>
-<span id="cb35-43"><a href="#cb35-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (a <span class="op">-</span> b) <span class="op">/</span> (a <span class="op">+</span> b)</span>
-<span id="cb35-44"><a href="#cb35-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NDVI :"</span>, <span class="bu">round</span>(ratio(<span class="fl">0.55</span>, <span class="fl">0.18</span>), <span class="dv">3</span>))</span>
-<span id="cb35-45"><a href="#cb35-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-46"><a href="#cb35-46" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. normaliser avec argument par défaut</span></span>
-<span id="cb35-47"><a href="#cb35-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normaliser(valeur, maximum<span class="op">=</span><span class="dv">255</span>):</span>
-<span id="cb35-48"><a href="#cb35-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> valeur <span class="op">/</span> maximum</span>
-<span id="cb35-49"><a href="#cb35-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">128</span>))</span>
-<span id="cb35-50"><a href="#cb35-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">1000</span>, maximum<span class="op">=</span><span class="dv">4095</span>))   <span class="co"># 12 bits</span></span>
-<span id="cb35-51"><a href="#cb35-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-52"><a href="#cb35-52" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. dict {nom_bande: indice}</span></span>
-<span id="cb35-53"><a href="#cb35-53" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indexer(bandes):</span>
-<span id="cb35-54"><a href="#cb35-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {nom: i <span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes)}</span>
-<span id="cb35-55"><a href="#cb35-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(indexer([<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]))</span>
-<span id="cb35-56"><a href="#cb35-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-57"><a href="#cb35-57" aria-hidden="true" tabindex="-1"></a><span class="co"># --- NumPy ---</span></span>
-<span id="cb35-58"><a href="#cb35-58" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
-<span id="cb35-59"><a href="#cb35-59" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
-<span id="cb35-60"><a href="#cb35-60" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>,  <span class="dv">8</span>]])</span>
-<span id="cb35-61"><a href="#cb35-61" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> np.array([[[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
-<span id="cb35-62"><a href="#cb35-62" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
-<span id="cb35-63"><a href="#cb35-63" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>,  <span class="dv">8</span>]],</span>
-<span id="cb35-64"><a href="#cb35-64" aria-hidden="true" tabindex="-1"></a>                 [[<span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">33</span>, <span class="dv">28</span>],</span>
-<span id="cb35-65"><a href="#cb35-65" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">25</span>, <span class="dv">60</span>, <span class="dv">66</span>, <span class="dv">22</span>],</span>
-<span id="cb35-66"><a href="#cb35-66" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">27</span>, <span class="dv">63</span>, <span class="dv">69</span>, <span class="dv">24</span>]]])</span>
-<span id="cb35-67"><a href="#cb35-67" aria-hidden="true" tabindex="-1"></a><span class="co"># 10. min, écart-type, dernière colonne</span></span>
-<span id="cb35-68"><a href="#cb35-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"min :"</span>, image.<span class="bu">min</span>(), <span class="st">"| écart-type :"</span>, <span class="bu">round</span>(image.std(), <span class="dv">2</span>))</span>
-<span id="cb35-69"><a href="#cb35-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"dernière colonne :"</span>, image[:, <span class="op">-</span><span class="dv">1</span>])</span>
-<span id="cb35-70"><a href="#cb35-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-71"><a href="#cb35-71" aria-hidden="true" tabindex="-1"></a><span class="co"># 11. Masquage booléen : valeurs &lt; 10 -&gt; 0</span></span>
-<span id="cb35-72"><a href="#cb35-72" aria-hidden="true" tabindex="-1"></a>arr <span class="op">=</span> np.array([[ <span class="dv">3</span>, <span class="dv">12</span>,  <span class="dv">8</span>, <span class="dv">15</span>],</span>
-<span id="cb35-73"><a href="#cb35-73" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">20</span>,  <span class="dv">5</span>,  <span class="dv">9</span>, <span class="dv">11</span>],</span>
-<span id="cb35-74"><a href="#cb35-74" aria-hidden="true" tabindex="-1"></a>                [ <span class="dv">7</span>, <span class="dv">14</span>,  <span class="dv">2</span>, <span class="dv">18</span>],</span>
-<span id="cb35-75"><a href="#cb35-75" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">10</span>,  <span class="dv">6</span>, <span class="dv">13</span>,  <span class="dv">4</span>]])</span>
-<span id="cb35-76"><a href="#cb35-76" aria-hidden="true" tabindex="-1"></a>arr[arr <span class="op">&lt;</span> <span class="dv">10</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb35-77"><a href="#cb35-77" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr)</span>
-<span id="cb35-78"><a href="#cb35-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-79"><a href="#cb35-79" aria-hidden="true" tabindex="-1"></a><span class="co"># 12. Moyennes par axe</span></span>
-<span id="cb35-80"><a href="#cb35-80" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"par ligne   :"</span>, image.mean(axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">1</span>))</span>
-<span id="cb35-81"><a href="#cb35-81" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"par colonne :"</span>, image.mean(axis<span class="op">=</span><span class="dv">0</span>).<span class="bu">round</span>(<span class="dv">1</span>))</span>
-<span id="cb35-82"><a href="#cb35-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-83"><a href="#cb35-83" aria-hidden="true" tabindex="-1"></a><span class="co"># 13. Attributs et dtype</span></span>
-<span id="cb35-84"><a href="#cb35-84" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image.ndim, image.size, image.dtype)</span>
-<span id="cb35-85"><a href="#cb35-85" aria-hidden="true" tabindex="-1"></a>refl <span class="op">=</span> (image <span class="op">/</span> image.<span class="bu">max</span>()).astype(<span class="st">"float32"</span>)</span>
-<span id="cb35-86"><a href="#cb35-86" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(refl.dtype)</span>
-<span id="cb35-87"><a href="#cb35-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-88"><a href="#cb35-88" aria-hidden="true" tabindex="-1"></a><span class="co"># 14. Création : axe de longueurs d'onde et masque</span></span>
-<span id="cb35-89"><a href="#cb35-89" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.linspace(<span class="dv">490</span>, <span class="dv">2190</span>, <span class="dv">6</span>))</span>
-<span id="cb35-90"><a href="#cb35-90" aria-hidden="true" tabindex="-1"></a>masque <span class="op">=</span> np.zeros((<span class="dv">3</span>, <span class="dv">4</span>))</span>
-<span id="cb35-91"><a href="#cb35-91" aria-hidden="true" tabindex="-1"></a>masque[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb35-92"><a href="#cb35-92" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(masque)</span>
-<span id="cb35-93"><a href="#cb35-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-94"><a href="#cb35-94" aria-hidden="true" tabindex="-1"></a><span class="co"># 15. Broadcasting par bande</span></span>
-<span id="cb35-95"><a href="#cb35-95" aria-hidden="true" tabindex="-1"></a>gains <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">0.8</span>]).reshape(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb35-96"><a href="#cb35-96" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((cube <span class="op">*</span> gains)[:, <span class="dv">0</span>, <span class="dv">0</span>])</span>
-<span id="cb35-97"><a href="#cb35-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-98"><a href="#cb35-98" aria-hidden="true" tabindex="-1"></a><span class="co"># 16. reshape / transpose</span></span>
-<span id="cb35-99"><a href="#cb35-99" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb35-100"><a href="#cb35-100" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(table.shape)                      <span class="co"># (12, 2)</span></span>
-<span id="cb35-101"><a href="#cb35-101" aria-hidden="true" tabindex="-1"></a>retour <span class="op">=</span> table.reshape(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>).transpose(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb35-102"><a href="#cb35-102" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(retour.shape)                     <span class="co"># (2, 3, 4)</span></span>
-<span id="cb35-103"><a href="#cb35-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-104"><a href="#cb35-104" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Programmation objet ---</span></span>
-<span id="cb35-105"><a href="#cb35-105" aria-hidden="true" tabindex="-1"></a><span class="co"># 17. Méthode est_multispectrale</span></span>
-<span id="cb35-106"><a href="#cb35-106" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Image:</span>
-<span id="cb35-107"><a href="#cb35-107" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capteur, bandes):</span>
-<span id="cb35-108"><a href="#cb35-108" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.capteur <span class="op">=</span> capteur</span>
-<span id="cb35-109"><a href="#cb35-109" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bandes <span class="op">=</span> bandes</span>
-<span id="cb35-110"><a href="#cb35-110" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> est_multispectrale(<span class="va">self</span>):</span>
-<span id="cb35-111"><a href="#cb35-111" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.bandes <span class="op">&gt;</span> <span class="dv">3</span></span>
-<span id="cb35-112"><a href="#cb35-112" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Image(<span class="st">"Landsat-8"</span>, <span class="dv">11</span>).est_multispectrale())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Structures de données ---</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Listes</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>bandes.append(<span class="st">"SWIR"</span>)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>bandes.reverse()</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bandes[:<span class="dv">2</span>])</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Dictionnaire de métadonnées</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>metadonnees <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>metadonnees[<span class="st">"date"</span>] <span class="op">=</span> <span class="st">"2024-07-01"</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cle, valeur <span class="kw">in</span> metadonnees.items():</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(cle, <span class="st">":"</span>, valeur)</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Ensembles : classes uniques</span></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>, <span class="st">"forêt"</span>]</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> <span class="bu">set</span>(classes)</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(uniques, <span class="st">"-&gt;"</span>, <span class="bu">len</span>(uniques), <span class="st">"classes"</span>)</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Tuples : dépaquetage et nombre de pixels</span></span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>dimensions <span class="op">=</span> (<span class="dv">512</span>, <span class="dv">512</span>)</span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>lignes, colonnes <span class="op">=</span> dimensions</span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"pixels :"</span>, lignes <span class="op">*</span> colonnes)</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Boucles et conditions ---</span></span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>reflectances <span class="op">=</span> [<span class="fl">0.12</span>, <span class="fl">0.45</span>, <span class="fl">0.33</span>, <span class="fl">0.28</span>, <span class="fl">0.51</span>]</span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Compter les valeurs &gt; 0.3</span></span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> r <span class="kw">in</span> reflectances <span class="cf">if</span> r <span class="op">&gt;</span> <span class="fl">0.3</span>))</span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Classer selon des seuils</span></span>
+<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> reflectances:</span>
+<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> r <span class="op">&lt;</span> <span class="fl">0.15</span>:</span>
+<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(r, <span class="st">"-&gt; eau"</span>)</span>
+<span id="cb44-35"><a href="#cb44-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> r <span class="op">&gt;</span> <span class="fl">0.3</span>:</span>
+<span id="cb44-36"><a href="#cb44-36" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(r, <span class="st">"-&gt; végétation"</span>)</span>
+<span id="cb44-37"><a href="#cb44-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb44-38"><a href="#cb44-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(r, <span class="st">"-&gt; autre"</span>)</span>
+<span id="cb44-39"><a href="#cb44-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-40"><a href="#cb44-40" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Fonctions ---</span></span>
+<span id="cb44-41"><a href="#cb44-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. ratio / NDVI</span></span>
+<span id="cb44-42"><a href="#cb44-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ratio(a, b):</span>
+<span id="cb44-43"><a href="#cb44-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (a <span class="op">-</span> b) <span class="op">/</span> (a <span class="op">+</span> b)</span>
+<span id="cb44-44"><a href="#cb44-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NDVI :"</span>, <span class="bu">round</span>(ratio(<span class="fl">0.55</span>, <span class="fl">0.18</span>), <span class="dv">3</span>))</span>
+<span id="cb44-45"><a href="#cb44-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-46"><a href="#cb44-46" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. normaliser avec argument par défaut</span></span>
+<span id="cb44-47"><a href="#cb44-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normaliser(valeur, maximum<span class="op">=</span><span class="dv">255</span>):</span>
+<span id="cb44-48"><a href="#cb44-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> valeur <span class="op">/</span> maximum</span>
+<span id="cb44-49"><a href="#cb44-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">128</span>))</span>
+<span id="cb44-50"><a href="#cb44-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(normaliser(<span class="dv">1000</span>, maximum<span class="op">=</span><span class="dv">4095</span>))   <span class="co"># 12 bits</span></span>
+<span id="cb44-51"><a href="#cb44-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-52"><a href="#cb44-52" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. dict {nom_bande: indice}</span></span>
+<span id="cb44-53"><a href="#cb44-53" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indexer(bandes):</span>
+<span id="cb44-54"><a href="#cb44-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {nom: i <span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes)}</span>
+<span id="cb44-55"><a href="#cb44-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(indexer([<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]))</span>
+<span id="cb44-56"><a href="#cb44-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-57"><a href="#cb44-57" aria-hidden="true" tabindex="-1"></a><span class="co"># --- NumPy ---</span></span>
+<span id="cb44-58"><a href="#cb44-58" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
+<span id="cb44-59"><a href="#cb44-59" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
+<span id="cb44-60"><a href="#cb44-60" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>,  <span class="dv">8</span>]])</span>
+<span id="cb44-61"><a href="#cb44-61" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> np.array([[[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
+<span id="cb44-62"><a href="#cb44-62" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
+<span id="cb44-63"><a href="#cb44-63" aria-hidden="true" tabindex="-1"></a>                  [ <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>,  <span class="dv">8</span>]],</span>
+<span id="cb44-64"><a href="#cb44-64" aria-hidden="true" tabindex="-1"></a>                 [[<span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">33</span>, <span class="dv">28</span>],</span>
+<span id="cb44-65"><a href="#cb44-65" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">25</span>, <span class="dv">60</span>, <span class="dv">66</span>, <span class="dv">22</span>],</span>
+<span id="cb44-66"><a href="#cb44-66" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">27</span>, <span class="dv">63</span>, <span class="dv">69</span>, <span class="dv">24</span>]]])</span>
+<span id="cb44-67"><a href="#cb44-67" aria-hidden="true" tabindex="-1"></a><span class="co"># 10. min, écart-type, dernière colonne</span></span>
+<span id="cb44-68"><a href="#cb44-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"min :"</span>, image.<span class="bu">min</span>(), <span class="st">"| écart-type :"</span>, <span class="bu">round</span>(image.std(), <span class="dv">2</span>))</span>
+<span id="cb44-69"><a href="#cb44-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"dernière colonne :"</span>, image[:, <span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb44-70"><a href="#cb44-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-71"><a href="#cb44-71" aria-hidden="true" tabindex="-1"></a><span class="co"># 11. Masquage booléen : valeurs &lt; 10 -&gt; 0</span></span>
+<span id="cb44-72"><a href="#cb44-72" aria-hidden="true" tabindex="-1"></a>arr <span class="op">=</span> np.array([[ <span class="dv">3</span>, <span class="dv">12</span>,  <span class="dv">8</span>, <span class="dv">15</span>],</span>
+<span id="cb44-73"><a href="#cb44-73" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">20</span>,  <span class="dv">5</span>,  <span class="dv">9</span>, <span class="dv">11</span>],</span>
+<span id="cb44-74"><a href="#cb44-74" aria-hidden="true" tabindex="-1"></a>                [ <span class="dv">7</span>, <span class="dv">14</span>,  <span class="dv">2</span>, <span class="dv">18</span>],</span>
+<span id="cb44-75"><a href="#cb44-75" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">10</span>,  <span class="dv">6</span>, <span class="dv">13</span>,  <span class="dv">4</span>]])</span>
+<span id="cb44-76"><a href="#cb44-76" aria-hidden="true" tabindex="-1"></a>arr[arr <span class="op">&lt;</span> <span class="dv">10</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb44-77"><a href="#cb44-77" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr)</span>
+<span id="cb44-78"><a href="#cb44-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-79"><a href="#cb44-79" aria-hidden="true" tabindex="-1"></a><span class="co"># 12. Moyennes par axe</span></span>
+<span id="cb44-80"><a href="#cb44-80" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"par ligne   :"</span>, image.mean(axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">1</span>))</span>
+<span id="cb44-81"><a href="#cb44-81" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"par colonne :"</span>, image.mean(axis<span class="op">=</span><span class="dv">0</span>).<span class="bu">round</span>(<span class="dv">1</span>))</span>
+<span id="cb44-82"><a href="#cb44-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-83"><a href="#cb44-83" aria-hidden="true" tabindex="-1"></a><span class="co"># 13. Attributs et dtype</span></span>
+<span id="cb44-84"><a href="#cb44-84" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image.ndim, image.size, image.dtype)</span>
+<span id="cb44-85"><a href="#cb44-85" aria-hidden="true" tabindex="-1"></a>refl <span class="op">=</span> (image <span class="op">/</span> image.<span class="bu">max</span>()).astype(<span class="st">"float32"</span>)</span>
+<span id="cb44-86"><a href="#cb44-86" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(refl.dtype)</span>
+<span id="cb44-87"><a href="#cb44-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-88"><a href="#cb44-88" aria-hidden="true" tabindex="-1"></a><span class="co"># 14. Création : axe de longueurs d'onde et masque</span></span>
+<span id="cb44-89"><a href="#cb44-89" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.linspace(<span class="dv">490</span>, <span class="dv">2190</span>, <span class="dv">6</span>))</span>
+<span id="cb44-90"><a href="#cb44-90" aria-hidden="true" tabindex="-1"></a>masque <span class="op">=</span> np.zeros((<span class="dv">3</span>, <span class="dv">4</span>))</span>
+<span id="cb44-91"><a href="#cb44-91" aria-hidden="true" tabindex="-1"></a>masque[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb44-92"><a href="#cb44-92" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(masque)</span>
+<span id="cb44-93"><a href="#cb44-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-94"><a href="#cb44-94" aria-hidden="true" tabindex="-1"></a><span class="co"># 15. Broadcasting par bande</span></span>
+<span id="cb44-95"><a href="#cb44-95" aria-hidden="true" tabindex="-1"></a>gains <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">0.8</span>]).reshape(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb44-96"><a href="#cb44-96" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((cube <span class="op">*</span> gains)[:, <span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb44-97"><a href="#cb44-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-98"><a href="#cb44-98" aria-hidden="true" tabindex="-1"></a><span class="co"># 16. reshape / transpose</span></span>
+<span id="cb44-99"><a href="#cb44-99" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb44-100"><a href="#cb44-100" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(table.shape)                      <span class="co"># (12, 2)</span></span>
+<span id="cb44-101"><a href="#cb44-101" aria-hidden="true" tabindex="-1"></a>retour <span class="op">=</span> table.reshape(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>).transpose(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb44-102"><a href="#cb44-102" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(retour.shape)                     <span class="co"># (2, 3, 4)</span></span>
+<span id="cb44-103"><a href="#cb44-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-104"><a href="#cb44-104" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Programmation objet ---</span></span>
+<span id="cb44-105"><a href="#cb44-105" aria-hidden="true" tabindex="-1"></a><span class="co"># 17. Méthode est_multispectrale</span></span>
+<span id="cb44-106"><a href="#cb44-106" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Image:</span>
+<span id="cb44-107"><a href="#cb44-107" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capteur, bandes):</span>
+<span id="cb44-108"><a href="#cb44-108" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.capteur <span class="op">=</span> capteur</span>
+<span id="cb44-109"><a href="#cb44-109" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bandes <span class="op">=</span> bandes</span>
+<span id="cb44-110"><a href="#cb44-110" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> est_multispectrale(<span class="va">self</span>):</span>
+<span id="cb44-111"><a href="#cb44-111" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.bandes <span class="op">&gt;</span> <span class="dv">3</span></span>
+<span id="cb44-112"><a href="#cb44-112" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Image(<span class="st">"Landsat-8"</span>, <span class="dv">11</span>).est_multispectrale())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="bloc_package">
 <div class="bloc_package-header">
@@ -1017,9 +1206,9 @@ Afficher les solutions
 </div>
 </div>
 </section>
-<section id="quiz" class="level2" data-number="1.14">
-<h2 data-number="1.14" class="anchored" data-anchor-id="quiz"><span class="header-section-number">1.14</span> Quiz</h2>
-<div id="860ffd6b" class="cell" data-results="asis" data-execution_count="17">
+<section id="quiz" class="level2" data-number="1.15">
+<h2 data-number="1.15" class="anchored" data-anchor-id="quiz"><span class="header-section-number">1.15</span> Quiz</h2>
+<div id="d3ad2909" class="cell" data-results="asis" data-execution_count="20">
 <div class="cell-output cell-output-display" data-execution_count="15">
 <div id="Chap00" class="card"><link type="text/javascript" src="libs/quizlib.1.0.1.min.js"><script>var Quiz=function(a,b){this.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),this.unansweredQuestionText="Question sans réponse !",this.container=document.getElementById(a),this.questions=[],this.result=new QuizResult,this.answers=b;for(var c=0;c<this.container.children.length;c++)this.container.children[c].classList.contains(Quiz.Classes.QUESTION)&&this.questions.push(this.container.children[c]);if(this.answers.length!=this.questions.length)throw new Error("Number of answers does not match number of questions!")};Quiz.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),Quiz.prototype.checkAnswers=function(a){void 0===a&&(a=!0);for(var b=[],c=[],d=0;d<this.questions.length;d++){var e=this.questions[d],f=this.answers[d],g=[];this.clearHighlights(e);for(var h,i=e.getElementsByClassName(Quiz.Classes.QUESTION_ANSWERS)[0].getElementsByTagName("input"),j=0;j<i.length;j++)h=i[j],"checkbox"===h.type||"radio"===h.type?h.checked&&g.push(h.value):""!==h.value&&g.push(h.value);1!=g.length||Array.isArray(f)?0===g.length&&b.push(e):g=g[0],c.push(Utils.compare(g,f))}if(0===b.length||!a)return this.result.setResults(c),!0;for(d=0;d<b.length;d++){var k=document.createElement("span");k.appendChild(document.createTextNode(this.unansweredQuestionText)),k.className=Quiz.Classes.QUESTION_WARNING,b[d].getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].appendChild(k)}return!1},Quiz.prototype.clearHighlights=function(a){for(var b=a.getElementsByClassName(Quiz.Classes.QUESTION_WARNING);b.length>0;)b[0].parentNode.removeChild(b[0]);var c,d=[a.getElementsByClassName(Quiz.Classes.CORRECT),a.getElementsByClassName(this.Classes.INCORRECT)];for(i=0;i<d.length;i++)for(;d[i].length>0;)c=d[i][0],c.classList.remove(Quiz.Classes.CORRECT),c.classList.remove(Quiz.Classes.INCORRECT);for(var e=a.getElementsByClassName(Quiz.Classes.TEMP);e.length>0;)e[0].parentNode.removeChild(e[0])},Quiz.prototype.highlightResults=function(a){for(var b,c=0;c<this.questions.length;c++)b=this.questions[c],b.getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].classList.add(this.result.results[c]?Quiz.Classes.CORRECT:Quiz.Classes.INCORRECT),void 0!==a&&a(this,b,c,this.result.results[c])};var QuizResult=function(){this.results=[],this.totalQuestions=0,this.score=0,this.scorePercent=0,this.scorePercentFormatted=0};QuizResult.prototype.setResults=function(a){this.results=a,this.totalQuestions=this.results.length,this.score=0;for(var b=0;b<this.results.length;b++)this.results[b]&&this.score++;this.scorePercent=this.score/this.totalQuestions,this.scorePercentFormatted=Math.floor(100*this.scorePercent)};var Utils=function(){};Utils.compare=function(a,b){if(a.length!=b.length)return!1;if(Array.isArray(a)&&Array.isArray(b)){for(var c=0;c<a.length;c++)if(a[c]!==b[c])return!1;return!0}return a===b};
 
@@ -1241,6 +1430,7 @@ function handleAnswers(quiz, question, no, correct) {
 </div></div><button type="button" onclick="showResults(quizz_Chap00);" id="buttonID">Vérifier votre résultat</button><div id="quiz-result" class="card"><span id="quiz-percent"></span></div></div>
 </div>
 </div>
+<p>Revise the slides, make sure: 1) one slide per concept 2) make sure that all the sections are mapped on at least one slide 3) explain the concept in a few bullet point 4) include a code exemple if possible</p>
 
 
 </section>
