@@ -220,7 +220,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Aborder la <strong>programmation objet</strong></li>
 <li class="fragment">Organiser son code (<strong>modules</strong>, <strong>packages</strong>)</li>
 <li class="fragment">Écrire un <strong>script exécutable</strong> (CLI, YAML)</li>
-<li class="fragment">Manipuler un <strong>tableau NumPy</strong></li>
+<li class="fragment">Manipuler une <strong>matrice NumPy</strong></li>
 </ul>
 <aside class="notes">
 <p>Python = outil de scriptage pour manipuler des données satellitaires, pas une fin en soi.</p>
@@ -563,7 +563,7 @@ moyenne</code></pre>
 </section>
 <section id="un-avant-goût-de-numpy" class="slide level2 smaller">
 <h2>Un avant-goût de NumPy</h2>
-<p>Une image = un <strong>tableau de nombres</strong> (<code>ndarray</code>), la brique de tous les chapitres.</p>
+<p>Une image = une <strong>matrice de nombres</strong> (<code>ndarray</code>), la brique de tous les chapitres.</p>
 <div id="78755039" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb29-2"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
@@ -580,7 +580,7 @@ moyenne</code></pre>
 </section>
 <section id="numpy-type-et-attributs" class="slide level2 smaller">
 <h2>NumPy — type et attributs</h2>
-<p>Un tableau se décrit par sa <strong>forme</strong> et son <strong>type</strong> (<code>dtype</code>), qui encode la profondeur radiométrique.</p>
+<p>Une matrice se décrit par sa <strong>forme</strong> et son <strong>type</strong> (<code>dtype</code>), qui encode la profondeur radiométrique.</p>
 <div id="a4151c98" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb31-2"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>, <span class="dv">9</span>], [<span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">7</span>], [<span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">8</span>]])</span>
@@ -597,7 +597,7 @@ nouveau dtype : float32</code></pre>
 </section>
 <section id="numpy-le-broadcasting" class="slide level2 smaller">
 <h2>NumPy — le <em>broadcasting</em></h2>
-<p>Une opération s’applique à <strong>tout le tableau sans boucle</strong> : NumPy « étire » les formes compatibles.</p>
+<p>Une opération s’applique à <strong>toute la matrice sans boucle</strong> : NumPy « étire » les formes compatibles.</p>
 <div id="ebfdba78" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>, <span class="dv">9</span>], [<span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">7</span>], [<span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">8</span>]])</span>
 <span id="cb33-2"><a href=""></a></span>
@@ -650,14 +650,14 @@ table pixels x bandes   : (12, 2)</code></pre>
 <li class="fragment"><code>if</code>/<code>for</code>/<code>while</code> + <strong>fonctions</strong> (<code>def</code>) structurent le code</li>
 <li class="fragment"><strong>Compréhensions</strong> et déballage <code>**</code> condensent le code ; un <strong>notebook</strong> = cellules + <strong>noyau</strong> à état</li>
 <li class="fragment">Organiser (<strong>modules/packages</strong>) et automatiser (<strong>script</strong> + <code>argparse</code> / <strong>YAML</strong>)</li>
-<li class="fragment">Une image est avant tout un <strong>tableau NumPy</strong> : <code>dtype</code>, <strong><em>broadcasting</em></strong>, <code>reshape</code>/<code>transpose</code> calculent et réorganisent sans boucle</li>
+<li class="fragment">Une image est avant tout une <strong>matrice NumPy</strong> : <code>dtype</code>, <strong><em>broadcasting</em></strong>, <code>reshape</code>/<code>transpose</code> calculent et réorganisent sans boucle</li>
 </ul>
 </section>
 <section id="à-vous-de-jouer" class="slide level2 smaller">
 <h2>À vous de jouer</h2>
 <ul>
 <li>Créez un dictionnaire <code>metadonnees</code> (capteur, bandes, résolution) et affichez chaque paire</li>
-<li>Sur le tableau <code>image</code>, calculez le <strong>min</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), extrayez la dernière colonne</li>
+<li>Sur la matrice <code>image</code>, calculez le <strong>min</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), extrayez la dernière colonne</li>
 <li>Écrivez <code>ratio(a, b) = (a - b)/(a + b)</code> et calculez le NDVI pour PIR = 0,55, Rouge = 0,18</li>
 <li>Écrivez un script <code>stats.py</code> qui lit un chemin d’image en argument (<code>argparse</code>) et affiche sa forme</li>
 </ul>

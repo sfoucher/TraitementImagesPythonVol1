@@ -168,7 +168,7 @@ def _(rxr):
         print(img_rgbnir)
     with rxr.open_rasterio('SAR.tif', mask_and_scale= True) as img_SAR:
         print(img_SAR)
-    return img_SAR, img_rgbnir, img_s2
+    return img_SAR, img_rgb, img_rgbnir, img_s2
 
 
 @app.cell(hide_code=True)
@@ -523,7 +523,7 @@ def _(mo):
 @app.cell
 def _(img_SAR, percentiles, plt):
     (_fig, _ax) = plt.subplots(nrows=2, ncols=2, figsize=(6, 5), sharex=True, sharey=True)
-    [a.axis('off') for a in _ax.flatten()]
+    [_a.axis('off') for _a in _ax.flatten()]
     _ax[0, 0].imshow(img_SAR[0].values, vmin=percentiles[0], vmax=percentiles[100])
     _ax[0, 0].set_title(f'0% - 100%={percentiles[0]:2.1f} - {percentiles[100]:2.1f}')
     _ax[0, 1].imshow(img_SAR[0].values, vmin=percentiles[0.1], vmax=percentiles[99.9])
@@ -594,7 +594,7 @@ def _(mo):
 @app.cell
 def _(percentiles_db, plt, values_1):
     (_fig, _ax) = plt.subplots(nrows=2, ncols=2, figsize=(6, 5), sharex=True, sharey=True)
-    [a.axis('off') for a in _ax.flatten()]
+    [_a.axis('off') for _a in _ax.flatten()]
     _ax[0, 0].imshow(values_1, vmin=percentiles_db[0], vmax=percentiles_db[100])
     _ax[0, 0].set_title(f'0% - 100%={percentiles_db[0]:2.1f} - {percentiles_db[100]:2.1f}')
     _ax[0, 1].imshow(values_1, vmin=percentiles_db[0.1], vmax=percentiles_db[99.9])
@@ -604,6 +604,34 @@ def _(percentiles_db, plt, values_1):
     _ax[1, 1].imshow(values_1, vmin=percentiles_db[2], vmax=percentiles_db[98])
     _ax[1, 1].set_title(f'2% - 98%={percentiles_db[2]:2.1f} - {percentiles_db[98]:2.1f}')
     plt.tight_layout()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    #### Réhaussement gamma (loi de puissance)
+
+    Une autre famille de réhaussements non linéaires très utilisée est la correction gamma (ou loi de puissance), qui applique un exposant $\gamma$ aux valeurs normalisées de l'image [@Jensen2016; @richards2022remote]:
+
+    $$ j = \left(\frac{i}{i_{max}}\right)^{\gamma} \times j_{max} $$ {#eq-rehauss-gamma}
+
+    Un $\gamma < 1$ éclaircit les tons foncés (utile pour une image sous-exposée) alors qu'un $\gamma > 1$ assombrit les tons clairs (utile pour une image surexposée); $\gamma = 1$ correspond à l'identité. Contrairement à l'étirement linéaire, cette transformation n'est pas symétrique entre les ombres et les hautes lumières:
+    """)
+    return
+
+
+@app.cell
+def _(img_rgb, np, plt):
+    gammas = (0.5, 1.0, 2.0)
+    img_norm = np.clip(img_rgb.data.transpose(1, 2, 0) / 255.0, 0, 1)
+    (_fig, _ax) = plt.subplots(ncols=3, figsize=(9, 3))
+    for (_a, g) in zip(_ax, gammas):
+        _a.imshow(img_norm ** g)
+        _a.set_title(f'$\\gamma$={g}')
+        _a.axis('off')
+    plt.tight_layout()
+    plt.show()
     return
 
 
@@ -645,6 +673,61 @@ def _(NO_DATA_FLOAT, img_SAR, np, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    #### Égalisation adaptative (CLAHE)
+
+    L'égalisation globale calcule une seule CDF pour toute l'image, ce qui peut mal fonctionner lorsque le contraste varie localement (zones d'ombre et de forte lumière dans une même scène). L'égalisation adaptative à contraste limité (*Contrast Limited Adaptive Histogram Equalization*, CLAHE) découpe l'image en tuiles et égalise l'histogramme de chacune séparément, avec un plafond (`clip_limit`) qui évite d'amplifier le bruit dans les zones homogènes [@Jensen2016]. La librairie `scikit-image` en fournit une implémentation directe:
+    """)
+    return
+
+
+@app.cell
+def _(img_rgb, plt):
+    from skimage import exposure
+    gray = img_rgb.data.transpose(1, 2, 0).mean(axis=2) / 255.0
+    img_global = exposure.equalize_hist(gray)
+    img_clahe = exposure.equalize_adapthist(gray, clip_limit=0.03)
+    (_fig, _ax) = plt.subplots(ncols=3, figsize=(9, 3))
+    for (_a, im, title) in zip(_ax, (gray, img_global, img_clahe), ('originale', 'égalisation globale', 'CLAHE')):
+        _a.imshow(im, vmin=0, vmax=1)
+        _a.set_title(title)
+        _a.axis('off')
+    plt.tight_layout()
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    La CLAHE fait ressortir davantage de détails locaux (textures, zones d'ombre) sans saturer les zones déjà bien contrastées, contrairement à l'égalisation globale.
+
+    #### Correspondance d'histogrammes
+
+    L'égalisation d'histogramme est en fait un cas particulier d'un problème plus général: faire correspondre la CDF d'une image source à une CDF cible arbitraire, et non uniquement à une distribution uniforme. Cette technique, la correspondance d'histogrammes (*histogram matching*), est notamment utile pour harmoniser la dynamique entre deux acquisitions, par exemple deux scènes adjacentes à mosaïquer [@richards2022remote; @Schowengerdt2007]. La fonction `match_histograms` de `scikit-image` implémente directement $j = CDF_{cible}^{-1}(CDF_{source}(i))$ pour une CDF cible quelconque, ici une distribution gaussienne:
+    """)
+    return
+
+
+@app.cell
+def _(img_SAR, np, plt):
+    from skimage.exposure import match_histograms
+    source = np.log10(img_SAR[0].data)
+    cible = np.random.normal(loc=source.mean(), scale=source.std(), size=source.shape)
+    source_matched = match_histograms(source, cible)
+    (_fig, _ax) = plt.subplots(ncols=2, figsize=(7, 3.5))
+    _ax[0].imshow(source)
+    _ax[0].set_title('originale (dB)')
+    _ax[1].imshow(source_matched)
+    _ax[1].set_title('après correspondance (cible gaussienne)')
+    [_a.axis('off') for _a in _ax]
+    plt.tight_layout()
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### Palettes de couleur
 
     Les palettes de couleurs sont appliquées dynamiquement à l'affichage sur une image à une seule bande. La librairie `matplotlib` contient un nombre considérable de [palettes](https://matplotlib.org/stable/users/explain/colors/colormaps.html).
@@ -671,7 +754,7 @@ def _(mo):
 @app.cell
 def _(img_SAR, percentiles, plt):
     (_fig, _ax) = plt.subplots(nrows=2, ncols=2, figsize=(6, 5), sharex=True, sharey=True)
-    [a.axis('off') for a in _ax.flatten()]
+    [_a.axis('off') for _a in _ax.flatten()]
     _ax[0, 0].imshow(img_SAR[0].data, vmin=percentiles[2], vmax=percentiles[98], cmap='jet')
     _ax[0, 0].set_title(f'jet')
     _ax[0, 1].imshow(img_SAR[0].data, vmin=percentiles[2], vmax=percentiles[98], cmap='hot')
@@ -732,6 +815,42 @@ def _(img_s2, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    #### Étirement par décorrélation
+
+    Les bandes d'une image multispectrale sont souvent fortement corrélées entre elles, ce qui donne des composés couleurs peu contrastés (dominante grisâtre). L'étirement par décorrélation (*decorrelation stretch*) corrige ce problème en décorrélant les bandes dans l'espace des composantes principales, en égalisant leur variance, puis en revenant dans l'espace original [@Schowengerdt2007; @richards2022remote]:
+    """)
+    return
+
+
+@app.cell
+def _(img_s2, np, plt):
+    def decorrelation_stretch(img):
+        X = img.reshape(img.shape[0], -1).astype(float)
+        X = X - X.mean(axis=1, keepdims=True)
+        (valeurs, vecteurs) = np.linalg.eigh(np.cov(X))
+        X_pca = vecteurs.T @ X / np.sqrt(valeurs)[:, None]
+        X_stretch = vecteurs @ X_pca
+        X_stretch = X_stretch - X_stretch.min(axis=1, keepdims=True)
+        X_stretch = X_stretch / X_stretch.max(axis=1, keepdims=True)
+        return X_stretch.reshape(img.shape)
+    composite = img_s2.sel(band=[4, 3, 2]).data
+    composite_stretch = decorrelation_stretch(composite)
+    (_fig, _ax) = plt.subplots(ncols=2, figsize=(8, 4))
+    _ax[0].imshow(np.clip(composite.transpose(1, 2, 0) / 4000.0, 0, 1))
+    _ax[0].set_title('composé RVB original')
+    _ax[1].imshow(composite_stretch.transpose(1, 2, 0))
+    _ax[1].set_title('après étirement par décorrélation')
+    [_a.axis('off') for _a in _ax]
+    plt.tight_layout()
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Le résultat conserve les teintes relatives entre bandes tout en maximisant le contraste de chacune des composantes principales, ce qui fait ressortir davantage de détails que le composé original.
+
     ## Points clés
 
     <div style="border:0.5px solid silver;border-left:.3rem solid #357cc0;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
@@ -758,11 +877,15 @@ def _(mo):
     <ol type="1">
     <li>Proposez une autre transformation non linéaire pour l’image SAR (p. ex. la racine carrée ou <code>np.arcsinh</code>) et comparez son histogramme à celui obtenu en décibels.
     </li>
-    <li>Reprenez l’égalisation d’histogramme en remplaçant la CDF cible équiprobable par une <strong>CDF gaussienne</strong> (avec <code>scipy.stats.norm.cdf</code>), puis observez l’effet sur l’image SAR.
+    <li>À l’aide de <code>skimage.exposure.match_histograms</code>, faites correspondre l’histogramme de la bande proche infrarouge de <code>RGBNIR_of_S2A.tif</code> à celui d’une bande de <code>sentinel2.tif</code>. Discutez du résultat.
     </li>
     <li>À partir de <code>img_s2</code>, construisez un nouveau composé coloré (p. ex. <code>[11, 8, 4]</code> ou <code>[8, 4, 3]</code>) et décrivez les surfaces qu’il met en valeur.
     </li>
     <li><em>(visualisation web)</em> Dans Colab, installez <code>leafmap</code>, chargez <code>RGBNIR_of_S2A.tif</code> en composé infrarouge (<code>indexes=[4, 3, 2]</code>) sur un fond <code>Esri.WorldImagery</code>, puis comparez vraie couleur et infrarouge avec <code>split_map</code>.
+    </li>
+    <li>Comparez une égalisation d’histogramme globale et une égalisation adaptative (CLAHE) sur une image de votre choix. Dans quels cas la CLAHE fait-elle ressortir des détails invisibles avec l’égalisation globale?
+    </li>
+    <li>Appliquez un étirement par décorrélation sur le composé SWIR2, NIR, R de <code>sentinel2.tif</code> et comparez-le au composé sans étirement. La corrélation entre bandes est-elle plus ou moins forte que pour le composé RVB naturel?
     </li>
     </ol>
     </div>
