@@ -352,6 +352,36 @@ def _(mo):
     </div>
     </div>
 
+    <div style="border:0.5px solid silver;border-left:.3rem solid #f0ae4e;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fef4ec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IB2cksfwAAA+5JREFUWIXlll1Mm1UYx3/P+1bKAtiWGT/2cUN0XizEAH4k0yzeQLKMtmtpMU4TvdDscpp54YbJYLpENuNmpzNZXDZJ3EVLW2hhF1NjvCKwuPnBNLoYxQvG2ActJmMM+z5eFJBiZ1uYxMTn6v+e5/z/z/885805B/7vIUslTkQ9m0W1AxFR0b0uf/LLFTMwEWt+RNQ4v4CvqjS4AonzpWoZpRJUEVEjBIgI7wkcBsQQQqqlL6hkQrrb/ayKnALGrYx9A4BhTv8I3CfC8w5/4pNS9ErqwFhXU4WKHCDbid3VrZF0dWskrSK7Z8c6x8PByn/NQHnFqj3AOtAh53D9yblx57d1HwODwNoy2822UjSL3oJ02POgmgwDd4nKJkegdzAnH9/2uFrWADAjatU6An0Xi9EtvgOmvgvYBelaXBzA4esZQjkJ2C0xDhUrW1QH0nH3FrXkNJC22Xi40pu4nO72PqGipwBEZbsj0Dv4e8x3b0YzPwEOgWZHS6K/kHbBDmg4WKaWHCb7k+2r9CYuAyi6F6gBamYxVf74uKLt2TyH9PQW+7INpM3pV4ANoD84r91/ZIG1Vfmw8+oDH4jyPfBQ+kbZq8sycKXXswZ4AwCRnbLj2MxfTLmUD8uOYzMqsjP7oW1Xw81rl2zAlqETqALiTn/i05ykMpoXA86W3s9QYkClaRqdSzIwGfFuEuU5gZtkdNfivMKlfHh+zDR2AVMC26/H3E+VZEDb2w3L0COAWHDQ2Zr85W9E1dF8eC5cvp5fBQ4AYqiENBw0izaQrj33ElAP/DZVpm/nm2OpeSkfXhiTGXsnyAhQl7ZNv1yUgVTfVhewHwDhtTXu5I18RNOU0Xx4YaxvjUyhVnb7lLfS4WB1QQM6be4D7gG+cPoTkXzCAFW++EVRDYlqqMoXv+2x6wwko4h8DqxW89abi/M5J+H1Hm+tkdFzAJZk6qr9/cO3Ey4lrnW7N5oiX2cPTavB5e/7Zi6X0wHjDysE2ET16J0qDrA6kLwg8D5giho5D5d5A6ludysiTwNXtNxqLySainkaU1HPUCrqOZuKuJsKzbcMowMYBzZPxj3P5BgY62qqQOQdAJQ2Z3P/RMFlKUeBx4BHMeTDQtNdvp4U6B6yd8rBsa6minkD9ory14H1wFeO4frjBYsvMRzfNZwAzgLrZh83SCq6tUYwLyjYDbGevNvfN1CMWCrmaUTZDwiWtjmDyTPF8Gav8QHgFoaxUVJRTxgICnQ5WhIvLHeVRZmIek8o+iJI1AAaAZRMx0oUB7AMydZSbbQBI4ATzJ9TUc8KObDm0IhBRn2gH4HM/DPrTobMAMeRzLaVq/lfjT8B9MWCOfMxlGMAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>Types de variables et copie</strong>
+    </span></div>
+    <div style="padding:.3em .6em;font-size:.95em;">
+    En Python, une variable est une <strong>étiquette</strong> qui pointe vers un objet, et non une boîte qui contient une valeur. Cette distinction est source d’erreurs fréquentes.
+
+    Les types <strong>immuables</strong> (<code>int</code>, <code>float</code>, <code>str</code>, <code>tuple</code>) ne peuvent pas être modifiés sur place : les réaffecter crée un <strong>nouvel</strong> objet. Les types <strong>muables</strong> (<code>list</code>, <code>dict</code>, <code>set</code>) peuvent, eux, être modifiés en place — et une simple affectation <code>b = a</code> ne fait que créer une <strong>seconde étiquette sur le même objet</strong> :
+
+    <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
+    <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a                 <span class="co"># b et a désignent le MÊME objet</span></span>
+    <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>b.append(<span class="dv">4</span>)</span>
+    <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)              <span class="co"># [1, 2, 3, 4]  <- a est modifiée aussi !</span></span>
+    <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="kw">is</span> b)         <span class="co"># True (même objet en mémoire)</span></span>
+    <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+    <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> a.copy()          <span class="co"># copie superficielle : un nouvel objet</span></span>
+    <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>c.append(<span class="dv">5</span>)</span>
+    <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a, a <span class="kw">is</span> c)      <span class="co"># [1, 2, 3, 4] False  (a reste inchangée)</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+    Pour un tableau <code>NumPy</code>, c’est la méthode <code>.copy()</code> qui joue ce rôle (le découpage renvoie une <strong>vue</strong>, pas une copie). Attention enfin à la <strong>copie superficielle</strong> : elle duplique le conteneur mais <strong>partage</strong> les objets imbriqués. Pour une indépendance totale, on utilise <code>copy.deepcopy</code> :
+
+    <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> copy</span>
+    <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>grille <span class="op">=</span> [[<span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>]]</span>
+    <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>sup <span class="op">=</span> grille.copy()             <span class="co"># copie superficielle : sous-listes PARTAGÉES</span></span>
+    <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>sup[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">=</span> <span class="dv">9</span></span>
+    <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grille)                   <span class="co"># [[9, 0], [0, 0]]  <- affectée malgré la copie !</span></span>
+    <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> copy.deepcopy(grille)    <span class="co"># copie profonde : totalement indépendante</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+    À retenir : <code>is</code> compare l’<strong>identité</strong> (le même objet), <code>==</code> compare la <strong>valeur</strong>. En cas de doute sur un objet muable, copiez avant de modifier.
+
+    </div>
+    </div>
+
     ## Boucles et conditions
 
     Un programme prend des décisions (`if`) et répète des opérations (`for`, `while`). Ces structures de contrôle sont au cœur de tout traitement automatisé.
