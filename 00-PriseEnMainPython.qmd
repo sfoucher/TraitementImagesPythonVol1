@@ -24,7 +24,7 @@ Dans ce chapitre, nous présentons quelques éléments essentiels du langage Pyt
 -   écrire des boucles, des conditions et des fonctions;
 -   aborder la programmation orientée objet;
 -   organiser du code en modules et packages;
--   manipuler un tableau `NumPy`.
+-   manipuler une matrice `NumPy`.
 :::
 ::::::
 
@@ -295,43 +295,6 @@ info(capteur="SPOT", bandes=4)
 :::
 ::::::
 
-:::::: bloc_aller_loin
-:::: bloc_aller_loin-header
-::: bloc_aller_loin-icon
-:::
-
-**Les compréhensions de liste et de dictionnaire**
-::::
-
-::: bloc_aller_loin-body
-Une **compréhension** construit une collection en une seule ligne, à la place d'une boucle `for` suivie d'un `append`. Le code est plus court, plus lisible et souvent plus rapide. Le patron est toujours le même : une **expression**, un parcours (`for`), et un **filtre** optionnel (`if`).
-
-``` python
-bandes = ["bleu", "vert", "rouge", "PIR"]
-
-# Compréhension de LISTE : [expression for élément in itérable if condition]
-majuscules = [b.upper() for b in bandes]           # transforme chaque élément
-courtes    = [b for b in bandes if len(b) <= 4]    # ne garde que certains éléments
-# équivalent avec une boucle classique :
-courtes = []
-for b in bandes:
-    if len(b) <= 4:
-        courtes.append(b)
-
-# Compréhension de DICTIONNAIRE : {clé: valeur for ...}
-indices = {nom: i for i, nom in enumerate(bandes)}  # {'bleu': 0, 'vert': 1, ...}
-
-image = {"capteur": "Sentinel-2", "bandes": 13, "resolution_m": 10}
-inverse = {valeur: cle for cle, valeur in image.items()}   # échange clés et valeurs
-
-# Compréhension d'ENSEMBLE : {expression for ...} -> doublons éliminés
-classes = ["eau", "forêt", "eau", "urbain"]
-uniques = {c for c in classes}                      # {'eau', 'forêt', 'urbain'}
-```
-
-On peut aussi choisir la valeur selon une condition, en plaçant un `if`/`else` dans l'**expression** (et non comme filtre en fin) : `["vég." if b == "PIR" else "visible" for b in bandes]`.
-:::
-::::::
 
 :::::: bloc_attention
 :::: bloc_attention-header
@@ -358,7 +321,7 @@ c.append(5)
 print(a, a is c)      # [1, 2, 3, 4] False  (a reste inchangée)
 ```
 
-Pour un tableau `NumPy`, c'est la méthode `.copy()` qui joue ce rôle (le découpage renvoie une **vue**, pas une copie). Attention enfin à la **copie superficielle** : elle duplique le conteneur mais **partage** les objets imbriqués. Pour une indépendance totale, on utilise `copy.deepcopy` :
+Pour une matrice `NumPy`, c'est la méthode `.copy()` qui joue ce rôle (le découpage renvoie une **vue**, pas une copie). Attention enfin à la **copie superficielle** : elle duplique le conteneur mais **partage** les objets imbriqués. Pour une indépendance totale, on utilise `copy.deepcopy` :
 
 ``` python
 import copy
@@ -400,6 +363,44 @@ while valeur < seuil:
     valeur += 0.2
 print("valeur finale :", round(valeur, 1))
 ```
+
+:::::: bloc_aller_loin
+:::: bloc_aller_loin-header
+::: bloc_aller_loin-icon
+:::
+
+**Les compréhensions de liste et de dictionnaire**
+::::
+
+::: bloc_aller_loin-body
+Une **compréhension** construit une collection en une seule ligne, à la place d'une boucle `for` suivie d'un `append`. Le code est plus court, plus lisible et souvent plus rapide. Le patron est toujours le même : une **expression**, un parcours (`for`), et un **filtre** optionnel (`if`).
+
+``` python
+bandes = ["bleu", "vert", "rouge", "PIR"]
+
+# Compréhension de LISTE : [expression for élément in itérable if condition]
+majuscules = [b.upper() for b in bandes]           # transforme chaque élément
+courtes    = [b for b in bandes if len(b) <= 4]    # ne garde que certains éléments
+# équivalent avec une boucle classique :
+courtes = []
+for b in bandes:
+    if len(b) <= 4:
+        courtes.append(b)
+
+# Compréhension de DICTIONNAIRE : {clé: valeur for ...}
+indices = {nom: i for i, nom in enumerate(bandes)}  # {'bleu': 0, 'vert': 1, ...}
+
+image = {"capteur": "Sentinel-2", "bandes": 13, "resolution_m": 10}
+inverse = {valeur: cle for cle, valeur in image.items()}   # échange clés et valeurs
+
+# Compréhension d'ENSEMBLE : {expression for ...} -> doublons éliminés
+classes = ["eau", "forêt", "eau", "urbain"]
+uniques = {c for c in classes}                      # {'eau', 'forêt', 'urbain'}
+```
+
+On peut aussi choisir la valeur selon une condition, en plaçant un `if`/`else` dans l'**expression** (et non comme filtre en fin) : `["vég." if b == "PIR" else "visible" for b in bandes]`.
+:::
+::::::
 
 ## Les fonctions
 
@@ -643,7 +644,7 @@ Pour aller plus loin, un script peut être transformé en **commande installable
 
 ## Un avant-goût de NumPy {#sec-00-02}
 
-Dans ce manuel, une image est avant tout un tableau de nombres. La bibliothèque [NumPy](https://numpy.org/) fournit l'objet `ndarray` qui représente efficacement ces tableaux à plusieurs dimensions : c'est la brique de base de tous les chapitres suivants.
+Dans ce manuel, une image est avant tout une matrice de nombres. La bibliothèque [NumPy](https://numpy.org/) fournit l'objet `ndarray` qui représente efficacement ces matrices à plusieurs dimensions : c'est la brique de base de tous les chapitres suivants.
 
 ```{python}
 #| eval: true
@@ -664,7 +665,7 @@ print(image[:2, :2])
 
 ### Attributs et type de données
 
-Au-delà de la forme (`shape`), un tableau expose son nombre de dimensions (`ndim`), son nombre total d'éléments (`size`) et surtout son **type de données** (`dtype`). Ce dernier encode la *profondeur radiométrique* de l'image : un capteur 8 bits produit des entiers `uint8` (0 à 255), tandis qu'une réflectance se stocke en `float32`. La méthode `astype` convertit d'un type à l'autre.
+Au-delà de la forme (`shape`), une matrice expose son nombre de dimensions (`ndim`), son nombre total d'éléments (`size`) et surtout son **type de données** (`dtype`). Ce dernier encode la *profondeur radiométrique* de l'image : un capteur 8 bits produit des entiers `uint8` (0 à 255), tandis qu'une réflectance se stocke en `float32`. La méthode `astype` convertit d'un type à l'autre.
 
 ```{python}
 #| eval: true
@@ -677,9 +678,9 @@ reflectance = (image / image.max()).astype("float32")
 print("Nouveau type      :", reflectance.dtype)
 ```
 
-### Créer des tableaux
+### Créer des matrices
 
-On construit souvent un tableau sans l'écrire à la main : un masque rempli de zéros, une bande constante, un axe régulier de longueurs d'onde. NumPy fournit `zeros`, `ones`, `arange` (pas fixe) et `linspace` (nombre de points fixe).
+On construit souvent une matrice sans l'écrire à la main : un masque rempli de zéros, une bande constante, un axe régulier de longueurs d'onde. NumPy fournit `zeros`, `ones`, `arange` (pas fixe) et `linspace` (nombre de points fixe).
 
 ```{python}
 #| eval: true
@@ -691,7 +692,7 @@ print(np.linspace(490, 2190, 6))        # 6 longueurs d'onde (nm)
 
 ### Le *broadcasting*
 
-Le *broadcasting* applique une opération entre tableaux de formes différentes sans boucle : NumPy « étire » automatiquement la plus petite forme. C'est le mécanisme derrière presque tous les calculs vectorisés du manuel — appliquer un gain scalaire à toute l'image, ou un gain **par bande**.
+Le *broadcasting* applique une opération entre matrices de formes différentes sans boucle : NumPy « étire » automatiquement la plus petite forme. C'est le mécanisme derrière presque tous les calculs vectorisés du manuel — appliquer un gain scalaire à toute l'image, ou un gain **par bande**.
 
 ```{python}
 #| eval: true
@@ -746,8 +747,8 @@ print("Table pixels x bandes :", table.shape)  # (12, 2)
 -   Quatre structures de base : **listes** (ordonnées, modifiables), **tuples** (immuables), **ensembles** (sans doublons) et **dictionnaires** (paires clé-valeur).
 -   `if`/`for`/`while` contrôlent le déroulement du programme ; les **fonctions** (`def`) regroupent du code réutilisable.
 -   Le code s'organise en **modules** (fichiers `.py`) et **packages** (dossiers avec `__init__.py`), accessibles par la notation pointée (`package.module.fonction`).
--   Une image est avant tout un **tableau `NumPy`** : c'est la structure centrale de tout le manuel.
--   Un tableau se caractérise par sa **forme** (`shape`) et son **type** (`dtype`, la profondeur radiométrique) ; le ***broadcasting***, `reshape` et `transpose` permettent de calculer et de réorganiser les axes sans boucle.
+-   Une image est avant tout une **matrice `NumPy`** : c'est la structure centrale de tout le manuel.
+-   Une matrice se caractérise par sa **forme** (`shape`) et son **type** (`dtype`, la profondeur radiométrique) ; le ***broadcasting***, `reshape` et `transpose` permettent de calculer et de réorganiser les axes sans boucle.
 :::
 ::::::
 
@@ -788,11 +789,11 @@ print("Table pixels x bandes :", table.shape)  # (12, 2)
 
 **NumPy**
 
-10. À partir du tableau `image` de la @sec-00-02, calculez la valeur **minimale** et l'**écart-type** (`image.std()`), puis extrayez la dernière colonne.
+10. À partir de la matrice `image` de la @sec-00-02, calculez la valeur **minimale** et l'**écart-type** (`image.std()`), puis extrayez la dernière colonne.
 
-11. Créez un tableau NumPy 4 × 4 et, par **masquage booléen**, remplacez par `0` toutes les valeurs inférieures à 10.
+11. Créez une matrice NumPy 4 × 4 et, par **masquage booléen**, remplacez par `0` toutes les valeurs inférieures à 10.
 
-12. Sur le tableau `image`, calculez la moyenne **par ligne** puis **par colonne** (paramètre `axis`).
+12. Sur la matrice `image`, calculez la moyenne **par ligne** puis **par colonne** (paramètre `axis`).
 
 13. *(attributs)* Sur `image`, affichez `ndim`, `size` et `dtype`. Convertissez-le en réflectance `float32` (divisez par le maximum) et vérifiez le nouveau `dtype`.
 
