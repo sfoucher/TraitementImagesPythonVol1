@@ -15,7 +15,7 @@ jupyter: python3
 - Aborder la **programmation objet**
 - Organiser son code (**modules**, **packages**)
 - Écrire un **script exécutable** (CLI, YAML)
-- Manipuler un **tableau NumPy**
+- Manipuler une **matrice NumPy**
 :::
 
 ::: {.notes}
@@ -274,7 +274,7 @@ with open("config.yaml") as f:
 
 ## Un avant-goût de NumPy {.smaller}
 
-Une image = un **tableau de nombres** (`ndarray`), la brique de tous les chapitres.
+Une image = une **matrice de nombres** (`ndarray`), la brique de tous les chapitres.
 
 ```{python}
 import numpy as np
@@ -287,7 +287,7 @@ print(image[:2, :2])          # découpage d'une sous-image
 
 ## NumPy — type et attributs {.smaller}
 
-Un tableau se décrit par sa **forme** et son **type** (`dtype`), qui encode la profondeur radiométrique.
+Une matrice se décrit par sa **forme** et son **type** (`dtype`), qui encode la profondeur radiométrique.
 
 ```{python}
 import numpy as np
@@ -301,7 +301,7 @@ print("nouveau dtype :", reflectance.dtype)
 
 ## NumPy — le *broadcasting* {.smaller}
 
-Une opération s'applique à **tout le tableau sans boucle** : NumPy « étire » les formes compatibles.
+Une opération s'applique à **toute la matrice sans boucle** : NumPy « étire » les formes compatibles.
 
 ```{python}
 image = np.array([[10, 12, 11, 9], [8, 20, 22, 7], [9, 21, 23, 8]])
@@ -338,13 +338,13 @@ print("table pixels x bandes   :", cube.transpose(1, 2, 0).reshape(-1, 2).shape)
 - `if`/`for`/`while` + **fonctions** (`def`) structurent le code
 - **Compréhensions** et déballage `**` condensent le code ; un **notebook** = cellules + **noyau** à état
 - Organiser (**modules/packages**) et automatiser (**script** + `argparse` / **YAML**)
-- Une image est avant tout un **tableau NumPy** : `dtype`, ***broadcasting***, `reshape`/`transpose` calculent et réorganisent sans boucle
+- Une image est avant tout une **matrice NumPy** : `dtype`, ***broadcasting***, `reshape`/`transpose` calculent et réorganisent sans boucle
 :::
 
 ## À vous de jouer {.smaller}
 
 - Créez un dictionnaire `metadonnees` (capteur, bandes, résolution) et affichez chaque paire
-- Sur le tableau `image`, calculez le **min** et l'**écart-type** (`image.std()`), extrayez la dernière colonne
+- Sur la matrice `image`, calculez le **min** et l'**écart-type** (`image.std()`), extrayez la dernière colonne
 - Écrivez `ratio(a, b) = (a - b)/(a + b)` et calculez le NDVI pour PIR = 0,55, Rouge = 0,18
 - Écrivez un script `stats.py` qui lit un chemin d'image en argument (`argparse`) et affiche sa forme
 
