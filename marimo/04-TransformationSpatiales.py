@@ -110,6 +110,7 @@ def _():
         np,
         numpy,
         pd,
+        rgb2gray,
         rxr,
         segmentation,
         signal,
@@ -449,6 +450,60 @@ def _(img_rgb, np, plt, signal, xr):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ### Filtrage non linéaire : médian et morphologie mathématique
+
+    Contrairement au filtre moyen ou à la convolution par Scharr, un filtre non linéaire ne peut pas s'exprimer comme une simple pondération des pixels voisins. Le **filtre médian** en est l'exemple le plus courant : il remplace chaque pixel par la médiane des valeurs dans la fenêtre, ce qui élimine efficacement le bruit impulsionnel (*sel et poivre*) tout en préservant mieux les contours qu'un filtre moyen de même taille [@Jensen2016] :
+    """)
+    return
+
+
+@app.cell
+def _(img_rgb, np, plt):
+    from scipy.ndimage import median_filter, uniform_filter
+    bruite = img_rgb.to_numpy().astype(float).copy()
+    # on ajoute du bruit impulsionnel pour illustrer la différence
+    mask = np.random.random(bruite.shape) < 0.05
+    bruite[mask] = np.random.choice([0, 255], size=mask.sum())
+    filtre_moyen_np = uniform_filter(bruite, size=(1, 5, 5))
+    filtre_median_np = median_filter(bruite, size=(1, 5, 5))
+    (_fig, _ax) = plt.subplots(1, 3, figsize=(12, 4))
+    for (_a, im, title) in zip(_ax, (bruite, filtre_moyen_np, filtre_median_np), ('Bruitée', 'Filtre moyen', 'Filtre médian')):
+        _a.imshow(im.transpose(1, 2, 0).astype('uint8'))
+        _a.set_title(title)
+        _a.axis('off')
+    plt.tight_layout()
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    La **morphologie mathématique** applique plutôt des opérateurs ensemblistes (érosion, dilatation) à l'aide d'un élément structurant. L'**ouverture** (érosion puis dilatation) élimine les petits objets clairs isolés sans trop déformer les grandes structures, ce qui est utile pour nettoyer un masque binaire issu d'un seuillage ou d'une segmentation [@richards2022remote] :
+    """)
+    return
+
+
+@app.cell
+def _(img_SAR, np, plt):
+    from skimage.morphology import opening, disk
+    sar_db = np.log10(img_SAR.sel(band=1).to_numpy())
+    masque = sar_db > np.percentile(sar_db, 75)
+    masque_ouvert = opening(masque, disk(2))  # 25 % des pixels les plus intenses
+    (_fig, _ax) = plt.subplots(1, 2, figsize=(8, 4))
+    _ax[0].imshow(masque, cmap='gray')
+    _ax[0].set_title('Masque original')
+    _ax[1].imshow(masque_ouvert, cmap='gray')
+    _ax[1].set_title('Après ouverture')
+    [_a.axis('off') for _a in _ax]
+    plt.tight_layout()
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ## Gestion des bordures
 
     L'application de filtres à l'intérieur de fenêtres glissantes implique de gérer les bords de l'image, car la fenêtre de traitement va nécessairement déborder de quelques pixels en dehors de l'image (généralement la moitié de la fenêtre déborde). On peut soit décider d'ignorer les valeurs en dehors de l'image en imposant une valeur `nan`, soit prolonger l'image de quelques lignes et colonnes avec des valeurs miroirs ou constantes.
@@ -612,6 +667,37 @@ def _(filtre_moyen_2, img_SAR, plt, ponderation, xr):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ### Texture (matrice de co-occurrence)
+
+    Au-delà des contours, la **texture** — la façon dont les valeurs de gris varient spatialement — est une source d'information à part entière, en particulier pour distinguer des surfaces de radiométrie moyenne semblable mais d'organisation spatiale différente (p. ex. forêt versus champ). La **matrice de co-occurrence des niveaux de gris** (*Gray-Level Co-occurrence Matrix*, GLCM) compte, pour une direction et une distance données, la fréquence des paires de valeurs de gris voisines ; on en dérive ensuite des mesures statistiques comme le contraste, l'homogénéité, l'énergie et la corrélation [@Jensen2016; @richards2022remote]. On compare ci-dessous ces mesures sur deux fenêtres de `img_rgb` de contenu différent :
+    """)
+    return
+
+
+@app.cell
+def _(img_rgb, rgb2gray):
+    from skimage.feature import graycomatrix, graycoprops
+    from skimage.util import img_as_ubyte
+
+    gris = img_as_ubyte(rgb2gray(img_rgb.to_numpy().transpose(1, 2, 0) / 255.0))
+
+    fenetre_a = gris[:80, :80]     # coin supérieur gauche
+    fenetre_b = gris[-80:, -80:]   # coin inférieur droit
+
+    for nom, fenetre in [("Fenêtre A", fenetre_a), ("Fenêtre B", fenetre_b)]:
+        glcm = graycomatrix(fenetre, distances=[1], angles=[0], levels=256, symmetric=True, normed=True)
+        proprietes = {p: graycoprops(glcm, p)[0, 0] for p in ("contrast", "homogeneity", "energy", "correlation")}
+        print(nom, proprietes)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Ces propriétés peuvent être ajoutées comme colonnes supplémentaires au tableau `regionprops_table` de la section suivante, pour enrichir la description de chaque segment au-delà de sa seule couleur moyenne.
+
+    Ces mesures de texture reposent, comme la matrice de covariance de l'ACP (@sec-chap03), sur une statistique du second ordre calculée localement ; une description plus riche du voisinage — par exemple pour du filtrage anisotrope préservant les contours — passe par le **tenseur de structure**, qui encode à la fois l'orientation et l'intensité locale du gradient [@AjaFernandez-2009].
+
     ## Segmentation
 
     La segmentation d'image consiste à séparer une image en régions homogènes spatialement connexes (segments) où les valeurs sont uniformes selon un certain critère (couleurs, texture, etc.). Une image présente généralement beaucoup de pixels redondants, l'intérêt de ce type de méthode est essentiellement de réduire la quantité de pixels nécessaire. En télédétection, on parle souvent d'approche objet. En vision par ordinateur, on parle parfois de super-pixel. Il existe de nombreuses méthodes de segmentation, la librairie `sickit-image` rend disponible plusieurs implémentations sur des images RVB ([Comparison of segmentation and superpixel algorithms — skimage 0.25.0 documentation](https://scikit-image.org/docs/stable/auto_examples/segmentation/plot_segmentations.html#sphx-glr-auto-examples-segmentation-plot-segmentations-py)).
@@ -698,6 +784,34 @@ def _(color, img, np, plt, segmentation, slic):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ### Quick Shift
+
+    Le *Quick Shift* est une autre méthode de segmentation par recherche de mode (*mode seeking*), fonctionnant par ascension de gradient vers le voisin le plus proche de densité supérieure dans un espace couleur-position combiné, plutôt que par les k-moyennes itératives de SLIC [@Vedaldi-2008]. Elle ne requiert pas de fixer à l'avance le nombre de segments, mais plutôt une échelle spatiale (`kernel_size`) et une distance maximale de fusion (`max_dist`) :
+    """)
+    return
+
+
+@app.cell
+def _(img, mark_boundaries, np, plt, segments_slic_20):
+    from skimage.segmentation import quickshift
+    segments_qs = quickshift(img, kernel_size=5, max_dist=10, ratio=0.5)
+    print(f'Quick Shift nombre de segments: {len(np.unique(segments_qs))}')
+    (_fig, _ax) = plt.subplots(1, 2, figsize=(10, 5), sharex=True, sharey=True)
+    _ax[0].imshow(mark_boundaries(img, segments_slic_20))
+    _ax[0].set_title(f'SLIC ({len(np.unique(segments_slic_20))} segments)')
+    _ax[1].imshow(mark_boundaries(img, segments_qs))
+    _ax[1].set_title(f'Quick Shift ({len(np.unique(segments_qs))} segments)')
+    [_a.axis('off') for _a in _ax]
+    plt.tight_layout()
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Le paramètre `ratio` (entre 0 et 1) équilibre l'importance de la couleur par rapport à la position spatiale, un rôle analogue au poids $m$ de SLIC.
+
     ### Fusion des segments par graphe de proximité
 
     Une segmentation peut produire beaucoup trop de segments. On parle alors de sur-segmentation. Ceci est recherché dans certains cas pour permettre de bien capturer les détails fins de l'image. Cependant, afin de réduire le nombre de segments, un post-traitement possible est de fusionner les segments similaires selon certaines règles ou distances. Un graphe d'adjacence de régions (@fig-rag) est formé à partir des segments connectés où chaque nœud représente un segment et un lien de proximité (@Jaworek-2018). À partir de ce graphe, on peut fusionner les nœuds similaires à partir de leur distance radiométrique.
@@ -781,7 +895,8 @@ def _(mo):
     <li>L’<strong>aliasing</strong> provient d’un sous-échantillonnage : appliquer un filtre passe-bas <strong>avant</strong> de décimer.</li>
     <li>Le <strong>filtrage local</strong> par fenêtre glissante : filtre <strong>moyen</strong> (lissage), filtre de <strong>Scharr</strong> (contours) ; la <strong>convolution</strong> est efficace car calculable dans le domaine fréquentiel.</li>
     <li>Le filtre de <strong>Lee</strong> est <strong>adaptatif</strong> : il préserve les détails (<span class="math inline">\(K \to 1\)</span>) là où la variance locale est forte — utile contre le <em>speckle</em> des images SAR.</li>
-    <li>La <strong>segmentation</strong> (SLIC) réduit l’image en <strong>super-pixels</strong> homogènes ; le <strong>graphe d’adjacence (RAG)</strong> fusionne les segments ; l’<strong>approche objet</strong> (<code>regionprops</code>) décrit chaque segment par des propriétés.</li>
+    <li>Un filtre <strong>non linéaire</strong> (médian, morphologie mathématique) ne se réduit pas à une pondération des voisins ; la <strong>texture</strong> (matrice de co-occurrence GLCM) complète l’information de contour et de couleur pour décrire une surface.</li>
+    <li>La <strong>segmentation</strong> (SLIC) réduit l’image en <strong>super-pixels</strong> homogènes ; le <strong>Quick Shift</strong> en est une alternative par recherche de mode, sans nombre de segments à fixer à l’avance ; le <strong>graphe d’adjacence (RAG)</strong> fusionne les segments ; l’<strong>approche objet</strong> (<code>regionprops</code>) décrit chaque segment par des propriétés.</li>
     </ul>
     </div>
     </div>
@@ -800,6 +915,12 @@ def _(mo):
     <li>Faites varier la taille de la fenêtre (3×3, 7×7, 11×11) du filtre de Lee sur <code>img_SAR</code> et observez l’effet sur la préservation des détails.
     </li>
     <li>Reprenez SLIC avec plusieurs valeurs de <code>compactness</code> (1, 10, 50) et décrivez l’effet sur la forme des super-pixels.
+    </li>
+    <li><em>(filtrage non linéaire)</em> Comparez un filtre médian et un filtre moyen de même taille sur une image bruitée par du bruit impulsionnel (<em>sel et poivre</em>) et discutez la préservation des contours.
+    </li>
+    <li><em>(texture)</em> Calculez les propriétés GLCM (contraste, homogénéité, énergie, corrélation) sur deux fenêtres de <code>img_SAR</code> (en dB) de contenu différent et comparez-les à celles obtenues sur <code>img_rgb</code>.
+    </li>
+    <li><em>(Quick Shift)</em> Faites varier <code>kernel_size</code> et <code>max_dist</code> de Quick Shift sur <code>img_rgb</code> et comparez le nombre de segments obtenus à celui de SLIC.
     </li>
     </ol>
     </div>
