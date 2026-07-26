@@ -13,6 +13,8 @@ jupyter: python3
 - Maîtriser les **structures de base** (listes, tuples, ensembles, dictionnaires)
 - Écrire **boucles**, **conditions** et **fonctions**
 - Aborder la **programmation objet**
+- Organiser son code (**modules**, **packages**)
+- Écrire un **script exécutable** (CLI, YAML)
 - Manipuler un **tableau NumPy**
 :::
 
@@ -29,6 +31,22 @@ Python = outil de scriptage pour manipuler des données satellitaires, pas une f
 | **Miniconda** | version légère, on ajoute au besoin | environnement minimal |
 | **PyPy** | optimisée pour la vitesse | calcul intensif |
 
+## Styles de programmation {.smaller}
+
+::: {.incremental}
+- **REPL** — l'interpréteur interactif, ligne par ligne (rétroaction immédiate)
+- **Script** `.py` — un fichier lancé d'un coup, idéal pour automatiser
+- **Notebook** — code + texte + figures, idéal pour explorer
+:::
+
+. . .
+
+```bash
+python                 # ouvre le REPL interactif
+>>> 2 + 2
+4
+```
+
 ## Outils de programmation {.smaller}
 
 | Outil | Type | Points forts |
@@ -38,6 +56,22 @@ Python = outil de scriptage pour manipuler des données satellitaires, pas une f
 | **Spyder** | IDE scientifique | libre, orienté calcul |
 | **Jupyter** | notebook | code + texte + figures (Colab) |
 | **Marimo** | notebook réactif | ré-exécute les dépendances |
+
+## Le serveur Jupyter et les notebooks {.smaller}
+
+::: {.incremental}
+- **Notebook** (`.ipynb`) = cellules de **code** + cellules de **texte**
+- **Architecture client-serveur** : serveur, interface (navigateur), **noyau**
+- Le **noyau** (*kernel*) conserve l'**état en mémoire** entre les cellules
+- L'**ordre** d'exécution compte → *Restart & Run All* en cas de doute
+- **Colab** fournit ce trio gratuitement dans le nuage
+:::
+
+. . .
+
+```bash
+jupyter lab            # lance un serveur Jupyter local (ouvre le navigateur)
+```
 
 ## Bonnes pratiques {.smaller}
 
@@ -95,6 +129,31 @@ for cle, valeur in image.items():
     print(f"{cle} : {valeur}")
 ```
 
+## Dictionnaires — `*` et `**` {.smaller}
+
+`**` déballe les **paires clé-valeur** ; `*` ne déballe que les **clés**.
+
+```{python}
+image = {"capteur": "Sentinel-2", "bandes": 13}
+def resume(capteur, bandes):
+    return f"{capteur} : {bandes} bandes"
+
+print(resume(**image))              # ** : paires -> arguments nommés
+print([*image])                     # * : les clés seules
+print({**image, "date": "2024"})    # fusion de dictionnaires
+```
+
+## Compréhensions : liste & dictionnaire {.smaller}
+
+Construire une collection en une ligne — `[expression for x in itérable if condition]`.
+
+```{python}
+bandes = ["bleu", "vert", "rouge", "PIR"]
+print([b.upper() for b in bandes if len(b) <= 4])    # liste (avec filtre)
+print({nom: i for i, nom in enumerate(bandes)})       # dictionnaire
+print({c for c in ["eau", "eau", "sol"]})             # ensemble (sans doublon)
+```
+
 ## Boucles & conditions {.smaller}
 
 ```{python}
@@ -132,6 +191,85 @@ class Image:
         return f"{self.capteur} — {self.bandes} bandes"
 
 print(Image("Landsat-8", 11).resume())
+```
+
+## Importer des bibliothèques {.smaller}
+
+::: {.incremental}
+- `import numpy` — tout le module · `import numpy as np` — avec un **alias**
+- `from numpy import pi` — un **objet précis**
+:::
+
+```{python}
+import numpy as np              # alias courant
+from numpy import pi            # un objet précis
+print(np.__version__, "| pi =", round(pi, 4))
+```
+
+## Modules et packages {.smaller}
+
+::: {.incremental}
+- **Module** = un fichier `.py` · **package** = un dossier avec `__init__.py`
+- Accès par la notation pointée `package.module.fonction`
+- `if __name__ == "__main__":` → code lancé **seulement** en direct
+:::
+
+```python
+teledetection/
+    __init__.py        # marque le dossier comme un package
+    indices.py         # from teledetection.indices import ndvi
+```
+
+## Exécutable — le plus simple {.smaller}
+
+Un fichier `.py` lancé depuis un terminal ; le code utile va dans `__main__`.
+
+```python
+# ndvi.py
+import rioxarray as rxr
+if __name__ == "__main__":
+    img  = rxr.open_rasterio("RGBNIR_of_S2A.tif")
+    ndvi = (img.sel(band=4) - img.sel(band=3)) / (img.sel(band=4) + img.sel(band=3))
+    ndvi.rio.to_raster("ndvi.tif")
+```
+
+```bash
+python ndvi.py          # ou ./ndvi.py après un chmod +x
+```
+
+## Exécutable — `argparse` & valeurs par défaut {.smaller}
+
+Séparer le **traitement** (défauts) de l'**interface** ; `argparse` lit les arguments.
+
+```python
+def calcule_ndvi(entree, sortie="ndvi.tif", bande_rouge=3, bande_pir=4):
+    ...                                    # défauts -> arguments optionnels
+
+p = argparse.ArgumentParser()
+p.add_argument("entree")                   # argument obligatoire
+p.add_argument("-o", "--sortie", default="ndvi.tif")
+args = p.parse_args()
+```
+
+```bash
+python ndvi.py image.tif -o ndvi.tif       # python ndvi.py -h pour l'aide
+```
+
+## Exécutable — configuration YAML {.smaller}
+
+Beaucoup de paramètres → un fichier **YAML** lisible et **reproductible**.
+
+```yaml
+# config.yaml
+entree: RGBNIR_of_S2A.tif
+bande_pir: 4
+```
+
+```python
+import yaml
+DEFAUTS = {"sortie": "ndvi.tif", "bande_rouge": 3, "bande_pir": 4}
+with open("config.yaml") as f:
+    params = {**DEFAUTS, **yaml.safe_load(f)}   # défauts écrasés par le YAML
 ```
 
 ## Un avant-goût de NumPy {.smaller}
@@ -198,6 +336,8 @@ print("table pixels x bandes   :", cube.transpose(1, 2, 0).reshape(-1, 2).shape)
 - Installez Python via un **environnement virtuel** (`conda` / `venv`)
 - Quatre structures : **listes**, **tuples**, **ensembles**, **dictionnaires**
 - `if`/`for`/`while` + **fonctions** (`def`) structurent le code
+- **Compréhensions** et déballage `**` condensent le code ; un **notebook** = cellules + **noyau** à état
+- Organiser (**modules/packages**) et automatiser (**script** + `argparse` / **YAML**)
 - Une image est avant tout un **tableau NumPy** : `dtype`, ***broadcasting***, `reshape`/`transpose` calculent et réorganisent sans boucle
 :::
 
@@ -206,6 +346,7 @@ print("table pixels x bandes   :", cube.transpose(1, 2, 0).reshape(-1, 2).shape)
 - Créez un dictionnaire `metadonnees` (capteur, bandes, résolution) et affichez chaque paire
 - Sur le tableau `image`, calculez le **min** et l'**écart-type** (`image.std()`), extrayez la dernière colonne
 - Écrivez `ratio(a, b) = (a - b)/(a + b)` et calculez le NDVI pour PIR = 0,55, Rouge = 0,18
+- Écrivez un script `stats.py` qui lit un chemin d'image en argument (`argparse`) et affiche sa forme
 
 ##  {background-color="#357cc0"}
 
