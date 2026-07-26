@@ -219,27 +219,30 @@ Le **NDVI** (*Normalized Difference Vegetation Index*) est l'indice le plus conn
 
 $$ NDVI = \frac{N - R}{N + R} $$ {#eq-ndvi}
 
-La végétation en bonne santé réfléchit fortement le proche-infrarouge et absorbe le rouge : son NDVI est donc élevé (proche de $1$), alors que l'eau, le sol nu ou le bâti donnent des valeurs faibles, voire négatives. Le `GNDVI` remplace le rouge par le vert et le `SAVI` ajoute un facteur de correction du sol ($L$). On calcule ces trois indices ci-dessous avec `spyndex.computeIndex` :
+La végétation en bonne santé réfléchit fortement le proche-infrarouge et absorbe le rouge : son NDVI est donc élevé (proche de $1$), alors que l'eau, le sol nu ou le bâti donnent des valeurs faibles, voire négatives. Le `GNDVI` remplace le rouge par le vert, le `SAVI` ajoute un facteur de correction du sol ($L$) et l'`EVI` (*Enhanced Vegetation Index*) corrige en plus l'effet de l'atmosphère à l'aide de la bande bleue ($B$), ce qui limite la saturation du NDVI sur la végétation dense [@Jensen2016]. On calcule ces quatre indices ci-dessous avec `spyndex.computeIndex` :
 
 ```{python}
 from rasterio import plot
 idx = spyndex.computeIndex(
-    index = ["NDVI","GNDVI","SAVI"],
+    index = ["NDVI","GNDVI","SAVI","EVI"],
     params = {
         "N": img_s2.sel(band = "N"),
         "R": img_s2.sel(band = "R"),
         "G": img_s2.sel(band = "G"),
+        "B": img_s2.sel(band = "B"),
         "L": 0.5
     }
 )
 
-# Plot the indices (and the RGB image for comparison)
-fig, ax = plt.subplots(2,2,figsize = (9,9))
+# Plot the indices (et l'image RGB pour comparaison)
+fig, ax = plt.subplots(2,3,figsize = (13,9))
 [a.axis('off') for a in ax.flatten()]
 plot.show(img_s2.sel(band = ["R","G","B"]).data / 0.3,ax = ax[0,0],title = "RGB")
 plot.show(idx.sel(index = "NDVI"),ax = ax[0,1],title = "NDVI")
-plot.show(idx.sel(index = "GNDVI"),ax = ax[1,0],title = "GNDVI")
-plot.show(idx.sel(index = "SAVI"),ax = ax[1,1],title = "SAVI")
+plot.show(idx.sel(index = "GNDVI"),ax = ax[0,2],title = "GNDVI")
+plot.show(idx.sel(index = "SAVI"),ax = ax[1,0],title = "SAVI")
+plot.show(idx.sel(index = "EVI"),ax = ax[1,1],title = "EVI")
+plt.tight_layout()
 ```
 
 On peut vérifier l'utilité des indices en vérifiant leur séparabilité pour certaines classes d'intérêts. Nous reprenons ici l'exemple de la section [@sec-05.02.02] pour vérifier l'utilité des indices `NDVI`, `NDWI` et `NDBI`:
@@ -363,6 +366,35 @@ print(pixels @ M.T)            # produit matriciel : (3 pixels x 2 sorties)
 
 L'analyse en composantes principales pousse cette idée plus loin : au lieu de choisir les poids à la main, elle les **apprend des données** pour maximiser la variance retenue.
 
+### Transformation Tasseled Cap (Kauth-Thomas)
+
+Un exemple historique et toujours largement utilisé de transformation linéaire à coefficients **fixes** (plutôt qu'appris comme en ACP) est la transformation *Tasseled Cap* (ou de Kauth-Thomas), qui combine les bandes réflectives en trois composantes interprétables physiquement : la **brillance** (*brightness*, liée au sol), la **verdure** (*greenness*, liée à la végétation) et l'**humidité** (*wetness*, liée à l'eau du sol et de la végétation) [@Jensen2016; @richards2022remote; @Schowengerdt2007]. Les coefficients ci-dessous, établis par Crist (1985) pour les bandes réflectives de Landsat TM, sont appliqués ici, à titre d'illustration, aux bandes analogues de Sentinel-2 (`B`, `G`, `R`, `N`, `S1`, `S2`) ; chaque capteur possède en pratique ses propres coefficients publiés.
+
+```{python}
+# Coefficients de Crist (1985) pour les bandes réflectives Landsat TM (B, G, R, N, S1, S2),
+# appliqués ici à titre d'illustration aux bandes analogues de Sentinel-2
+tc_coeffs = np.array([
+    [ 0.3037,  0.2793,  0.4743,  0.5585,  0.5082,  0.1863],   # Brightness
+    [-0.2848, -0.2435, -0.5436,  0.7243,  0.0840, -0.1800],   # Greenness
+    [ 0.1509,  0.1973,  0.3279,  0.3406, -0.7112, -0.4572],   # Wetness
+])
+
+tc_bands = ["B", "G", "R", "N", "S1", "S2"]
+X_tc = img_s2.sel(band=tc_bands).data.reshape(len(tc_bands), -1)   # (6, pixels)
+brightness, greenness, wetness = (tc_coeffs @ X_tc).reshape(3, *img_s2.shape[1:])
+
+fig, ax = plt.subplots(ncols=3, figsize=(10, 4))
+for a, im, title in zip(ax, (brightness, greenness, wetness),
+                         ("Brightness", "Greenness", "Wetness")):
+    a.imshow(im)
+    a.set_title(title)
+    a.axis('off')
+plt.tight_layout()
+plt.show()
+```
+
+Contrairement à l'ACP, ces coefficients ne dépendent pas de l'image : ils permettent donc de comparer directement les composantes entre plusieurs scènes, ce que l'ACP (dont les axes sont recalculés à chaque image) ne permet pas.
+
 ### Analyse en composantes principales (ACP)
 
 L'analyse en composantes principales (ACP) est probablement la plus employée. En théorie, l'ACP n'est valide que sur des données gaussiennes, c'est-à-dire que le nuage de points des données a la forme d'une ellipse à $N$ dimensions. Cette ellipse est caractérisée par des directions principales (grand axe versus petit axe). La première composante est celle du grand axe de l'ellipse, pour laquelle la donnée présente le maximum de variation. L'ACP est une décomposition **linéaire** : les composantes principales sont des sommes pondérées des valeurs originales.
@@ -414,6 +446,30 @@ plt.show()
 
 La première composante ressemble souvent à une image de brillance globale, tandis que les suivantes isolent des contrastes plus fins (végétation, eau). La même décomposition s'obtient de façon numériquement plus stable par **décomposition en valeurs singulières** (`np.linalg.svd`) appliquée aux données centrées. La réduction de dimension prépare aussi la classification (@sec-chap05) en concentrant l'information utile dans quelques bandes.
 
+### Reconstruction et erreur de compression
+
+Conserver seulement les $k$ premières composantes revient à **compresser** l'image : la reconstruction s'obtient en projetant sur les $k$ premiers vecteurs propres, puis en revenant dans l'espace original (l'opération inverse du produit matriciel de projection). On peut alors mesurer l'erreur de reconstruction (RMSE) en fonction de $k$ [@richards2022remote] :
+
+```{python}
+def erreur_reconstruction(k):
+    proj_k = composantes[:k].reshape(k, -1).T                  # (pixels, k)
+    X_approx = proj_k @ vecteurs[:, :k].T + X.mean(axis=0)      # (pixels, bandes)
+    return np.sqrt(np.mean((X - X_approx) ** 2))                # RMSE
+
+erreurs = [erreur_reconstruction(k) for k in range(1, B + 1)]
+
+fig, ax = plt.subplots(figsize=(5, 4))
+ax.plot(range(1, B + 1), erreurs, 'o-')
+ax.set_xlabel("Nombre de composantes conservées (k)")
+ax.set_ylabel("Erreur de reconstruction (RMSE)")
+ax.grid(True)
+plt.show()
+```
+
+L'erreur diminue rapidement avec le nombre de composantes conservées, ce qui confirme que l'essentiel de l'information est capté par les toutes premières composantes — ici, une poignée de composantes suffit à approcher fidèlement les 12 bandes d'origine.
+
+L'ACP suppose une distribution gaussienne des données et ne retient que des combinaisons linéaires classées par variance décroissante, ce qui n'est pas toujours le critère le plus pertinent. La transformation en **fraction de bruit minimum/maximum** (*Minimum/Maximum Noise Fraction*, MNF) classe plutôt les composantes par rapport signal-sur-bruit décroissant, ce qui la rend préférable pour les images hyperspectrales bruitées [@richards2022remote]. L'**analyse en composantes indépendantes** (ICA) relâche quant à elle l'hypothèse gaussienne en recherchant des composantes statistiquement indépendantes plutôt que simplement décorrélées.
+
 ## Points clés
 
 :::::: bloc_notes
@@ -432,6 +488,7 @@ La première composante ressemble souvent à une image de brillance globale, tan
 -   `spyndex.computeIndex` applique un indice à partir des bandes nommées ; renommer les bandes (`assign_coords`) facilite l'usage.
 -   Le **NDVI** $= (N - R)/(N + R)$ est élevé pour la végétation dense.
 -   Une **transformation linéaire de bandes** est un **produit matriciel** (`@`) ; l'**ACP** apprend les poids optimaux (covariance + vecteurs propres) pour ranger l'information par variance décroissante et **réduire la dimension**.
+-   La transformation **Tasseled Cap** (coefficients fixes, comparables entre scènes) et l'ACP (coefficients appris, propres à chaque image) illustrent deux façons de construire une transformation linéaire de bandes ; la **reconstruction tronquée** quantifie la perte d'information selon le nombre de composantes conservées.
 :::
 ::::::
 
@@ -457,6 +514,10 @@ La première composante ressemble souvent à une image de brillance globale, tan
 5.  *(produit matriciel)* Construisez une matrice `2 × 4` transformant les 4 bandes de `RGBNIR_of_S2A.tif` en deux nouvelles bandes (brillance moyenne et différence PIR - Rouge) à l'aide de l'opérateur `@`, puis affichez-les.
 
 6.  *(ACP)* Réalisez l'ACP de `img_s2`, affichez la **variance expliquée** par chaque composante (éboulis), et vérifiez combien de composantes sont nécessaires pour atteindre 95 % de variance cumulée.
+
+7.  *(Tasseled Cap)* Appliquez la transformation Tasseled Cap à une autre combinaison de bandes (p. ex. en remplaçant `S1` par `RE1`) et comparez visuellement les composantes obtenues à celles de la section.
+
+8.  *(reconstruction)* À partir de l'ACP de `img_s2`, déterminez le nombre minimal de composantes nécessaires pour obtenir une erreur de reconstruction (RMSE) inférieure à 0.01.
 :::
 ::::::
 
