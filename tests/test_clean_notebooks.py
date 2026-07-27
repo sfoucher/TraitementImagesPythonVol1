@@ -57,6 +57,31 @@ class TestStripYamlHeader(unittest.TestCase):
         self.assertEqual(strip_yaml_header(lines), ["texte\n", "\n", "---\n", "suite\n"])
 
 
+from clean_notebooks import strip_heading_anchors
+
+
+class TestStripHeadingAnchors(unittest.TestCase):
+    def test_strips_id_anchor(self):
+        self.assertEqual(
+            strip_heading_anchors(["## Créer un exécutable {#sec-00-executable}\n"]),
+            ["## Créer un exécutable\n"])
+
+    def test_strips_id_and_classes(self):
+        self.assertEqual(
+            strip_heading_anchors(["# Titre {#sec-x .unnumbered}\n"]),
+            ["# Titre\n"])
+
+    def test_plain_heading_unchanged(self):
+        self.assertEqual(strip_heading_anchors(["## Titre\n"]), ["## Titre\n"])
+
+    def test_non_heading_not_touched(self):
+        # a {#x} in body text is not a heading -> left alone
+        self.assertEqual(strip_heading_anchors(["voir {#x}\n"]), ["voir {#x}\n"])
+
+    def test_preserves_missing_trailing_newline(self):
+        self.assertEqual(strip_heading_anchors(["## T {#s}"]), ["## T"])
+
+
 from clean_notebooks import iter_blocs_in_markdown
 
 
@@ -93,128 +118,35 @@ class TestIterBlocs(unittest.TestCase):
         self.assertEqual(iter_blocs_in_markdown(["plain\n", "text\n"]), [])
 
 
-from clean_notebooks import parse_docs_blocs, Bloc
-
-DOCS_FRAGMENT = """
-<p>avant</p>
-<div class="bloc_objectif">
-<div class="bloc_objectif-header">
-<div class="bloc_objectif-icon">
-
-</div>
-<p><strong>Objectifs</strong></p>
-</div>
-<div class="bloc_objectif-body">
-<p>intro&nbsp;:</p>
-<ul>
-<li>un</li>
-<li>deux</li>
-</ul>
-</div>
-</div>
-<p>apres</p>
-"""
+from clean_notebooks import strip_blocs
 
 
-class TestParseDocsBlocs(unittest.TestCase):
-    def test_extracts_one_bloc(self):
-        blocs = parse_docs_blocs(DOCS_FRAGMENT)
-        self.assertEqual(len(blocs), 1)
-        b = blocs[0]
-        self.assertEqual(b.type, "bloc_objectif")
-        self.assertIn("<strong>Objectifs</strong>", b.header_html)
-        self.assertIn("<li>un</li>", b.body_html)
-        self.assertIn("<li>deux</li>", b.body_html)
-        # the icon div must not leak into the header
-        self.assertNotIn("bloc_objectif-icon", b.header_html)
+class TestStripBlocs(unittest.TestCase):
+    def test_removes_region_keeps_surroundings(self):
+        lines = [
+            "avant\n",
+            "::: bloc_notes\n", "**H**\n", "corps\n", ":::\n",
+            "apres\n",
+        ]
+        self.assertEqual(strip_blocs(lines), ["avant\n", "apres\n"])
 
-    def test_no_bloc(self):
-        self.assertEqual(parse_docs_blocs("<p>rien</p>"), [])
+    def test_no_bloc_unchanged(self):
+        lines = ["a\n", "b\n"]
+        self.assertEqual(strip_blocs(lines), ["a\n", "b\n"])
 
-    def test_body_link_ampersand_stays_valid_html(self):
-        # a link whose URL contains & must round-trip as &amp; (valid HTML),
-        # not a bare & that would corrupt the attribute
-        frag = (
-            '<div class="bloc_notes">'
-            '<div class="bloc_notes-header"><p><strong>H</strong></p></div>'
-            '<div class="bloc_notes-body">'
-            '<p><a href="https://x.org/p?a=1&amp;b=2">lien</a></p>'
-            '</div></div>'
-        )
-        b = parse_docs_blocs(frag)[0]
-        self.assertIn('href="https://x.org/p?a=1&amp;b=2"', b.body_html)
-        self.assertNotIn("a=1&b=2", b.body_html)
+    def test_removes_two_blocs(self):
+        lines = [
+            "::: bloc_notes\n", "a\n", ":::\n",
+            "mid\n",
+            "::: bloc_astuce\n", "b\n", ":::\n",
+        ]
+        self.assertEqual(strip_blocs(lines), ["mid\n"])
 
 
 import os
 import tempfile
-from clean_notebooks import (BLOC_COLORS, ICON_FILES, icon_data_uri,
-                             render_bloc_html)
-
-
-class TestRenderBlocHtml(unittest.TestCase):
-    def test_all_types_have_colors_and_icons(self):
-        from clean_notebooks import KNOWN_TYPES
-        for t in KNOWN_TYPES:
-            self.assertIn(t, BLOC_COLORS)
-            self.assertIn(t, ICON_FILES)
-
-    def test_render_contains_colors_and_body(self):
-        html = render_bloc_html(
-            "bloc_objectif", "<p><strong>T</strong></p>", "<ul><li>x</li></ul>", None)
-        self.assertIn("#00796d", html)   # objectif border color
-        self.assertIn("#e2efec", html)   # objectif header bg
-        self.assertIn("<strong>T</strong>", html)
-        self.assertIn("<li>x</li>", html)
-        self.assertTrue(html.lstrip().startswith("<div"))
-
-    def test_render_without_icon_has_no_img(self):
-        html = render_bloc_html("bloc_notes", "<p>H</p>", "<p>B</p>", None)
-        self.assertNotIn("<img", html)
-
-    def test_render_with_icon_has_data_uri(self):
-        html = render_bloc_html("bloc_notes", "<p>H</p>", "<p>B</p>",
-                                "data:image/png;base64,AAAA")
-        self.assertIn('src="data:image/png;base64,AAAA"', html)
-
-    def test_icon_data_uri_missing_returns_none(self):
-        with tempfile.TemporaryDirectory() as d:
-            self.assertIsNone(icon_data_uri("bloc_notes", d))
-
-    def test_icon_data_uri_reads_png(self):
-        with tempfile.TemporaryDirectory() as d:
-            open(os.path.join(d, ICON_FILES["bloc_notes"]), "wb").write(b"\x89PNG\r\n")
-            uri = icon_data_uri("bloc_notes", d)
-            self.assertTrue(uri.startswith("data:image/png;base64,"))
-
-
-from clean_notebooks import render_bloc_markdown
-
-
-class TestRenderBlocMarkdown(unittest.TestCase):
-    def test_strips_fences_and_quotes(self):
-        region = [
-            ":::::: bloc_objectif\n",
-            ":::: bloc_objectif-header\n",
-            "::: bloc_objectif-icon\n",
-            ":::\n",
-            "**Titre**\n",
-            "::::\n",
-            "::: bloc_objectif-body\n",
-            "corps\n",
-            ":::\n",
-            "::::::\n",
-        ]
-        out = render_bloc_markdown(region)
-        self.assertEqual(out, ["> **Titre**\n", "> corps\n"])
-
-    def test_no_fence_lines_remain(self):
-        region = ["::: bloc_notes\n", "texte\n", ":::\n"]
-        out = "".join(render_bloc_markdown(region))
-        self.assertNotIn(":::", out)
-
-
-from clean_notebooks import clean_notebook
+import json
+from clean_notebooks import clean_notebook, main
 
 
 def _md(src):
@@ -227,40 +159,36 @@ def _code(src):
 
 
 class TestCleanNotebook(unittest.TestCase):
-    def test_yaml_comment_directive_and_bloc(self):
+    def test_yaml_comment_directive_anchor_and_bloc(self):
         nb = {"cells": [
             _md(["---\n", "jupyter: python3\n", "---\n", "\n",
-                 "# Titre\n", "<!-- draft -->\n",
+                 "# Titre {#sec-x}\n", "<!-- draft -->\n", "texte\n",
                  "::: bloc_notes\n", "**H**\n", "corps\n", ":::\n"]),
             _code(["#| echo: false\n", "x = 1\n"]),
         ], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
-        blocs = [Bloc("bloc_notes", "<p><strong>H</strong></p>", "<p>corps</p>")]
-        out = clean_notebook(nb, blocs, images_dir="/nonexistent")
+        out = clean_notebook(nb)
         md_src = "".join(out["cells"][0]["source"])
-        self.assertNotIn("---", md_src)
-        self.assertNotIn("<!--", md_src)
-        self.assertNotIn(":::", md_src)
-        self.assertIn("<strong>H</strong>", md_src)   # HTML render used
+        self.assertNotIn("---", md_src)          # yaml gone
+        self.assertNotIn("<!--", md_src)         # comment gone
+        self.assertNotIn(":::", md_src)          # bloc removed
+        self.assertNotIn("**H**", md_src)        # bloc body removed
+        self.assertNotIn("{#sec-x}", md_src)     # heading anchor stripped
+        self.assertIn("# Titre\n", md_src)       # heading text kept
+        self.assertIn("texte", md_src)
         self.assertEqual(out["cells"][1]["source"], ["x = 1\n"])
 
-    def test_count_mismatch_falls_back_to_markdown(self):
+    def test_bloc_only_markdown_cell_dropped(self):
         nb = {"cells": [
             _md(["::: bloc_notes\n", "**H**\n", "corps\n", ":::\n"]),
         ], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
-        out = clean_notebook(nb, docs_blocs=[], images_dir="/nonexistent")
-        md_src = "".join(out["cells"][0]["source"])
-        self.assertNotIn(":::", md_src)
-        self.assertIn("> **H**", md_src)              # blockquote fallback
+        out = clean_notebook(nb)
+        self.assertEqual(out["cells"], [])
 
     def test_empty_code_cell_dropped(self):
         nb = {"cells": [_code(["#| eval: false\n"])],
               "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
-        out = clean_notebook(nb, [], images_dir="/nonexistent")
+        out = clean_notebook(nb)
         self.assertEqual(out["cells"], [])
-
-
-import json
-from clean_notebooks import main
 
 
 class TestMainEndToEnd(unittest.TestCase):
@@ -268,7 +196,7 @@ class TestMainEndToEnd(unittest.TestCase):
         nb = {"cells": [
             {"cell_type": "markdown", "metadata": {},
              "source": ["---\n", "jupyter: python3\n", "---\n", "\n",
-                        "# Titre {#sec-x}\n", "<!-- d -->\n",
+                        "# Titre {#sec-x}\n", "<!-- d -->\n", "texte\n",
                         "::: bloc_notes\n", "**H**\n", "corps\n", ":::\n"]},
             {"cell_type": "code", "metadata": {}, "outputs": [],
              "execution_count": None, "source": ["#| echo: false\n", "x = 1\n"]},
@@ -279,23 +207,22 @@ class TestMainEndToEnd(unittest.TestCase):
     def test_cleans_and_is_idempotent(self):
         with tempfile.TemporaryDirectory() as d:
             nbp = os.path.join(d, "03-Chap.ipynb")
-            docs = os.path.join(d, "docs")
-            os.makedirs(docs)
-            open(os.path.join(docs, "03-Chap.html"), "w", encoding="utf-8").write(
-                '<div class="bloc_notes"><div class="bloc_notes-header">'
-                '<p><strong>H</strong></p></div>'
-                '<div class="bloc_notes-body"><p>corps</p></div></div>')
             self._write_nb(nbp)
 
-            rc = main([nbp, "--docs-dir", docs, "--images-dir", d])
+            rc = main([nbp])
             self.assertEqual(rc, 0)
             txt1 = open(nbp, encoding="utf-8").read()
             self.assertNotIn(":::", txt1)
             self.assertNotIn("#|", txt1)
             self.assertNotIn("jupyter: python3", txt1)
-            self.assertIn("<strong>H</strong>", txt1)
+            self.assertNotIn("{#sec-x}", txt1)
+            self.assertIn("Titre", txt1)
 
             # idempotent: second run does not change the file
-            main([nbp, "--docs-dir", docs, "--images-dir", d])
+            main([nbp])
             txt2 = open(nbp, encoding="utf-8").read()
             self.assertEqual(txt1, txt2)
+
+
+if __name__ == "__main__":
+    unittest.main()

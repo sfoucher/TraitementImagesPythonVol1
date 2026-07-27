@@ -355,7 +355,6 @@ plt.show()
 
 ![Visualisation des points d'une image Sentinel-2 pour trois classes](images/fig-classes-indices.png){fig-align="center"}
 
-
 ## Réduction de dimension
 
 La réduction de dimension vise à ne retenir que l'information principale d'un jeu de données. L'objectif est parfois d'éliminer le bruit d'un capteur ou de faciliter la visualisation en ne retenant que 3 bandes principales. Le degré d'information est souvent mesuré par la variance d'une bande, c'est-à-dire son contraste. L'analyse en composantes principales vise alors à ranger l'information contenue dans une image en ordre de variance décroissante.
@@ -537,12 +536,9 @@ L'ACP suppose une distribution gaussienne des données et ne retient que des com
 
 ## Quiz
 
-
 ::: {.content-visible when-profile="production"}
-
 Utilisez la version html.
 :::
-
 
 ```{python .content-visible when-format="html"}
 #| echo: false
