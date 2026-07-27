@@ -219,30 +219,42 @@ Le **NDVI** (*Normalized Difference Vegetation Index*) est l'indice le plus conn
 
 $$ NDVI = \frac{N - R}{N + R} $$ {#eq-ndvi}
 
-La végétation en bonne santé réfléchit fortement le proche-infrarouge et absorbe le rouge : son NDVI est donc élevé (proche de $1$), alors que l'eau, le sol nu ou le bâti donnent des valeurs faibles, voire négatives. Le `GNDVI` remplace le rouge par le vert, le `SAVI` ajoute un facteur de correction du sol ($L$) et l'`EVI` (*Enhanced Vegetation Index*) corrige en plus l'effet de l'atmosphère à l'aide de la bande bleue ($B$), ce qui limite la saturation du NDVI sur la végétation dense [@Jensen2016]. On calcule ces quatre indices ci-dessous avec `spyndex.computeIndex` :
+La végétation en bonne santé réfléchit fortement le proche-infrarouge et absorbe le rouge : son NDVI est donc élevé (proche de $1$), alors que l'eau, le sol nu ou le bâti donnent des valeurs faibles, voire négatives. Le `SAVI` ajoute un facteur de correction du sol ($L$) pour limiter l'influence du sol visible à travers un couvert végétal clairsemé.
+
+L'`EVI` (*Enhanced Vegetation Index*) va plus loin en corrigeant également l'effet de l'atmosphère à l'aide de la bande bleue ($B$), ce qui limite la saturation du NDVI sur la végétation dense [@Jensen2016] :
+
+$$ EVI = G \times \frac{N - R}{N + C_1 \times R - C_2 \times B + L} $$ {#eq-evi}
+
+avec les constantes usuelles $G=2{,}5$ (gain), $C_1=6$ et $C_2=7{,}5$ (coefficients de correction atmosphérique appliqués respectivement au rouge et au bleu) et $L=1$ (ajustement du sol). On calcule ces trois indices ci-dessous avec `spyndex.computeIndex` :
 
 ```{python}
 from rasterio import plot
 idx = spyndex.computeIndex(
-    index = ["NDVI","GNDVI","SAVI","EVI"],
+    index = ["NDVI","SAVI"],
     params = {
         "N": img_s2.sel(band = "N"),
         "R": img_s2.sel(band = "R"),
-        "G": img_s2.sel(band = "G"),
+        "L": 0.5
+    }
+)
+
+evi = spyndex.computeIndex(
+    index = ["EVI"],
+    params = {
+        "N": img_s2.sel(band = "N"),
+        "R": img_s2.sel(band = "R"),
         "B": img_s2.sel(band = "B"),
-        "L": 0.5,
-        "g": 2.5, "C1": 6.0, "C2": 7.5   # constantes de l'EVI (gain + coefficients atmosphériques)
+        "g": 2.5, "C1": 6, "C2": 7.5, "L": 1
     }
 )
 
 # Plot the indices (et l'image RGB pour comparaison)
-fig, ax = plt.subplots(2,3,figsize = (13,9))
+fig, ax = plt.subplots(2,2,figsize = (9,9))
 [a.axis('off') for a in ax.flatten()]
 plot.show(img_s2.sel(band = ["R","G","B"]).data / 0.3,ax = ax[0,0],title = "RGB")
 plot.show(idx.sel(index = "NDVI"),ax = ax[0,1],title = "NDVI")
-plot.show(idx.sel(index = "GNDVI"),ax = ax[0,2],title = "GNDVI")
 plot.show(idx.sel(index = "SAVI"),ax = ax[1,0],title = "SAVI")
-plot.show(idx.sel(index = "EVI"),ax = ax[1,1],title = "EVI")
+plot.show(evi.sel(index = "EVI"),percent_range=[2,98],ax = ax[1,1],title = "EVI")
 plt.tight_layout()
 ```
 
@@ -428,14 +440,14 @@ composantes = (X_c @ vecteurs).T.reshape(B, H, W)   # (composantes, lignes, colo
 print("Cube des composantes :", composantes.shape)
 ```
 
-Les trois premières composantes concentrent l'essentiel de l'information (ici plus de 98 % de la variance). On les visualise sous forme d'un composé coloré, à côté de l'éboulis (*scree plot*) des variances :
+Les trois premières composantes concentrent l'essentiel de l'information (ici plus de 98 % de la variance). On les visualise sous forme d'un composé coloré, à côté des valeurs propres normalisées (*scree plot* en anglais) des variances :
 
 ```{python}
 #| fig-align: center
 fig, ax = plt.subplots(1, 2, figsize=(10, 4))
 ax[0].bar(range(1, B + 1), ratio)
 ax[0].set_xlabel("Composante"); ax[0].set_ylabel("Variance expliquée")
-ax[0].set_title("Éboulis (scree plot)")
+ax[0].set_title("Valeurs propres (scree plot)")
 
 # Composé coloré des 3 premières composantes (étirement min-max par composante)
 def etirer(x):
