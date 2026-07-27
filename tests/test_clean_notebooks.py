@@ -82,6 +82,29 @@ class TestStripHeadingAnchors(unittest.TestCase):
         self.assertEqual(strip_heading_anchors(["## T {#s}"]), ["## T"])
 
 
+from clean_notebooks import strip_images
+
+
+class TestStripImages(unittest.TestCase):
+    def test_removes_plain_image(self):
+        self.assertEqual(
+            strip_images(["![Fenêtre principale.](images/jupyter-accueil.png)\n"]),
+            [])
+
+    def test_removes_image_with_attrs(self):
+        self.assertEqual(
+            strip_images(["![leg](images/x.png){fig-align=\"center\"}\n"]), [])
+
+    def test_keeps_surrounding_text(self):
+        lines = ["avant\n", "![a](img/y.png)\n", "apres\n"]
+        self.assertEqual(strip_images(lines), ["avant\n", "apres\n"])
+
+    def test_inline_image_in_prose_kept(self):
+        # an image mid-sentence is not a standalone line -> left alone
+        lines = ["voir ![a](img/y.png) ici\n"]
+        self.assertEqual(strip_images(lines), ["voir ![a](img/y.png) ici\n"])
+
+
 from clean_notebooks import iter_blocs_in_markdown
 
 
@@ -163,6 +186,7 @@ class TestCleanNotebook(unittest.TestCase):
         nb = {"cells": [
             _md(["---\n", "jupyter: python3\n", "---\n", "\n",
                  "# Titre {#sec-x}\n", "<!-- draft -->\n", "texte\n",
+                 "![leg](images/x.png)\n",
                  "::: bloc_notes\n", "**H**\n", "corps\n", ":::\n"]),
             _code(["#| echo: false\n", "x = 1\n"]),
         ], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
@@ -172,6 +196,7 @@ class TestCleanNotebook(unittest.TestCase):
         self.assertNotIn("<!--", md_src)         # comment gone
         self.assertNotIn(":::", md_src)          # bloc removed
         self.assertNotIn("**H**", md_src)        # bloc body removed
+        self.assertNotIn("![leg]", md_src)       # image line removed
         self.assertNotIn("{#sec-x}", md_src)     # heading anchor stripped
         self.assertIn("# Titre\n", md_src)       # heading text kept
         self.assertIn("texte", md_src)

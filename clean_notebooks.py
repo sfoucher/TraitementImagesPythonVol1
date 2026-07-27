@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Clean Quarto-exported notebooks: strip the YAML header, HTML comments,
-`#|` cell directives, `bloc_*` callout regions, and heading anchor
-attributes (see specs/2026-07-23-clean-notebooks-design.md)."""
+`#|` cell directives, `bloc_*` callout regions, standalone image lines, and
+heading anchor attributes (see specs/2026-07-23-clean-notebooks-design.md)."""
 import argparse
 import json
 import re
@@ -50,6 +50,16 @@ def strip_heading_anchors(lines):
         m = _HEADING_ATTR.match(ln.rstrip("\n"))
         out.append(m.group(1).rstrip() + nl if m else ln)
     return out
+
+
+# A standalone markdown image line, e.g. "![légende](images/x.png)" with an
+# optional trailing {…} attribute block (fig-align, width, …).
+_IMAGE = re.compile(r"^!\[[^\]]*\]\([^)]*\)\s*(\{[^}]*\})?\s*$")
+
+
+def strip_images(lines):
+    """Drop standalone markdown image lines (![alt](path){…})."""
+    return [ln for ln in lines if not _IMAGE.match(ln.strip())]
 
 
 KNOWN_TYPES = (
@@ -121,6 +131,7 @@ def clean_notebook(nb):
                 first_md_seen = True
             src = strip_html_comments("".join(src)).splitlines(keepends=True)
             src = strip_blocs(src)
+            src = strip_images(src)
             src = strip_heading_anchors(src)
             # normalize to canonical one-newline-per-line elements so a second
             # run re-reads the same list shape (idempotency)
