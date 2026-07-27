@@ -527,7 +527,15 @@ Un script est un simple fichier `.py` que l'on exécute avec `python`. Le code u
 
 ```{python}
 #| eval: false
-# ndvi.py
+%pip install rioxarray
+import gdown
+gdown.download('https://drive.google.com/uc?export=download&confirm=pbef&id=1a6Ypg0g1Oy4AJt9XWKWfnR12NW1XhNg_', output= 'RGBNIR_of_S2A.tif')
+```
+
+```{python}
+#| eval: false
+%%writefile ndvi.py
+"""Calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR)."""
 import rioxarray as rxr
 
 if __name__ == "__main__":
@@ -540,12 +548,17 @@ if __name__ == "__main__":
 ```
 
 On le lance depuis un terminal :
-
-``` bash
-python ndvi.py
+```{python}
+#| eval: false
+%run ndvi.py
 ```
 
 Sur Linux ou macOS, on peut aussi rendre le fichier directement exécutable. Il suffit d'ajouter une ligne *shebang* en tête (`#!/usr/bin/env python3`), puis de donner le droit d'exécution avec `chmod +x ndvi.py` ; le script se lance alors avec `./ndvi.py`.
+
+```{bash}
+!chmod +x ./ndvi.py
+!./ndvi.py
+```
 
 Cette version fonctionne, mais tout est **figé** : les noms de fichiers et les numéros de bandes sont écrits en dur dans le code. Pour traiter une autre image, il faut éditer le script.
 
@@ -555,6 +568,7 @@ On sépare le **traitement** (une fonction réutilisable, avec des **valeurs par
 
 ```{python}
 #| eval: false
+%%writefile ndvi.py
 #!/usr/bin/env python3
 """Calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR)."""
 import argparse
@@ -606,6 +620,7 @@ Le script lit ce fichier avec le module `yaml` (`safe_load` — jamais `load`, q
 
 ```{python}
 #| eval: false
+%%writefile ndvi.py
 #!/usr/bin/env python3
 """Calcule un NDVI, paramétré par un fichier YAML."""
 import argparse
@@ -961,5 +976,3 @@ from code_complementaire.quizz_functions import Quiz, render_quizz
 Chap00Quiz = Quiz("quiz/Chap00.yml", "Chap00")
 render_quizz(Chap00Quiz)
 ```
-
-Revise the slides, make sure: 1) one slide per concept 2) make sure that all the sections are mapped on at least one slide 3) explain the concept in a few bullet point 4) include a code exemple if possible
