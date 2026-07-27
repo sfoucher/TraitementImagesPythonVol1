@@ -25,7 +25,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Importation et manipulation de données spatiales {#sec-chap01}
+    # Importation et manipulation de données spatiales
 
     ## Préambule
 
@@ -36,14 +36,6 @@ def _(mo):
     Dans ce chapitre, nous abordons quelques formats d'images ainsi que leur lecture. Ce chapitre est aussi disponible sous la forme d'un notebook Python:
 
     [![](images/colab.png)](https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/01-ImportationManipulationImages.ipynb)
-
-    <div style="border:0.5px solid silver;border-left:.3rem solid #00796d;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#e2efec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADfUlEQVRYhb2XMXLbMBBFnzVKkSZ0ylRmJkVKMycwfQIrJzB9AVruMsNGLlCHwQVC3UC+AXUC02WKTOQ+hXGAjFNgIYIQZNkZxzvD4UhY7H7s/l0s9+7v73msJFWZAzmQAfvBcidPa5RePdbm3i4ASVWmwBQogOSRdpdAY5RuIvb2gX0H8kEASVXOxHkCGGAhT2uUvgt0M2x0CuBQ/r4BCqN05+m0wMQo3QKMtzjOgEYMGeAsdhpfxEkH1BK1GjhBUuU5H0RxIwKB4pWcYHDax0pSlalRehVxfiFghwACxQujdP0vjgMQ0ZOLfBt7ivvYsCc8EHLRy7GV4OQOy4su0C2wqYg5PzNKNz4HZticz7ewNxWd0xgw0bkFZt7+mHODTesCYCQbM+AcuMWyPjQ8websVHQugWPvOQPmwAE9CQFWEee5cw7CgaQqF1jGHrvy8JwXwHf5+SAvPMd32HI98pZvsOW3SqqyBmqj9Gokm06A24jzFBtGA3zaRUqvA7bifAm8xUYpF+c5NtozsH0gl00x4w09KdcEEyIW9O24M0ovAsbPjdKFB8iBbJOqNMDEAZjI2jov4iRzp/BJuY3ZSVX+AN4Bb5BUiY3CKB3yagGcJlWZjYAUMJELxAFbR0ZSsuYDfXh/Ah+B19ho1d7eczallXc2wpZeF1HKA2WQvAFTo3QtHbIAPgB/gFeB/p0AzxnKSt7pKOJ4IEEbTrHRasRwgy3NG+CLp+MkdrCB7ASwQ3Is03Pgd2R95x2yE4Aw3skKSKQxYZROjdK5RGnq6TgJh5YNGWPDl0XWWmwVTLDlCH0rbmRWWIiTGsulq4DMDmgb2E4d2JF3qjRQcmVZuD/E+Jn8/Ar8Aq7pm85aV4h3iL3SQ8nl3Y08RxNfQxrPEjiS2nf/N3KCC+ydcAl89lLhpA7eIQBjlO7G9GUzjSgX9FNO57qhOHroTmjoU9IGaxPspTUHGElY58BBWK+y5mbC66QqN27KwHiaVKW7NW/wUuKJs1FDfxtm2FzeAllk4HRETESnYdhwUmxY3awQHeW8m3VplM7XAGTRtU3/Ehmcjh0DiYDzB5JwfyeHeL8xlku9t9jcPctIFuxxtgczxUsMpb7zjej+77E8x5Z5OB9sByAbU9noPkymuz5MIvvdhwnApVF6FtN90U+zJwPwTvNsH6dPBhCAyXnmz/O/0JrtInNZu4wAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>Objectifs d’apprentissage visés dans ce chapitre</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-
-    </div>
-    </div>
 
     ### Bibliothèques
 
@@ -167,18 +159,6 @@ def _(mo):
     2\. **Les géo-formats** issus des domaines scientifiques ou techniques comme GeoTIFF, HDF5, NetCDF, etc. qui peuvent inclure plus que trois bandes et des dynamiques plus élevées (16 bits ou même float).
 
     Les formats RVB restent très utilisés en Python notamment par les bibliothèques dites de vision par ordinateur (*Computer Vision*) comme OpenCV et scikit-image ainsi que les grandes bibliothèques en apprentissage profond (PyTorch, Tensorflow).
-
-    <div style="border:0.5px solid silver;border-left:.3rem solid #352c76;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#e2e1f2;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAABhUlEQVRYhe2Wv3HCMByFP3P0YYMwQHShiGrYgGSCsEFcRSWmVBWYIGYDNoDUashpAdiATOAUyMZnDvsiMKTwa2z9ud/7znqSFSRJQlFSqA1wfzRwnrbG6m6xMygCSKEiYAx8AauKoiP3jCvmDYA+MDFWRycBpFBdYO2aPWP1pqyqFGoFYKweVMw7WbdVmDsF7oBplflf5GpltfNjGYAUagAM2a9VdCnzHEQEbIGh8zoASKE6HNZxdGnznNLasfPMvkDIPvVzY/WqLndXe+68QoCWC8gY+Ek7a1bovMZSqG7w9PAeOYBbaNLONb6B3ZWMO8AjQB4grHP983K7YAnH58DV1a6aIIUa4b81Y2N17A0ghXoGPj3NAfpSqJ2xeuEFAPQAjNWBj7sUKnE1TgL8/wxAltqbAKS/0OUZHuuywVIAY/VCCvWCy4KPeVkAKwFSCEpCdK5uHsIGoAFoABqAPIDvceujzKvN4Wfx4a7odV9MO8Cbe18HSZIghYqB15qNi5oZq8Nf0ER+TJGyROAAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>Installation de gdal dans un système Linux</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    <ul>
-    <li>Pour installer GDAL :</li>
-    </ul>
-    <pre><code>!apt-get update
-    !apt-get install gdal-bin libgdal-dev</code></pre>
-    </div>
-    </div>
 
     #### Formats de type RVB
 
@@ -402,21 +382,6 @@ def _(cv2):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <div style="border:0.5px solid silver;border-left:.3rem solid #eb5f23;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fef4ec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADSElEQVRYhbWX0W3bMBCGPwd5jwvwPUY1QNQJokxQL1DVmSDuBHEnqDNBFS7QdIJKE9QdgIDzXAFRJnAfeIzPDC05TXuAIZu64//z7ueRHm02G/63tWU2BvLUu+P/BFbIJwfO+/z/GYG2zApgBnyMXjXAWj7aZsDpqwkI8ILtSu+BCrgz1q0G4l5HoC2zJXAlPxtgYayrDwzPgaaXQFtmE2AKpFayBM7wK55p4LbMpmxFV8ekRCcnQLeXQFtmOVCL4z77LuCdiqvY1cF1W2Y3xrq5GivkuTraA14o8E/AhTxvlNutsW4agRcCfi/kGuARuJIFxQTqZxloy2wGfJWfl8a6SsZXQiqAzxLcw8RrY91U4mq8QHUppwDGul0CCvwRmEa1q/A13wc+ZJ1g5MApPkPbPqBq9wgUegu1ZTYH3gPNAPgdcA2ct2W2xu/9XL0DCFqoAEabzUaD/8KLSoNP2KZuomuesqiEyILmxrpK1L8GOmPdBOA4Um0NTGUb1YrxCV4PSXBJa2esWwtQjRKasW4t3xcy1zLEjn5/eNvRv9UA7gPjBPgCn/bPxrrFvgmE5M94rmNj3Vg5jKO4UPslCYt0c5fyEb8xUnO2GvAEwpdU35Z9/Z7oIJEJl2x1UwxoI3TNW2PdDtFkI1IWSFWhkQh4fSi4FnhqB42GLiRRb8jxqT4DbvHq3ifMsfie9xFNElA3mJWxrlNCC9bbjCRblRAFeLOP6LMSqBT/4HkTAdnXPeBziQ/g9JVoh4AwX0lwA6ykBLW4NET7WMfK/v8iQ5fif78PHFQJouP3KcVtmW3YrvpOre5Wxgp5hhtRg++maznAOmNdcUgGdsClFACf8QKqJJUFXlQfgQfgm4A3wIWxrlCd74wBO1Kr7/Bpmwvzh7bMCulueVtm67bMZopEI0QAbgS4DhNLOx+0Y3hqQhMlwDOZfNXuHi6d+HdAIY3qRxhX4Dom2UV3MqCyoAVY4A+P0AMu4y6WsqhvvBuKiTVwitdAAL9iez+oDgCvFHiRau9JArL6E3wtZ/JOgw9NVEd3ivwQcNjVwCh69w5/t+s7ZAp5VvjsHXIwPSeQskNXIBbueLOXgPcSeKH97UX11QSWJP75vMT+AHO9uY9+8Go9AAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>Une vue versus une copie</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    Avec NumPy, les manipulations peuvent créer des vues ou des copies. Une vue est une simple représentation de la même donnée originale alors qu’une copie est un nouvel espace mémoire.
-
-    Par défaut, un découpage créé une vue.
-
-    On peut vérifier si l’espace mémoire est partagé avec <code>np.shares_memory(arr, slice_arr)</code>.
-
-    On peut toujours forcer une copie avec la méthode <code>copy()</code>
-
-    </div>
-    </div>
-
     ```{=html}
 
     ```
@@ -844,60 +809,7 @@ def _(mo):
 
     ## Points clés
 
-    <div style="border:0.5px solid silver;border-left:.3rem solid #357cc0;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#eef5fb;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IB2cksfwAAA/pJREFUWIXNl01sVFUYhp/vzLSlDTbiTCmpoEQT5SemQQNaFw12ftCQrtSmKxLiAmUp0UTsz51prcYFKxM10ZCwarCuiAlMWyQuICkQ7KKlmmBiqDWlc52m1jKkvedz0TuVInTujNH6rr6595z3ec89d+45RwioV/p+rVv0wruNyi4LuwV2Abv922MK4wbGrOi48bzxjLPlVhBfKdagpTf3eEi9bpTDQcP6zic9CaXOd2z6uawATSduVm/8fcN7CO+CVAFLwA8CowqjqjKq4aXvvUWRsIQaRbRRoFGhEXgaCIPeQfl4/qH8h5fe3nY7cICkk92hhgH/EVuB/iXxus531t8IMviWnuknwxpKK7QDBhgTy2sZJzpRNEA8fWuPYIaBTcB1i7wx3BW5FAR8r2Jpt8mgXwI7gZxiY0Ndm689MEDCmWnAyAjwKMg3G+ydtjNOw0I58IJanamavKk6DXoQ+AWr+waduqm/BXj9tIZmr/92HtFmhW9z9ZEDV4/I4j+BF/Tc51qxado9J/ASKt89vPORlq/axMOfHwBmJ9xjiDYDk0u2sq0YPJlyE4l0diSRzo4kU25irbZXj8jikq1sAyYRbZ6dcI8V7hmAZK+7DegGVIXDF5zabNFhiX4K7AX2+vWauuDUZlU4DCjQ7TOXA1hLB1CDSP9QZ3SoKLxMDXVGhxDpB2p8JibWNxcR9BBgrWedwG4qbwGXgct+HUg+wwp6KNY3F5FEauYIIp8B5wa7oi+XObiSlEhnzwIHUH3TIJIEUNWv/wv4KpZIMgy6B4SQmItBDeK97gvi2UYR2a7IdhHNZTqjR4P2D4m5aFFA94RBtgLMbVz4KaiBWJKIHFWoB0WVT4L2LbA2zlcDstUAFYA+aLG4nwa7ImlFPlq5oIyUEsBnKVBhArS/r0TYUahDRksKcLcMsAhI04mb1SX1VN3nV7mzHdEfS+nqswRYNKCTALXzNU8ENWh1pmqAZ/yflxHRUgL8xdJJA3INwFP7YlCD2+ENzy5vOEApbf5Xs+SaQTUDICKvBjUQ6xUeP0ZLn/8VlmrG2IqqASAPJGLOzFNBDFRYCeCFbUkBfEYCyNuKqgEzfLzWVeQUYEzIBFoLROV5lt+iG8Pv10+XEsBnGEVODR+vdQ2AMfQCC6i2x3uy8QA+m1me/4ZE2u1KpmYCBY/3ZOOotgMLPnN5Oc50RG4CKUBEObnfmYuuZaSiZ/xSQOtCar4oBt/vzEVFOen//VI+s8wtmaq0fDD7WLjqTjbzzpY/isHX2pKt+6Z01ad40KmbUmwrkAM9mDeVV2Jpt6lceCztNuVN5RUfnlNs691w/pcHk4LW9Wi2ajTrdTi9V//W8fxPxif/DjJKAKcAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>À retenir</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    <ul>
-    <li><strong>GDAL</strong> est la librairie de référence pour lire/écrire l’imagerie (elle rassemble les formats sous forme de <em>drivers</em>).</li>
-    <li>Deux familles de formats : <strong>RVB</strong> (JPEG, PNG — au plus 3 bandes, 8 bits, peu de métadonnées) et <strong>géo-formats</strong> (GeoTIFF, NetCDF, HDF5 — multi-bandes, 16 bits/float, géoréférence). Le <strong>COG</strong> permet l’accès partiel à distance.</li>
-    <li>Quatre caractéristiques à surveiller : la <strong>matrice de pixels</strong>, la <strong>dynamique</strong> (<code>dtype</code>), le <strong>nombre de bandes</strong> et les <strong>métadonnées / géoréférence</strong>.</li>
-    <li>Consulter les <strong>métadonnées avant de lire</strong> (<code>rio info</code>, <code>gdalinfo</code>, ou les attributs de <code>rasterio</code>).</li>
-    <li><code>OpenCV</code> lit les canaux en <strong>BGR</strong> : convertir en RGB (<code>cv2.cvtColor</code>) avant l’affichage.</li>
-    <li>Une image est un <strong>tableau NumPy</strong> : indexation/découpage <code>[ligne, colonne, bande]</code> ; attention à la distinction <strong>vue vs copie</strong> (<code>np.shares_memory</code>, <code>.copy()</code>).</li>
-    <li>L’<strong>indexation avancée</strong> (tableaux d’indices, <code>argmax(axis=…)</code>) sélectionne des éléments par condition ou construit des cartes dérivées (bande dominante) — elle renvoie une <strong>copie</strong>.</li>
-    <li>Les <strong>tableaux masqués</strong> (<code>numpy.ma</code>) excluent les pixels non valides des statistiques : <code>masked_equal</code>/<code>masked_where</code>, puis <code>count()</code> et <code>compressed()</code>.</li>
-    <li><code>np.save</code> (<code>.npy</code>) et <code>np.savez_compressed</code> (<code>.npz</code>) stockent des tableaux intermédiaires — <strong>sans</strong> géoréférence, au contraire du GeoTIFF.</li>
-    <li><code>rioxarray</code>/<code>xarray</code> ajoutent <strong>dimensions nommées, coordonnées et géoréférence</strong> (accesseur <code>.rio</code>) : sélection par étiquette, reprojection (<code>rio.reproject</code>), export (<code>rio.to_raster</code>).</li>
-    <li><code>rioxarray</code> <strong>découpe</strong> (<code>clip_box</code>/<code>clip</code>) et <strong>rééchantillonne</strong> (<code>reproject(resolution=…)</code>, méthode d’agrégation au choix) une image géoréférencée.</li>
-    <li><code>xarray</code> sélectionne par <strong>étiquette</strong> (<code>sel</code>) ou position (<code>isel</code>), réduit sur des <strong>dimensions nommées</strong>, et ses calculs <strong>préservent la géoréférence</strong>.</li>
-    <li><code>rasterio</code> <strong>écrit</strong> un tableau NumPy dans un GeoTIFF géoréférencé : hériter le <strong>profil</strong> de la source (CRS + transformation) ou le construire (<code>from_origin</code>), puis <code>dst.write</code>.</li>
-    </ul>
-    </div>
-    </div>
-
     ## Exercices
-
-    <div style="border:0.5px solid silver;border-left:.3rem solid #e34692;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fbe8f2;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADP0lEQVRYha2XT3LaMBjFf3SyD91rBnqC0BOUbuJl6AkwB9CUnKD0BCXxAeKcIGSpVZ0bwAkKEx8ATkAXemoUgm0I/WY8smVJ7/n78yS3ttstp1iZZF0g1WNhnC3Un6o/N87mVfNbpxAQ+Bw4j7p/qv0R9Y2qSHx4N7q3scBvBLwS8A/dj4ANcCePvLFTPVAAX4yzraivDxCFogcUIvrGE6cSSIE74KdxdlIzrpLEqSGY4V2d1g0yzs6BPnvCcRIB4+waWAKdMsna7yHR2m63aPL4COzCOFuUSZYDQ+DeOJseMjEKB8bZduv58ratjosjCMSltgJ68gZlkg20+KyGRIrPndEZMBD4AuiHhSom9oHfeszxXusAkzLJ1vhc6GjsChjI9bs2UFt8ALp6GDeAt4GpHtfG2SUvMf2O90YHrwk3us/3rJMDV8CTcXZ5VgUYTehroY66NmFh4+w8kuI2r6X4OzthLZNsjM+ZBfJCLQF99Qxfvwu87E5iT+l+ujMvuPgp6kuBX/qAf6Fu8kBP4I/G2UHD2NjGAhpH4He74IcQCNYtk6xdlSNBfoGlcuMLPsbzPeCvkrL1fHk7wSfQ1xC/ncXnvMRyhU/Wmd7tK+ERPjmHwL3aveBwmBL2tdACn4gPSjzwyXchgEf1TXVtmsAPImCcXRtnU+NsT0QCMPgcQQADkTjHV0QgXgkOr3MglUzmu7HWF8dJ2I1keBMBFPgan4lk3vSBsQeG+DJZikgAT4E/ejeMxob7eA/J8aE6Bx7wqlm7x8QErqPJ8aSJ2nuNAV/f18DneG9XuHrAN172i+WhBMJ2CYqtsrwDLLTbBVevjbPTqtgaZ2d1B5QqAkHVFsCFYlxE5OL2qkyyWZlk46ZzwFEEZEHFhvgSW6kvEBwFEvi8KE4h8YaAxKgLfMWLU3dH+3PgIz7OG5FM30tgrxQLsKiapPcz7W53+Lr/fwSaTGU64KValjXDezXvjidQJtkUfwAJ9lj360WDd44iIEUM4Nf4A0ilzB5iZ0BIsJSauMu6am+Ms9O6gZGa1hJsPV/edvFSC14DKs+FeHeG0lzWc/13mPmkM8J+AvovGOC30E7VwHfYEw2/5gB/AcMlhsUeVwFpAAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>À vous de jouer</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    <ol type="1">
-    <li>Ouvrez <code>RGBNIR_of_S2A.tif</code> avec <code>rasterio</code> et affichez son nombre de bandes, son type de pixels, son système de coordonnées et sa résolution.
-    </li>
-    <li>À l’aide du découpage NumPy, extrayez une fenêtre de 100 × 100 pixels au centre d’une image et affichez-la.
-    </li>
-    <li>Vérifiez avec <code>np.shares_memory</code> si un découpage crée une <strong>vue</strong> ou une <strong>copie</strong>, puis forcez une copie avec <code>.copy()</code>.
-    </li>
-    <li>Reprojetez <code>RGBNIR_of_S2A.tif</code> en <code>EPSG:4326</code> avec <code>rioxarray</code>, puis sauvegardez le résultat en GeoTIFF avec <code>rio.to_raster</code>.
-    </li>
-    <li><em>(indexation avancée)</em> Sur <code>RGBNIR_of_S2A.tif</code>, construisez la carte de la <strong>bande dominante</strong> (<code>argmax</code>), puis affichez le pourcentage de pixels où le proche-infrarouge (indice 3) domine.
-    </li>
-    <li><em>(masquage)</em> Calculez le NDVI, masquez les pixels d’eau (NDVI < 0) avec <code>np.ma.masked_where</code>, puis comparez le NDVI moyen <strong>avec</strong> et <strong>sans</strong> masque.
-    </li>
-    <li><em>(sauvegarde)</em> Sauvegardez votre carte de NDVI dans un fichier <code>.npy</code>, rechargez-la, et vérifiez l’égalité avec <code>np.allclose</code> (option <code>equal_nan=True</code>).
-    </li>
-    <li><em>(découpage)</em> Découpez <code>RGBNIR_of_S2A.tif</code> sur son <strong>quart supérieur gauche</strong> avec <code>clip_box</code> et affichez la sous-image.
-    </li>
-    <li><em>(rééchantillonnage)</em> Rééchantillonnez l’image à <strong>30 m</strong> par moyenne (<code>reproject</code> avec <code>Resampling.average</code>) et comparez le nombre de pixels à l’original.
-    </li>
-    <li><em>(xarray)</em> Nommez les bandes (<code>B</code>, <code>V</code>, <code>R</code>, <code>PIR</code>), sélectionnez <code>PIR</code> par étiquette, puis calculez la moyenne de chaque bande sur les dimensions <code>y</code> et <code>x</code>.
-    </li>
-    <li><em>(écriture)</em> Calculez un masque d’eau (NDVI < 0), écrivez-le comme un GeoTIFF à une bande en réutilisant le profil de <code>RGBNIR_of_S2A.tif</code>, puis relisez-le pour vérifier son CRS.
-    </li>
-    </ol>
-    </div>
-    </div>
 
     ## Quiz
 

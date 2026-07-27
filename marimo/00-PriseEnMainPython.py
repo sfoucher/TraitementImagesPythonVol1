@@ -14,27 +14,9 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Introduction au langage Python {#sec-chap00}
+    # Introduction au langage Python
 
     Dans ce chapitre, nous présentons quelques éléments essentiels du langage Python qui nous seront utiles dans ce manuel. Python est un langage très riche et peut aboutir à des projets logiciels très sophistiqués. Il est important de comprendre que la programmation Python n'est pas ici une fin en soi, mais plutôt un outil de scriptage et de manipulation des données satellitaires.
-
-    <div style="border:0.5px solid silver;border-left:.3rem solid #00796d;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#e2efec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADfUlEQVRYhb2XMXLbMBBFnzVKkSZ0ylRmJkVKMycwfQIrJzB9AVruMsNGLlCHwQVC3UC+AXUC02WKTOQ+hXGAjFNgIYIQZNkZxzvD4UhY7H7s/l0s9+7v73msJFWZAzmQAfvBcidPa5RePdbm3i4ASVWmwBQogOSRdpdAY5RuIvb2gX0H8kEASVXOxHkCGGAhT2uUvgt0M2x0CuBQ/r4BCqN05+m0wMQo3QKMtzjOgEYMGeAsdhpfxEkH1BK1GjhBUuU5H0RxIwKB4pWcYHDax0pSlalRehVxfiFghwACxQujdP0vjgMQ0ZOLfBt7ivvYsCc8EHLRy7GV4OQOy4su0C2wqYg5PzNKNz4HZticz7ewNxWd0xgw0bkFZt7+mHODTesCYCQbM+AcuMWyPjQ8websVHQugWPvOQPmwAE9CQFWEee5cw7CgaQqF1jGHrvy8JwXwHf5+SAvPMd32HI98pZvsOW3SqqyBmqj9Gokm06A24jzFBtGA3zaRUqvA7bifAm8xUYpF+c5NtozsH0gl00x4w09KdcEEyIW9O24M0ovAsbPjdKFB8iBbJOqNMDEAZjI2jov4iRzp/BJuY3ZSVX+AN4Bb5BUiY3CKB3yagGcJlWZjYAUMJELxAFbR0ZSsuYDfXh/Ah+B19ho1d7eczallXc2wpZeF1HKA2WQvAFTo3QtHbIAPgB/gFeB/p0AzxnKSt7pKOJ4IEEbTrHRasRwgy3NG+CLp+MkdrCB7ASwQ3Is03Pgd2R95x2yE4Aw3skKSKQxYZROjdK5RGnq6TgJh5YNGWPDl0XWWmwVTLDlCH0rbmRWWIiTGsulq4DMDmgb2E4d2JF3qjRQcmVZuD/E+Jn8/Ar8Aq7pm85aV4h3iL3SQ8nl3Y08RxNfQxrPEjiS2nf/N3KCC+ydcAl89lLhpA7eIQBjlO7G9GUzjSgX9FNO57qhOHroTmjoU9IGaxPspTUHGElY58BBWK+y5mbC66QqN27KwHiaVKW7NW/wUuKJs1FDfxtm2FzeAllk4HRETESnYdhwUmxY3awQHeW8m3VplM7XAGTRtU3/Ehmcjh0DiYDzB5JwfyeHeL8xlku9t9jcPctIFuxxtgczxUsMpb7zjej+77E8x5Z5OB9sByAbU9noPkymuz5MIvvdhwnApVF6FtN90U+zJwPwTvNsH6dPBhCAyXnmz/O/0JrtInNZu4wAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>Objectifs d’apprentissage visés dans ce chapitre</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    À la fin de ce chapitre, vous devriez être en mesure de :
-
-    <ul>
-    <li>connaître les principales distributions de Python;</li>
-    <li>installer un environnement d’exécution du code de cet ouvrage;</li>
-    <li>comprendre les structures de base du langage Python (listes, tuples, ensembles, dictionnaires);</li>
-    <li>écrire des boucles, des conditions et des fonctions;</li>
-    <li>aborder la programmation orientée objet;</li>
-    <li>organiser du code en modules et packages;</li>
-    <li>manipuler une matrice <code>NumPy</code>.</li>
-    </ul>
-    </div>
-    </div>
 
     Ce chapitre est aussi disponible sous la forme d'un notebook Python sur Google Colab :
 
@@ -118,7 +100,7 @@ def _(mo):
 
     4.  **Vérifiez l'installation**. Après l'installation, ouvrez un terminal et tapez `python --version` pour vous assurer que tout fonctionne correctement.
 
-    ### Création d'un environnement virtuel {#sec-00-01}
+    ### Création d'un environnement virtuel
 
     Il y a deux façons d'installer un environnement virtuel selon votre distribution de Python:
 
@@ -137,7 +119,7 @@ def _(mo):
     pip install --upgrade pip
     ```
 
-    ### Création d'un environnement de travail local (avancé) {#sec-00-jupyter-local}
+    ### Création d'un environnement de travail local (avancé)
 
     **Note**: les notebooks peuvent fonctionner localement sous Windows ou sous Linux avec WSL2.
 
@@ -288,69 +270,6 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <div style="border:0.5px solid silver;border-left:.3rem solid #eb5f23;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fef4ec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADSElEQVRYhbWX0W3bMBCGPwd5jwvwPUY1QNQJokxQL1DVmSDuBHEnqDNBFS7QdIJKE9QdgIDzXAFRJnAfeIzPDC05TXuAIZu64//z7ueRHm02G/63tWU2BvLUu+P/BFbIJwfO+/z/GYG2zApgBnyMXjXAWj7aZsDpqwkI8ILtSu+BCrgz1q0G4l5HoC2zJXAlPxtgYayrDwzPgaaXQFtmE2AKpFayBM7wK55p4LbMpmxFV8ekRCcnQLeXQFtmOVCL4z77LuCdiqvY1cF1W2Y3xrq5GivkuTraA14o8E/AhTxvlNutsW4agRcCfi/kGuARuJIFxQTqZxloy2wGfJWfl8a6SsZXQiqAzxLcw8RrY91U4mq8QHUppwDGul0CCvwRmEa1q/A13wc+ZJ1g5MApPkPbPqBq9wgUegu1ZTYH3gPNAPgdcA2ct2W2xu/9XL0DCFqoAEabzUaD/8KLSoNP2KZuomuesqiEyILmxrpK1L8GOmPdBOA4Um0NTGUb1YrxCV4PSXBJa2esWwtQjRKasW4t3xcy1zLEjn5/eNvRv9UA7gPjBPgCn/bPxrrFvgmE5M94rmNj3Vg5jKO4UPslCYt0c5fyEb8xUnO2GvAEwpdU35Z9/Z7oIJEJl2x1UwxoI3TNW2PdDtFkI1IWSFWhkQh4fSi4FnhqB42GLiRRb8jxqT4DbvHq3ifMsfie9xFNElA3mJWxrlNCC9bbjCRblRAFeLOP6LMSqBT/4HkTAdnXPeBziQ/g9JVoh4AwX0lwA6ykBLW4NET7WMfK/v8iQ5fif78PHFQJouP3KcVtmW3YrvpOre5Wxgp5hhtRg++maznAOmNdcUgGdsClFACf8QKqJJUFXlQfgQfgm4A3wIWxrlCd74wBO1Kr7/Bpmwvzh7bMCulueVtm67bMZopEI0QAbgS4DhNLOx+0Y3hqQhMlwDOZfNXuHi6d+HdAIY3qRxhX4Dom2UV3MqCyoAVY4A+P0AMu4y6WsqhvvBuKiTVwitdAAL9iez+oDgCvFHiRau9JArL6E3wtZ/JOgw9NVEd3ivwQcNjVwCh69w5/t+s7ZAp5VvjsHXIwPSeQskNXIBbueLOXgPcSeKH97UX11QSWJP75vMT+AHO9uY9+8Go9AAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>Les opérateurs <code>*</code> et <code>**</code> sur un dictionnaire</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    Les opérateurs de <em>déballage</em> (<em>unpacking</em>) donnent accès au contenu d’un dictionnaire sans écrire de boucle. La règle est simple : <code>**</code> déballe les <strong>paires clé-valeur</strong>, tandis que <code>*</code> (une seule étoile) ne déballe que les <strong>clés</strong>.
-
-    <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
-    <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ** : fusionner ou copier des dictionnaires</span></span>
-    <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>complet <span class="op">=</span> {<span class="op">**</span>image, <span class="st">"date"</span>: <span class="st">"2024-07-01"</span>}   <span class="co"># copie + une paire en plus</span></span>
-    <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>fusion  <span class="op">=</span> {<span class="op">**</span>image, <span class="st">"bandes"</span>: <span class="dv">4</span>}            <span class="co"># en cas de collision, la dernière clé gagne</span></span>
-    <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ** : passer un dictionnaire comme arguments nommés d'une fonction</span></span>
-    <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resume(capteur, bandes, resolution_m):</span>
-    <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>capteur<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>bandes<span class="sc">}</span><span class="ss"> bandes à </span><span class="sc">{</span>resolution_m<span class="sc">}</span><span class="ss"> m"</span></span>
-    <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resume(<span class="op">**</span>image))          <span class="co"># équivaut à resume(capteur="Sentinel-2", bandes=13, ...)</span></span>
-    <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># * : ne déballe que les clés</span></span>
-    <span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>([<span class="op">*</span>image])                 <span class="co"># ['capteur', 'bandes', 'resolution_m']</span></span>
-    <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="op">*</span>image, sep<span class="op">=</span><span class="st">", "</span>)         <span class="co"># capteur, bandes, resolution_m</span></span>
-    <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Côté définition d'une fonction : **kwargs collecte les arguments nommés dans un dict</span></span>
-    <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> info(<span class="op">**</span>meta):               <span class="co"># meta est un dictionnaire</span></span>
-    <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> cle, valeur <span class="kw">in</span> meta.items():</span>
-    <span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(cle, <span class="st">":"</span>, valeur)</span>
-    <span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>info(capteur<span class="op">=</span><span class="st">"SPOT"</span>, bandes<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-    À retenir : <code>**d</code> sert à <em>fournir</em> ou <em>fusionner</em> des paires clé-valeur (appels de fonction, construction de dictionnaires), alors que <code>**kwargs</code> dans une <strong>définition</strong> de fonction fait l’inverse — il <em>collecte</em> les arguments nommés dans un dictionnaire. À partir de Python 3.9, <code>a | b</code> fusionne aussi deux dictionnaires, en équivalent plus lisible de <code>{**a, **b}</code>.
-
-    </div>
-    </div>
-
-    <div style="border:0.5px solid silver;border-left:.3rem solid #f0ae4e;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fef4ec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IB2cksfwAAA+5JREFUWIXlll1Mm1UYx3/P+1bKAtiWGT/2cUN0XizEAH4k0yzeQLKMtmtpMU4TvdDscpp54YbJYLpENuNmpzNZXDZJ3EVLW2hhF1NjvCKwuPnBNLoYxQvG2ActJmMM+z5eFJBiZ1uYxMTn6v+e5/z/z/885805B/7vIUslTkQ9m0W1AxFR0b0uf/LLFTMwEWt+RNQ4v4CvqjS4AonzpWoZpRJUEVEjBIgI7wkcBsQQQqqlL6hkQrrb/ayKnALGrYx9A4BhTv8I3CfC8w5/4pNS9ErqwFhXU4WKHCDbid3VrZF0dWskrSK7Z8c6x8PByn/NQHnFqj3AOtAh53D9yblx57d1HwODwNoy2822UjSL3oJ02POgmgwDd4nKJkegdzAnH9/2uFrWADAjatU6An0Xi9EtvgOmvgvYBelaXBzA4esZQjkJ2C0xDhUrW1QH0nH3FrXkNJC22Xi40pu4nO72PqGipwBEZbsj0Dv4e8x3b0YzPwEOgWZHS6K/kHbBDmg4WKaWHCb7k+2r9CYuAyi6F6gBamYxVf74uKLt2TyH9PQW+7INpM3pV4ANoD84r91/ZIG1Vfmw8+oDH4jyPfBQ+kbZq8sycKXXswZ4AwCRnbLj2MxfTLmUD8uOYzMqsjP7oW1Xw81rl2zAlqETqALiTn/i05ykMpoXA86W3s9QYkClaRqdSzIwGfFuEuU5gZtkdNfivMKlfHh+zDR2AVMC26/H3E+VZEDb2w3L0COAWHDQ2Zr85W9E1dF8eC5cvp5fBQ4AYqiENBw0izaQrj33ElAP/DZVpm/nm2OpeSkfXhiTGXsnyAhQl7ZNv1yUgVTfVhewHwDhtTXu5I18RNOU0Xx4YaxvjUyhVnb7lLfS4WB1QQM6be4D7gG+cPoTkXzCAFW++EVRDYlqqMoXv+2x6wwko4h8DqxW89abi/M5J+H1Hm+tkdFzAJZk6qr9/cO3Ey4lrnW7N5oiX2cPTavB5e/7Zi6X0wHjDysE2ET16J0qDrA6kLwg8D5giho5D5d5A6ludysiTwNXtNxqLySainkaU1HPUCrqOZuKuJsKzbcMowMYBzZPxj3P5BgY62qqQOQdAJQ2Z3P/RMFlKUeBx4BHMeTDQtNdvp4U6B6yd8rBsa6minkD9ory14H1wFeO4frjBYsvMRzfNZwAzgLrZh83SCq6tUYwLyjYDbGevNvfN1CMWCrmaUTZDwiWtjmDyTPF8Gav8QHgFoaxUVJRTxgICnQ5WhIvLHeVRZmIek8o+iJI1AAaAZRMx0oUB7AMydZSbbQBI4ATzJ9TUc8KObDm0IhBRn2gH4HM/DPrTobMAMeRzLaVq/lfjT8B9MWCOfMxlGMAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>Types de variables et copie</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    En Python, une variable est une <strong>étiquette</strong> qui pointe vers un objet, et non une boîte qui contient une valeur. Cette distinction est source d’erreurs fréquentes.
-
-    Les types <strong>immuables</strong> (<code>int</code>, <code>float</code>, <code>str</code>, <code>tuple</code>) ne peuvent pas être modifiés sur place : les réaffecter crée un <strong>nouvel</strong> objet. Les types <strong>muables</strong> (<code>list</code>, <code>dict</code>, <code>set</code>) peuvent, eux, être modifiés en place — et une simple affectation <code>b = a</code> ne fait que créer une <strong>seconde étiquette sur le même objet</strong> :
-
-    <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
-    <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a                 <span class="co"># b et a désignent le MÊME objet</span></span>
-    <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>b.append(<span class="dv">4</span>)</span>
-    <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)              <span class="co"># [1, 2, 3, 4]  <- a est modifiée aussi !</span></span>
-    <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="kw">is</span> b)         <span class="co"># True (même objet en mémoire)</span></span>
-    <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> a.copy()          <span class="co"># copie superficielle : un nouvel objet</span></span>
-    <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>c.append(<span class="dv">5</span>)</span>
-    <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a, a <span class="kw">is</span> c)      <span class="co"># [1, 2, 3, 4] False  (a reste inchangée)</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-    Pour une matrice <code>NumPy</code>, c’est la méthode <code>.copy()</code> qui joue ce rôle (le découpage renvoie une <strong>vue</strong>, pas une copie). Attention enfin à la <strong>copie superficielle</strong> : elle duplique le conteneur mais <strong>partage</strong> les objets imbriqués. Pour une indépendance totale, on utilise <code>copy.deepcopy</code> :
-
-    <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> copy</span>
-    <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>grille <span class="op">=</span> [[<span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>]]</span>
-    <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>sup <span class="op">=</span> grille.copy()             <span class="co"># copie superficielle : sous-listes PARTAGÉES</span></span>
-    <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>sup[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">=</span> <span class="dv">9</span></span>
-    <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grille)                   <span class="co"># [[9, 0], [0, 0]]  <- affectée malgré la copie !</span></span>
-    <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> copy.deepcopy(grille)    <span class="co"># copie profonde : totalement indépendante</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-    À retenir : <code>is</code> compare l’<strong>identité</strong> (le même objet), <code>==</code> compare la <strong>valeur</strong>. En cas de doute sur un objet muable, copiez avant de modifier.
-
-    </div>
-    </div>
-
     ## Boucles et conditions
 
     Un programme prend des décisions (`if`) et répète des opérations (`for`, `while`). Ces structures de contrôle sont au cœur de tout traitement automatisé.
@@ -380,37 +299,6 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    <div style="border:0.5px solid silver;border-left:.3rem solid #eb5f23;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fef4ec;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADSElEQVRYhbWX0W3bMBCGPwd5jwvwPUY1QNQJokxQL1DVmSDuBHEnqDNBFS7QdIJKE9QdgIDzXAFRJnAfeIzPDC05TXuAIZu64//z7ueRHm02G/63tWU2BvLUu+P/BFbIJwfO+/z/GYG2zApgBnyMXjXAWj7aZsDpqwkI8ILtSu+BCrgz1q0G4l5HoC2zJXAlPxtgYayrDwzPgaaXQFtmE2AKpFayBM7wK55p4LbMpmxFV8ekRCcnQLeXQFtmOVCL4z77LuCdiqvY1cF1W2Y3xrq5GivkuTraA14o8E/AhTxvlNutsW4agRcCfi/kGuARuJIFxQTqZxloy2wGfJWfl8a6SsZXQiqAzxLcw8RrY91U4mq8QHUppwDGul0CCvwRmEa1q/A13wc+ZJ1g5MApPkPbPqBq9wgUegu1ZTYH3gPNAPgdcA2ct2W2xu/9XL0DCFqoAEabzUaD/8KLSoNP2KZuomuesqiEyILmxrpK1L8GOmPdBOA4Um0NTGUb1YrxCV4PSXBJa2esWwtQjRKasW4t3xcy1zLEjn5/eNvRv9UA7gPjBPgCn/bPxrrFvgmE5M94rmNj3Vg5jKO4UPslCYt0c5fyEb8xUnO2GvAEwpdU35Z9/Z7oIJEJl2x1UwxoI3TNW2PdDtFkI1IWSFWhkQh4fSi4FnhqB42GLiRRb8jxqT4DbvHq3ifMsfie9xFNElA3mJWxrlNCC9bbjCRblRAFeLOP6LMSqBT/4HkTAdnXPeBziQ/g9JVoh4AwX0lwA6ykBLW4NET7WMfK/v8iQ5fif78PHFQJouP3KcVtmW3YrvpOre5Wxgp5hhtRg++maznAOmNdcUgGdsClFACf8QKqJJUFXlQfgQfgm4A3wIWxrlCd74wBO1Kr7/Bpmwvzh7bMCulueVtm67bMZopEI0QAbgS4DhNLOx+0Y3hqQhMlwDOZfNXuHi6d+HdAIY3qRxhX4Dom2UV3MqCyoAVY4A+P0AMu4y6WsqhvvBuKiTVwitdAAL9iez+oDgCvFHiRau9JArL6E3wtZ/JOgw9NVEd3ivwQcNjVwCh69w5/t+s7ZAp5VvjsHXIwPSeQskNXIBbueLOXgPcSeKH97UX11QSWJP75vMT+AHO9uY9+8Go9AAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>Les compréhensions de liste et de dictionnaire</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    Une <strong>compréhension</strong> construit une collection en une seule ligne, à la place d’une boucle <code>for</code> suivie d’un <code>append</code>. Le code est plus court, plus lisible et souvent plus rapide. Le patron est toujours le même : une <strong>expression</strong>, un parcours (<code>for</code>), et un <strong>filtre</strong> optionnel (<code>if</code>).
-
-    <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
-    <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de LISTE : [expression for élément in itérable if condition]</span></span>
-    <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>majuscules <span class="op">=</span> [b.upper() <span class="cf">for</span> b <span class="kw">in</span> bandes]           <span class="co"># transforme chaque élément</span></span>
-    <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>courtes    <span class="op">=</span> [b <span class="cf">for</span> b <span class="kw">in</span> bandes <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op"><=</span> <span class="dv">4</span>]    <span class="co"># ne garde que certains éléments</span></span>
-    <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># équivalent avec une boucle classique :</span></span>
-    <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>courtes <span class="op">=</span> []</span>
-    <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> bandes:</span>
-    <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op"><=</span> <span class="dv">4</span>:</span>
-    <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        courtes.append(b)</span>
-    <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension de DICTIONNAIRE : {clé: valeur for ...}</span></span>
-    <span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> {nom: i <span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes)}  <span class="co"># {'bleu': 0, 'vert': 1, ...}</span></span>
-    <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
-    <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>inverse <span class="op">=</span> {valeur: cle <span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items()}   <span class="co"># échange clés et valeurs</span></span>
-    <span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
-    <span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Compréhension d'ENSEMBLE : {expression for ...} -> doublons éliminés</span></span>
-    <span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>]</span>
-    <span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>uniques <span class="op">=</span> {c <span class="cf">for</span> c <span class="kw">in</span> classes}                      <span class="co"># {'eau', 'forêt', 'urbain'}</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-    On peut aussi choisir la valeur selon une condition, en plaçant un <code>if</code>/<code>else</code> dans l’<strong>expression</strong> (et non comme filtre en fin) : <code>["vég." if b == "PIR" else "visible" for b in bandes]</code>.
-
-    </div>
-    </div>
-
     ## Les fonctions
 
     Une fonction regroupe des instructions réutilisables sous un nom. On la définit avec `def` ; elle reçoit des *arguments* et renvoie un résultat avec `return`.
@@ -565,7 +453,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Créer un exécutable Python {#sec-00-executable}
+    ## Créer un exécutable Python
 
     Un *notebook* est idéal pour explorer, mais pour une tâche répétitive — appliquer le même traitement à des centaines d'images — on préfère un **script exécutable** lancé depuis un terminal. Nous construisons ici, en trois étapes, un petit programme qui calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR).
 
@@ -701,7 +589,7 @@ def _(mo):
 
     Pour aller plus loin, un script peut être transformé en **commande installable** (accessible partout, sans préciser `python ...`) en déclarant un *point d'entrée* (`entry point`) dans le fichier `pyproject.toml` du package — le mécanisme utilisé par des outils comme `quarto` ou `jupyter`.
 
-    ## Un avant-goût de NumPy {#sec-00-02}
+    ## Un avant-goût de NumPy
 
     Dans ce manuel, une image est avant tout une matrice de nombres. La bibliothèque [NumPy](https://numpy.org/) fournit l'objet `ndarray` qui représente efficacement ces matrices à plusieurs dimensions : c'est la brique de base de tous les chapitres suivants.
     """)
@@ -811,82 +699,7 @@ def _(mo):
     mo.md(r"""
     ## Points clés
 
-    <div style="border:0.5px solid silver;border-left:.3rem solid #357cc0;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#eef5fb;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IB2cksfwAAA/pJREFUWIXNl01sVFUYhp/vzLSlDTbiTCmpoEQT5SemQQNaFw12ftCQrtSmKxLiAmUp0UTsz51prcYFKxM10ZCwarCuiAlMWyQuICkQ7KKlmmBiqDWlc52m1jKkvedz0TuVInTujNH6rr6595z3ec89d+45RwioV/p+rVv0wruNyi4LuwV2Abv922MK4wbGrOi48bzxjLPlVhBfKdagpTf3eEi9bpTDQcP6zic9CaXOd2z6uawATSduVm/8fcN7CO+CVAFLwA8CowqjqjKq4aXvvUWRsIQaRbRRoFGhEXgaCIPeQfl4/qH8h5fe3nY7cICkk92hhgH/EVuB/iXxus531t8IMviWnuknwxpKK7QDBhgTy2sZJzpRNEA8fWuPYIaBTcB1i7wx3BW5FAR8r2Jpt8mgXwI7gZxiY0Ndm689MEDCmWnAyAjwKMg3G+ydtjNOw0I58IJanamavKk6DXoQ+AWr+waduqm/BXj9tIZmr/92HtFmhW9z9ZEDV4/I4j+BF/Tc51qxado9J/ASKt89vPORlq/axMOfHwBmJ9xjiDYDk0u2sq0YPJlyE4l0diSRzo4kU25irbZXj8jikq1sAyYRbZ6dcI8V7hmAZK+7DegGVIXDF5zabNFhiX4K7AX2+vWauuDUZlU4DCjQ7TOXA1hLB1CDSP9QZ3SoKLxMDXVGhxDpB2p8JibWNxcR9BBgrWedwG4qbwGXgct+HUg+wwp6KNY3F5FEauYIIp8B5wa7oi+XObiSlEhnzwIHUH3TIJIEUNWv/wv4KpZIMgy6B4SQmItBDeK97gvi2UYR2a7IdhHNZTqjR4P2D4m5aFFA94RBtgLMbVz4KaiBWJKIHFWoB0WVT4L2LbA2zlcDstUAFYA+aLG4nwa7ImlFPlq5oIyUEsBnKVBhArS/r0TYUahDRksKcLcMsAhI04mb1SX1VN3nV7mzHdEfS+nqswRYNKCTALXzNU8ENWh1pmqAZ/yflxHRUgL8xdJJA3INwFP7YlCD2+ENzy5vOEApbf5Xs+SaQTUDICKvBjUQ6xUeP0ZLn/8VlmrG2IqqASAPJGLOzFNBDFRYCeCFbUkBfEYCyNuKqgEzfLzWVeQUYEzIBFoLROV5lt+iG8Pv10+XEsBnGEVODR+vdQ2AMfQCC6i2x3uy8QA+m1me/4ZE2u1KpmYCBY/3ZOOotgMLPnN5Oc50RG4CKUBEObnfmYuuZaSiZ/xSQOtCar4oBt/vzEVFOen//VI+s8wtmaq0fDD7WLjqTjbzzpY/isHX2pKt+6Z01ad40KmbUmwrkAM9mDeVV2Jpt6lceCztNuVN5RUfnlNs691w/pcHk4LW9Wi2ajTrdTi9V//W8fxPxif/DjJKAKcAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>À retenir</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    <ul>
-    <li>Installez Python via un <strong>environnement virtuel</strong> (<code>conda</code> ou <code>venv</code>) pour isoler chaque projet.</li>
-    <li>Quatre structures de base : <strong>listes</strong> (ordonnées, modifiables), <strong>tuples</strong> (immuables), <strong>ensembles</strong> (sans doublons) et <strong>dictionnaires</strong> (paires clé-valeur).</li>
-    <li><code>if</code>/<code>for</code>/<code>while</code> contrôlent le déroulement du programme ; les <strong>fonctions</strong> (<code>def</code>) regroupent du code réutilisable.</li>
-    <li>Le code s’organise en <strong>modules</strong> (fichiers <code>.py</code>) et <strong>packages</strong> (dossiers avec <code>__init__.py</code>), accessibles par la notation pointée (<code>package.module.fonction</code>).</li>
-    <li>Une image est avant tout une <strong>matrice <code>NumPy</code></strong> : c’est la structure centrale de tout le manuel.</li>
-    <li>Une matrice se caractérise par sa <strong>forme</strong> (<code>shape</code>) et son <strong>type</strong> (<code>dtype</code>, la profondeur radiométrique) ; le <strong><em>broadcasting</em></strong>, <code>reshape</code> et <code>transpose</code> permettent de calculer et de réorganiser les axes sans boucle.</li>
-    </ul>
-    </div>
-    </div>
-
     ## Exercices
-
-    <div style="border:0.5px solid silver;border-left:.3rem solid #e34692;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#fbe8f2;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAADP0lEQVRYha2XT3LaMBjFf3SyD91rBnqC0BOUbuJl6AkwB9CUnKD0BCXxAeKcIGSpVZ0bwAkKEx8ATkAXemoUgm0I/WY8smVJ7/n78yS3ttstp1iZZF0g1WNhnC3Un6o/N87mVfNbpxAQ+Bw4j7p/qv0R9Y2qSHx4N7q3scBvBLwS8A/dj4ANcCePvLFTPVAAX4yzraivDxCFogcUIvrGE6cSSIE74KdxdlIzrpLEqSGY4V2d1g0yzs6BPnvCcRIB4+waWAKdMsna7yHR2m63aPL4COzCOFuUSZYDQ+DeOJseMjEKB8bZduv58ratjosjCMSltgJ68gZlkg20+KyGRIrPndEZMBD4AuiHhSom9oHfeszxXusAkzLJ1vhc6GjsChjI9bs2UFt8ALp6GDeAt4GpHtfG2SUvMf2O90YHrwk3us/3rJMDV8CTcXZ5VgUYTehroY66NmFh4+w8kuI2r6X4OzthLZNsjM+ZBfJCLQF99Qxfvwu87E5iT+l+ujMvuPgp6kuBX/qAf6Fu8kBP4I/G2UHD2NjGAhpH4He74IcQCNYtk6xdlSNBfoGlcuMLPsbzPeCvkrL1fHk7wSfQ1xC/ncXnvMRyhU/Wmd7tK+ERPjmHwL3aveBwmBL2tdACn4gPSjzwyXchgEf1TXVtmsAPImCcXRtnU+NsT0QCMPgcQQADkTjHV0QgXgkOr3MglUzmu7HWF8dJ2I1keBMBFPgan4lk3vSBsQeG+DJZikgAT4E/ejeMxob7eA/J8aE6Bx7wqlm7x8QErqPJ8aSJ2nuNAV/f18DneG9XuHrAN172i+WhBMJ2CYqtsrwDLLTbBVevjbPTqtgaZ2d1B5QqAkHVFsCFYlxE5OL2qkyyWZlk46ZzwFEEZEHFhvgSW6kvEBwFEvi8KE4h8YaAxKgLfMWLU3dH+3PgIz7OG5FM30tgrxQLsKiapPcz7W53+Lr/fwSaTGU64KValjXDezXvjidQJtkUfwAJ9lj360WDd44iIEUM4Nf4A0ilzB5iZ0BIsJSauMu6am+Ms9O6gZGa1hJsPV/edvFSC14DKs+FeHeG0lzWc/13mPmkM8J+AvovGOC30E7VwHfYEw2/5gB/AcMlhsUeVwFpAAAAAElFTkSuQmCC" width="16" height="16" alt="\"/><span><strong>À vous de jouer</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    <strong>Structures de données</strong>
-
-    <ol type="1">
-    <li><em>(listes)</em> Créez <code>bandes = ["bleu", "vert", "rouge", "PIR"]</code>, ajoutez <code>"SWIR"</code>, inversez l’ordre de la liste, puis affichez ses deux premiers éléments.
-    </li>
-    <li><em>(dictionnaires)</em> Créez un dictionnaire <code>metadonnees</code> décrivant une image (capteur, nombre de bandes, résolution), ajoutez-y une date, puis affichez chaque paire clé-valeur.
-    </li>
-    <li><em>(ensembles)</em> À partir de <code>["eau", "forêt", "eau", "urbain", "forêt"]</code>, trouvez les classes uniques et affichez leur nombre.
-    </li>
-    <li><em>(tuples)</em> Stockez les dimensions <code>(512, 512)</code> d’une image dans un tuple, dépaquetez-les en <code>lignes</code> et <code>colonnes</code>, puis calculez le nombre total de pixels.
-    </li>
-    </ol>
-    <strong>Boucles et conditions</strong>
-
-    <ol start="5" type="1">
-    <li>Parcourez une liste de valeurs de réflectance et comptez combien dépassent <code>0.3</code>.
-    </li>
-    <li>Dans une boucle, classez chaque valeur de réflectance en <code>"eau"</code>, <code>"végétation"</code> ou <code>"autre"</code> selon des seuils (<code>if</code>/<code>elif</code>/<code>else</code>).
-    </li>
-    </ol>
-    <strong>Fonctions</strong>
-
-    <ol start="7" type="1">
-    <li>Écrivez une fonction <code>ratio(a, b)</code> renvoyant <code>(a - b) / (a + b)</code>, et utilisez-la pour un NDVI avec PIR = 0,55 et Rouge = 0,18.
-    </li>
-    <li>Écrivez <code>normaliser(valeur, maximum=255)</code> avec un argument par défaut ; testez-la en 8 bits, puis en 12 bits (<code>maximum=4095</code>).
-    </li>
-    <li><em>(avancé)</em> Écrivez une fonction qui reçoit une liste de bandes et renvoie un dictionnaire <code>{nom_bande: indice}</code> (indice <code>enumerate</code>).
-    </li>
-    </ol>
-    <strong>NumPy</strong>
-
-    <ol start="10" type="1">
-    <li>À partir de la matrice <code>image</code> de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, calculez la valeur <strong>minimale</strong> et l’<strong>écart-type</strong> (<code>image.std()</code>), puis extrayez la dernière colonne.
-    </li>
-    <li>Créez une matrice NumPy 4 × 4 et, par <strong>masquage booléen</strong>, remplacez par <code>0</code> toutes les valeurs inférieures à 10.
-    </li>
-    <li>Sur la matrice <code>image</code>, calculez la moyenne <strong>par ligne</strong> puis <strong>par colonne</strong> (paramètre <code>axis</code>).
-    </li>
-    <li><em>(attributs)</em> Sur <code>image</code>, affichez <code>ndim</code>, <code>size</code> et <code>dtype</code>. Convertissez-le en réflectance <code>float32</code> (divisez par le maximum) et vérifiez le nouveau <code>dtype</code>.
-    </li>
-    <li><em>(création)</em> Avec <code>np.linspace</code>, construisez un axe de 6 longueurs d’onde entre 490 et 2190 nm. Créez ensuite un masque <code>np.zeros((3, 4))</code> et mettez sa <strong>première ligne</strong> à <code>1</code>.
-    </li>
-    <li><em>(broadcasting)</em> Sur le <code>cube</code> à 2 bandes de la <a href="#sec-00-02" class="quarto-xref"><span>Section 1.12</span></a>, multipliez chaque bande par un gain différent <code>[1.0, 0.8]</code> à l’aide d’une forme <code>(2, 1, 1)</code>.
-    </li>
-    <li><em>(reshape/transpose)</em> Transformez le <code>cube</code> <code>(2, 3, 4)</code> en une table <code>(12, 2)</code> (pixels × bandes), puis revenez à la forme d’origine <code>(2, 3, 4)</code>.
-    </li>
-    </ol>
-    <strong>Programmation objet</strong>
-
-    <ol start="17" type="1">
-    <li><em>(avancé)</em> Ajoutez à la classe <code>Image</code> une méthode <code>est_multispectrale()</code> qui renvoie <code>True</code> si l’image possède plus de 3 bandes.</li>
-    </ol>
-    </div>
-    </div>
 
     <details>
 
@@ -944,7 +757,7 @@ def _(mo):
     print(normaliser(128))
     print(normaliser(1000, maximum=4095))   # 12 bits
 
-    # 9. dict {nom_bande: indice}
+    # 9. dict
     def indexer(bandes):
         return {nom: i for i, nom in enumerate(bandes)}
     print(indexer(["bleu", "vert", "rouge", "PIR"]))
@@ -1008,25 +821,6 @@ def _(mo):
     ```
 
     </details>
-
-    <div style="border:0.5px solid silver;border-left:.3rem solid #352c76;border-radius:.25rem;background:#FAF9FF;margin:1em 0;">
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.4em .6em;background:#e2e1f2;font-weight:700;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAABhUlEQVRYhe2Wv3HCMByFP3P0YYMwQHShiGrYgGSCsEFcRSWmVBWYIGYDNoDUashpAdiATOAUyMZnDvsiMKTwa2z9ud/7znqSFSRJQlFSqA1wfzRwnrbG6m6xMygCSKEiYAx8AauKoiP3jCvmDYA+MDFWRycBpFBdYO2aPWP1pqyqFGoFYKweVMw7WbdVmDsF7oBplflf5GpltfNjGYAUagAM2a9VdCnzHEQEbIGh8zoASKE6HNZxdGnznNLasfPMvkDIPvVzY/WqLndXe+68QoCWC8gY+Ek7a1bovMZSqG7w9PAeOYBbaNLONb6B3ZWMO8AjQB4grHP983K7YAnH58DV1a6aIIUa4b81Y2N17A0ghXoGPj3NAfpSqJ2xeuEFAPQAjNWBj7sUKnE1TgL8/wxAltqbAKS/0OUZHuuywVIAY/VCCvWCy4KPeVkAKwFSCEpCdK5uHsIGoAFoABqAPIDvceujzKvN4Wfx4a7odV9MO8Cbe18HSZIghYqB15qNi5oZq8Nf0ER+TJGyROAAAAAASUVORK5CYII=" width="16" height="16" alt="\"/><span><strong>Liste des <em>packages</em> utilisés dans ce chapitre</strong>
-    </span></div>
-    <div style="padding:.3em .6em;font-size:.95em;">
-    <ul>
-    <li>Pour importer et manipuler des fichiers géographiques :
-    <ul>
-    <li><code>numpy</code> pour manipuler des données matricielles.</li>
-    <li><code>rasterio</code> pour importer et manipuler des données matricielles.</li>
-    </ul></li>
-    <li>Pour construire des cartes et des graphiques :
-    <ul>
-    <li><code>matplotlib</code> est certainement le <em>package</em> le plus complet pour l’affichage général.</li>
-    <li><code>seaborn</code> pour construire des graphiques plus détaillés en particulier pour les statistiques.</li>
-    </ul></li>
-    </ul>
-    </div>
-    </div>
 
     ## Quiz
 
