@@ -165,6 +165,31 @@ class TestStripBlocs(unittest.TestCase):
         ]
         self.assertEqual(strip_blocs(lines), ["mid\n"])
 
+    def test_keeps_exercice_content(self):
+        lines = [
+            "avant\n",
+            ":::::: bloc_exercice\n",
+            ":::: bloc_exercice-header\n",
+            "::: bloc_exercice-icon\n", ":::\n",
+            "**Exercice 1**\n",
+            "::::\n",
+            "::: bloc_exercice-body\n",
+            "Calculez le NDVI.\n",
+            ":::\n",
+            "::::::\n",
+            "apres\n",
+        ]
+        self.assertEqual(
+            strip_blocs(lines),
+            ["avant\n", "**Exercice 1**\n", "Calculez le NDVI.\n", "apres\n"])
+
+    def test_removes_other_blocs_keeps_exercice(self):
+        lines = [
+            "::: bloc_notes\n", "note\n", ":::\n",
+            "::: bloc_exercice\n", "consigne\n", ":::\n",
+        ]
+        self.assertEqual(strip_blocs(lines), ["consigne\n"])
+
 
 import os
 import tempfile

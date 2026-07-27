@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Clean Quarto-exported notebooks: strip the YAML header, HTML comments,
-`#|` cell directives, `bloc_*` callout regions, standalone image lines, and
-heading anchor attributes (see specs/2026-07-23-clean-notebooks-design.md)."""
+`#|` cell directives, `bloc_*` callout regions (except bloc_exercice, whose
+inner markdown is kept), standalone image lines, and heading anchor
+attributes (see specs/2026-07-23-clean-notebooks-design.md)."""
 import argparse
 import json
 import re
@@ -105,14 +106,25 @@ def iter_blocs_in_markdown(lines):
     return regions
 
 
+# Bloc types whose inner markdown is kept (fences stripped, content preserved).
+KEEP_CONTENT = ("bloc_exercice",)
+
+
+def _bloc_content(region_lines):
+    """Inner markdown of a bloc region: drop the ::: fence lines, keep the rest."""
+    return [ln for ln in region_lines if _fence_info(ln)[0] is None]
+
+
 def strip_blocs(lines):
-    """Remove whole bloc_* callout regions from a markdown source list."""
+    """Remove bloc_* callout regions; keep the inner markdown of KEEP_CONTENT types."""
     regions = iter_blocs_in_markdown(lines)
     if not regions:
         return lines
     out, prev = [], 0
-    for start, end, _ in regions:
+    for start, end, btype in regions:
         out.extend(lines[prev:start])
+        if btype in KEEP_CONTENT:
+            out.extend(_bloc_content(lines[start:end + 1]))
         prev = end + 1
     out.extend(lines[prev:])
     return out
