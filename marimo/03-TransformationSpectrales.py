@@ -387,8 +387,6 @@ def _(couleurs_classes, gdf, nom_classes, pd, plt, spyndex):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ![Visualisation des points d'une image Sentinel-2 pour trois classes](images/fig-classes-indices.png){fig-align="center"}
-
     ## Réduction de dimension
 
     La réduction de dimension vise à ne retenir que l'information principale d'un jeu de données. L'objectif est parfois d'éliminer le bruit d'un capteur ou de faciliter la visualisation en ne retenant que 3 bandes principales. Le degré d'information est souvent mesuré par la variance d'une bande, c'est-à-dire son contraste. L'analyse en composantes principales vise alors à ranger l'information contenue dans une image en ordre de variance décroissante.

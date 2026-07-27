@@ -143,8 +143,6 @@ def _(mo):
 
     Une fenêtre devrait alors apparaître dans votre fureteur. Dans le menu de gauche vous pouvez accéder aux notebooks dans le répertoire `notebooks`:
 
-    ![Fenêtre principale du serveur Jupyter Lab.](images/jupyter-accueil.png){#fig-jupyterlab fig-scap="Client Jupyter Lab" width="100%" fig-align="center"}
-
     ## Les structures de base en Python
 
     Python manipule quatre structures de données fondamentales : les listes, les tuples, les ensembles et les dictionnaires.

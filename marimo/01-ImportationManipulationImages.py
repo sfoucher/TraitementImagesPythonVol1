@@ -356,8 +356,6 @@ def _(mo):
 
     L'indexation et le découpage (*slicing*) des matrices dans NumPy sont des techniques essentielles pour manipuler efficacement les données multidimensionnelles en Python, offrant une syntaxe puissante et flexible pour accéder et modifier des sous-ensembles spécifiques d'éléments dans les tableaux (voir @fig-naturenumpy2). Indexer une matrice consiste à accéder à une valeur dans la matrice pour une position particulière, la syntaxe générale est `matrice[ligne, colonne, bande]` et est similaire à la manipulation des [listes](https://docs.python.org/fr/3/tutorial/introduction.html#lists) en Python. Les indices commencent à `0` et se terminent à la `taille-1` de l'axe considéré.
 
-    ![Vue d'ensemble des opérations de base des matrices avec NumPy](images/41586_2020_2649_Fig1_HTML.png){#fig-naturenumpy2 width="100%" fig-align="center"}
-
     Le découpage (ou *slicing* en anglais) consiste à produire une nouvelle matrice qui est un sous-ensemble de la matrice d'origine. Un découpage se fait avec le symbole ':', la syntaxe générale pour définir un découpage est `[début:fin:pas]`. Si on ne spécifie pas `début` ou `fin` alors les valeurs 0 ou `dimension-1` sont considérées implicitement. Quelques exemples :
 
     -   choisir un pixel en particulier avec toutes les bandes : `matrice[1, 1, :]`;
@@ -737,8 +735,6 @@ def _(mo):
     -   Le `Dataset` contient plusieurs DataArrays alignés.
 
     Ces deux structures prennent en charge les opérations de type dictionnaire et les calculs de coordination tout en conservant les métadonnées.
-
-    ![Organisation d'un Dataset dans xarray](images/xarray-dataset-diagram.png){#fig-xarray width="80%" fig-align="center"}
 
     #### Exemple avec rioxarray
 

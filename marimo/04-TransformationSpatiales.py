@@ -807,8 +807,6 @@ def _(mo):
     ### Fusion des segments par graphe de proximité
 
     Une segmentation peut produire beaucoup trop de segments. On parle alors de sur-segmentation. Ceci est recherché dans certains cas pour permettre de bien capturer les détails fins de l'image. Cependant, afin de réduire le nombre de segments, un post-traitement possible est de fusionner les segments similaires selon certaines règles ou distances. Un graphe d'adjacence de régions (@fig-rag) est formé à partir des segments connectés où chaque nœud représente un segment et un lien de proximité (@Jaworek-2018). À partir de ce graphe, on peut fusionner les nœuds similaires à partir de leur distance radiométrique.
-
-    ![Graphe d'adjacence de régions, d'après (@Jaworek-2018). Chaque nœud est un segment, un lien est formé uniquement si les segments se touchent (par exemple le segment 6 ne touche que la région 5). La fonction `graph.rag_mean_color` produit un graphe à partir d'une segmentation et de l'image originale. Chaque nœud tient la couleur de chaque segment dans un attribut appelé `'mean color'.`](images/Region-adjacency-graph.png "Graphe d'adjacence de régions"){#fig-rag}
     """)
     return
 
