@@ -254,7 +254,8 @@ fig, ax = plt.subplots(2,2,figsize = (9,9))
 plot.show(img_s2.sel(band = ["R","G","B"]).data / 0.3,ax = ax[0,0],title = "RGB")
 plot.show(idx.sel(index = "NDVI"),ax = ax[0,1],title = "NDVI")
 plot.show(idx.sel(index = "SAVI"),ax = ax[1,0],title = "SAVI")
-plot.show(evi.sel(index = "EVI"),percent_range=[2,98],ax = ax[1,1],title = "EVI")
+evi_lo, evi_hi = np.nanpercentile(evi, [2, 98])   # étirement 2-98 %
+plot.show(evi,vmin = evi_lo,vmax = evi_hi,ax = ax[1,1],title = "EVI")
 plt.tight_layout()
 ```
 

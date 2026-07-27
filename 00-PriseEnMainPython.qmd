@@ -295,7 +295,6 @@ info(capteur="SPOT", bandes=4)
 :::
 ::::::
 
-
 :::::: bloc_attention
 :::: bloc_attention-header
 ::: bloc_attention-icon
