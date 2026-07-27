@@ -306,10 +306,10 @@ def _(mo):
 
 @app.cell
 def _():
-    def _ndvi(nir, rouge):
+    def ndvi(nir, rouge):
         """Indice de végétation NDVI = (PIR - Rouge) / (PIR + Rouge)."""
         return (nir - rouge) / (nir + rouge)
-    print(round(_ndvi(0.6, 0.2), 3))
+    print(round(ndvi(0.6, 0.2), 3))
 
     def normaliser(valeur, maximum=255):
     # Argument par défaut
@@ -350,9 +350,9 @@ def _():
 
         def resume(self):  # méthode
             return f'{self.capteur} — {self.bandes} bandes'
-    _img = Image('Landsat-8', 11)
-    print(_img.resume())
-    print(_img.capteur)
+    img = Image('Landsat-8', 11)
+    print(img.resume())
+    print(img.capteur)
     return
 
 
@@ -464,28 +464,53 @@ def _(mo):
 
 @app.cell
 def _():
-    # ndvi.py
-    import rioxarray as rxr
-    if __name__ == '__main__':
-        _img = rxr.open_rasterio('RGBNIR_of_S2A.tif')
-        rouge = _img.sel(band=3).astype('float32')
-        pir = _img.sel(band=4).astype('float32')
-        _ndvi = (pir - rouge) / (pir + rouge)
-        _ndvi.rio.to_raster('ndvi.tif')
-        print('NDVI enregistré dans ndvi.tif')
-    return (rxr,)
+    # '%pip install rioxarray' command supported automatically in marimo
+    import gdown
+    gdown.download('https://drive.google.com/uc?export=download&confirm=pbef&id=1a6Ypg0g1Oy4AJt9XWKWfnR12NW1XhNg_', output= 'RGBNIR_of_S2A.tif')
+    return
+
+
+@app.cell
+def _():
+    # magic command not supported in marimo; please file an issue to add support
+    # %%writefile ndvi.py
+    # """Calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR)."""
+    # import rioxarray as rxr
+    # 
+    # if __name__ == "__main__":
+    #     img   = rxr.open_rasterio("RGBNIR_of_S2A.tif")
+    #     rouge = img.sel(band=3).astype("float32")
+    #     pir   = img.sel(band=4).astype("float32")
+    #     ndvi  = (pir - rouge) / (pir + rouge)
+    #     ndvi.rio.to_raster("ndvi.tif")
+    #     print("NDVI enregistré dans ndvi.tif")
+    return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
     On le lance depuis un terminal :
+    """)
+    return
 
-    ``` bash
-    python ndvi.py
-    ```
 
+@app.cell
+def _():
+    # magic command not supported in marimo; please file an issue to add support
+    # %run ndvi.py
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     Sur Linux ou macOS, on peut aussi rendre le fichier directement exécutable. Il suffit d'ajouter une ligne *shebang* en tête (`#!/usr/bin/env python3`), puis de donner le droit d'exécution avec `chmod +x ndvi.py` ; le script se lance alors avec `./ndvi.py`.
+
+    ```{bash}
+    !chmod +x ./ndvi.py
+    !./ndvi.py
+    ```
 
     Cette version fonctionne, mais tout est **figé** : les noms de fichiers et les numéros de bandes sont écrits en dur dans le code. Pour traiter une autre image, il faut éditer le script.
 
@@ -497,31 +522,36 @@ def _(mo):
 
 
 @app.cell
-def _(rxr):
-    """Calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR)."""
-    import argparse
-
-    def _calcule_ndvi(entree, sortie='ndvi.tif', bande_rouge=3, bande_pir=4):
-        """Le traitement : réutilisable, avec des valeurs par défaut."""
-        _img = rxr.open_rasterio(entree)
-        rouge = _img.sel(band=bande_rouge).astype('float32')
-        pir = _img.sel(band=bande_pir).astype('float32')
-        _ndvi = (pir - rouge) / (pir + rouge)
-        _ndvi.rio.to_raster(sortie)
-        return sortie
-
-    def _main():
-        p = argparse.ArgumentParser(description=__doc__)
-        p.add_argument('entree', help="image d'entrée (GeoTIFF)")
-        p.add_argument('-o', '--sortie', default='ndvi.tif', help='fichier de sortie')
-        p.add_argument('--bande-rouge', type=int, default=3, help='indice de la bande rouge')
-        p.add_argument('--bande-pir', type=int, default=4, help='indice de la bande PIR')
-        args = p.parse_args()
-        chemin = _calcule_ndvi(args.entree, args.sortie, args.bande_rouge, args.bande_pir)
-        print('NDVI enregistré dans', chemin)
-    if __name__ == '__main__':
-        _main()
-    return (argparse,)
+def _():
+    # magic command not supported in marimo; please file an issue to add support
+    # %%writefile ndvi.py
+    # #!/usr/bin/env python3
+    # """Calcule un NDVI à partir d'une image à quatre bandes (B, V, R, PIR)."""
+    # import argparse
+    # import rioxarray as rxr
+    # 
+    # def calcule_ndvi(entree, sortie="ndvi.tif", bande_rouge=3, bande_pir=4):
+    #     """Le traitement : réutilisable, avec des valeurs par défaut."""
+    #     img   = rxr.open_rasterio(entree)
+    #     rouge = img.sel(band=bande_rouge).astype("float32")
+    #     pir   = img.sel(band=bande_pir).astype("float32")
+    #     ndvi  = (pir - rouge) / (pir + rouge)
+    #     ndvi.rio.to_raster(sortie)
+    #     return sortie
+    # 
+    # def main():
+    #     p = argparse.ArgumentParser(description=__doc__)
+    #     p.add_argument("entree", help="image d'entrée (GeoTIFF)")          # argument obligatoire
+    #     p.add_argument("-o", "--sortie", default="ndvi.tif", help="fichier de sortie")
+    #     p.add_argument("--bande-rouge", type=int, default=3, help="indice de la bande rouge")
+    #     p.add_argument("--bande-pir",  type=int, default=4, help="indice de la bande PIR")
+    #     args = p.parse_args()
+    #     chemin = calcule_ndvi(args.entree, args.sortie, args.bande_rouge, args.bande_pir)
+    #     print("NDVI enregistré dans", chemin)
+    # 
+    # if __name__ == "__main__":
+    #     main()
+    return
 
 
 @app.cell(hide_code=True)
@@ -552,27 +582,34 @@ def _(mo):
 
 
 @app.cell
-def _(argparse, rxr):
-    """Calcule un NDVI, paramétré par un fichier YAML."""
-    import yaml
-    DEFAUTS = {'sortie': 'ndvi.tif', 'bande_rouge': 3, 'bande_pir': 4}
-
-    def _calcule_ndvi(entree, sortie, bande_rouge, bande_pir):
-        _img = rxr.open_rasterio(entree)
-        rouge = _img.sel(band=bande_rouge).astype('float32')
-        pir = _img.sel(band=bande_pir).astype('float32')
-        ((pir - rouge) / (pir + rouge)).rio.to_raster(sortie)
-
-    def _main():
-        p = argparse.ArgumentParser(description=__doc__)
-        p.add_argument('config', help='fichier de configuration YAML')
-        args = p.parse_args()
-        with open(args.config) as f:
-            params = {**DEFAUTS, **yaml.safe_load(f)}
-        _calcule_ndvi(**params)
-        print('NDVI enregistré dans', params['sortie'])
-    if __name__ == '__main__':
-        _main()
+def _():
+    # magic command not supported in marimo; please file an issue to add support
+    # %%writefile ndvi.py
+    # #!/usr/bin/env python3
+    # """Calcule un NDVI, paramétré par un fichier YAML."""
+    # import argparse
+    # import yaml
+    # import rioxarray as rxr
+    # 
+    # DEFAUTS = {"sortie": "ndvi.tif", "bande_rouge": 3, "bande_pir": 4}
+    # 
+    # def calcule_ndvi(entree, sortie, bande_rouge, bande_pir):
+    #     img   = rxr.open_rasterio(entree)
+    #     rouge = img.sel(band=bande_rouge).astype("float32")
+    #     pir   = img.sel(band=bande_pir).astype("float32")
+    #     ((pir - rouge) / (pir + rouge)).rio.to_raster(sortie)
+    # 
+    # def main():
+    #     p = argparse.ArgumentParser(description=__doc__)
+    #     p.add_argument("config", help="fichier de configuration YAML")
+    #     args = p.parse_args()
+    #     with open(args.config) as f:
+    #         params = {**DEFAUTS, **yaml.safe_load(f)}   # défauts, écrasés par le YAML
+    #     calcule_ndvi(**params)                          # déballage des paramètres
+    #     print("NDVI enregistré dans", params["sortie"])
+    # 
+    # if __name__ == "__main__":
+    #     main()
     return
 
 
@@ -698,6 +735,52 @@ def _(mo):
     ## Points clés
 
     ## Exercices
+
+    **À vous de jouer**
+
+    **Structures de données**
+
+    1.  *(listes)* Créez `bandes = ["bleu", "vert", "rouge", "PIR"]`, ajoutez `"SWIR"`, inversez l'ordre de la liste, puis affichez ses deux premiers éléments.
+
+    2.  *(dictionnaires)* Créez un dictionnaire `metadonnees` décrivant une image (capteur, nombre de bandes, résolution), ajoutez-y une date, puis affichez chaque paire clé-valeur.
+
+    3.  *(ensembles)* À partir de `["eau", "forêt", "eau", "urbain", "forêt"]`, trouvez les classes uniques et affichez leur nombre.
+
+    4.  *(tuples)* Stockez les dimensions `(512, 512)` d'une image dans un tuple, dépaquetez-les en `lignes` et `colonnes`, puis calculez le nombre total de pixels.
+
+    **Boucles et conditions**
+
+    5.  Parcourez une liste de valeurs de réflectance et comptez combien dépassent `0.3`.
+
+    6.  Dans une boucle, classez chaque valeur de réflectance en `"eau"`, `"végétation"` ou `"autre"` selon des seuils (`if`/`elif`/`else`).
+
+    **Fonctions**
+
+    7.  Écrivez une fonction `ratio(a, b)` renvoyant `(a - b) / (a + b)`, et utilisez-la pour un NDVI avec PIR = 0,55 et Rouge = 0,18.
+
+    8.  Écrivez `normaliser(valeur, maximum=255)` avec un argument par défaut ; testez-la en 8 bits, puis en 12 bits (`maximum=4095`).
+
+    9.  *(avancé)* Écrivez une fonction qui reçoit une liste de bandes et renvoie un dictionnaire `{nom_bande: indice}` (indice `enumerate`).
+
+    **NumPy**
+
+    10. À partir de la matrice `image` de la @sec-00-02, calculez la valeur **minimale** et l'**écart-type** (`image.std()`), puis extrayez la dernière colonne.
+
+    11. Créez une matrice NumPy 4 × 4 et, par **masquage booléen**, remplacez par `0` toutes les valeurs inférieures à 10.
+
+    12. Sur la matrice `image`, calculez la moyenne **par ligne** puis **par colonne** (paramètre `axis`).
+
+    13. *(attributs)* Sur `image`, affichez `ndim`, `size` et `dtype`. Convertissez-le en réflectance `float32` (divisez par le maximum) et vérifiez le nouveau `dtype`.
+
+    14. *(création)* Avec `np.linspace`, construisez un axe de 6 longueurs d'onde entre 490 et 2190 nm. Créez ensuite un masque `np.zeros((3, 4))` et mettez sa **première ligne** à `1`.
+
+    15. *(broadcasting)* Sur le `cube` à 2 bandes de la @sec-00-02, multipliez chaque bande par un gain différent `[1.0, 0.8]` à l'aide d'une forme `(2, 1, 1)`.
+
+    16. *(reshape/transpose)* Transformez le `cube` `(2, 3, 4)` en une table `(12, 2)` (pixels × bandes), puis revenez à la forme d'origine `(2, 3, 4)`.
+
+    **Programmation objet**
+
+    17. *(avancé)* Ajoutez à la classe `Image` une méthode `est_multispectrale()` qui renvoie `True` si l'image possède plus de 3 bandes.
 
     <details>
 
@@ -833,14 +916,6 @@ def _(mo):
 def _(Quiz, render_quizz):
     Chap00Quiz = Quiz('quiz/Chap00.yml', 'Chap00')
     render_quizz(Chap00Quiz)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Revise the slides, make sure: 1) one slide per concept 2) make sure that all the sections are mapped on at least one slide 3) explain the concept in a few bullet point 4) include a code exemple if possible
-    """)
     return
 
 

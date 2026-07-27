@@ -807,6 +807,30 @@ def _(mo):
 
     ## Exercices
 
+    **À vous de jouer**
+
+    1.  Ouvrez `RGBNIR_of_S2A.tif` avec `rasterio` et affichez son nombre de bandes, son type de pixels, son système de coordonnées et sa résolution.
+
+    2.  À l'aide du découpage NumPy, extrayez une fenêtre de 100 × 100 pixels au centre d'une image et affichez-la.
+
+    3.  Vérifiez avec `np.shares_memory` si un découpage crée une **vue** ou une **copie**, puis forcez une copie avec `.copy()`.
+
+    4.  Reprojetez `RGBNIR_of_S2A.tif` en `EPSG:4326` avec `rioxarray`, puis sauvegardez le résultat en GeoTIFF avec `rio.to_raster`.
+
+    5.  *(indexation avancée)* Sur `RGBNIR_of_S2A.tif`, construisez la carte de la **bande dominante** (`argmax`), puis affichez le pourcentage de pixels où le proche-infrarouge (indice 3) domine.
+
+    6.  *(masquage)* Calculez le NDVI, masquez les pixels d'eau (NDVI < 0) avec `np.ma.masked_where`, puis comparez le NDVI moyen **avec** et **sans** masque.
+
+    7.  *(sauvegarde)* Sauvegardez votre carte de NDVI dans un fichier `.npy`, rechargez-la, et vérifiez l'égalité avec `np.allclose` (option `equal_nan=True`).
+
+    8.  *(découpage)* Découpez `RGBNIR_of_S2A.tif` sur son **quart supérieur gauche** avec `clip_box` et affichez la sous-image.
+
+    9.  *(rééchantillonnage)* Rééchantillonnez l'image à **30 m** par moyenne (`reproject` avec `Resampling.average`) et comparez le nombre de pixels à l'original.
+
+    10. *(xarray)* Nommez les bandes (`B`, `V`, `R`, `PIR`), sélectionnez `PIR` par étiquette, puis calculez la moyenne de chaque bande sur les dimensions `y` et `x`.
+
+    11. *(écriture)* Calculez un masque d'eau (NDVI < 0), écrivez-le comme un GeoTIFF à une bande en réutilisant le profil de `RGBNIR_of_S2A.tif`, puis relisez-le pour vérifier son CRS.
+
     ## Quiz
 
     ::: {.content-visible when-profile="production"}

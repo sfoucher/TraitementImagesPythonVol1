@@ -1424,6 +1424,20 @@ def _(mo):
 
     ## Exercices
 
+    **À vous de jouer**
+
+    1.  Comparez les rapports de performance (`classification_report`) du K-NN, de l'arbre de décision et de l'ADQ sur le même ensemble de test : quelle méthode l'emporte, et pour quelles classes ?
+
+    2.  Faites varier `test_size` (0.1, 0.3, 0.5) dans `train_test_split` et observez l'effet sur l'erreur de test du K-NN.
+
+    3.  Entraînez un arbre de décision avec plusieurs `max_depth` (3, 5, 10, `None`) et repérez à partir de quelle profondeur le sur-apprentissage apparaît.
+
+    4.  Utilisez les **4 bandes** (au lieu de Rouge–NIR) pour l'ADQ et comparez la carte d'occupation des sols obtenue.
+
+    5.  *(distances)* Avec `cdist`, calculez la distance de chaque point de test à chaque point d'entraînement, classez par plus proche voisin (`argmin`, $K = 1$), et vérifiez que l'exactitude correspond à celle du K-NN de `scikit-learn`.
+
+    6.  *(post-classification)* À partir d'une carte produite (K-NN, arbre ou MLP), calculez la superficie de chaque classe avec `np.bincount` et la résolution de l'image ; identifiez les deux classes les plus étendues.
+
     ## Quiz
 
     ::: {.content-visible when-profile="production"}

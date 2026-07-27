@@ -838,6 +838,20 @@ def _(mo):
 
     ## Exercices
 
+    **À vous de jouer**
+
+    1.  Proposez une autre transformation non linéaire pour l'image SAR (p. ex. la racine carrée ou `np.arcsinh`) et comparez son histogramme à celui obtenu en décibels.
+
+    2.  À l'aide de `skimage.exposure.match_histograms`, faites correspondre l'histogramme de la bande proche infrarouge de `RGBNIR_of_S2A.tif` à celui d'une bande de `sentinel2.tif`. Discutez du résultat.
+
+    3.  À partir de `img_s2`, construisez un nouveau composé coloré (p. ex. `[11, 8, 4]` ou `[8, 4, 3]`) et décrivez les surfaces qu'il met en valeur.
+
+    4.  *(visualisation web)* Dans Colab, installez `leafmap`, chargez `RGBNIR_of_S2A.tif` en composé infrarouge (`indexes=[4, 3, 2]`) sur un fond `Esri.WorldImagery`, puis comparez vraie couleur et infrarouge avec `split_map`.
+
+    5.  Comparez une égalisation d'histogramme globale et une égalisation adaptative (CLAHE) sur une image de votre choix. Dans quels cas la CLAHE fait-elle ressortir des détails invisibles avec l'égalisation globale?
+
+    6.  Appliquez un étirement par décorrélation sur le composé SWIR2, NIR, R de `sentinel2.tif` et comparez-le au composé sans étirement. La corrélation entre bandes est-elle plus ou moins forte que pour le composé RVB naturel?
+
     ## Quiz
 
     ::: {.content-visible when-profile="production"}

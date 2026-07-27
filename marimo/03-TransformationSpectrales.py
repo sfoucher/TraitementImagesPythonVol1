@@ -552,6 +552,24 @@ def _(mo):
 
     ## Exercices
 
+    **À vous de jouer**
+
+    1.  Calculez le **NDWI** (eau) et le **NDBI** (bâti) avec `spyndex` sur `img_s2`, puis affichez-les côte à côte avec le NDVI.
+
+    2.  Comparez les **signatures spectrales** de deux surfaces supplémentaires de la base USGS (p. ex. neige, végétation sèche) sur les bandes Sentinel-2.
+
+    3.  Parcourez `spyndex.indices`, choisissez un indice adapté à l'eau ou aux sols, identifiez les bandes qu'il requiert, et calculez-le sur `img_s2`.
+
+    4.  Renommez les bandes de `img_s2` avec la nomenclature `spyndex` et vérifiez le résultat avec `img_s2.coords['band']`.
+
+    5.  *(produit matriciel)* Construisez une matrice `2 × 4` transformant les 4 bandes de `RGBNIR_of_S2A.tif` en deux nouvelles bandes (brillance moyenne et différence PIR - Rouge) à l'aide de l'opérateur `@`, puis affichez-les.
+
+    6.  *(ACP)* Réalisez l'ACP de `img_s2`, affichez la **variance expliquée** par chaque composante (éboulis), et vérifiez combien de composantes sont nécessaires pour atteindre 95 % de variance cumulée.
+
+    7.  *(Tasseled Cap)* Appliquez la transformation Tasseled Cap à une autre combinaison de bandes (p. ex. en remplaçant `S1` par `RE1`) et comparez visuellement les composantes obtenues à celles de la section.
+
+    8.  *(reconstruction)* À partir de l'ACP de `img_s2`, déterminez le nombre minimal de composantes nécessaires pour obtenir une erreur de reconstruction (RMSE) inférieure à 0.01.
+
     ## Quiz
 
     ::: {.content-visible when-profile="production"}
