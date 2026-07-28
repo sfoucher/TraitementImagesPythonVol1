@@ -508,6 +508,7 @@ def _(mo):
     Sur Linux ou macOS, on peut aussi rendre le fichier directement exécutable. Il suffit d'ajouter une ligne *shebang* en tête (`#!/usr/bin/env python3`), puis de donner le droit d'exécution avec `chmod +x ndvi.py` ; le script se lance alors avec `./ndvi.py`.
 
     ```{bash}
+    #| eval: false
     !chmod +x ./ndvi.py
     !./ndvi.py
     ```

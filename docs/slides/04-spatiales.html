@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="04-spatiales_files/libs/clipboard/clipboard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="04-spatiales_files/libs/clipboard/clipboard.min.js"></script>
 <script src="04-spatiales_files/libs/quarto-html/tabby.min.js"></script>
 <script src="04-spatiales_files/libs/quarto-html/popper.min.js"></script>
 <script src="04-spatiales_files/libs/quarto-html/tippy.umd.min.js"></script>
@@ -192,6 +192,9 @@
       margin-right: 0; 
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+  
+  <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -227,9 +230,9 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Modifier le spectre → corriger bruit et artefacts systématiques</li>
 </ul>
 </section>
-<section id="transformée-de-fourier-1d" class="slide level2 smaller">
-<h2>Transformée de Fourier — 1D</h2>
-<div id="383f107b" class="cell" data-execution_count="2">
+<section id="la-transformée-de-fourier" class="slide level2 smaller">
+<h2>La transformée de Fourier</h2>
+<div id="77d8fa22" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np, matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>N, Fs <span class="op">=</span> <span class="dv">16</span>, <span class="fl">2.0</span><span class="op">;</span> Ts <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>Fs</span>
 <span id="cb1-3"><a href=""></a>t <span class="op">=</span> np.arange(<span class="dv">0</span>, N, Ts)</span>
@@ -256,24 +259,41 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong>Passe-bande</strong> : une bande de fréquences précise</li>
 <li class="fragment">Filtrer = <strong>multiplier</strong> le spectre par la réponse du filtre</li>
 </ul>
+<div id="f3de4f06" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
+<span id="cb2-2"><a href=""></a><span class="im">from</span> scipy <span class="im">import</span> ndimage</span>
+<span id="cb2-3"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../berkeley.jpg'</span>).to_numpy()        <span class="co"># (3, H, W)</span></span>
+<span id="cb2-4"><a href=""></a>spectre <span class="op">=</span> np.fft.fft2(img)</span>
+<span id="cb2-5"><a href=""></a>lisse <span class="op">=</span> [ndimage.fourier_gaussian(spectre[b], sigma<span class="op">=</span><span class="dv">4</span>) <span class="cf">for</span> b <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]</span>
+<span id="cb2-6"><a href=""></a>lisse <span class="op">=</span> np.fft.ifft2(lisse).real</span>
+<span id="cb2-7"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb2-8"><a href=""></a>ax[<span class="dv">0</span>].imshow(img.transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Originale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb2-9"><a href=""></a>ax[<span class="dv">1</span>].imshow(lisse.transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Passe-bas gaussien (Fourier)"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb2-10"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-3-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="178"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="laliasing" class="slide level2 smaller">
 <h2>L’aliasing</h2>
 <p>Sous-échantillonner sans filtrer → repliement de spectre :</p>
-<div id="6f4ebc8a" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
-<span id="cb2-2"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> gaussian_filter</span>
-<span id="cb2-3"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../berkeley.jpg'</span>).to_numpy()       <span class="co"># (3, H, W)</span></span>
-<span id="cb2-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
-<span id="cb2-5"><a href=""></a>ax[<span class="dv">0</span>].imshow(img.transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Originale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb2-6"><a href=""></a>ax[<span class="dv">1</span>].imshow(img[:, ::<span class="dv">4</span>, ::<span class="dv">4</span>].transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Décimée x4"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb2-7"><a href=""></a>lisse <span class="op">=</span> gaussian_filter(img.astype(<span class="bu">float</span>), sigma<span class="op">=</span>(<span class="dv">0</span>, <span class="fl">1.5</span>, <span class="fl">1.5</span>))</span>
-<span id="cb2-8"><a href=""></a>ax[<span class="dv">2</span>].imshow(lisse[:, ::<span class="dv">4</span>, ::<span class="dv">4</span>].transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">2</span>].set_title(<span class="st">"Passe-bas puis décimée"</span>)<span class="op">;</span> ax[<span class="dv">2</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb2-9"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="de7e526d" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> gaussian_filter</span>
+<span id="cb3-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
+<span id="cb3-3"><a href=""></a>ax[<span class="dv">0</span>].imshow(img.transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Originale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb3-4"><a href=""></a>ax[<span class="dv">1</span>].imshow(img[:, ::<span class="dv">4</span>, ::<span class="dv">4</span>].transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Décimée x4"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb3-5"><a href=""></a>lisse2 <span class="op">=</span> gaussian_filter(img.astype(<span class="bu">float</span>), sigma<span class="op">=</span>(<span class="dv">0</span>, <span class="fl">1.5</span>, <span class="fl">1.5</span>))</span>
+<span id="cb3-6"><a href=""></a>ax[<span class="dv">2</span>].imshow(lisse2[:, ::<span class="dv">4</span>, ::<span class="dv">4</span>].transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">2</span>].set_title(<span class="st">"Passe-bas puis décimée"</span>)<span class="op">;</span> ax[<span class="dv">2</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb3-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-3-output-1.png" class="quarto-figure quarto-figure-center" width="622" height="143"></p>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-4-output-1.png" class="quarto-figure quarto-figure-center" width="622" height="143"></p>
 </figure>
 </div>
 </div>
@@ -288,42 +308,96 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong>Stationnaire</strong> vs <strong>adaptatif</strong></li>
 </ul>
 </section>
-<section id="filtre-moyen-lissage" class="slide level2 smaller">
-<h2>Filtre moyen (lissage)</h2>
+<section id="filtrage-linéaire-stationnaire-filtre-moyen" class="slide level2 smaller">
+<h2>Filtrage linéaire stationnaire — filtre moyen</h2>
 <p>Un <strong>filtre moyen</strong> remplace chaque pixel par la moyenne de son voisinage → réduit le bruit, adoucit les détails.</p>
-<div id="86972bd2" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> uniform_filter</span>
-<span id="cb3-2"><a href=""></a>gris <span class="op">=</span> img[<span class="dv">0</span>]                                    <span class="co"># une bande</span></span>
-<span id="cb3-3"><a href=""></a>lisse <span class="op">=</span> uniform_filter(gris, size<span class="op">=</span><span class="dv">5</span>)             <span class="co"># moyenne sur une fenêtre 5x5</span></span>
-<span id="cb3-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
-<span id="cb3-5"><a href=""></a>ax[<span class="dv">0</span>].imshow(gris, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Originale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb3-6"><a href=""></a>ax[<span class="dv">1</span>].imshow(lisse, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Filtre moyen 5x5"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb3-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="9ba3b44c" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> uniform_filter</span>
+<span id="cb4-2"><a href=""></a>gris <span class="op">=</span> img[<span class="dv">0</span>]                                    <span class="co"># une bande</span></span>
+<span id="cb4-3"><a href=""></a>lisse3 <span class="op">=</span> uniform_filter(gris, size<span class="op">=</span><span class="dv">5</span>)            <span class="co"># moyenne sur une fenêtre 5x5</span></span>
+<span id="cb4-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb4-5"><a href=""></a>ax[<span class="dv">0</span>].imshow(gris, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Originale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb4-6"><a href=""></a>ax[<span class="dv">1</span>].imshow(lisse3, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Filtre moyen 5x5"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb4-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-4-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="178"></p>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-5-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="178"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="contours-filtre-de-scharr" class="slide level2 smaller">
-<h2>Contours — filtre de Scharr</h2>
+<section id="filtrage-par-convolution-contours-scharr" class="slide level2 smaller">
+<h2>Filtrage par convolution — contours (Scharr)</h2>
 <p>Un <strong>filtre de gradient</strong> (Scharr) met en valeur les <strong>contours</strong> — les fortes variations locales :</p>
-<div id="6ee41fa4" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
-<span id="cb4-2"><a href=""></a>scharr <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">-</span><span class="ot">10j</span>, <span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>], [<span class="op">-</span><span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>], [<span class="op">-</span><span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">10j</span>, <span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>]])</span>
-<span id="cb4-3"><a href=""></a>gris <span class="op">=</span> img[<span class="dv">0</span>]                                    <span class="co"># une bande</span></span>
-<span id="cb4-4"><a href=""></a>grad <span class="op">=</span> np.<span class="bu">abs</span>(signal.convolve2d(gris, scharr, boundary<span class="op">=</span><span class="st">'symm'</span>, mode<span class="op">=</span><span class="st">'same'</span>))</span>
-<span id="cb4-5"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
-<span id="cb4-6"><a href=""></a>ax[<span class="dv">0</span>].imshow(gris, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Originale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb4-7"><a href=""></a>ax[<span class="dv">1</span>].imshow(grad, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Contours (Scharr)"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb4-8"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="87f9970d" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
+<span id="cb5-2"><a href=""></a>scharr <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">-</span><span class="ot">10j</span>, <span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>], [<span class="op">-</span><span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>], [<span class="op">-</span><span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">10j</span>, <span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>]])</span>
+<span id="cb5-3"><a href=""></a>gris <span class="op">=</span> img[<span class="dv">0</span>]                                    <span class="co"># une bande</span></span>
+<span id="cb5-4"><a href=""></a>grad <span class="op">=</span> np.<span class="bu">abs</span>(signal.convolve2d(gris, scharr, boundary<span class="op">=</span><span class="st">'symm'</span>, mode<span class="op">=</span><span class="st">'same'</span>))</span>
+<span id="cb5-5"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb5-6"><a href=""></a>ax[<span class="dv">0</span>].imshow(gris, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Originale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb5-7"><a href=""></a>ax[<span class="dv">1</span>].imshow(grad, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Contours (Scharr)"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb5-8"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-5-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="178"></p>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-6-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="178"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="filtrage-non-linéaire-filtre-médian" class="slide level2 smaller">
+<h2>Filtrage non linéaire — filtre médian</h2>
+<ul>
+<li class="fragment">Un filtre <strong>non linéaire</strong> ne s’exprime pas comme une simple pondération des voisins</li>
+<li class="fragment">Le <strong>filtre médian</strong> remplace chaque pixel par la médiane locale</li>
+<li class="fragment">Élimine le bruit <strong>impulsionnel</strong> (<em>sel et poivre</em>) en préservant mieux les contours qu’un filtre moyen</li>
+</ul>
+<div id="2c17be08" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> median_filter, uniform_filter</span>
+<span id="cb6-2"><a href=""></a>bruite <span class="op">=</span> img.astype(<span class="bu">float</span>).copy()</span>
+<span id="cb6-3"><a href=""></a>masque_bruit <span class="op">=</span> np.random.random(bruite.shape) <span class="op">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb6-4"><a href=""></a>bruite[masque_bruit] <span class="op">=</span> np.random.choice([<span class="dv">0</span>, <span class="dv">255</span>], size<span class="op">=</span>masque_bruit.<span class="bu">sum</span>())</span>
+<span id="cb6-5"><a href=""></a>moyen <span class="op">=</span> uniform_filter(bruite, size<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb6-6"><a href=""></a>median <span class="op">=</span> median_filter(bruite, size<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb6-7"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
+<span id="cb6-8"><a href=""></a><span class="cf">for</span> a, im, titre <span class="kw">in</span> <span class="bu">zip</span>(ax, (bruite, moyen, median), (<span class="st">"Bruitée"</span>, <span class="st">"Filtre moyen"</span>, <span class="st">"Filtre médian"</span>)):</span>
+<span id="cb6-9"><a href=""></a>    a.imshow(im.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> a.set_title(titre)<span class="op">;</span> a.axis(<span class="st">'off'</span>)</span>
+<span id="cb6-10"><a href=""></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-7-output-1.png" class="quarto-figure quarto-figure-center" width="854" height="197"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="morphologie-mathématique-ouverture" class="slide level2 smaller">
+<h2>Morphologie mathématique — ouverture</h2>
+<ul>
+<li class="fragment">Opère sur des <strong>masques binaires</strong> par opérateurs ensemblistes : érosion, dilatation</li>
+<li class="fragment">L’<strong>ouverture</strong> (érosion puis dilatation) élimine les petits objets clairs isolés</li>
+<li class="fragment">Utile pour nettoyer un masque issu d’un <strong>seuillage</strong> ou d’une segmentation</li>
+</ul>
+<div id="bbc094a3" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="im">from</span> skimage.morphology <span class="im">import</span> opening, disk</span>
+<span id="cb7-2"><a href=""></a>sar <span class="op">=</span> rxr.open_rasterio(<span class="st">'../SAR.tif'</span>).sel(band<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-3"><a href=""></a>sar <span class="op">=</span> sar.where(sar <span class="op">&gt;</span> <span class="dv">0</span>)                          <span class="co"># masque no_data</span></span>
+<span id="cb7-4"><a href=""></a>sar_db <span class="op">=</span> np.log10(sar.to_numpy())</span>
+<span id="cb7-5"><a href=""></a>masque <span class="op">=</span> sar_db <span class="op">&gt;</span> np.percentile(sar_db, <span class="dv">75</span>)       <span class="co"># 25 % des pixels les plus intenses</span></span>
+<span id="cb7-6"><a href=""></a>masque_ouvert <span class="op">=</span> opening(masque, disk(<span class="dv">2</span>))</span>
+<span id="cb7-7"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">3.5</span>))</span>
+<span id="cb7-8"><a href=""></a>ax[<span class="dv">0</span>].imshow(masque, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Masque original"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb7-9"><a href=""></a>ax[<span class="dv">1</span>].imshow(masque_ouvert, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Après ouverture"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb7-10"><a href=""></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-8-output-1.png" class="quarto-figure quarto-figure-center" width="662" height="274"></p>
 </figure>
 </div>
 </div>
@@ -337,17 +411,17 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong>Miroir</strong> (<code>reflect</code>, <code>mirror</code>) → prolonge par symétrie</li>
 <li class="fragment"><strong>Constante</strong> (<code>constant</code>) ou <strong>réplication</strong> du bord (<code>nearest</code>)</li>
 </ul>
-<div id="081e5025" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> uniform_filter</span>
-<span id="cb5-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
-<span id="cb5-3"><a href=""></a><span class="cf">for</span> a, mode <span class="kw">in</span> <span class="bu">zip</span>(ax, [<span class="st">'reflect'</span>, <span class="st">'constant'</span>, <span class="st">'nearest'</span>]):</span>
-<span id="cb5-4"><a href=""></a>    a.imshow(uniform_filter(img[<span class="dv">0</span>], size<span class="op">=</span><span class="dv">15</span>, mode<span class="op">=</span>mode), cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
-<span id="cb5-5"><a href=""></a>    a.set_title(<span class="ss">f"bordure : </span><span class="sc">{</span>mode<span class="sc">}</span><span class="ss">"</span>)<span class="op">;</span> a.axis(<span class="st">'off'</span>)</span>
-<span id="cb5-6"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="d05a3ab8" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> uniform_filter</span>
+<span id="cb8-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
+<span id="cb8-3"><a href=""></a><span class="cf">for</span> a, mode <span class="kw">in</span> <span class="bu">zip</span>(ax, [<span class="st">'reflect'</span>, <span class="st">'constant'</span>, <span class="st">'nearest'</span>]):</span>
+<span id="cb8-4"><a href=""></a>    a.imshow(uniform_filter(img[<span class="dv">0</span>], size<span class="op">=</span><span class="dv">15</span>, mode<span class="op">=</span>mode), cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb8-5"><a href=""></a>    a.set_title(<span class="ss">f"bordure : </span><span class="sc">{</span>mode<span class="sc">}</span><span class="ss">"</span>)<span class="op">;</span> a.axis(<span class="st">'off'</span>)</span>
+<span id="cb8-6"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-6-output-1.png" class="quarto-figure quarto-figure-center" width="689" height="155"></p>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-9-output-1.png" class="quarto-figure quarto-figure-center" width="689" height="155"></p>
 </figure>
 </div>
 </div>
@@ -356,21 +430,21 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="du-filtre-à-la-couche-convolutionnelle" class="slide level2 smaller">
 <h2>Du filtre à la couche convolutionnelle</h2>
 <p>Une <strong>couche convolutionnelle</strong> applique des filtres comme celui de Scharr — mais dans un réseau de neurones, ces filtres sont <strong>appris</strong> à partir des données.</p>
-<div id="5e8b4551" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a><span class="im">import</span> torch, torch.nn <span class="im">as</span> nn</span>
-<span id="cb6-2"><a href=""></a>conv <span class="op">=</span> nn.Conv2d(<span class="dv">1</span>, <span class="dv">1</span>, kernel_size<span class="op">=</span><span class="dv">3</span>, padding<span class="op">=</span><span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>)   <span class="co"># une couche conv 3x3</span></span>
-<span id="cb6-3"><a href=""></a>scharr_gx <span class="op">=</span> torch.tensor([[<span class="op">-</span><span class="fl">3.</span>, <span class="dv">0</span>, <span class="dv">3</span>], [<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>], [<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">3</span>]]).reshape(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
-<span id="cb6-4"><a href=""></a>conv.weight <span class="op">=</span> nn.Parameter(scharr_gx)                          <span class="co"># noyau imposé (Scharr Gx)</span></span>
-<span id="cb6-5"><a href=""></a>x <span class="op">=</span> torch.tensor(gris, dtype<span class="op">=</span>torch.float32)[<span class="va">None</span>, <span class="va">None</span>]        <span class="co"># (1, 1, H, W)</span></span>
-<span id="cb6-6"><a href=""></a>sortie <span class="op">=</span> conv(x)[<span class="dv">0</span>, <span class="dv">0</span>].detach().numpy()</span>
-<span id="cb6-7"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
-<span id="cb6-8"><a href=""></a>ax[<span class="dv">0</span>].imshow(gris, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Entrée"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb6-9"><a href=""></a>ax[<span class="dv">1</span>].imshow(np.<span class="bu">abs</span>(sortie), cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Sortie — couche conv (Scharr)"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb6-10"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="2f7a1aa4" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a><span class="im">import</span> torch, torch.nn <span class="im">as</span> nn</span>
+<span id="cb9-2"><a href=""></a>conv <span class="op">=</span> nn.Conv2d(<span class="dv">1</span>, <span class="dv">1</span>, kernel_size<span class="op">=</span><span class="dv">3</span>, padding<span class="op">=</span><span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>)   <span class="co"># une couche conv 3x3</span></span>
+<span id="cb9-3"><a href=""></a>scharr_gx <span class="op">=</span> torch.tensor([[<span class="op">-</span><span class="fl">3.</span>, <span class="dv">0</span>, <span class="dv">3</span>], [<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>], [<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">3</span>]]).reshape(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb9-4"><a href=""></a>conv.weight <span class="op">=</span> nn.Parameter(scharr_gx)                          <span class="co"># noyau imposé (Scharr Gx)</span></span>
+<span id="cb9-5"><a href=""></a>x <span class="op">=</span> torch.tensor(gris, dtype<span class="op">=</span>torch.float32)[<span class="va">None</span>, <span class="va">None</span>]        <span class="co"># (1, 1, H, W)</span></span>
+<span id="cb9-6"><a href=""></a>sortie <span class="op">=</span> conv(x)[<span class="dv">0</span>, <span class="dv">0</span>].detach().numpy()</span>
+<span id="cb9-7"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb9-8"><a href=""></a>ax[<span class="dv">0</span>].imshow(gris, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Entrée"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb9-9"><a href=""></a>ax[<span class="dv">1</span>].imshow(np.<span class="bu">abs</span>(sortie), cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Sortie — couche conv (Scharr)"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb9-10"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-7-output-1.png" class="quarto-figure quarto-figure-center" width="543" height="178"></p>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-10-output-1.png" class="quarto-figure quarto-figure-center" width="543" height="178"></p>
 </figure>
 </div>
 </div>
@@ -379,68 +453,252 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="filtrage-adaptatif-le-speckle-sar" class="slide level2 smaller">
 <h2>Filtrage adaptatif — le <em>speckle</em> SAR</h2>
-<p>Les images radar sont dégradées par un bruit multiplicatif (<em>speckle</em>). Le <strong>filtre de Lee</strong> lisse en <strong>préservant les détails</strong> (pondération selon la variance locale).</p>
-<div id="7334da91" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>sar <span class="op">=</span> rxr.open_rasterio(<span class="st">'../SAR.tif'</span>).sel(band<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb7-2"><a href=""></a>sar <span class="op">=</span> sar.where(sar <span class="op">&gt;</span> <span class="dv">0</span>)                          <span class="co"># masque no_data</span></span>
-<span id="cb7-3"><a href=""></a>moy <span class="op">=</span> sar.rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>, min_periods<span class="op">=</span><span class="dv">3</span>, center<span class="op">=</span><span class="va">True</span>).mean()</span>
-<span id="cb7-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
-<span id="cb7-5"><a href=""></a>np.log10(sar).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">0</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"SAR brut (speckle)"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb7-6"><a href=""></a>np.log10(moy).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">1</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Filtre moyen 5x5"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
-<span id="cb7-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Les images radar sont dégradées par un bruit multiplicatif (<em>speckle</em>). Le <strong>filtre de Lee</strong> lisse en <strong>préservant les détails</strong> (pondération selon la variance locale) :</p>
+<p><span class="math display">\[ I_F = I_M + K(I - I_M), \qquad K = \frac{\sigma^2_I}{\sigma^2_I + \sigma^2_{bruit}} \]</span></p>
+<div id="8a6024c7" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>moy <span class="op">=</span> sar.rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>, min_periods<span class="op">=</span><span class="dv">3</span>, center<span class="op">=</span><span class="va">True</span>).mean()</span>
+<span id="cb10-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb10-3"><a href=""></a>np.log10(sar).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">0</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"SAR brut (speckle)"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb10-4"><a href=""></a>np.log10(moy).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">1</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Filtre moyen 5x5"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb10-5"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-8-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="261"></p>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-11-output-1.png" class="quarto-figure quarto-figure-center" width="540" height="261"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="segmentation-en-super-pixels" class="slide level2 smaller">
-<h2>Segmentation en super-pixels</h2>
-<p><strong>SLIC</strong> regroupe les pixels en régions homogènes et compactes (couleur + distance) :</p>
-<div id="93f8cbe7" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="im">from</span> skimage.segmentation <span class="im">import</span> slic, mark_boundaries</span>
-<span id="cb8-2"><a href=""></a>rgb <span class="op">=</span> img.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).astype(<span class="st">'uint8'</span>)      <span class="co"># berkeley (réutilisée)</span></span>
-<span id="cb8-3"><a href=""></a>seg <span class="op">=</span> slic(rgb, n_segments<span class="op">=</span><span class="dv">250</span>, compactness<span class="op">=</span><span class="dv">10</span>, sigma<span class="op">=</span><span class="dv">1</span>, start_label<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb8-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.6</span>))</span>
-<span id="cb8-5"><a href=""></a>ax.imshow(mark_boundaries(rgb, seg))</span>
-<span id="cb8-6"><a href=""></a>ax.set_title(<span class="ss">f"SLIC — </span><span class="sc">{</span><span class="bu">len</span>(np.unique(seg))<span class="sc">}</span><span class="ss"> super-pixels"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
-<span id="cb8-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="04-spatiales_files/figure-revealjs/cell-9-output-1.png" class="quarto-figure quarto-figure-center" width="391" height="258"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="fusion-et-approche-objet" class="slide level2 smaller">
-<h2>Fusion et approche objet</h2>
+<section id="texture-matrice-de-co-occurrence-glcm" class="slide level2 smaller">
+<h2>Texture — matrice de co-occurrence (GLCM)</h2>
 <ul>
-<li class="fragment">Sur-segmentation → <strong>fusionner</strong> les segments similaires (<strong>graphe d’adjacence, RAG</strong>)</li>
-<li class="fragment"><strong>Approche objet</strong> : chaque segment devient un <em>objet</em> décrit par des <strong>propriétés</strong> (aire, moyenne, forme…) via <code>regionprops</code></li>
+<li class="fragment">Capture comment les niveaux de gris varient <strong>spatialement</strong>, au-delà des contours</li>
+<li class="fragment">La <strong>GLCM</strong> compte les paires de valeurs voisines pour une direction/distance donnée</li>
+<li class="fragment">On en dérive <strong>contraste</strong>, <strong>homogénéité</strong>, <strong>énergie</strong>, <strong>corrélation</strong></li>
+<li class="fragment">Distingue des surfaces de radiométrie semblable mais de texture différente (forêt vs champ)</li>
+</ul>
+<div id="dbc909d8" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a><span class="im">from</span> skimage.feature <span class="im">import</span> graycomatrix, graycoprops</span>
+<span id="cb11-2"><a href=""></a><span class="im">from</span> skimage.util <span class="im">import</span> img_as_ubyte</span>
+<span id="cb11-3"><a href=""></a><span class="im">from</span> skimage.color <span class="im">import</span> rgb2gray</span>
+<span id="cb11-4"><a href=""></a>gris_tex <span class="op">=</span> img_as_ubyte(rgb2gray(img.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>) <span class="op">/</span> <span class="fl">255.0</span>))</span>
+<span id="cb11-5"><a href=""></a>fenetre_a <span class="op">=</span> gris_tex[:<span class="dv">80</span>, :<span class="dv">80</span>]     <span class="co"># coin supérieur gauche</span></span>
+<span id="cb11-6"><a href=""></a>fenetre_b <span class="op">=</span> gris_tex[<span class="op">-</span><span class="dv">80</span>:, <span class="op">-</span><span class="dv">80</span>:]   <span class="co"># coin inférieur droit</span></span>
+<span id="cb11-7"><a href=""></a><span class="cf">for</span> nom, fenetre <span class="kw">in</span> [(<span class="st">"Fenêtre A"</span>, fenetre_a), (<span class="st">"Fenêtre B"</span>, fenetre_b)]:</span>
+<span id="cb11-8"><a href=""></a>    glcm <span class="op">=</span> graycomatrix(fenetre, distances<span class="op">=</span>[<span class="dv">1</span>], angles<span class="op">=</span>[<span class="dv">0</span>], levels<span class="op">=</span><span class="dv">256</span>, symmetric<span class="op">=</span><span class="va">True</span>, normed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-9"><a href=""></a>    props <span class="op">=</span> {p: <span class="bu">round</span>(graycoprops(glcm, p)[<span class="dv">0</span>, <span class="dv">0</span>], <span class="dv">3</span>) <span class="cf">for</span> p <span class="kw">in</span> (<span class="st">"contrast"</span>, <span class="st">"homogeneity"</span>, <span class="st">"energy"</span>, <span class="st">"correlation"</span>)}</span>
+<span id="cb11-10"><a href=""></a>    <span class="bu">print</span>(nom, props)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fenêtre A {'contrast': np.float64(410.179), 'homogeneity': np.float64(0.114), 'energy': np.float64(0.016), 'correlation': np.float64(0.869)}
+Fenêtre B {'contrast': np.float64(572.694), 'homogeneity': np.float64(0.085), 'energy': np.float64(0.015), 'correlation': np.float64(0.821)}</code></pre>
+</div>
+</div>
+</section>
+<section id="segmentation-en-super-pixels-slic" class="slide level2 smaller">
+<h2>Segmentation en super-pixels — SLIC</h2>
+<p><strong>SLIC</strong> regroupe les pixels en régions homogènes et compactes (couleur + distance) :</p>
+<div id="77716342" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a><span class="im">from</span> skimage.segmentation <span class="im">import</span> slic, mark_boundaries</span>
+<span id="cb13-2"><a href=""></a>rgb <span class="op">=</span> img.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).astype(<span class="st">'uint8'</span>)      <span class="co"># berkeley (réutilisée)</span></span>
+<span id="cb13-3"><a href=""></a>seg <span class="op">=</span> slic(rgb, n_segments<span class="op">=</span><span class="dv">250</span>, compactness<span class="op">=</span><span class="dv">10</span>, sigma<span class="op">=</span><span class="dv">1</span>, start_label<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb13-4"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.6</span>))</span>
+<span id="cb13-5"><a href=""></a>ax.imshow(mark_boundaries(rgb, seg))</span>
+<span id="cb13-6"><a href=""></a>ax.set_title(<span class="ss">f"SLIC — </span><span class="sc">{</span><span class="bu">len</span>(np.unique(seg))<span class="sc">}</span><span class="ss"> super-pixels"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
+<span id="cb13-7"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-13-output-1.png" class="quarto-figure quarto-figure-center" width="391" height="258"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="quick-shift" class="slide level2 smaller">
+<h2>Quick Shift</h2>
+<ul>
+<li class="fragment">Segmentation par <strong>recherche de mode</strong> (ascension de gradient), pas de k-moyennes itératives</li>
+<li class="fragment">Pas besoin de fixer le <strong>nombre de segments</strong> à l’avance</li>
+<li class="fragment"><code>kernel_size</code> : échelle spatiale · <code>max_dist</code> : distance de fusion maximale</li>
+<li class="fragment"><code>ratio</code> équilibre couleur vs position — un rôle analogue au poids <span class="math inline">\(m\)</span> de SLIC</li>
+</ul>
+<div id="688f5566" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a><span class="im">from</span> skimage.segmentation <span class="im">import</span> quickshift</span>
+<span id="cb14-2"><a href=""></a>segments_qs <span class="op">=</span> quickshift(rgb, kernel_size<span class="op">=</span><span class="dv">5</span>, max_dist<span class="op">=</span><span class="dv">10</span>, ratio<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb14-3"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">3.6</span>))</span>
+<span id="cb14-4"><a href=""></a>ax[<span class="dv">0</span>].imshow(mark_boundaries(rgb, seg))<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="ss">f"SLIC (</span><span class="sc">{</span><span class="bu">len</span>(np.unique(seg))<span class="sc">}</span><span class="ss"> segments)"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb14-5"><a href=""></a>ax[<span class="dv">1</span>].imshow(mark_boundaries(rgb, segments_qs))<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="ss">f"Quick Shift (</span><span class="sc">{</span><span class="bu">len</span>(np.unique(segments_qs))<span class="sc">}</span><span class="ss"> segments)"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb14-6"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-14-output-1.png" class="quarto-figure quarto-figure-center" width="614" height="198"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fusion-des-segments-graphe-dadjacence-rag" class="slide level2 smaller">
+<h2>Fusion des segments — graphe d’adjacence (RAG)</h2>
+<ul>
+<li class="fragment">La sur-segmentation est fréquente → <strong>fusionner</strong> les segments similaires en post-traitement</li>
+<li class="fragment">Un <strong>graphe d’adjacence de régions</strong> (RAG) relie les segments qui se touchent</li>
+<li class="fragment">On fusionne les nœuds de couleur moyenne proche jusqu’à un seuil</li>
+</ul>
+<div id="5c0b2304" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a><span class="im">from</span> skimage <span class="im">import</span> graph, color</span>
+<span id="cb15-2"><a href=""></a><span class="kw">def</span> poids_couleur(graph, src, dst, n):</span>
+<span id="cb15-3"><a href=""></a>    diff <span class="op">=</span> graph.nodes[dst][<span class="st">'mean color'</span>] <span class="op">-</span> graph.nodes[n][<span class="st">'mean color'</span>]</span>
+<span id="cb15-4"><a href=""></a>    <span class="cf">return</span> {<span class="st">'weight'</span>: np.linalg.norm(diff)}</span>
+<span id="cb15-5"><a href=""></a></span>
+<span id="cb15-6"><a href=""></a><span class="kw">def</span> fusion_couleur(graph, src, dst):</span>
+<span id="cb15-7"><a href=""></a>    graph.nodes[dst][<span class="st">'total color'</span>] <span class="op">+=</span> graph.nodes[src][<span class="st">'total color'</span>]</span>
+<span id="cb15-8"><a href=""></a>    graph.nodes[dst][<span class="st">'pixel count'</span>] <span class="op">+=</span> graph.nodes[src][<span class="st">'pixel count'</span>]</span>
+<span id="cb15-9"><a href=""></a>    graph.nodes[dst][<span class="st">'mean color'</span>] <span class="op">=</span> graph.nodes[dst][<span class="st">'total color'</span>] <span class="op">/</span> graph.nodes[dst][<span class="st">'pixel count'</span>]</span>
+<span id="cb15-10"><a href=""></a></span>
+<span id="cb15-11"><a href=""></a>g <span class="op">=</span> graph.rag_mean_color(rgb, seg)</span>
+<span id="cb15-12"><a href=""></a><span class="bu">print</span>(<span class="st">"Segments avant fusion :"</span>, <span class="bu">len</span>(g))</span>
+<span id="cb15-13"><a href=""></a>fusionne <span class="op">=</span> graph.merge_hierarchical(seg, g, thresh<span class="op">=</span><span class="dv">20</span>, rag_copy<span class="op">=</span><span class="va">False</span>, in_place_merge<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb15-14"><a href=""></a>                                     merge_func<span class="op">=</span>fusion_couleur, weight_func<span class="op">=</span>poids_couleur)</span>
+<span id="cb15-15"><a href=""></a><span class="bu">print</span>(<span class="st">"Segments après fusion :"</span>, <span class="bu">len</span>(g))</span>
+<span id="cb15-16"><a href=""></a></span>
+<span id="cb15-17"><a href=""></a>avant <span class="op">=</span> color.label2rgb(seg, rgb, kind<span class="op">=</span><span class="st">'avg'</span>, bg_label<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb15-18"><a href=""></a>apres <span class="op">=</span> color.label2rgb(fusionne, rgb, kind<span class="op">=</span><span class="st">'avg'</span>, bg_label<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb15-19"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">3.6</span>))</span>
+<span id="cb15-20"><a href=""></a>ax[<span class="dv">0</span>].imshow(mark_boundaries(avant, seg))<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Avant fusion"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb15-21"><a href=""></a>ax[<span class="dv">1</span>].imshow(mark_boundaries(apres, fusionne))<span class="op">;</span> ax[<span class="dv">1</span>].set_title(<span class="st">"Après fusion"</span>)<span class="op">;</span> ax[<span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb15-22"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segments avant fusion : 142
+Segments après fusion : 73</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="04-spatiales_files/figure-revealjs/cell-15-output-2.png" class="quarto-figure quarto-figure-center" width="614" height="199"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="approche-objet-regionprops" class="slide level2 smaller">
+<h2>Approche objet — <code>regionprops</code></h2>
+<ul>
+<li class="fragment">Chaque segment devient un <strong>objet</strong> décrit par des propriétés (aire, centroïde, intensité moyenne…)</li>
+<li class="fragment"><code>regionprops_table</code> construit directement un <strong>tableau</strong> exploitable</li>
 <li class="fragment">Base de la <strong>classification objet</strong> (chapitre suivant)</li>
 </ul>
+<div id="8a4e355d" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href=""></a><span class="im">from</span> skimage <span class="im">import</span> measure</span>
+<span id="cb17-2"><a href=""></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb17-3"><a href=""></a>proprietes <span class="op">=</span> [<span class="st">'label'</span>, <span class="st">'area'</span>, <span class="st">'centroid'</span>, <span class="st">'intensity_mean'</span>]</span>
+<span id="cb17-4"><a href=""></a>table <span class="op">=</span> measure.regionprops_table(fusionne, intensity_image<span class="op">=</span>rgb, properties<span class="op">=</span>proprietes)</span>
+<span id="cb17-5"><a href=""></a>pd.DataFrame(table).head(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+<table class="dataframe caption-top" data-border="1">
+<thead>
+<tr class="header" style="text-align: right;">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">label</th>
+<th data-quarto-table-cell-role="th">area</th>
+<th data-quarto-table-cell-role="th">centroid-0</th>
+<th data-quarto-table-cell-role="th">centroid-1</th>
+<th data-quarto-table-cell-role="th">intensity_mean-0</th>
+<th data-quarto-table-cell-role="th">intensity_mean-1</th>
+<th data-quarto-table-cell-role="th">intensity_mean-2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>1</td>
+<td>4450.0</td>
+<td>23.665618</td>
+<td>1268.292584</td>
+<td>138.302921</td>
+<td>131.164045</td>
+<td>107.438427</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>2</td>
+<td>4619.0</td>
+<td>50.327560</td>
+<td>618.730894</td>
+<td>203.265858</td>
+<td>200.949989</td>
+<td>192.227755</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>3</td>
+<td>8302.0</td>
+<td>69.675741</td>
+<td>400.461214</td>
+<td>113.143941</td>
+<td>110.877740</td>
+<td>85.504698</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>4</td>
+<td>4557.0</td>
+<td>77.571867</td>
+<td>926.854290</td>
+<td>189.718894</td>
+<td>184.048277</td>
+<td>167.926926</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>5</td>
+<td>4537.0</td>
+<td>95.521049</td>
+<td>1097.349350</td>
+<td>193.202336</td>
+<td>184.538462</td>
+<td>174.249724</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
 </section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>
 <ul>
-<li class="fragment">La <strong>transformée de Fourier</strong> : point de vue fréquentiel réversible</li>
-<li class="fragment"><strong>Passe-bas avant de décimer</strong> → éviter l’aliasing</li>
-<li class="fragment"><strong>Convolution</strong> = filtrage local efficace (moyenne, Scharr)</li>
+<li class="fragment">La <strong>transformée de Fourier</strong> : point de vue fréquentiel réversible ; <strong>passe-bas avant de décimer</strong> pour éviter l’aliasing</li>
+<li class="fragment"><strong>Convolution</strong> = filtrage local linéaire efficace (moyenne, Scharr)</li>
+<li class="fragment">Filtre <strong>non linéaire</strong> (médian, morphologie mathématique) ≠ pondération des voisins</li>
 <li class="fragment"><strong>Lee</strong> : filtre adaptatif contre le <em>speckle</em> SAR</li>
-<li class="fragment"><strong>SLIC + RAG + regionprops</strong> : de l’image aux objets</li>
+<li class="fragment"><strong>Texture (GLCM)</strong> : contraste, homogénéité, énergie, corrélation</li>
+<li class="fragment"><strong>SLIC / Quick Shift + RAG + regionprops</strong> : de l’image aux objets</li>
 </ul>
 </section>
 <section id="à-vous-de-jouer" class="slide level2 smaller">
 <h2>À vous de jouer</h2>
 <ul>
 <li>Décimez l’image par un facteur 8, avec et sans filtre passe-bas</li>
-<li>Appliquez le Scharr sur les <strong>3 bandes</strong> et combinez les amplitudes</li>
-<li>Variez <code>compactness</code> de SLIC (1, 10, 50) et observez la forme des super-pixels</li>
+<li>Comparez filtre médian et filtre moyen sur une image bruitée (sel et poivre)</li>
+<li>Faites varier <code>kernel_size</code>/<code>max_dist</code> de Quick Shift et comparez à SLIC</li>
 </ul>
 </section>
 <section id="section" class="slide level2" data-background-color="#357cc0">

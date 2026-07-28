@@ -215,39 +215,61 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <ul>
 <li class="fragment">Comprendre le principe des <strong>indices spectraux</strong></li>
 <li class="fragment">Calculer différents indices avec <strong><code>spyndex</code></strong></li>
-<li class="fragment">Analyser le <strong>gain en information</strong> des indices</li>
-<li class="fragment">Réduire la <strong>dimension spectrale</strong> (ACP / produit matriciel)</li>
+<li class="fragment">Analyser le <strong>gain en information</strong> (séparabilité) des indices</li>
+<li class="fragment">Réduire la <strong>dimension spectrale</strong> : produit matriciel, Tasseled Cap, ACP</li>
 </ul>
+</section>
+<section id="bibliothèques-et-données" class="slide level2 smaller">
+<h2>Bibliothèques et données</h2>
+<ul>
+<li class="fragment"><strong>NumPy</strong>, <strong>SciPy</strong>, <strong>Rasterio</strong>, <strong>xarray</strong> / <strong>rioxarray</strong></li>
+<li class="fragment"><strong><code>spyndex</code></strong> (Awesome Spectral Indices) : calcul d’indices spectraux</li>
+<li class="fragment">Images : <code>RGBNIR_of_S2A.tif</code>, <code>sentinel2.tif</code> (12 bandes), <code>carte.tif</code></li>
+<li class="fragment">Signatures de laboratoire USGS : <code>ASCIIdata_splib07b_rsSentinel2</code></li>
+</ul>
+<div id="de3d7854" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
+<span id="cb1-3"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href=""></a><span class="im">import</span> spyndex</span>
+<span id="cb1-5"><a href=""></a><span class="im">import</span> rasterio <span class="im">as</span> rio</span>
+<span id="cb1-6"><a href=""></a></span>
+<span id="cb1-7"><a href=""></a>img_s2 <span class="op">=</span> rxr.open_rasterio(<span class="st">'../sentinel2.tif'</span>, mask_and_scale<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-8"><a href=""></a>img_s2.dims</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>('band', 'y', 'x')</code></pre>
+</div>
+</div>
 </section>
 <section id="quest-ce-que-linformation-spectrale" class="slide level2 smaller">
 <h2>Qu’est-ce que l’information spectrale ?</h2>
 <ul>
-<li class="fragment">La dimension <strong>spectrale</strong> : le long des bandes de l’image</li>
-<li class="fragment">4–5 bandes (multispectral léger) → <strong>centaines</strong> (hyperspectral)</li>
+<li class="fragment">Dimension <strong>spectrale</strong> : le long des bandes de l’image</li>
+<li class="fragment">4–5 bandes (très haute résolution spectrale) → une quinzaine (multispectral) → <strong>centaines</strong> (hyperspectral)</li>
 <li class="fragment">La <strong>signature spectrale</strong> caractérise le <strong>type et l’état</strong> d’un matériau</li>
 <li class="fragment">Une généralisation de la <em>couleur</em> au-delà du visible</li>
+<li class="fragment">Base USGS de signatures de laboratoire <span class="citation" data-cites="Kokaly-2017">[@Kokaly-2017]</span></li>
 </ul>
 </section>
 <section id="signatures-spectrales" class="slide level2 smaller">
 <h2>Signatures spectrales</h2>
-<div id="304d8f5b" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-2"><a href=""></a>base <span class="op">=</span> <span class="st">'../ASCIIdata_splib07b_rsSentinel2'</span></span>
-<span id="cb1-3"><a href=""></a><span class="kw">def</span> lire(f):</span>
-<span id="cb1-4"><a href=""></a>    <span class="cf">with</span> <span class="bu">open</span>(f) <span class="im">as</span> fh:</span>
-<span id="cb1-5"><a href=""></a>        <span class="cf">return</span> [<span class="bu">float</span>(s.replace(<span class="st">' '</span>, <span class="st">''</span>)) <span class="cf">for</span> s <span class="kw">in</span> fh.read().split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)[<span class="dv">1</span>:] <span class="cf">if</span> s.strip()]</span>
-<span id="cb1-6"><a href=""></a>wl      <span class="op">=</span> [w<span class="op">*</span><span class="dv">1000</span> <span class="cf">for</span> w <span class="kw">in</span> lire(<span class="ss">f'</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/S07SNTL2_Wavelengths_Sentinel2_(13_bands)_microns.txt'</span>)]</span>
-<span id="cb1-7"><a href=""></a>prairie <span class="op">=</span> lire(<span class="ss">f'</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/ChapterV_Vegetation/S07SNTL2_Rangeland_C03-004_S08%_G27%_ASDFRa_AREF.txt'</span>)</span>
-<span id="cb1-8"><a href=""></a>eau     <span class="op">=</span> lire(<span class="ss">f'</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/ChapterL_Liquids/S07SNTL2_Water+Montmor_SWy-2+0.50g-l_ASDFRa_AREF.txt'</span>)</span>
-<span id="cb1-9"><a href=""></a>beton   <span class="op">=</span> lire(<span class="ss">f'</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/ChapterA_ArtificialMaterials/S07SNTL2_Concrete_GDS375_Lt_Gry_Road_ASDFRa_AREF.txt'</span>)</span>
-<span id="cb1-10"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.4</span>))</span>
-<span id="cb1-11"><a href=""></a>ax.plot(wl, prairie, <span class="st">'g.-'</span>, label<span class="op">=</span><span class="st">'Prairie'</span>)<span class="op">;</span> ax.plot(wl, eau, <span class="st">'b.-'</span>, label<span class="op">=</span><span class="st">'Eau'</span>)<span class="op">;</span> ax.plot(wl, beton, <span class="st">'y.-'</span>, label<span class="op">=</span><span class="st">'Béton'</span>)</span>
-<span id="cb1-12"><a href=""></a>ax.set_xlabel(<span class="st">"Longueur d'onde (nm)"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">'Réflectance'</span>)<span class="op">;</span> ax.legend()<span class="op">;</span> ax.grid(<span class="va">True</span>)</span>
-<span id="cb1-13"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="6034180e" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>base <span class="op">=</span> <span class="st">'../ASCIIdata_splib07b_rsSentinel2'</span></span>
+<span id="cb3-2"><a href=""></a><span class="kw">def</span> lire(f):</span>
+<span id="cb3-3"><a href=""></a>    <span class="cf">with</span> <span class="bu">open</span>(f) <span class="im">as</span> fh:</span>
+<span id="cb3-4"><a href=""></a>        <span class="cf">return</span> [<span class="bu">float</span>(s.replace(<span class="st">' '</span>, <span class="st">''</span>)) <span class="cf">for</span> s <span class="kw">in</span> fh.read().split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)[<span class="dv">1</span>:] <span class="cf">if</span> s.strip()]</span>
+<span id="cb3-5"><a href=""></a>wl      <span class="op">=</span> [w<span class="op">*</span><span class="dv">1000</span> <span class="cf">for</span> w <span class="kw">in</span> lire(<span class="ss">f'</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/S07SNTL2_Wavelengths_Sentinel2_(13_bands)_microns.txt'</span>)]</span>
+<span id="cb3-6"><a href=""></a>prairie <span class="op">=</span> lire(<span class="ss">f'</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/ChapterV_Vegetation/S07SNTL2_Rangeland_C03-004_S08%_G27%_ASDFRa_AREF.txt'</span>)</span>
+<span id="cb3-7"><a href=""></a>eau     <span class="op">=</span> lire(<span class="ss">f'</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/ChapterL_Liquids/S07SNTL2_Water+Montmor_SWy-2+0.50g-l_ASDFRa_AREF.txt'</span>)</span>
+<span id="cb3-8"><a href=""></a>beton   <span class="op">=</span> lire(<span class="ss">f'</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/ChapterA_ArtificialMaterials/S07SNTL2_Concrete_GDS375_Lt_Gry_Road_ASDFRa_AREF.txt'</span>)</span>
+<span id="cb3-9"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.4</span>))</span>
+<span id="cb3-10"><a href=""></a>ax.plot(wl, prairie, <span class="st">'g.-'</span>, label<span class="op">=</span><span class="st">'Prairie'</span>)<span class="op">;</span> ax.plot(wl, eau, <span class="st">'b.-'</span>, label<span class="op">=</span><span class="st">'Eau'</span>)<span class="op">;</span> ax.plot(wl, beton, <span class="st">'y.-'</span>, label<span class="op">=</span><span class="st">'Béton'</span>)</span>
+<span id="cb3-11"><a href=""></a>ax.set_xlabel(<span class="st">"Longueur d'onde (nm)"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">'Réflectance'</span>)<span class="op">;</span> ax.legend()<span class="op">;</span> ax.grid(<span class="va">True</span>)</span>
+<span id="cb3-12"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="03-spectrales_files/figure-revealjs/cell-2-output-1.png" class="quarto-figure quarto-figure-center" width="530" height="313"></p>
+<p><img data-src="03-spectrales_files/figure-revealjs/cell-3-output-1.png" class="quarto-figure quarto-figure-center" width="530" height="313"></p>
 </figure>
 </div>
 </div>
@@ -259,18 +281,19 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Mettent en valeur des <strong>caractéristiques du spectre</strong> (pentes, gradients)</li>
 <li class="fragment">Améliorent la <strong>séparabilité</strong> de certaines classes</li>
 <li class="fragment">Le choix dépend fortement de l’<strong>application</strong></li>
-<li class="fragment"><strong><code>spyndex</code></strong> (Awesome Spectral Indices) : <strong>200+</strong> indices</li>
+<li class="fragment"><strong><code>spyndex</code></strong> (Awesome Spectral Indices) : <strong>200+</strong> indices (optiques et radar)</li>
 </ul>
-</section>
-<section id="le-ndvi" class="slide level2 smaller">
-<h2>Le NDVI</h2>
-<p>L’indice le plus connu, à partir du <strong>rouge</strong> (<span class="math inline">\(R\)</span>) et du <strong>proche-infrarouge</strong> (<span class="math inline">\(N\)</span>) :</p>
-<p><span class="math display">\[ NDVI = \frac{N - R}{N + R} \]</span></p>
-<ul>
-<li class="fragment">Végétation dense → NDVI élevé (proche de 1)</li>
-<li class="fragment">Eau, sol nu, bâti → valeurs faibles voire négatives</li>
-<li class="fragment"><code>GNDVI</code> : remplace le rouge par le vert · <code>SAVI</code> : correction du sol (<span class="math inline">\(L\)</span>)</li>
-</ul>
+<div id="af463b5b" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>spyndex.indices[<span class="st">"NDVI"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>SpectralIndex(NDVI: Normalized Difference Vegetation Index)
+        * Application Domain: vegetation
+        * Bands/Parameters: ['N', 'R']
+        * Formula: (N-R)/(N+R)
+        * Reference: https://ntrs.nasa.gov/citations/19740022614
+        </code></pre>
+</div>
+</div>
 </section>
 <section id="nomenclature-des-bandes-spyndex" class="slide level2 smaller">
 <h2>Nomenclature des bandes (<code>spyndex</code>)</h2>
@@ -307,98 +330,216 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </tr>
 </tbody>
 </table>
-<p><code>spyndex</code> suppose ces noms de bandes ; on renomme les coordonnées <code>xarray</code> avant le calcul.</p>
+<p><code>spyndex</code> suppose ces noms de bandes ; on renomme les coordonnées <code>xarray</code> avant le calcul :</p>
+<div id="43906e37" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>sentinel2_bands <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"G"</span>, <span class="st">"R"</span>, <span class="st">"RE1"</span>, <span class="st">"RE2"</span>, <span class="st">"RE3"</span>, <span class="st">"N"</span>, <span class="st">"N2"</span>, <span class="st">"WV"</span>, <span class="st">"S1"</span>, <span class="st">"S2"</span>]</span>
+<span id="cb6-2"><a href=""></a>img_s2 <span class="op">=</span> img_s2.sel(band<span class="op">=</span><span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>))).assign_coords({<span class="st">'band'</span>: sentinel2_bands})</span>
+<span id="cb6-3"><a href=""></a>img_s2 <span class="op">=</span> img_s2 <span class="op">/</span> <span class="dv">10000</span>   <span class="co"># normalisation en réflectance</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
-<section id="calcul-dindices-computeindex" class="slide level2 smaller">
-<h2>Calcul d’indices — <code>computeIndex</code></h2>
-<div id="3b9ab4b2" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, spyndex</span>
-<span id="cb2-2"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).astype(<span class="st">'float32'</span>) <span class="op">/</span> <span class="dv">10000</span>   <span class="co"># ordre B,V,R,PIR</span></span>
-<span id="cb2-3"><a href=""></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
-<span id="cb2-4"><a href=""></a>    index<span class="op">=</span>[<span class="st">"NDVI"</span>, <span class="st">"GNDVI"</span>, <span class="st">"SAVI"</span>],</span>
-<span id="cb2-5"><a href=""></a>    params<span class="op">=</span>{<span class="st">"N"</span>: img.sel(band<span class="op">=</span><span class="dv">4</span>), <span class="st">"R"</span>: img.sel(band<span class="op">=</span><span class="dv">3</span>), <span class="st">"G"</span>: img.sel(band<span class="op">=</span><span class="dv">2</span>), <span class="st">"L"</span>: <span class="fl">0.5</span>})</span>
-<span id="cb2-6"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
-<span id="cb2-7"><a href=""></a><span class="cf">for</span> a, name <span class="kw">in</span> <span class="bu">zip</span>(ax, [<span class="st">"NDVI"</span>, <span class="st">"GNDVI"</span>, <span class="st">"SAVI"</span>]):</span>
-<span id="cb2-8"><a href=""></a>    im <span class="op">=</span> a.imshow(idx.sel(index<span class="op">=</span>name), vmin<span class="op">=-</span><span class="fl">0.2</span>, vmax<span class="op">=</span><span class="fl">0.8</span>, cmap<span class="op">=</span><span class="st">'RdYlGn'</span>)</span>
-<span id="cb2-9"><a href=""></a>    a.set_title(name)<span class="op">;</span> a.axis(<span class="st">'off'</span>)</span>
-<span id="cb2-10"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="le-ndvi" class="slide level2 smaller">
+<h2>Le NDVI</h2>
+<p>L’indice le plus connu, à partir du <strong>rouge</strong> (<span class="math inline">\(R\)</span>) et du <strong>proche-infrarouge</strong> (<span class="math inline">\(N\)</span>) :</p>
+<p><span class="math display">\[ NDVI = \frac{N - R}{N + R} \]</span></p>
+<ul>
+<li class="fragment">Végétation dense → NDVI élevé (proche de 1)</li>
+<li class="fragment">Eau, sol nu, bâti → valeurs faibles voire négatives</li>
+</ul>
+</section>
+<section id="savi-et-evi" class="slide level2 smaller">
+<h2>SAVI et EVI</h2>
+<p><span class="math display">\[ EVI = G \times \frac{N - R}{N + C_1 \times R - C_2 \times B + L} \]</span></p>
+<ul>
+<li class="fragment"><code>SAVI</code> : facteur de correction du sol (<span class="math inline">\(L\)</span>) pour un couvert clairsemé</li>
+<li class="fragment"><code>EVI</code> : corrige en plus l’effet de l’<strong>atmosphère</strong> via la bande bleue (<span class="math inline">\(B\)</span>) <span class="citation" data-cites="Jensen2016">[@Jensen2016]</span></li>
+<li class="fragment">Limite la saturation du NDVI sur la végétation dense</li>
+<li class="fragment">Constantes usuelles : <span class="math inline">\(G=2{,}5\)</span>, <span class="math inline">\(C_1=6\)</span>, <span class="math inline">\(C_2=7{,}5\)</span>, <span class="math inline">\(L=1\)</span></li>
+</ul>
+</section>
+<section id="calcul-des-indices-computeindex" class="slide level2 smaller">
+<h2>Calcul des indices — <code>computeIndex</code></h2>
+<div id="9a3bf35c" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="im">from</span> rasterio <span class="im">import</span> plot</span>
+<span id="cb7-2"><a href=""></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
+<span id="cb7-3"><a href=""></a>    index<span class="op">=</span>[<span class="st">"NDVI"</span>, <span class="st">"SAVI"</span>],</span>
+<span id="cb7-4"><a href=""></a>    params<span class="op">=</span>{<span class="st">"N"</span>: img_s2.sel(band<span class="op">=</span><span class="st">"N"</span>), <span class="st">"R"</span>: img_s2.sel(band<span class="op">=</span><span class="st">"R"</span>), <span class="st">"L"</span>: <span class="fl">0.5</span>}</span>
+<span id="cb7-5"><a href=""></a>)</span>
+<span id="cb7-6"><a href=""></a>evi <span class="op">=</span> spyndex.computeIndex(</span>
+<span id="cb7-7"><a href=""></a>    index<span class="op">=</span>[<span class="st">"EVI"</span>],</span>
+<span id="cb7-8"><a href=""></a>    params<span class="op">=</span>{<span class="st">"N"</span>: img_s2.sel(band<span class="op">=</span><span class="st">"N"</span>), <span class="st">"R"</span>: img_s2.sel(band<span class="op">=</span><span class="st">"R"</span>), <span class="st">"B"</span>: img_s2.sel(band<span class="op">=</span><span class="st">"B"</span>),</span>
+<span id="cb7-9"><a href=""></a>            <span class="st">"g"</span>: <span class="fl">2.5</span>, <span class="st">"C1"</span>: <span class="dv">6</span>, <span class="st">"C2"</span>: <span class="fl">7.5</span>, <span class="st">"L"</span>: <span class="dv">1</span>}</span>
+<span id="cb7-10"><a href=""></a>)</span>
+<span id="cb7-11"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.2</span>))</span>
+<span id="cb7-12"><a href=""></a>plot.show(idx.sel(index<span class="op">=</span><span class="st">"NDVI"</span>), ax<span class="op">=</span>ax[<span class="dv">0</span>], title<span class="op">=</span><span class="st">"NDVI"</span>)</span>
+<span id="cb7-13"><a href=""></a>plot.show(idx.sel(index<span class="op">=</span><span class="st">"SAVI"</span>), ax<span class="op">=</span>ax[<span class="dv">1</span>], title<span class="op">=</span><span class="st">"SAVI"</span>)</span>
+<span id="cb7-14"><a href=""></a>evi_lo, evi_hi <span class="op">=</span> np.nanpercentile(evi, [<span class="dv">2</span>, <span class="dv">98</span>])</span>
+<span id="cb7-15"><a href=""></a>plot.show(evi, vmin<span class="op">=</span>evi_lo, vmax<span class="op">=</span>evi_hi, ax<span class="op">=</span>ax[<span class="dv">2</span>], title<span class="op">=</span><span class="st">"EVI"</span>)</span>
+<span id="cb7-16"><a href=""></a>[a.axis(<span class="st">'off'</span>) <span class="cf">for</span> a <span class="kw">in</span> ax]<span class="op">;</span> plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="03-spectrales_files/figure-revealjs/cell-3-output-1.png" class="quarto-figure quarto-figure-center" width="614" height="202"></p>
+<p><img data-src="03-spectrales_files/figure-revealjs/cell-6-output-1.png" class="quarto-figure quarto-figure-center" width="854" height="289"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="utilité-la-séparabilité" class="slide level2 smaller">
-<h2>Utilité : la séparabilité</h2>
+<section id="vérifier-la-séparabilité" class="slide level2 smaller">
+<h2>Vérifier la séparabilité</h2>
 <ul>
-<li class="fragment">Un bon indice <strong>sépare mieux</strong> les classes d’intérêt</li>
-<li class="fragment">On vérifie via des nuages de points (<code>NDVI</code> vs <code>NDWI</code> vs <code>NDBI</code>)</li>
-<li class="fragment">Chaque indice met en valeur une <strong>thématique</strong> (végétation, eau, bâti)</li>
+<li class="fragment">On échantillonne des <strong>points par classe</strong> (carte de référence <code>carte.tif</code>)</li>
+<li class="fragment">On calcule les indices aux points échantillonnés</li>
+<li class="fragment">Comparaison via un <strong>pairplot</strong> (nuages de points deux à deux)</li>
+<li class="fragment">Un bon indice <strong>sépare mieux</strong> les classes visées (ex. NDVI vs NDWI vs NDBI)</li>
+</ul>
+<div id="927d031c" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="co"># df : indices calculés aux points échantillonnés, une colonne "Land Cover"</span></span>
+<span id="cb8-2"><a href=""></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
+<span id="cb8-3"><a href=""></a>    index<span class="op">=</span>[<span class="st">"NDVI"</span>, <span class="st">"NDWI"</span>, <span class="st">"NDBI"</span>],</span>
+<span id="cb8-4"><a href=""></a>    params<span class="op">=</span>{<span class="st">"N"</span>: df[<span class="st">"N"</span>], <span class="st">"R"</span>: df[<span class="st">"R"</span>], <span class="st">"G"</span>: df[<span class="st">"G"</span>], <span class="st">"S1"</span>: df[<span class="st">"S1"</span>]}</span>
+<span id="cb8-5"><a href=""></a>)</span>
+<span id="cb8-6"><a href=""></a>idx[<span class="st">"Land Cover"</span>] <span class="op">=</span> [nom_classes[l] <span class="cf">for</span> l <span class="kw">in</span> df[<span class="st">"class"</span>].tolist()]</span>
+<span id="cb8-7"><a href=""></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb8-8"><a href=""></a>g <span class="op">=</span> sns.PairGrid(idx, hue<span class="op">=</span><span class="st">"Land Cover"</span>)</span>
+<span id="cb8-9"><a href=""></a>g.map_lower(sns.scatterplot)<span class="op">;</span> g.map_upper(sns.kdeplot, fill<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">.5</span>)</span>
+<span id="cb8-10"><a href=""></a>g.map_diag(sns.kdeplot, fill<span class="op">=</span><span class="va">True</span>)<span class="op">;</span> g.add_legend()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="réduction-de-dimension" class="slide level2 smaller">
+<h2>Réduction de dimension</h2>
+<ul>
+<li class="fragment">Ne retenir que l’information <strong>principale</strong> d’un jeu de données</li>
+<li class="fragment">Objectifs : réduire le bruit, faciliter la visualisation (3 bandes)</li>
+<li class="fragment">Le degré d’information ≈ la <strong>variance</strong> (contraste) d’une bande</li>
+<li class="fragment">L’ACP range l’information en ordre de <strong>variance décroissante</strong></li>
 </ul>
 </section>
-<section id="transformation-linéaire-produit-matriciel" class="slide level2 smaller">
-<h2>Transformation linéaire — produit matriciel</h2>
-<p>Combiner des bandes par sommes pondérées = un <strong>produit matriciel</strong> (<code>@</code>).</p>
-<div id="9ac166ee" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-2"><a href=""></a>pixels <span class="op">=</span> np.array([[<span class="fl">10.</span>, <span class="fl">40.</span>], [<span class="fl">20.</span>, <span class="fl">10.</span>], [<span class="fl">5.</span>, <span class="fl">25.</span>]])   <span class="co"># 3 pixels x 2 bandes</span></span>
-<span id="cb3-3"><a href=""></a>M <span class="op">=</span> np.array([[<span class="fl">0.5</span>, <span class="fl">0.5</span>],       <span class="co"># moyenne des deux bandes</span></span>
-<span id="cb3-4"><a href=""></a>              [<span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>]])      <span class="co"># différence des deux bandes</span></span>
-<span id="cb3-5"><a href=""></a><span class="bu">print</span>(pixels <span class="op">@</span> M.T)             <span class="co"># (3 pixels x 2 sorties)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="produit-matriciel-transformation-linéaire" class="slide level2 smaller">
+<h2>Produit matriciel — transformation linéaire</h2>
+<ul>
+<li class="fragment">Nouvelle bande = somme pondérée des bandes d’origine</li>
+<li class="fragment">Mêmes poids pour tous les pixels → un <strong>produit matriciel</strong> (<code>@</code>)</li>
+<li class="fragment">L’ACP apprend ces poids automatiquement (plutôt que de les fixer)</li>
+</ul>
+<div id="2f53bd93" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a>pixels <span class="op">=</span> np.array([[<span class="fl">10.</span>, <span class="fl">40.</span>], [<span class="fl">20.</span>, <span class="fl">10.</span>], [<span class="fl">5.</span>, <span class="fl">25.</span>]])   <span class="co"># 3 pixels x 2 bandes</span></span>
+<span id="cb9-2"><a href=""></a>M <span class="op">=</span> np.array([[<span class="fl">0.5</span>, <span class="fl">0.5</span>],       <span class="co"># moyenne des deux bandes</span></span>
+<span id="cb9-3"><a href=""></a>              [<span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>]])      <span class="co"># différence des deux bandes</span></span>
+<span id="cb9-4"><a href=""></a><span class="bu">print</span>(pixels <span class="op">@</span> M.T)             <span class="co"># (3 pixels x 2 sorties)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[ 25. -30.]
  [ 15.  10.]
  [ 15. -20.]]</code></pre>
 </div>
 </div>
-<p>L’<strong>ACP</strong> apprend automatiquement ces poids pour <strong>maximiser la variance</strong> retenue.</p>
 </section>
-<section id="acp-variance-expliquée" class="slide level2 smaller">
-<h2>ACP — variance expliquée</h2>
-<p>On centre les données, puis on diagonalise la <strong>matrice de covariance</strong> :</p>
-<div id="92a7dae3" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb5-2"><a href=""></a>cube <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy().astype(<span class="st">'float32'</span>)  <span class="co"># (4, H, W)</span></span>
-<span id="cb5-3"><a href=""></a>B, H, W <span class="op">=</span> cube.shape</span>
-<span id="cb5-4"><a href=""></a>Xc <span class="op">=</span> cube.reshape(B, H <span class="op">*</span> W).T <span class="op">-</span> cube.reshape(B, H <span class="op">*</span> W).T.mean(<span class="dv">0</span>)   <span class="co"># centrage</span></span>
-<span id="cb5-5"><a href=""></a>val, vec <span class="op">=</span> np.linalg.eigh(np.cov(Xc, rowvar<span class="op">=</span><span class="va">False</span>))</span>
-<span id="cb5-6"><a href=""></a>o <span class="op">=</span> np.argsort(val)[::<span class="op">-</span><span class="dv">1</span>]<span class="op">;</span> val, vec <span class="op">=</span> val[o], vec[:, o]</span>
-<span id="cb5-7"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">3</span>))</span>
-<span id="cb5-8"><a href=""></a>ax.bar(<span class="bu">range</span>(<span class="dv">1</span>, B <span class="op">+</span> <span class="dv">1</span>), val <span class="op">/</span> val.<span class="bu">sum</span>())</span>
-<span id="cb5-9"><a href=""></a>ax.set_xlabel(<span class="st">"Composante"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"Variance expliquée"</span>)<span class="op">;</span> plt.show()</span>
-<span id="cb5-10"><a href=""></a><span class="bu">print</span>(<span class="st">"3 premières composantes :"</span>, <span class="bu">round</span>((val <span class="op">/</span> val.<span class="bu">sum</span>())[:<span class="dv">3</span>].<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"</span><span class="sc">% d</span><span class="st">e la variance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="transformation-tasseled-cap-kauth-thomas" class="slide level2 smaller">
+<h2>Transformation Tasseled Cap (Kauth-Thomas)</h2>
+<ul>
+<li class="fragment">Transformation linéaire à coefficients <strong>fixes</strong> (Crist 1985, Landsat TM) <span class="citation" data-cites="Jensen2016 richards2022remote Schowengerdt2007">[@Jensen2016; @richards2022remote; @Schowengerdt2007]</span></li>
+<li class="fragment">Trois composantes interprétables : <strong>brillance</strong>, <strong>verdure</strong>, <strong>humidité</strong></li>
+<li class="fragment">Appliqués ici, à titre d’illustration, aux bandes Sentinel-2 analogues</li>
+<li class="fragment">Coefficients fixes → comparables entre scènes (contrairement à l’ACP)</li>
+</ul>
+<div id="e0e3773e" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a>tc_coeffs <span class="op">=</span> np.array([</span>
+<span id="cb11-2"><a href=""></a>    [ <span class="fl">0.3037</span>,  <span class="fl">0.2793</span>,  <span class="fl">0.4743</span>,  <span class="fl">0.5585</span>,  <span class="fl">0.5082</span>,  <span class="fl">0.1863</span>],   <span class="co"># Brightness</span></span>
+<span id="cb11-3"><a href=""></a>    [<span class="op">-</span><span class="fl">0.2848</span>, <span class="op">-</span><span class="fl">0.2435</span>, <span class="op">-</span><span class="fl">0.5436</span>,  <span class="fl">0.7243</span>,  <span class="fl">0.0840</span>, <span class="op">-</span><span class="fl">0.1800</span>],   <span class="co"># Greenness</span></span>
+<span id="cb11-4"><a href=""></a>    [ <span class="fl">0.1509</span>,  <span class="fl">0.1973</span>,  <span class="fl">0.3279</span>,  <span class="fl">0.3406</span>, <span class="op">-</span><span class="fl">0.7112</span>, <span class="op">-</span><span class="fl">0.4572</span>],   <span class="co"># Wetness</span></span>
+<span id="cb11-5"><a href=""></a>])</span>
+<span id="cb11-6"><a href=""></a>tc_bands <span class="op">=</span> [<span class="st">"B"</span>, <span class="st">"G"</span>, <span class="st">"R"</span>, <span class="st">"N"</span>, <span class="st">"S1"</span>, <span class="st">"S2"</span>]</span>
+<span id="cb11-7"><a href=""></a>X_tc <span class="op">=</span> img_s2.sel(band<span class="op">=</span>tc_bands).data.reshape(<span class="bu">len</span>(tc_bands), <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb11-8"><a href=""></a>brightness, greenness, wetness <span class="op">=</span> (tc_coeffs <span class="op">@</span> X_tc).reshape(<span class="dv">3</span>, <span class="op">*</span>img_s2.shape[<span class="dv">1</span>:])</span>
+<span id="cb11-9"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.5</span>))</span>
+<span id="cb11-10"><a href=""></a><span class="cf">for</span> a, im, t <span class="kw">in</span> <span class="bu">zip</span>(ax, (brightness, greenness, wetness), (<span class="st">"Brightness"</span>, <span class="st">"Greenness"</span>, <span class="st">"Wetness"</span>)):</span>
+<span id="cb11-11"><a href=""></a>    a.imshow(im)<span class="op">;</span> a.set_title(t)<span class="op">;</span> a.axis(<span class="st">'off'</span>)</span>
+<span id="cb11-12"><a href=""></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="03-spectrales_files/figure-revealjs/cell-5-output-1.png" class="quarto-figure quarto-figure-center" width="444" height="282"></p>
+<p><img data-src="03-spectrales_files/figure-revealjs/cell-9-output-1.png" class="quarto-figure quarto-figure-center" width="854" height="289"></p>
 </figure>
 </div>
 </div>
+</div>
+</section>
+<section id="acp-variance-expliquée" class="slide level2 smaller">
+<h2>ACP — variance expliquée</h2>
+<ul>
+<li class="fragment">On aplatit le cube (bandes × pixels), puis on <strong>centre</strong> les données</li>
+<li class="fragment">On diagonalise la <strong>matrice de covariance</strong> (<code>np.linalg.eigh</code>)</li>
+<li class="fragment">Valeurs propres = variance portée par chaque composante</li>
+</ul>
+<div id="01bb6e25" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a>cube <span class="op">=</span> img_s2.to_numpy()</span>
+<span id="cb12-2"><a href=""></a>B, H, W <span class="op">=</span> cube.shape</span>
+<span id="cb12-3"><a href=""></a>X <span class="op">=</span> cube.reshape(B, H <span class="op">*</span> W).T</span>
+<span id="cb12-4"><a href=""></a>X_c <span class="op">=</span> X <span class="op">-</span> X.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-5"><a href=""></a>valeurs, vecteurs <span class="op">=</span> np.linalg.eigh(np.cov(X_c, rowvar<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb12-6"><a href=""></a>ordre <span class="op">=</span> np.argsort(valeurs)[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb12-7"><a href=""></a>valeurs, vecteurs <span class="op">=</span> valeurs[ordre], vecteurs[:, ordre]</span>
+<span id="cb12-8"><a href=""></a>ratio <span class="op">=</span> valeurs <span class="op">/</span> valeurs.<span class="bu">sum</span>()</span>
+<span id="cb12-9"><a href=""></a><span class="bu">print</span>(<span class="st">"Variance expliquée (5 premières) :"</span>, ratio[:<span class="dv">5</span>].<span class="bu">round</span>(<span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>3 premières composantes : 99.9 % de la variance</code></pre>
+<pre><code>Variance expliquée (5 premières) : [0.829 0.121 0.032 0.01  0.002]</code></pre>
 </div>
 </div>
 </section>
 <section id="acp-composantes-principales" class="slide level2 smaller">
 <h2>ACP — composantes principales</h2>
-<p>La projection sur les vecteurs propres (un produit matriciel) donne les composantes, rangées par variance décroissante :</p>
-<div id="0cf3e272" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>comp <span class="op">=</span> (Xc <span class="op">@</span> vec).T.reshape(B, H, W)          <span class="co"># projection = produit matriciel</span></span>
-<span id="cb7-2"><a href=""></a>etir <span class="op">=</span> <span class="kw">lambda</span> x: (x <span class="op">-</span> x.<span class="bu">min</span>()) <span class="op">/</span> (x.<span class="bu">max</span>() <span class="op">-</span> x.<span class="bu">min</span>())</span>
-<span id="cb7-3"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
-<span id="cb7-4"><a href=""></a>ax.imshow(np.dstack([etir(comp[i]) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]))</span>
-<span id="cb7-5"><a href=""></a>ax.set_title(<span class="st">"Composantes 1-2-3 (RVB)"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li class="fragment">Projection des pixels sur les vecteurs propres = un <strong>produit matriciel</strong></li>
+<li class="fragment">Composantes rangées par <strong>variance décroissante</strong></li>
+<li class="fragment">3 premières composantes ≈ l’essentiel de l’information</li>
+</ul>
+<div id="fc719d1d" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a>composantes <span class="op">=</span> (X_c <span class="op">@</span> vecteurs).T.reshape(B, H, W)</span>
+<span id="cb14-2"><a href=""></a>etirer <span class="op">=</span> <span class="kw">lambda</span> x: (x <span class="op">-</span> x.<span class="bu">min</span>()) <span class="op">/</span> (x.<span class="bu">max</span>() <span class="op">-</span> x.<span class="bu">min</span>())</span>
+<span id="cb14-3"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">4.5</span>, <span class="dv">4</span>))</span>
+<span id="cb14-4"><a href=""></a>ax.imshow(np.dstack([etirer(composantes[i]) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]))</span>
+<span id="cb14-5"><a href=""></a>ax.set_title(<span class="st">"Composantes 1-2-3 (RVB)"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="03-spectrales_files/figure-revealjs/cell-6-output-1.png" class="quarto-figure quarto-figure-center" width="338" height="335"></p>
+<p><img data-src="03-spectrales_files/figure-revealjs/cell-11-output-1.png" class="quarto-figure quarto-figure-center" width="338" height="335"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="reconstruction-et-erreur-de-compression" class="slide level2 smaller">
+<h2>Reconstruction et erreur de compression</h2>
+<ul>
+<li class="fragment">Garder les <span class="math inline">\(k\)</span> premières composantes = <strong>compresser</strong> l’image</li>
+<li class="fragment">Reconstruction = projection inverse + ajout de la moyenne</li>
+<li class="fragment">Erreur mesurée par le <strong>RMSE</strong> en fonction de <span class="math inline">\(k\)</span> <span class="citation" data-cites="richards2022remote">[@richards2022remote]</span></li>
+</ul>
+<div id="629c9b9b" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a><span class="kw">def</span> erreur_reconstruction(k):</span>
+<span id="cb15-2"><a href=""></a>    proj_k <span class="op">=</span> composantes[:k].reshape(k, <span class="op">-</span><span class="dv">1</span>).T</span>
+<span id="cb15-3"><a href=""></a>    X_approx <span class="op">=</span> proj_k <span class="op">@</span> vecteurs[:, :k].T <span class="op">+</span> X.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb15-4"><a href=""></a>    <span class="cf">return</span> np.sqrt(np.mean((X <span class="op">-</span> X_approx) <span class="op">**</span> <span class="dv">2</span>))</span>
+<span id="cb15-5"><a href=""></a>erreurs <span class="op">=</span> [erreur_reconstruction(k) <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, B <span class="op">+</span> <span class="dv">1</span>)]</span>
+<span id="cb15-6"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.5</span>))</span>
+<span id="cb15-7"><a href=""></a>ax.plot(<span class="bu">range</span>(<span class="dv">1</span>, B <span class="op">+</span> <span class="dv">1</span>), erreurs, <span class="st">'o-'</span>)</span>
+<span id="cb15-8"><a href=""></a>ax.set_xlabel(<span class="st">"Composantes conservées (k)"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"RMSE"</span>)<span class="op">;</span> ax.grid(<span class="va">True</span>)</span>
+<span id="cb15-9"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="03-spectrales_files/figure-revealjs/cell-12-output-1.png" class="quarto-figure quarto-figure-center" width="457" height="320"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="au-delà-de-lacp-mnf-et-ica" class="slide level2 smaller">
+<h2>Au-delà de l’ACP : MNF et ICA</h2>
+<ul>
+<li class="fragment">L’ACP suppose des données <strong>gaussiennes</strong> et classe par variance décroissante</li>
+<li class="fragment"><strong>MNF</strong> (<em>Minimum/Maximum Noise Fraction</em>) : classe par rapport signal/bruit décroissant — utile en hyperspectral bruité <span class="citation" data-cites="richards2022remote">[@richards2022remote]</span></li>
+<li class="fragment"><strong>ICA</strong> (composantes indépendantes) : relâche l’hypothèse gaussienne, cherche des composantes statistiquement <strong>indépendantes</strong></li>
+</ul>
 </section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>
@@ -406,16 +547,17 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">La <strong>signature spectrale</strong> caractérise le type/état d’un matériau</li>
 <li class="fragment">Un <strong>indice</strong> met en valeur le spectre et améliore la <strong>séparabilité</strong></li>
 <li class="fragment"><strong><code>spyndex</code></strong> : 200+ indices, nomenclature de bandes (<code>N</code>, <code>R</code>, <code>G</code>…)</li>
-<li class="fragment"><strong>NDVI</strong> <span class="math inline">\(=(N-R)/(N+R)\)</span> : élevé pour la végétation</li>
-<li class="fragment">L’<strong>ACP</strong> (produit matriciel + covariance) range l’information par variance décroissante → <strong>réduction de dimension</strong></li>
+<li class="fragment"><strong>NDVI</strong> <span class="math inline">\(=(N-R)/(N+R)\)</span> ; <strong>SAVI</strong>/<strong>EVI</strong> corrigent respectivement le sol et l’atmosphère</li>
+<li class="fragment">Une transformation linéaire de bandes = un <strong>produit matriciel</strong> ; <strong>Tasseled Cap</strong> (coefficients fixes) et <strong>ACP</strong> (coefficients appris) en sont deux exemples</li>
+<li class="fragment">La <strong>reconstruction tronquée</strong> quantifie la perte d’information selon le nombre de composantes conservées</li>
 </ul>
 </section>
 <section id="à-vous-de-jouer" class="slide level2 smaller">
 <h2>À vous de jouer</h2>
 <ul>
-<li>Calculez le <strong>NDWI</strong> (eau) et le <strong>NDBI</strong> (bâti) et affichez-les</li>
-<li>Comparez les signatures de deux surfaces de la base USGS (neige, sol)</li>
-<li>Choisissez un indice adapté aux sols dans <code>spyndex.indices</code> et calculez-le</li>
+<li>Calculez le <strong>NDWI</strong> (eau) et le <strong>NDBI</strong> (bâti) et affichez-les à côté du NDVI</li>
+<li>Comparez les signatures de deux surfaces supplémentaires de la base USGS</li>
+<li><em>(ACP)</em> Déterminez le nombre minimal de composantes pour une erreur de reconstruction (RMSE) &lt; 0.01</li>
 </ul>
 </section>
 <section id="section" class="slide level2" data-background-color="#357cc0">
