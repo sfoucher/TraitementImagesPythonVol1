@@ -186,15 +186,15 @@ Les affichages `matplotlib` précédents sont **statiques**. Pour explorer une i
 ::::
 
 ::: bloc_attention-body
-Les cartes `leafmap` sont des composants **JavaScript** : elles ne s'affichent que dans la **version HTML** de ce livre ou dans un **notebook** (Google Colab, Jupyter), jamais dans le PDF. Le calque raster local étant servi à la volée par un serveur de tuiles temporaire, ouvrez ce chapitre dans [![](images/colab.png)](https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/02-RehaussementVisualisationImages.ipynb) pour l'explorer pleinement.
+Les cartes `leafmap` sont des composants **JavaScript** interactifs : elles ne s'affichent pleinement que dans un **notebook** (Google Colab, Jupyter). Dans le livre (versions HTML et PDF), nous en montrons une **capture statique** ; ouvrez ce chapitre dans [![](images/colab.png)](https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/02-RehaussementVisualisationImages.ipynb) pour les manipuler.
 :::
 ::::::
 
 
 On crée une carte, puis on ajoute directement notre image locale. Comme les bandes sont stockées dans l'ordre B, V, R, PIR, on demande les indices `[3, 2, 1]` pour un composé **vraie couleur** :
 
-```{python .content-visible when-format="html"}
-#| eval: true
+```{python}
+#| eval: false
 import leafmap
 
 m = leafmap.Map()
@@ -202,10 +202,40 @@ m.add_raster('RGBNIR_of_S2A.tif', indexes=[3, 2, 1], layer_name='Vraie couleur')
 m
 ```
 
+Cette carte est **interactive** : elle ne s'affiche que dans un notebook. Pour le livre, nous en produisons une **capture statique** hors ligne avec `matplotlib` et [`contextily`](https://contextily.readthedocs.io/) (qui télécharge le fond OpenStreetMap). L'image Sentinel-2 est reprojetée en Web Mercator (`EPSG:3857`), chaque bande est étirée entre ses centiles 2 % et 98 %, et les pixels *no data* (valeur `65535` après reprojection) sont rendus transparents pour laisser voir le fond de carte :
+
+```{python}
+#| eval: false
+import numpy as np, rioxarray as rxr, contextily as cx
+import matplotlib.pyplot as plt
+
+src = rxr.open_rasterio('RGBNIR_of_S2A.tif').rio.reproject('EPSG:3857')
+nd = src.rio.nodata                          # 65535 après reprojection
+x, y = src.x.values, src.y.values
+extent = [x.min(), x.max(), y.min(), y.max()]
+
+def composite(bandes):                       # composé RGBA étiré, no_data transparent
+    raw = src.isel(band=[b - 1 for b in bandes]).to_numpy().astype('float32')
+    rgba = np.zeros(raw.shape[1:] + (4,), 'float32')
+    for i in range(3):
+        canal = raw[i]; valide = canal != nd
+        p2, p98 = np.percentile(canal[valide], [2, 98])
+        rgba[..., i] = np.clip((canal - p2) / (p98 - p2), 0, 1)
+    rgba[..., 3] = (raw != nd).all(axis=0)   # no_data -> transparent
+    return rgba
+
+fig, ax = plt.subplots(figsize=(7, 6))
+cx.add_basemap(ax, crs='EPSG:3857', source=cx.providers.OpenStreetMap.Mapnik, zorder=0)
+ax.imshow(composite([3, 2, 1]), extent=extent, origin='upper', zorder=1)
+ax.axis('off'); plt.show()
+```
+
+![Composé vraie couleur (bandes R, V, B) sur fond OpenStreetMap — rendu statique équivalent à la carte `leafmap`.](images/ch02-carte-vraie-couleur.png){#fig-ch02-carte width="80%" fig-align="center"}
+
 La méthode `split_map` crée un **comparateur à volet glissant**, idéal pour opposer deux visualisations de la même scène — ici la vraie couleur (`[3, 2, 1]`) et l'infrarouge fausses couleurs (`[4, 3, 2]`), qui fait ressortir la végétation en rouge :
 
-```{python .content-visible when-format="html"}
-#| eval: true
+```{python}
+#| eval: false
 m = leafmap.Map()
 m.split_map(
     left_layer='RGBNIR_of_S2A.tif',
@@ -216,6 +246,21 @@ m.split_map(
 )
 m
 ```
+
+Pour le livre, la capture statique correspondante réutilise la fonction `composite` définie plus haut, appliquée aux deux composés côte à côte :
+
+```{python}
+#| eval: false
+fig, axes = plt.subplots(1, 2, figsize=(11, 5))
+for ax, bandes, titre in zip(axes, ([3, 2, 1], [4, 3, 2]),
+                             ('Vraie couleur', 'Infrarouge (PIR, R, V)')):
+    cx.add_basemap(ax, crs='EPSG:3857', source=cx.providers.OpenStreetMap.Mapnik, zorder=0)
+    ax.imshow(composite(bandes), extent=extent, origin='upper', zorder=1)
+    ax.set_title(titre); ax.axis('off')
+plt.tight_layout(); plt.show()
+```
+
+![Vraie couleur (à gauche) et infrarouge fausses couleurs (à droite, végétation en rouge) — rendu statique équivalent au comparateur `split_map`.](images/ch02-carte-split.png){#fig-ch02-split width="100%" fig-align="center"}
 
 `leafmap` permet aussi d'ajouter un fond satellite (`m.add_basemap('Esri.WorldImagery')`), de charger des images distantes au format *Cloud Optimized GeoTIFF* (`m.add_cog_layer(url)`), ou d'inspecter les valeurs de pixels au clic (`m.add('inspector')`). C'est un outil précieux pour situer une image ou un résultat de traitement (comme une classification, @sec-chap05) dans son contexte géographique.
 
@@ -655,7 +700,7 @@ Le résultat conserve les teintes relatives entre bandes tout en maximisant le c
 -   Le **stretch linéaire** remappe la dynamique ; pour les histogrammes **asymétriques** (images SAR), les **percentiles** (p. ex. 2 %–98 %) fournissent des bornes d'affichage robustes.
 -   Les transformations **non linéaires** — passage en **dB** (`10·log10`) et **égalisation d'histogramme** — rétablissent une distribution exploitable.
 -   Les **palettes de couleur** et les **composés colorés** (choix des bandes) révèlent des propriétés différentes de la surface ; `vmin`/`vmax` contrôlent la dynamique affichée.
--   Pour une exploration **interactive** (zoom, fond de carte, comparaison avant/après avec `split_map`), **`leafmap`** superpose une image géoréférencée sur une carte web — dans un notebook ou la version HTML, jamais dans le PDF.
+-   Pour une exploration **interactive** (zoom, fond de carte, comparaison avant/après avec `split_map`), **`leafmap`** superpose une image géoréférencée sur une carte web — interactive dans un notebook, le livre en montre une **capture statique**.
 :::
 ::::::
 
