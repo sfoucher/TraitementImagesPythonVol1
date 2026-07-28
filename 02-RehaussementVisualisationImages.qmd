@@ -186,14 +186,14 @@ Les affichages `matplotlib` précédents sont **statiques**. Pour explorer une i
 ::::
 
 ::: bloc_attention-body
-Les cartes `leafmap` sont des composants **JavaScript** : elles s'affichent dans un **notebook** (Google Colab, Jupyter) ou dans la **version HTML** de ce livre, mais **pas dans le PDF**. Les cellules ci-dessous ne sont donc pas exécutées à la compilation (`#| eval: false`) — ouvrez ce chapitre dans [![](images/colab.png)](https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/02-RehaussementVisualisationImages.ipynb) pour les manipuler.
+Les cartes `leafmap` sont des composants **JavaScript** : elles ne s'affichent que dans la **version HTML** de ce livre ou dans un **notebook** (Google Colab, Jupyter), jamais dans le PDF. Le calque raster local étant servi à la volée par un serveur de tuiles temporaire, ouvrez ce chapitre dans [![](images/colab.png)](https://colab.research.google.com/github/sfoucher/TraitementImagesPythonVol1/blob/main/notebooks/02-RehaussementVisualisationImages.ipynb) pour l'explorer pleinement.
 :::
 ::::::
 
 
 On crée une carte, puis on ajoute directement notre image locale. Comme les bandes sont stockées dans l'ordre B, V, R, PIR, on demande les indices `[3, 2, 1]` pour un composé **vraie couleur** :
 
-```{python}
+```{python .content-visible when-format="html"}
 #| eval: true
 import leafmap
 
@@ -204,7 +204,7 @@ m
 
 La méthode `split_map` crée un **comparateur à volet glissant**, idéal pour opposer deux visualisations de la même scène — ici la vraie couleur (`[3, 2, 1]`) et l'infrarouge fausses couleurs (`[4, 3, 2]`), qui fait ressortir la végétation en rouge :
 
-```{python}
+```{python .content-visible when-format="html"}
 #| eval: true
 m = leafmap.Map()
 m.split_map(

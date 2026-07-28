@@ -49,6 +49,7 @@ xrscipy
 geopandas
 leafmap
 mapclassify
+localtileserver
 numba
 scikit-learn
 supertree
