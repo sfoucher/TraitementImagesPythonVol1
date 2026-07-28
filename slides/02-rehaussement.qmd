@@ -12,11 +12,29 @@ jupyter: python3
 - Calculer et lire un **histogramme**
 - Appliquer une transformation **linéaire** ou **non linéaire**
 - Comprendre les **composés colorés**
+- Explorer une image sur une carte web interactive (**`leafmap`**)
 :::
 
 ::: {.notes}
 Le réhaussement améliore l'affichage — il ne modifie pas la donnée d'origine.
 :::
+
+## Bibliothèques et données {.smaller}
+
+::: {.incremental}
+- **`rasterio`** / **`rioxarray`** / **`xarray`** : lecture et statistiques
+- **`scikit-image`** (`exposure`) : égalisation, CLAHE, correspondance d'histogrammes
+- **`matplotlib`** : affichage, palettes, composés colorés
+- 4 images utilisées ce chapitre : `RGBNIR_of_S2A.tif`, `sentinel2.tif`, `berkeley.jpg`, `SAR.tif`
+:::
+
+```{python}
+import rioxarray as rxr, numpy as np, matplotlib.pyplot as plt
+img     = rxr.open_rasterio('../RGBNIR_of_S2A.tif')          # ordre B,V,R,PIR
+img_s2  = rxr.open_rasterio('../sentinel2.tif')               # 12 bandes Sentinel-2
+img_rgb = rxr.open_rasterio('../berkeley.jpg')                # photo RVB
+sar     = rxr.open_rasterio('../SAR.tif').sel(band=1).values  # radar (1 bande)
+```
 
 ## Visualiser en Python {.smaller}
 
@@ -27,6 +45,33 @@ Le réhaussement améliore l'affichage — il ne modifie pas la donnée d'origin
 - `rioxarray`/`xarray` ajoutent les **coordonnées cartographiques**
 :::
 
+```{python}
+#| fig-align: center
+fig, ax = plt.subplots(figsize=(5, 4))
+plt.imshow(img.sel(band=[3, 2, 1]).data.transpose(1, 2, 0) / 2500.0)  # R,V,B
+plt.axis('off'); plt.show()
+```
+
+## Visualisation sur le Web — `leafmap` {.smaller}
+
+::: {.incremental}
+- Affichages `matplotlib` = **statiques** ; `leafmap` place l'image sur une **carte glissante**
+- Interface unifiée au-dessus de `folium`/`ipyleaflet` : zoom, fond de carte
+- `split_map` : comparateur à **volet glissant** entre deux visualisations
+:::
+
+```{python}
+#| eval: false
+import leafmap
+m = leafmap.Map()
+m.add_raster('../RGBNIR_of_S2A.tif', indexes=[3, 2, 1])       # vraie couleur
+m.split_map(left_layer='../RGBNIR_of_S2A.tif', right_layer='../RGBNIR_of_S2A.tif',
+            left_args={'indexes': [3, 2, 1]}, right_args={'indexes': [4, 3, 2]})
+m
+```
+
+Carte **JavaScript** : interactive dans un notebook (Colab) ou en HTML — **jamais dans le PDF**. Cellule non exécutée ici (`eval: false`).
+
 ## Statistiques d'une image {.smaller}
 
 ::: {.incremental}
@@ -36,12 +81,14 @@ Le réhaussement améliore l'affichage — il ne modifie pas la donnée d'origin
 - guident le choix de la transformation d'affichage
 :::
 
+```{python}
+img_s2.sel(band=[2, 3, 4]).quantile(dim=['x', 'y'], q=[.025, .5, .975])
+```
+
 ## Histogramme {.smaller}
 
 ```{python}
 #| fig-align: center
-import rioxarray as rxr, numpy as np, matplotlib.pyplot as plt
-img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')
 vals = img.sel(band=4).values.ravel()          # bande PIR
 fig, ax = plt.subplots(figsize=(5, 3))
 ax.hist(vals, bins=50, color="#357cc0")
@@ -67,7 +114,6 @@ Cas des images SAR (longue queue) → borner avec des percentiles :
 
 ```{python}
 #| fig-align: center
-sar = rxr.open_rasterio('../SAR.tif').sel(band=1).values
 valid = (sar != -999.0) & (sar > 0)            # masque no_data
 v = sar[valid]
 p = {q: np.percentile(v, q) for q in (0, 2, 98, 100)}
@@ -89,6 +135,25 @@ im = ax.imshow(sar_db, cmap='gray'); ax.set_title("SAR en dB"); ax.axis('off')
 plt.colorbar(im, ax=ax, label='dB'); plt.show()
 ```
 
+## Réhaussement gamma (loi de puissance) {.smaller}
+
+$$ j = \left(\frac{i}{i_{max}}\right)^{\gamma} \times j_{max} $$
+
+::: {.incremental}
+- $\gamma < 1$ **éclaircit** les tons foncés (image sous-exposée)
+- $\gamma > 1$ **assombrit** les tons clairs (image surexposée) ; $\gamma=1$ = identité
+- transformation **non symétrique** entre ombres et hautes lumières
+:::
+
+```{python}
+#| fig-align: center
+img_norm = np.clip(img_rgb.data.transpose(1, 2, 0) / 255.0, 0, 1)
+fig, ax = plt.subplots(ncols=3, figsize=(8, 2.8))
+for a, g in zip(ax, (0.5, 1.0, 2.0)):
+    a.imshow(img_norm ** g); a.set_title(f"$\\gamma$={g}"); a.axis('off')
+plt.tight_layout(); plt.show()
+```
+
 ## Égalisation d'histogramme {.smaller}
 
 ::: {.incremental}
@@ -96,6 +161,54 @@ plt.colorbar(im, ax=ax, label='dB'); plt.show()
 - but : rendre les niveaux **équiprobables** (histogramme aplati)
 - révèle des détails dans les zones sombres
 :::
+
+```{python}
+#| fig-align: center
+from skimage import exposure
+gray = img_rgb.data.transpose(1, 2, 0).mean(axis=2) / 255.0
+img_eq = exposure.equalize_hist(gray)
+fig, ax = plt.subplots(1, 2, figsize=(6, 3))
+ax[0].imshow(gray, vmin=0, vmax=1); ax[0].set_title("originale"); ax[0].axis('off')
+ax[1].imshow(img_eq, vmin=0, vmax=1); ax[1].set_title("égalisée"); ax[1].axis('off')
+plt.show()
+```
+
+## Égalisation adaptative (CLAHE) {.smaller}
+
+::: {.incremental}
+- l'égalisation **globale** calcule une seule CDF pour toute l'image
+- **CLAHE** : découpe en tuiles, égalise chacune, plafond `clip_limit` anti-bruit
+- fait ressortir les détails **locaux** (ombres, textures) sans saturer le reste
+:::
+
+```{python}
+#| fig-align: center
+img_clahe = exposure.equalize_adapthist(gray, clip_limit=0.03)
+fig, ax = plt.subplots(1, 2, figsize=(6, 3))
+ax[0].imshow(img_eq, vmin=0, vmax=1); ax[0].set_title("égalisation globale"); ax[0].axis('off')
+ax[1].imshow(img_clahe, vmin=0, vmax=1); ax[1].set_title("CLAHE"); ax[1].axis('off')
+plt.show()
+```
+
+## Correspondance d'histogrammes {.smaller}
+
+::: {.incremental}
+- généralise l'égalisation : faire correspondre la CDF **source** à une CDF **cible arbitraire**
+- utile pour harmoniser deux acquisitions (p. ex. mosaïquage de scènes adjacentes)
+- `skimage.exposure.match_histograms`
+:::
+
+```{python}
+#| fig-align: center
+from skimage.exposure import match_histograms
+source = np.log10(sar)
+cible = np.random.normal(loc=source.mean(), scale=source.std(), size=source.shape)
+source_matched = match_histograms(source, cible)
+fig, ax = plt.subplots(1, 2, figsize=(6, 3))
+ax[0].imshow(source); ax[0].set_title("originale (dB)"); ax[0].axis('off')
+ax[1].imshow(source_matched); ax[1].set_title("après correspondance"); ax[1].axis('off')
+plt.show()
+```
 
 ## Palettes de couleur {.smaller}
 
@@ -110,49 +223,66 @@ plt.show()
 
 ## Composés colorés {.smaller}
 
-Ordre des bandes **B, V, R, PIR** → vraies vs fausses couleurs :
+::: {.incremental}
+- Combiner des bandes = choisir un **composé** ; chaque choix révèle des propriétés différentes
+- Sentinel-2 : 12 bandes → nombreux composés possibles selon l'application
+- `RGBNIR_of_S2A.tif` (B,V,R,PIR) → vraies vs fausses couleurs
+:::
 
 ```{python}
 #| fig-align: center
-fig, ax = plt.subplots(1, 2, figsize=(7, 3.3))
-img.sel(band=[3, 2, 1]).plot.imshow(vmin=86, vmax=5000, ax=ax[0])   # R,V,B
+fig, ax = plt.subplots(1, 3, figsize=(9, 3))
+img.sel(band=[3, 2, 1]).plot.imshow(vmin=86, vmax=5000, ax=ax[0])
 ax[0].set_title("Vraies couleurs"); ax[0].axis('off')
-img.sel(band=[4, 3, 2]).plot.imshow(vmin=86, vmax=5000, ax=ax[1])   # PIR,R,V
+img.sel(band=[4, 3, 2]).plot.imshow(vmin=86, vmax=5000, ax=ax[1])
 ax[1].set_title("Fausses couleurs (végétation en rouge)"); ax[1].axis('off')
-plt.show()
+img_s2.sel(band=[12, 8, 4]).plot.imshow(vmin=86, vmax=4000, ax=ax[2])
+ax[2].set_title("SWIR2,PIR,R (Sentinel-2)"); ax[2].axis('off')
+plt.tight_layout(); plt.show()
 ```
 
-## Visualisation interactive — leafmap {.smaller}
+## Étirement par décorrélation {.smaller}
 
-Placer une image géoréférencée sur une **carte web** : zoom, fond de carte, comparaison avant/après.
+::: {.incremental}
+- bandes multispectrales souvent **fortement corrélées** → composés peu contrastés
+- on **décorrèle** dans l'espace ACP, on **égalise la variance**, puis retour à l'espace original
+- conserve les teintes relatives tout en maximisant le contraste
+:::
 
 ```{python}
-#| eval: false
-import leafmap
-m = leafmap.Map()
-m.add_raster('RGBNIR_of_S2A.tif', indexes=[3, 2, 1])       # vraie couleur
-m.split_map(left_layer='RGBNIR_of_S2A.tif', right_layer='RGBNIR_of_S2A.tif',
-            left_args={'indexes': [3, 2, 1]}, right_args={'indexes': [4, 3, 2]})
-m
-```
+#| fig-align: center
+def decorrelation_stretch(im):
+    X = im.reshape(im.shape[0], -1).astype(float)
+    X -= X.mean(axis=1, keepdims=True)
+    valeurs, vecteurs = np.linalg.eigh(np.cov(X))
+    X_pca = (vecteurs.T @ X) / np.sqrt(valeurs)[:, None]
+    X_stretch = vecteurs @ X_pca
+    X_stretch -= X_stretch.min(axis=1, keepdims=True)
+    X_stretch /= X_stretch.max(axis=1, keepdims=True)
+    return X_stretch.reshape(im.shape)
 
-Carte **JavaScript** : interactive dans un notebook (Colab) ou en HTML — **jamais dans le PDF**. Cellule non exécutée ici (`eval: false`).
+composite = img_s2.sel(band=[4, 3, 2]).data
+fig, ax = plt.subplots(1, 2, figsize=(7, 3.3))
+ax[0].imshow(np.clip(composite.transpose(1, 2, 0) / 4000.0, 0, 1)); ax[0].set_title("original"); ax[0].axis('off')
+ax[1].imshow(decorrelation_stretch(composite).transpose(1, 2, 0)); ax[1].set_title("étiré"); ax[1].axis('off')
+plt.tight_layout(); plt.show()
+```
 
 ## Points clés {.smaller}
 
 ::: {.incremental}
 - Le réhaussement améliore l'affichage **sans modifier** la donnée
 - **Percentiles** (2–98 %) = bornes robustes pour histogrammes asymétriques
-- Transformations non linéaires : **dB**, **égalisation d'histogramme**
-- **Palettes** perceptuelles (`viridis`) et **composés colorés** révèlent l'information
+- Non linéaire : **dB**, **gamma**, **égalisation** (globale, **CLAHE**), **correspondance d'histogrammes**
+- **Palettes** perceptuelles (`viridis`), **composés colorés** et **étirement par décorrélation** révèlent l'information
 - **`leafmap`** : exploration **interactive** d'une image sur une carte web (notebook / HTML)
 :::
 
 ## À vous de jouer {.smaller}
 
-- Reprenez le stretch SAR avec les bornes 0,1 %–99,9 % et comparez
-- Affichez la bande PIR avec 3 palettes différentes
-- Construisez un composé `SWIR, PIR, R` sur une image Sentinel-2
+- Comparez CLAHE et égalisation globale : quand la CLAHE révèle-t-elle plus de détails ?
+- Faites correspondre l'histogramme de la bande PIR à celui d'une autre scène
+- Appliquez l'étirement par décorrélation sur un composé SWIR2, PIR, R
 
 ##  {background-color="#357cc0"}
 

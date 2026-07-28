@@ -22,7 +22,7 @@ jupyter: python3
 - Modifier le spectre → corriger bruit et artefacts systématiques
 :::
 
-## Transformée de Fourier — 1D {.smaller}
+## La transformée de Fourier {.smaller}
 
 ```{python}
 #| fig-align: center
@@ -46,20 +46,32 @@ plt.show()
 - Filtrer = **multiplier** le spectre par la réponse du filtre
 :::
 
+```{python}
+#| fig-align: center
+import rioxarray as rxr
+from scipy import ndimage
+img = rxr.open_rasterio('../berkeley.jpg').to_numpy()        # (3, H, W)
+spectre = np.fft.fft2(img)
+lisse = [ndimage.fourier_gaussian(spectre[b], sigma=4) for b in range(3)]
+lisse = np.fft.ifft2(lisse).real
+fig, ax = plt.subplots(1, 2, figsize=(7, 3))
+ax[0].imshow(img.transpose(1,2,0).astype('uint8')); ax[0].set_title("Originale"); ax[0].axis('off')
+ax[1].imshow(lisse.transpose(1,2,0).astype('uint8')); ax[1].set_title("Passe-bas gaussien (Fourier)"); ax[1].axis('off')
+plt.show()
+```
+
 ## L'aliasing {.smaller}
 
 Sous-échantillonner sans filtrer → repliement de spectre :
 
 ```{python}
 #| fig-align: center
-import rioxarray as rxr
 from scipy.ndimage import gaussian_filter
-img = rxr.open_rasterio('../berkeley.jpg').to_numpy()       # (3, H, W)
 fig, ax = plt.subplots(1, 3, figsize=(8, 3))
 ax[0].imshow(img.transpose(1,2,0).astype('uint8')); ax[0].set_title("Originale"); ax[0].axis('off')
 ax[1].imshow(img[:, ::4, ::4].transpose(1,2,0).astype('uint8')); ax[1].set_title("Décimée x4"); ax[1].axis('off')
-lisse = gaussian_filter(img.astype(float), sigma=(0, 1.5, 1.5))
-ax[2].imshow(lisse[:, ::4, ::4].transpose(1,2,0).astype('uint8')); ax[2].set_title("Passe-bas puis décimée"); ax[2].axis('off')
+lisse2 = gaussian_filter(img.astype(float), sigma=(0, 1.5, 1.5))
+ax[2].imshow(lisse2[:, ::4, ::4].transpose(1,2,0).astype('uint8')); ax[2].set_title("Passe-bas puis décimée"); ax[2].axis('off')
 plt.show()
 ```
 
@@ -72,7 +84,7 @@ plt.show()
 - **Stationnaire** vs **adaptatif**
 :::
 
-## Filtre moyen (lissage) {.smaller}
+## Filtrage linéaire stationnaire — filtre moyen {.smaller}
 
 Un **filtre moyen** remplace chaque pixel par la moyenne de son voisinage → réduit le bruit, adoucit les détails.
 
@@ -80,14 +92,14 @@ Un **filtre moyen** remplace chaque pixel par la moyenne de son voisinage → r�
 #| fig-align: center
 from scipy.ndimage import uniform_filter
 gris = img[0]                                    # une bande
-lisse = uniform_filter(gris, size=5)             # moyenne sur une fenêtre 5x5
+lisse3 = uniform_filter(gris, size=5)            # moyenne sur une fenêtre 5x5
 fig, ax = plt.subplots(1, 2, figsize=(7, 3))
 ax[0].imshow(gris, cmap='gray'); ax[0].set_title("Originale"); ax[0].axis('off')
-ax[1].imshow(lisse, cmap='gray'); ax[1].set_title("Filtre moyen 5x5"); ax[1].axis('off')
+ax[1].imshow(lisse3, cmap='gray'); ax[1].set_title("Filtre moyen 5x5"); ax[1].axis('off')
 plt.show()
 ```
 
-## Contours — filtre de Scharr {.smaller}
+## Filtrage par convolution — contours (Scharr) {.smaller}
 
 Un **filtre de gradient** (Scharr) met en valeur les **contours** — les fortes variations locales :
 
@@ -101,6 +113,50 @@ fig, ax = plt.subplots(1, 2, figsize=(7, 3))
 ax[0].imshow(gris, cmap='gray'); ax[0].set_title("Originale"); ax[0].axis('off')
 ax[1].imshow(grad, cmap='gray'); ax[1].set_title("Contours (Scharr)"); ax[1].axis('off')
 plt.show()
+```
+
+## Filtrage non linéaire — filtre médian {.smaller}
+
+::: {.incremental}
+- Un filtre **non linéaire** ne s'exprime pas comme une simple pondération des voisins
+- Le **filtre médian** remplace chaque pixel par la médiane locale
+- Élimine le bruit **impulsionnel** (*sel et poivre*) en préservant mieux les contours qu'un filtre moyen
+:::
+
+```{python}
+#| fig-align: center
+from scipy.ndimage import median_filter, uniform_filter
+bruite = img.astype(float).copy()
+masque_bruit = np.random.random(bruite.shape) < 0.05
+bruite[masque_bruit] = np.random.choice([0, 255], size=masque_bruit.sum())
+moyen = uniform_filter(bruite, size=(1, 5, 5))
+median = median_filter(bruite, size=(1, 5, 5))
+fig, ax = plt.subplots(1, 3, figsize=(9, 3))
+for a, im, titre in zip(ax, (bruite, moyen, median), ("Bruitée", "Filtre moyen", "Filtre médian")):
+    a.imshow(im.transpose(1, 2, 0).astype('uint8')); a.set_title(titre); a.axis('off')
+plt.tight_layout(); plt.show()
+```
+
+## Morphologie mathématique — ouverture {.smaller}
+
+::: {.incremental}
+- Opère sur des **masques binaires** par opérateurs ensemblistes : érosion, dilatation
+- L'**ouverture** (érosion puis dilatation) élimine les petits objets clairs isolés
+- Utile pour nettoyer un masque issu d'un **seuillage** ou d'une segmentation
+:::
+
+```{python}
+#| fig-align: center
+from skimage.morphology import opening, disk
+sar = rxr.open_rasterio('../SAR.tif').sel(band=1)
+sar = sar.where(sar > 0)                          # masque no_data
+sar_db = np.log10(sar.to_numpy())
+masque = sar_db > np.percentile(sar_db, 75)       # 25 % des pixels les plus intenses
+masque_ouvert = opening(masque, disk(2))
+fig, ax = plt.subplots(1, 2, figsize=(7, 3.5))
+ax[0].imshow(masque, cmap='gray'); ax[0].set_title("Masque original"); ax[0].axis('off')
+ax[1].imshow(masque_ouvert, cmap='gray'); ax[1].set_title("Après ouverture"); ax[1].axis('off')
+plt.tight_layout(); plt.show()
 ```
 
 ## Gestion des bordures {.smaller}
@@ -145,12 +201,12 @@ Ici le noyau est **imposé** ; un CNN l'**apprendrait** par rétro-propagation (
 
 ## Filtrage adaptatif — le *speckle* SAR {.smaller}
 
-Les images radar sont dégradées par un bruit multiplicatif (*speckle*). Le **filtre de Lee** lisse en **préservant les détails** (pondération selon la variance locale).
+Les images radar sont dégradées par un bruit multiplicatif (*speckle*). Le **filtre de Lee** lisse en **préservant les détails** (pondération selon la variance locale) :
+
+$$ I_F = I_M + K(I - I_M), \qquad K = \frac{\sigma^2_I}{\sigma^2_I + \sigma^2_{bruit}} $$
 
 ```{python}
 #| fig-align: center
-sar = rxr.open_rasterio('../SAR.tif').sel(band=1)
-sar = sar.where(sar > 0)                          # masque no_data
 moy = sar.rolling(x=5, y=5, min_periods=3, center=True).mean()
 fig, ax = plt.subplots(1, 2, figsize=(7, 3))
 np.log10(sar).plot.imshow(ax=ax[0], add_colorbar=False); ax[0].set_title("SAR brut (speckle)"); ax[0].axis('off')
@@ -158,7 +214,29 @@ np.log10(moy).plot.imshow(ax=ax[1], add_colorbar=False); ax[1].set_title("Filtre
 plt.show()
 ```
 
-## Segmentation en super-pixels {.smaller}
+## Texture — matrice de co-occurrence (GLCM) {.smaller}
+
+::: {.incremental}
+- Capture comment les niveaux de gris varient **spatialement**, au-delà des contours
+- La **GLCM** compte les paires de valeurs voisines pour une direction/distance donnée
+- On en dérive **contraste**, **homogénéité**, **énergie**, **corrélation**
+- Distingue des surfaces de radiométrie semblable mais de texture différente (forêt vs champ)
+:::
+
+```{python}
+from skimage.feature import graycomatrix, graycoprops
+from skimage.util import img_as_ubyte
+from skimage.color import rgb2gray
+gris_tex = img_as_ubyte(rgb2gray(img.transpose(1, 2, 0) / 255.0))
+fenetre_a = gris_tex[:80, :80]     # coin supérieur gauche
+fenetre_b = gris_tex[-80:, -80:]   # coin inférieur droit
+for nom, fenetre in [("Fenêtre A", fenetre_a), ("Fenêtre B", fenetre_b)]:
+    glcm = graycomatrix(fenetre, distances=[1], angles=[0], levels=256, symmetric=True, normed=True)
+    props = {p: round(graycoprops(glcm, p)[0, 0], 3) for p in ("contrast", "homogeneity", "energy", "correlation")}
+    print(nom, props)
+```
+
+## Segmentation en super-pixels — SLIC {.smaller}
 
 **SLIC** regroupe les pixels en régions homogènes et compactes (couleur + distance) :
 
@@ -173,29 +251,91 @@ ax.set_title(f"SLIC — {len(np.unique(seg))} super-pixels"); ax.axis('off')
 plt.show()
 ```
 
-## Fusion et approche objet {.smaller}
+## Quick Shift {.smaller}
 
 ::: {.incremental}
-- Sur-segmentation → **fusionner** les segments similaires (**graphe d'adjacence, RAG**)
-- **Approche objet** : chaque segment devient un *objet* décrit par des **propriétés** (aire, moyenne, forme…) via `regionprops`
+- Segmentation par **recherche de mode** (ascension de gradient), pas de k-moyennes itératives
+- Pas besoin de fixer le **nombre de segments** à l'avance
+- `kernel_size` : échelle spatiale · `max_dist` : distance de fusion maximale
+- `ratio` équilibre couleur vs position — un rôle analogue au poids $m$ de SLIC
+:::
+
+```{python}
+#| fig-align: center
+from skimage.segmentation import quickshift
+segments_qs = quickshift(rgb, kernel_size=5, max_dist=10, ratio=0.5)
+fig, ax = plt.subplots(1, 2, figsize=(8, 3.6))
+ax[0].imshow(mark_boundaries(rgb, seg)); ax[0].set_title(f"SLIC ({len(np.unique(seg))} segments)"); ax[0].axis('off')
+ax[1].imshow(mark_boundaries(rgb, segments_qs)); ax[1].set_title(f"Quick Shift ({len(np.unique(segments_qs))} segments)"); ax[1].axis('off')
+plt.show()
+```
+
+## Fusion des segments — graphe d'adjacence (RAG) {.smaller}
+
+::: {.incremental}
+- La sur-segmentation est fréquente → **fusionner** les segments similaires en post-traitement
+- Un **graphe d'adjacence de régions** (RAG) relie les segments qui se touchent
+- On fusionne les nœuds de couleur moyenne proche jusqu'à un seuil
+:::
+
+```{python}
+#| fig-align: center
+from skimage import graph, color
+def poids_couleur(graph, src, dst, n):
+    diff = graph.nodes[dst]['mean color'] - graph.nodes[n]['mean color']
+    return {'weight': np.linalg.norm(diff)}
+
+def fusion_couleur(graph, src, dst):
+    graph.nodes[dst]['total color'] += graph.nodes[src]['total color']
+    graph.nodes[dst]['pixel count'] += graph.nodes[src]['pixel count']
+    graph.nodes[dst]['mean color'] = graph.nodes[dst]['total color'] / graph.nodes[dst]['pixel count']
+
+g = graph.rag_mean_color(rgb, seg)
+print("Segments avant fusion :", len(g))
+fusionne = graph.merge_hierarchical(seg, g, thresh=20, rag_copy=False, in_place_merge=True,
+                                     merge_func=fusion_couleur, weight_func=poids_couleur)
+print("Segments après fusion :", len(g))
+
+avant = color.label2rgb(seg, rgb, kind='avg', bg_label=0)
+apres = color.label2rgb(fusionne, rgb, kind='avg', bg_label=0)
+fig, ax = plt.subplots(1, 2, figsize=(8, 3.6))
+ax[0].imshow(mark_boundaries(avant, seg)); ax[0].set_title("Avant fusion"); ax[0].axis('off')
+ax[1].imshow(mark_boundaries(apres, fusionne)); ax[1].set_title("Après fusion"); ax[1].axis('off')
+plt.show()
+```
+
+## Approche objet — `regionprops` {.smaller}
+
+::: {.incremental}
+- Chaque segment devient un **objet** décrit par des propriétés (aire, centroïde, intensité moyenne…)
+- `regionprops_table` construit directement un **tableau** exploitable
 - Base de la **classification objet** (chapitre suivant)
 :::
+
+```{python}
+from skimage import measure
+import pandas as pd
+proprietes = ['label', 'area', 'centroid', 'intensity_mean']
+table = measure.regionprops_table(fusionne, intensity_image=rgb, properties=proprietes)
+pd.DataFrame(table).head(5)
+```
 
 ## Points clés {.smaller}
 
 ::: {.incremental}
-- La **transformée de Fourier** : point de vue fréquentiel réversible
-- **Passe-bas avant de décimer** → éviter l'aliasing
-- **Convolution** = filtrage local efficace (moyenne, Scharr)
+- La **transformée de Fourier** : point de vue fréquentiel réversible ; **passe-bas avant de décimer** pour éviter l'aliasing
+- **Convolution** = filtrage local linéaire efficace (moyenne, Scharr)
+- Filtre **non linéaire** (médian, morphologie mathématique) ≠ pondération des voisins
 - **Lee** : filtre adaptatif contre le *speckle* SAR
-- **SLIC + RAG + regionprops** : de l'image aux objets
+- **Texture (GLCM)** : contraste, homogénéité, énergie, corrélation
+- **SLIC / Quick Shift + RAG + regionprops** : de l'image aux objets
 :::
 
 ## À vous de jouer {.smaller}
 
 - Décimez l'image par un facteur 8, avec et sans filtre passe-bas
-- Appliquez le Scharr sur les **3 bandes** et combinez les amplitudes
-- Variez `compactness` de SLIC (1, 10, 50) et observez la forme des super-pixels
+- Comparez filtre médian et filtre moyen sur une image bruitée (sel et poivre)
+- Faites varier `kernel_size`/`max_dist` de Quick Shift et comparez à SLIC
 
 ##  {background-color="#357cc0"}
 

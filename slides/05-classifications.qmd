@@ -38,9 +38,44 @@ Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=0)
 - Mettre en place un **pipeline** d'entraînement
 - **Évaluer** un classificateur
 - Visualiser les **frontières de décision**
-- Employer **K-NN**, arbres, Bayésien, MLP
+- Employer **K-NN**, arbres, Bayésien, ADQ, MLP
 - Mesurer des **distances** (`cdist`) et un **bilan surfacique** (`bincount`)
 :::
+
+## Librairies {.smaller}
+
+::: {.incremental}
+- **`scikit-learn`** : pipeline, classificateurs, métriques — librairie centrale du chapitre
+- **`rasterio`** / **`rioxarray`** + **`geopandas`** : relier des points étiquetés aux pixels d'une image
+- **`scipy.spatial.distance`**, **NumPy** : distances et algèbre (K-NN "à la main", séparabilité JM)
+- Chapitre aussi disponible en notebook Google Colab (seuls `rioxarray`/`xrscipy` n'y sont pas préinstallés)
+:::
+
+```{python}
+#| eval: false
+import numpy as np, pandas as pd
+import rioxarray as rxr, rasterio, geopandas
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix
+```
+
+## Images utilisées {.smaller}
+
+::: {.incremental}
+- `RGBNIR_of_S2A.tif` : 4 bandes (B, V, R, PIR) — les *features* du classificateur
+- `carte.tif` : carte d'occupation des sols (12 classes) — source de l'échantillonnage
+- `berkeley.jpg`, `SAR.tif` : utilisées ailleurs dans le chapitre
+- `sampling_points.csv` : jeu d'entraînement dérivé (points + classe + bandes), réutilisé partout
+:::
+
+```{python}
+import rioxarray as rxr
+for f in ['../berkeley.jpg', '../RGBNIR_of_S2A.tif', '../SAR.tif', '../carte.tif']:
+    with rxr.open_rasterio(f, mask_and_scale=True) as img:
+        print(f, img.shape)
+```
 
 ## Principes {.smaller}
 
@@ -82,13 +117,61 @@ Degré 1 → **sous-apprentissage** · degré 15 → **sur-apprentissage**.
 5. **Tester** sur des données indépendantes
 :::
 
-## Séparabilité des classes {.smaller}
+## Construction d'un ensemble d'entraînement {.smaller}
 
 ::: {.incremental}
-- Ensembles réels souvent **déséquilibrés** (fréquences de classes très inégales)
-- **Séparabilité** mesurée par la distance **JM** sous hypothèse gaussienne
-- Guide le choix des bandes et indices les plus **discriminants**
+- On échantillonne une carte déjà classifiée (`carte.tif`, 12 classes)
+- **N points aléatoires par classe** (ex. 100) évite un jeu trop déséquilibré
+- Chaque point est relié à ses valeurs radiométriques via les coordonnées géoréférencées
+- Le résultat (position + classe + bandes) est sauvegardé en `.csv`, réutilisé par tous les classificateurs
 :::
+
+```{python}
+import rasterio
+img_carte = rxr.open_rasterio('../carte.tif', mask_and_scale=True).squeeze()
+
+pts, cls = [], []
+for c in range(1, 13):                      # 12 classes d'occupation du sol
+    pix = np.argwhere(img_carte.data == c)
+    n = min(100, len(pix))
+    idx = np.random.RandomState(0).choice(len(pix), n, replace=False)
+    pts.extend(pix[idx]); cls.extend([c]*n)
+pts = np.array(pts)
+print("Points échantillonnés :", pts.shape[0], "sur", len(np.unique(cls)), "classes")
+
+transformer = rasterio.transform.AffineTransformer(img_carte.rio.transform())
+xy = transformer.xy(pts[:, 0], pts[:, 1])
+with rasterio.open('../RGBNIR_of_S2A.tif') as src:
+    valeurs = [v for v in src.sample(list(zip(*xy)))]
+print("Valeurs de bandes du premier point :", valeurs[0])
+```
+
+## Analyse préliminaire des données {.smaller}
+
+Avant d'entraîner un modèle : dimensions, nombre de classes, échantillons/classe, **séparabilité**.
+
+::: {.incremental}
+- Hypothèse **gaussienne multivariée** par classe : centre $m_i$, covariance $\Sigma_i$
+- Distance de **Jeffries-Matusita** (JM), basée sur la distance de Bhattacharyya $B$ [@Jensen2016]
+- $JM_{ij} = 2(1-e^{-B_{ij}})$ : proche de $2$ → classes bien séparées, proche de $0$ → confusion probable
+- Guide le choix des bandes/indices les plus discriminants
+:::
+
+```{python}
+def bhattacharyya(m1, s1, m2, s2):
+    s = (s1 + s2) / 2
+    d = m1 - m2
+    t1 = d @ np.linalg.inv(s) @ d / 8
+    t2 = 0.5*np.log(np.linalg.det(s) / np.sqrt(np.linalg.det(s1)*np.linalg.det(s2)))
+    return t1 + t2
+
+def jm(m1, s1, m2, s2):
+    return 2*(1 - np.exp(-bhattacharyya(m1, s1, m2, s2)))
+
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
+q = QDA(store_covariance=True).fit(Xtr, ytr)
+print("JM(classe 0, classe 1) =", round(jm(q.means_[0], q.covariance_[0], q.means_[1], q.covariance_[1]), 3))
+```
 
 ## Mesures de performance {.smaller}
 
@@ -98,6 +181,45 @@ Degré 1 → **sous-apprentissage** · degré 15 → **sur-apprentissage**.
 - **Précision** — fausses alarmes (normalisation par colonnes)
 - **f1-score** = moyenne harmonique du rappel et de la précision
 :::
+
+```{python}
+from sklearn.metrics import confusion_matrix, classification_report
+y_true = ["cat", "ant", "cat", "cat", "ant", "bird", "bird"]
+y_pred = ["ant", "ant", "cat", "cat", "ant", "cat", "bird"]
+print(confusion_matrix(y_true, y_pred, labels=["ant", "bird", "cat"]))
+print(classification_report(y_true, y_pred, target_names=["ant", "bird", "cat"]))
+```
+
+## Méthode des parallélépipèdes {.smaller}
+
+La plus simple des méthodes **non paramétriques** : une **boîte** par classe.
+
+::: {.incremental}
+- Bornes `[min, max]` de chaque bande, classe par classe
+- Un pixel est assigné si **toutes** ses bandes tombent dans la boîte
+- Rapide, mais laisse des **trous** et des **recouvrements** entre classes
+:::
+
+```{python}
+bornes = {c: (Xtr[ytr == c].min(0), Xtr[ytr == c].max(0)) for c in np.unique(ytr)}
+c0 = np.unique(ytr)[0]
+print("Nombre de classes :", len(bornes))
+print("Boîte de la classe", c0, "- min :", bornes[c0][0].round(1))
+```
+
+## La malédiction de la haute dimension {.smaller}
+
+::: {.incremental}
+- Densité de points $\propto N / d^D$ : chute **exponentielle** avec le nombre de dimensions $D$
+- Les parallélépipèdes deviennent creux : l'espace vide croît plus vite que les données
+- Contre-mesures : sélection de caractéristiques, réduction de dimension (ACP)
+:::
+
+```{python}
+d, N = 10, 1000   # N points dans un hypercube de côté d
+for D in [1, 2, 5, 10, 20]:
+    print(f"D={D:2d} -> densité ~ {N / d**D:.2e}")
+```
 
 ## K-NN — frontières de décision {.smaller}
 
@@ -136,38 +258,51 @@ print("Matrice des distances :", D.shape)
 print("Exactitude 1-PPV « à la main » :", round((y_ppv == yte).mean(), 3))
 ```
 
-## Méthode des parallélépipèdes {.smaller}
-
-La plus simple des méthodes **non paramétriques** : une **boîte** par classe.
+## Méthodes par arbre de décision {.smaller}
 
 ::: {.incremental}
-- Bornes `[min, max]` de chaque bande, classe par classe
-- Un pixel est assigné si **toutes** ses bandes tombent dans la boîte
-- Rapide, mais laisse des **trous** et des **recouvrements** entre classes
+- Cascade de règles de **seuil** sur chaque bande [@Breiman1984]
+- Frontières de décision en **escaliers** (hyper-rectangles)
+- Tendance au **sur-apprentissage**, surtout si peu d'échantillons par dimension
+- `max_depth` contrôle directement la complexité de l'arbre
 :::
 
 ```{python}
-bornes = {c: (Xtr[ytr == c].min(0), Xtr[ytr == c].max(0)) for c in np.unique(ytr)}
-c0 = np.unique(ytr)[0]
-print("Nombre de classes :", len(bornes))
-print("Boîte de la classe", c0, "- min :", bornes[c0][0].round(1))
+from sklearn.tree import DecisionTreeClassifier
+for prof in [2, 5, None]:
+    arbre = DecisionTreeClassifier(max_depth=prof, random_state=0).fit(Xtr, ytr)
+    print(f"profondeur={prof} - exactitude test : {arbre.score(Xte, yte):.3f}")
 ```
 
-## Méthodes paramétriques — Bayésien & ADQ {.smaller}
+## Méthode Bayésienne naïve {.smaller}
 
-On suppose une **distribution** (gaussienne) par classe et on estime ses paramètres.
+::: {.incremental}
+- Modèle **gaussien** par classe, bandes supposées **indépendantes**
+- Calcul rapide : peu de paramètres à estimer
+- Frontières de décision plus **régulières** que le K-NN
+- Base simplifiée dont l'**ADQ** relâche l'hypothèse d'indépendance
+:::
 
 ```{python}
-import warnings; warnings.filterwarnings('ignore')
 from sklearn.naive_bayes import GaussianNB
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
-
-for nom, m in [("Bayésien naïf", GaussianNB()), ("ADQ", QDA())]:
-    m.fit(Xtr, ytr)
-    print(f"{nom:14s} - exactitude : {m.score(Xte, yte):.3f}")
+gnb = GaussianNB().fit(Xtr, ytr)
+print("Bayésien naïf - exactitude test :", round(gnb.score(Xte, yte), 3))
 ```
 
-L'**ADQ** modélise la covariance complète de chaque classe ; le **Bayésien naïf** suppose les bandes indépendantes.
+## Analyse discriminante quadratique (ADQ) {.smaller}
+
+::: {.incremental}
+- Généralise le Bayésien naïf : covariance **complète** par classe (bandes non indépendantes)
+- Chaque classe = une **ellipse** (gaussienne multivariée) dans l'espace des bandes
+- Plus de paramètres à estimer → exige davantage de données par classe
+- Sert aussi à mesurer la séparabilité **JM** (voir plus haut)
+:::
+
+```{python}
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
+qda = QDA(store_covariance=True).fit(Xtr, ytr)
+print("ADQ - exactitude test :", round(qda.score(Xte, yte), 3))
+```
 
 ## Réseaux de neurones — le MLP {.smaller}
 
@@ -214,7 +349,6 @@ On applique le modèle (4 bandes) à toute l'image :
 
 ```{python}
 #| fig-align: center
-import rioxarray as rxr
 clf = Pipeline([("s", StandardScaler()), ("c", KNeighborsClassifier(7, weights='distance'))]).fit(Xtr, ytr)
 img = rxr.open_rasterio('../RGBNIR_of_S2A.tif').to_numpy()          # (4, H, W)
 H, W = img.shape[1], img.shape[2]
@@ -224,7 +358,7 @@ ax.imshow(carte, cmap=cmap); ax.set_title("Classification K-NN"); ax.axis('off')
 plt.show()
 ```
 
-## Bilan surfacique {.smaller}
+## Analyse post-classification — bilan surfacique {.smaller}
 
 `np.bincount` compte les pixels par classe ; multiplié par la surface d'un pixel (10 m) → superficie.
 
@@ -245,7 +379,8 @@ plt.show()
 - Classification supervisée = classe par pixel à partir d'un **jeu étiqueté**
 - **Entraînement / validation / test** pour détecter le sur-apprentissage
 - Performance via la **matrice de confusion** (rappel, précision, f1)
-- Non paramétriques (K-NN, arbres) vs paramétriques (Bayésien, ADQ) vs **MLP**
+- Non paramétriques (parallélépipèdes, K-NN, arbres) vs paramétriques (Bayésien, ADQ) vs **MLP**
+- La **malédiction de la dimensionnalité** guide le choix de réduire la dimension (ACP)
 - Le K-NN repose sur des **distances** (`cdist`) ; après coup, `bincount` donne le **bilan surfacique** par classe
 :::
 

@@ -109,15 +109,34 @@ bandes.append("SWIR")
 print([b.upper() for b in bandes])                    # compréhension de liste
 ```
 
-## Tuples & ensembles {.smaller}
+## Tuples {.smaller}
+
+::: {.incremental}
+- `(…)` — ordonné mais **immuable** (non modifiable après création)
+- Idéal pour des données qui ne doivent pas changer (paramètres, dimensions)
+- Permet les doublons, comme une liste
+:::
 
 ```{python}
 dimensions = (512, 512)          # immuable : dimensions d'une image
 lignes, colonnes = dimensions    # dépaquetage
 print(lignes, colonnes)
+# dimensions[0] = 1024   # -> TypeError : un tuple est immuable
+```
 
+## Ensembles (*sets*) {.smaller}
+
+::: {.incremental}
+- `{…}` — non ordonné, **sans doublons**
+- Utile pour dédupliquer et faire des opérations ensemblistes (`&`, `|`)
+:::
+
+```{python}
 classes = ["eau", "forêt", "eau", "urbain", "forêt"]
-print(set(classes))              # doublons éliminés
+print(set(classes))                          # doublons éliminés
+
+a, b = {1, 2, 3}, {3, 4}
+print("intersection :", a & b, "| union :", a | b)
 ```
 
 ## Dictionnaires {.smaller}
@@ -164,6 +183,11 @@ reflectance = 0.42
 if reflectance > 0.5:      print("forte")
 elif reflectance > 0.3:    print("moyenne")
 else:                      print("faible")
+
+seuil, valeur = 0.5, 0.1    # while : tant que la condition est vraie
+while valeur < seuil:
+    valeur += 0.2
+print("valeur finale :", round(valeur, 1))
 ```
 
 ## Fonctions {.smaller}
@@ -181,6 +205,13 @@ Le NDVI reviendra au chapitre 3 — ici c'est juste l'occasion d'introduire `def
 :::
 
 ## Programmation objet {.smaller}
+
+::: {.incremental}
+- **Classe** = plan ; **objet** = instance avec attributs et méthodes
+- **Encapsulation** — cache les détails internes
+- **Héritage** — une classe hérite d'une autre
+- **Polymorphisme** — un même message, une réponse propre à chaque objet
+:::
 
 ```{python}
 class Image:
@@ -218,6 +249,23 @@ print(np.__version__, "| pi =", round(pi, 4))
 teledetection/
     __init__.py        # marque le dossier comme un package
     indices.py         # from teledetection.indices import ndvi
+```
+
+## Le fichier `__init__.py` {.smaller}
+
+::: {.incremental}
+- Exécuté **automatiquement** au premier import du package
+- Peut exposer une **interface simplifiée** : `from .indices import ndvi`
+- Le point `.` = **import relatif** au package courant
+- Ce manuel l'utilise pour ses quiz (`code_complementaire.quizz_functions`)
+:::
+
+```python
+# teledetection/__init__.py
+from .indices import ndvi          # ré-exporte ndvi au niveau du package
+
+# ailleurs :
+from teledetection import ndvi     # au lieu de teledetection.indices.ndvi
 ```
 
 ## Exécutable — le plus simple {.smaller}

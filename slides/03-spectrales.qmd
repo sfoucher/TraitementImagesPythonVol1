@@ -10,24 +10,44 @@ jupyter: python3
 ::: {.incremental}
 - Comprendre le principe des **indices spectraux**
 - Calculer différents indices avec **`spyndex`**
-- Analyser le **gain en information** des indices
-- Réduire la **dimension spectrale** (ACP / produit matriciel)
+- Analyser le **gain en information** (séparabilité) des indices
+- Réduire la **dimension spectrale** : produit matriciel, Tasseled Cap, ACP
 :::
+
+## Bibliothèques et données {.smaller}
+
+::: {.incremental}
+- **NumPy**, **SciPy**, **Rasterio**, **xarray** / **rioxarray**
+- **`spyndex`** (Awesome Spectral Indices) : calcul d'indices spectraux
+- Images : `RGBNIR_of_S2A.tif`, `sentinel2.tif` (12 bandes), `carte.tif`
+- Signatures de laboratoire USGS : `ASCIIdata_splib07b_rsSentinel2`
+:::
+
+```{python}
+import numpy as np
+import rioxarray as rxr
+import matplotlib.pyplot as plt
+import spyndex
+import rasterio as rio
+
+img_s2 = rxr.open_rasterio('../sentinel2.tif', mask_and_scale=True)
+img_s2.dims
+```
 
 ## Qu'est-ce que l'information spectrale ? {.smaller}
 
 ::: {.incremental}
-- La dimension **spectrale** : le long des bandes de l'image
-- 4–5 bandes (multispectral léger) → **centaines** (hyperspectral)
+- Dimension **spectrale** : le long des bandes de l'image
+- 4–5 bandes (très haute résolution spectrale) → une quinzaine (multispectral) → **centaines** (hyperspectral)
 - La **signature spectrale** caractérise le **type et l'état** d'un matériau
 - Une généralisation de la *couleur* au-delà du visible
+- Base USGS de signatures de laboratoire [@Kokaly-2017]
 :::
 
 ## Signatures spectrales {.smaller}
 
 ```{python}
 #| fig-align: center
-import matplotlib.pyplot as plt
 base = '../ASCIIdata_splib07b_rsSentinel2'
 def lire(f):
     with open(f) as fh:
@@ -48,8 +68,26 @@ plt.show()
 - Mettent en valeur des **caractéristiques du spectre** (pentes, gradients)
 - Améliorent la **séparabilité** de certaines classes
 - Le choix dépend fortement de l'**application**
-- **`spyndex`** (Awesome Spectral Indices) : **200+** indices
+- **`spyndex`** (Awesome Spectral Indices) : **200+** indices (optiques et radar)
 :::
+
+```{python}
+spyndex.indices["NDVI"]
+```
+
+## Nomenclature des bandes (`spyndex`) {.smaller}
+
+| Sentinel-2 | B02 | B03 | B04 | B08 | B11 | B12 |
+|---|---|---|---|---|---|---|
+| **spyndex** | B (bleu) | G (vert) | R (rouge) | N (PIR) | S1 (SWIR1) | S2 (SWIR2) |
+
+`spyndex` suppose ces noms de bandes ; on renomme les coordonnées `xarray` avant le calcul :
+
+```{python}
+sentinel2_bands = ["A", "B", "G", "R", "RE1", "RE2", "RE3", "N", "N2", "WV", "S1", "S2"]
+img_s2 = img_s2.sel(band=list(range(1, 13))).assign_coords({'band': sentinel2_bands})
+img_s2 = img_s2 / 10000   # normalisation en réflectance
+```
 
 ## Le NDVI {.smaller}
 
@@ -60,85 +98,178 @@ $$ NDVI = \frac{N - R}{N + R} $$
 ::: {.incremental}
 - Végétation dense → NDVI élevé (proche de 1)
 - Eau, sol nu, bâti → valeurs faibles voire négatives
-- `GNDVI` : remplace le rouge par le vert · `SAVI` : correction du sol ($L$)
 :::
 
-## Nomenclature des bandes (`spyndex`) {.smaller}
+## SAVI et EVI {.smaller}
 
-| Sentinel-2 | B02 | B03 | B04 | B08 | B11 | B12 |
-|---|---|---|---|---|---|---|
-| **spyndex** | B (bleu) | G (vert) | R (rouge) | N (PIR) | S1 (SWIR1) | S2 (SWIR2) |
+$$ EVI = G \times \frac{N - R}{N + C_1 \times R - C_2 \times B + L} $$
 
-`spyndex` suppose ces noms de bandes ; on renomme les coordonnées `xarray` avant le calcul.
+::: {.incremental}
+- `SAVI` : facteur de correction du sol ($L$) pour un couvert clairsemé
+- `EVI` : corrige en plus l'effet de l'**atmosphère** via la bande bleue ($B$) [@Jensen2016]
+- Limite la saturation du NDVI sur la végétation dense
+- Constantes usuelles : $G=2{,}5$, $C_1=6$, $C_2=7{,}5$, $L=1$
+:::
 
-## Calcul d'indices — `computeIndex` {.smaller}
+## Calcul des indices — `computeIndex` {.smaller}
 
 ```{python}
 #| fig-align: center
-import rioxarray as rxr, spyndex
-img = rxr.open_rasterio('../RGBNIR_of_S2A.tif').astype('float32') / 10000   # ordre B,V,R,PIR
+from rasterio import plot
 idx = spyndex.computeIndex(
-    index=["NDVI", "GNDVI", "SAVI"],
-    params={"N": img.sel(band=4), "R": img.sel(band=3), "G": img.sel(band=2), "L": 0.5})
-fig, ax = plt.subplots(1, 3, figsize=(8, 3))
-for a, name in zip(ax, ["NDVI", "GNDVI", "SAVI"]):
-    im = a.imshow(idx.sel(index=name), vmin=-0.2, vmax=0.8, cmap='RdYlGn')
-    a.set_title(name); a.axis('off')
-plt.show()
+    index=["NDVI", "SAVI"],
+    params={"N": img_s2.sel(band="N"), "R": img_s2.sel(band="R"), "L": 0.5}
+)
+evi = spyndex.computeIndex(
+    index=["EVI"],
+    params={"N": img_s2.sel(band="N"), "R": img_s2.sel(band="R"), "B": img_s2.sel(band="B"),
+            "g": 2.5, "C1": 6, "C2": 7.5, "L": 1}
+)
+fig, ax = plt.subplots(1, 3, figsize=(9, 3.2))
+plot.show(idx.sel(index="NDVI"), ax=ax[0], title="NDVI")
+plot.show(idx.sel(index="SAVI"), ax=ax[1], title="SAVI")
+evi_lo, evi_hi = np.nanpercentile(evi, [2, 98])
+plot.show(evi, vmin=evi_lo, vmax=evi_hi, ax=ax[2], title="EVI")
+[a.axis('off') for a in ax]; plt.tight_layout(); plt.show()
 ```
 
-## Utilité : la séparabilité {.smaller}
+## Vérifier la séparabilité {.smaller}
 
 ::: {.incremental}
-- Un bon indice **sépare mieux** les classes d'intérêt
-- On vérifie via des nuages de points (`NDVI` vs `NDWI` vs `NDBI`)
-- Chaque indice met en valeur une **thématique** (végétation, eau, bâti)
+- On échantillonne des **points par classe** (carte de référence `carte.tif`)
+- On calcule les indices aux points échantillonnés
+- Comparaison via un **pairplot** (nuages de points deux à deux)
+- Un bon indice **sépare mieux** les classes visées (ex. NDVI vs NDWI vs NDBI)
 :::
 
-## Transformation linéaire — produit matriciel {.smaller}
+```{python}
+#| eval: false
+# df : indices calculés aux points échantillonnés, une colonne "Land Cover"
+idx = spyndex.computeIndex(
+    index=["NDVI", "NDWI", "NDBI"],
+    params={"N": df["N"], "R": df["R"], "G": df["G"], "S1": df["S1"]}
+)
+idx["Land Cover"] = [nom_classes[l] for l in df["class"].tolist()]
+import seaborn as sns
+g = sns.PairGrid(idx, hue="Land Cover")
+g.map_lower(sns.scatterplot); g.map_upper(sns.kdeplot, fill=True, alpha=.5)
+g.map_diag(sns.kdeplot, fill=True); g.add_legend()
+```
 
-Combiner des bandes par sommes pondérées = un **produit matriciel** (`@`).
+## Réduction de dimension {.smaller}
+
+::: {.incremental}
+- Ne retenir que l'information **principale** d'un jeu de données
+- Objectifs : réduire le bruit, faciliter la visualisation (3 bandes)
+- Le degré d'information ≈ la **variance** (contraste) d'une bande
+- L'ACP range l'information en ordre de **variance décroissante**
+:::
+
+## Produit matriciel — transformation linéaire {.smaller}
+
+::: {.incremental}
+- Nouvelle bande = somme pondérée des bandes d'origine
+- Mêmes poids pour tous les pixels → un **produit matriciel** (`@`)
+- L'ACP apprend ces poids automatiquement (plutôt que de les fixer)
+:::
 
 ```{python}
-import numpy as np
 pixels = np.array([[10., 40.], [20., 10.], [5., 25.]])   # 3 pixels x 2 bandes
 M = np.array([[0.5, 0.5],       # moyenne des deux bandes
               [1.0, -1.0]])      # différence des deux bandes
 print(pixels @ M.T)             # (3 pixels x 2 sorties)
 ```
 
-L'**ACP** apprend automatiquement ces poids pour **maximiser la variance** retenue.
+## Transformation Tasseled Cap (Kauth-Thomas) {.smaller}
 
-## ACP — variance expliquée {.smaller}
-
-On centre les données, puis on diagonalise la **matrice de covariance** :
+::: {.incremental}
+- Transformation linéaire à coefficients **fixes** (Crist 1985, Landsat TM) [@Jensen2016; @richards2022remote; @Schowengerdt2007]
+- Trois composantes interprétables : **brillance**, **verdure**, **humidité**
+- Appliqués ici, à titre d'illustration, aux bandes Sentinel-2 analogues
+- Coefficients fixes → comparables entre scènes (contrairement à l'ACP)
+:::
 
 ```{python}
 #| fig-align: center
-import rioxarray as rxr, matplotlib.pyplot as plt
-cube = rxr.open_rasterio('../RGBNIR_of_S2A.tif').to_numpy().astype('float32')  # (4, H, W)
+tc_coeffs = np.array([
+    [ 0.3037,  0.2793,  0.4743,  0.5585,  0.5082,  0.1863],   # Brightness
+    [-0.2848, -0.2435, -0.5436,  0.7243,  0.0840, -0.1800],   # Greenness
+    [ 0.1509,  0.1973,  0.3279,  0.3406, -0.7112, -0.4572],   # Wetness
+])
+tc_bands = ["B", "G", "R", "N", "S1", "S2"]
+X_tc = img_s2.sel(band=tc_bands).data.reshape(len(tc_bands), -1)
+brightness, greenness, wetness = (tc_coeffs @ X_tc).reshape(3, *img_s2.shape[1:])
+fig, ax = plt.subplots(ncols=3, figsize=(9, 3.5))
+for a, im, t in zip(ax, (brightness, greenness, wetness), ("Brightness", "Greenness", "Wetness")):
+    a.imshow(im); a.set_title(t); a.axis('off')
+plt.tight_layout(); plt.show()
+```
+
+## ACP — variance expliquée {.smaller}
+
+::: {.incremental}
+- On aplatit le cube (bandes × pixels), puis on **centre** les données
+- On diagonalise la **matrice de covariance** (`np.linalg.eigh`)
+- Valeurs propres = variance portée par chaque composante
+:::
+
+```{python}
+cube = img_s2.to_numpy()
 B, H, W = cube.shape
-Xc = cube.reshape(B, H * W).T - cube.reshape(B, H * W).T.mean(0)   # centrage
-val, vec = np.linalg.eigh(np.cov(Xc, rowvar=False))
-o = np.argsort(val)[::-1]; val, vec = val[o], vec[:, o]
-fig, ax = plt.subplots(figsize=(5, 3))
-ax.bar(range(1, B + 1), val / val.sum())
-ax.set_xlabel("Composante"); ax.set_ylabel("Variance expliquée"); plt.show()
-print("3 premières composantes :", round((val / val.sum())[:3].sum() * 100, 1), "% de la variance")
+X = cube.reshape(B, H * W).T
+X_c = X - X.mean(axis=0)
+valeurs, vecteurs = np.linalg.eigh(np.cov(X_c, rowvar=False))
+ordre = np.argsort(valeurs)[::-1]
+valeurs, vecteurs = valeurs[ordre], vecteurs[:, ordre]
+ratio = valeurs / valeurs.sum()
+print("Variance expliquée (5 premières) :", ratio[:5].round(3))
 ```
 
 ## ACP — composantes principales {.smaller}
 
-La projection sur les vecteurs propres (un produit matriciel) donne les composantes, rangées par variance décroissante :
+::: {.incremental}
+- Projection des pixels sur les vecteurs propres = un **produit matriciel**
+- Composantes rangées par **variance décroissante**
+- 3 premières composantes ≈ l'essentiel de l'information
+:::
 
 ```{python}
 #| fig-align: center
-comp = (Xc @ vec).T.reshape(B, H, W)          # projection = produit matriciel
-etir = lambda x: (x - x.min()) / (x.max() - x.min())
-fig, ax = plt.subplots(figsize=(5, 4))
-ax.imshow(np.dstack([etir(comp[i]) for i in range(3)]))
+composantes = (X_c @ vecteurs).T.reshape(B, H, W)
+etirer = lambda x: (x - x.min()) / (x.max() - x.min())
+fig, ax = plt.subplots(figsize=(4.5, 4))
+ax.imshow(np.dstack([etirer(composantes[i]) for i in range(3)]))
 ax.set_title("Composantes 1-2-3 (RVB)"); ax.axis('off'); plt.show()
 ```
+
+## Reconstruction et erreur de compression {.smaller}
+
+::: {.incremental}
+- Garder les $k$ premières composantes = **compresser** l'image
+- Reconstruction = projection inverse + ajout de la moyenne
+- Erreur mesurée par le **RMSE** en fonction de $k$ [@richards2022remote]
+:::
+
+```{python}
+#| fig-align: center
+def erreur_reconstruction(k):
+    proj_k = composantes[:k].reshape(k, -1).T
+    X_approx = proj_k @ vecteurs[:, :k].T + X.mean(axis=0)
+    return np.sqrt(np.mean((X - X_approx) ** 2))
+erreurs = [erreur_reconstruction(k) for k in range(1, B + 1)]
+fig, ax = plt.subplots(figsize=(5, 3.5))
+ax.plot(range(1, B + 1), erreurs, 'o-')
+ax.set_xlabel("Composantes conservées (k)"); ax.set_ylabel("RMSE"); ax.grid(True)
+plt.show()
+```
+
+## Au-delà de l'ACP : MNF et ICA {.smaller}
+
+::: {.incremental}
+- L'ACP suppose des données **gaussiennes** et classe par variance décroissante
+- **MNF** (*Minimum/Maximum Noise Fraction*) : classe par rapport signal/bruit décroissant — utile en hyperspectral bruité [@richards2022remote]
+- **ICA** (composantes indépendantes) : relâche l'hypothèse gaussienne, cherche des composantes statistiquement **indépendantes**
+:::
 
 ## Points clés {.smaller}
 
@@ -146,15 +277,16 @@ ax.set_title("Composantes 1-2-3 (RVB)"); ax.axis('off'); plt.show()
 - La **signature spectrale** caractérise le type/état d'un matériau
 - Un **indice** met en valeur le spectre et améliore la **séparabilité**
 - **`spyndex`** : 200+ indices, nomenclature de bandes (`N`, `R`, `G`…)
-- **NDVI** $=(N-R)/(N+R)$ : élevé pour la végétation
-- L'**ACP** (produit matriciel + covariance) range l'information par variance décroissante → **réduction de dimension**
+- **NDVI** $=(N-R)/(N+R)$ ; **SAVI**/**EVI** corrigent respectivement le sol et l'atmosphère
+- Une transformation linéaire de bandes = un **produit matriciel** ; **Tasseled Cap** (coefficients fixes) et **ACP** (coefficients appris) en sont deux exemples
+- La **reconstruction tronquée** quantifie la perte d'information selon le nombre de composantes conservées
 :::
 
 ## À vous de jouer {.smaller}
 
-- Calculez le **NDWI** (eau) et le **NDBI** (bâti) et affichez-les
-- Comparez les signatures de deux surfaces de la base USGS (neige, sol)
-- Choisissez un indice adapté aux sols dans `spyndex.indices` et calculez-le
+- Calculez le **NDWI** (eau) et le **NDBI** (bâti) et affichez-les à côté du NDVI
+- Comparez les signatures de deux surfaces supplémentaires de la base USGS
+- *(ACP)* Déterminez le nombre minimal de composantes pour une erreur de reconstruction (RMSE) < 0.01
 
 ##  {background-color="#357cc0"}
 

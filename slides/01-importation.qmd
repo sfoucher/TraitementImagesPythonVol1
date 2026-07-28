@@ -24,7 +24,7 @@ jupyter: python3
 4. **Métadonnées** — dimensions, date, et surtout la **géoréférence**
 :::
 
-## Formats d'image {.smaller}
+## Deux familles de formats {.smaller}
 
 ::: {.incremental}
 - **GDAL** regroupe la plupart des formats matriciels (ses *drivers*)
@@ -33,29 +33,40 @@ jupyter: python3
 - RVB → vision par ordinateur (OpenCV, PyTorch) ; géo-formats → télédétection
 :::
 
-## NumPy, le fondement {.smaller}
+## Lire un format RVB — trois bibliothèques {.smaller}
 
-![Opérations de base sur les matrices NumPy](../images/41586_2020_2649_Fig1_HTML.png){width="72%" fig-align="center"}
-
-::: {.notes}
-Insister : toute image est d'abord un tableau NumPy. Indexation `[ligne, colonne, bande]`, découpage, et la distinction vue vs copie.
+::: {.incremental}
+- **PIL** : `Image.open()` — affichage direct, peu de métadonnées
+- **OpenCV** : `cv2.imread()` — retourne un tableau NumPy, mais en **BGR**
+- **Rasterio** : lit aussi le RVB, avec avertissement d'absence de géoréférence
 :::
 
-## Démo — lecture et vraies couleurs {.smaller}
-
-L'ordre des bandes de `RGBNIR_of_S2A.tif` est **B, V, R, PIR** → on réordonne en R, V, B :
-
 ```{python}
-#| fig-align: center
-import rioxarray as rxr
-import matplotlib.pyplot as plt
-
-img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')     # data au racine du dépôt
-fig, ax = plt.subplots(figsize=(5, 3.5))
-img.sel(band=[3, 2, 1]).plot.imshow(vmin=86, vmax=5000, ax=ax)  # R, V, B
-ax.set_title("Composé vraies couleurs"); ax.axis('off')
+import cv2, matplotlib.pyplot as plt
+img_bgr = cv2.imread('../modis-aqua.PNG')
+img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)   # BGR -> RGB
+fig, ax = plt.subplots(1, 2, figsize=(7, 3.2))
+ax[0].imshow(img_bgr); ax[0].set_title("Sans conversion (BGR)"); ax[0].axis('off')
+ax[1].imshow(img_rgb); ax[1].set_title("Après conversion (RGB)"); ax[1].axis('off')
 plt.show()
 ```
+
+## Le format GeoTIFF {.smaller}
+
+::: {.incremental}
+- Extension du **TIFF** intégrant des métadonnées géospatiales
+- Origine : JPL/NASA, années 1990 — standard de facto en télédétection/SIG
+- Supporte **plus de 3 bandes**, tant qu'elles ont la même dimension
+- Standardisé par l'**OGC** en 2019 (GeoTIFF 1.1)
+:::
+
+## Cloud Optimized GeoTIFF (COG) {.smaller}
+
+::: {.incremental}
+- Variante du GeoTIFF conçue pour l'accès **HTTP distant**
+- Permet de lire une **partie** du fichier sans le télécharger en entier
+- Particulièrement utile pour les applications **infonuagiques**
+:::
 
 ## Regarder les métadonnées avant de lire {.smaller}
 
@@ -67,6 +78,50 @@ with rasterio.open('../RGBNIR_of_S2A.tif') as src:
     print("Dimensions :", src.height, "x", src.width)
     print("CRS        :", src.crs)
     print("Résolution :", src.res, "m")
+```
+
+## NumPy, le fondement {.smaller}
+
+::: {.incremental}
+- Toute image est d'abord un **tableau NumPy** (cube à 3 dimensions)
+- Bibliothèque *fondationnelle* : algèbre linéaire, statistiques, etc.
+- Base de nombreuses bibliothèques scientifiques
+:::
+
+```{python}
+import cv2
+img = cv2.imread('../modis-aqua.PNG')
+print('Dimensions :', img.ndim, '->', img.shape, '| type :', img.dtype)
+```
+
+## Découpage (*slicing*) et vue vs copie {.smaller}
+
+::: {.incremental}
+- Syntaxe `matrice[début:fin:pas]`, comme pour les listes Python
+- `matrice[ligne, colonne, bande]` : indices commençant à `0`
+- Par défaut, un découpage crée une **vue** (même mémoire), pas une copie
+:::
+
+```{python}
+import numpy as np
+img_col = img[:, 2, :]                        # troisième colonne, toutes les bandes
+print("Vue partagée :", np.shares_memory(img, img_col))
+copie = img_col.copy()                        # force une copie indépendante
+print("Copie partagée :", np.shares_memory(img, copie))
+```
+
+## Démo — lecture et vraies couleurs {.smaller}
+
+L'ordre des bandes de `RGBNIR_of_S2A.tif` est **B, V, R, PIR** → on réordonne en R, V, B :
+
+```{python}
+#| fig-align: center
+import rioxarray as rxr
+img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')     # data au racine du dépôt
+fig, ax = plt.subplots(figsize=(5, 3.5))
+img.sel(band=[3, 2, 1]).plot.imshow(vmin=86, vmax=5000, ax=ax)  # R, V, B
+ax.set_title("Composé vraies couleurs"); ax.axis('off')
+plt.show()
 ```
 
 ## Indexation avancée — bande dominante {.smaller}
@@ -84,7 +139,7 @@ ax.set_title("Bande dominante (0=B, 1=V, 2=R, 3=PIR)")
 fig.colorbar(im, ax=ax, ticks=[0, 1, 2, 3], shrink=0.7); plt.show()
 ```
 
-Le PIR domine sur la **végétation**. Masquer (`np.ma`) et sauvegarder (`np.save`/`.npz`) complètent la boîte à outils.
+Le PIR domine sur la **végétation**. Renvoie toujours une **copie** (contrairement au découpage).
 
 ## Rapport de bandes — le NDVI {.smaller}
 
@@ -92,7 +147,6 @@ Combiner deux bandes pixel par pixel met en valeur un thème (ici la végétatio
 
 ```{python}
 #| fig-align: center
-import rioxarray as rxr, matplotlib.pyplot as plt
 img = rxr.open_rasterio('../RGBNIR_of_S2A.tif').astype('float32')   # B,V,R,PIR
 ndvi = (img.sel(band=4) - img.sel(band=3)) / (img.sel(band=4) + img.sel(band=3))
 fig, ax = plt.subplots(figsize=(4.6, 3.2))
@@ -105,14 +159,65 @@ ax.set_title("NDVI = (PIR - R) / (PIR + R)"); ax.axis('off'); plt.show()
 Exclure des pixels (*no data*, nuages, eau) d'un calcul statistique :
 
 ```{python}
-import numpy as np, rioxarray as rxr
-img = rxr.open_rasterio('../RGBNIR_of_S2A.tif').astype('float32')
 rouge, pir = img.sel(band=3).to_numpy(), img.sel(band=4).to_numpy()
-ndvi = (pir - rouge) / (pir + rouge)
-ndvi_veg = np.ma.masked_where(ndvi < 0, ndvi)      # exclut eau/bâti (NDVI < 0)
-print("Pixels valides :", ndvi_veg.count(), "/", ndvi.size)
-print("NDVI moyen (tous)       :", round(float(ndvi.mean()), 3))
+ndvi_np = (pir - rouge) / (pir + rouge)
+ndvi_veg = np.ma.masked_where(ndvi_np < 0, ndvi_np)      # exclut eau/bâti (NDVI < 0)
+print("Pixels valides :", ndvi_veg.count(), "/", ndvi_np.size)
+print("NDVI moyen (tous)       :", round(float(ndvi_np.mean()), 3))
 print("NDVI moyen (végétation) :", round(float(ndvi_veg.mean()), 3))
+```
+
+## Exporter un résultat — `rio.to_raster` {.smaller}
+
+La façon la plus directe d'écrire un `DataArray` en GeoTIFF, géoréférence conservée :
+
+```{python}
+#| eval: false
+img_rvb = img.sel(band=[1, 2, 3])          # 3 premières bandes (B, V, R)
+img_rvb.rio.to_raster('rgb.tif')
+print("Image exportée :", tuple(img_rvb.sizes.values()))
+```
+
+## Écrire un GeoTIFF depuis un tableau NumPy — `rasterio` {.smaller}
+
+Sauver un tableau calculé en **héritant** le profil (CRS, transform) de l'image source :
+
+```{python}
+#| eval: false
+import rasterio
+with rasterio.open('../RGBNIR_of_S2A.tif') as src:
+    rouge, pir = src.read(3).astype('float32'), src.read(4).astype('float32')
+    profil = src.profile                        # hérite CRS, transform, dimensions
+ndvi = (pir - rouge) / (pir + rouge)
+profil.update(count=1, dtype='float32')         # une bande, en float
+with rasterio.open('ndvi.tif', 'w', **profil) as dst:
+    dst.write(ndvi, 1)                           # GeoTIFF géoréférencé
+```
+
+## Créer une géoréférence de toutes pièces — `from_origin` {.smaller}
+
+Sans image source, on construit la transformation affine à partir du coin supérieur gauche :
+
+```{python}
+from rasterio.transform import from_origin
+donnee = np.random.default_rng(0).random((100, 100)).astype('float32')
+transform = from_origin(500000, 5000000, 10, 10)   # origine (x, y) + pixel de 10 m
+with rasterio.open('synthetique.tif', 'w', driver='GTiff', height=100, width=100,
+                   count=1, dtype='float32', crs='EPSG:32618', transform=transform) as dst:
+    dst.write(donnee, 1)
+print("Raster synthétique écrit :", donnee.shape, "| pixel 10 m, EPSG:32618")
+```
+
+## Sauvegarder un tableau NumPy — `.npy` / `.npz` {.smaller}
+
+Stockage temporaire (**sans** géoréférence) d'un résultat intermédiaire :
+
+```{python}
+np.save('ndvi.npy', ndvi_np)                     # un tableau -> .npy
+recharge = np.load('ndvi.npy')
+np.savez_compressed('bandes.npz', rouge=rouge, pir=pir)   # plusieurs -> .npz
+archive = np.load('bandes.npz')
+print(list(archive.keys()))                      # ['rouge', 'pir']
 ```
 
 ## Découpage — `clip_box` {.smaller}
@@ -121,7 +226,6 @@ Extraire une emprise plus petite (boîte englobante, dans le CRS de l'image) :
 
 ```{python}
 #| fig-align: center
-import numpy as np
 img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')
 minx, miny, maxx, maxy = img.rio.bounds()
 cx, cy = (minx + maxx) / 2, (miny + maxy) / 2
@@ -149,11 +253,38 @@ print("forme      :", tuple(img.sizes.values()), "->", tuple(bas.sizes.values())
 Changer de système de coordonnées ; `rioxarray` recalcule la grille et la géoréférence :
 
 ```{python}
-img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')
 print("CRS d'origine :", img.rio.crs)            # EPSG:32618 (UTM)
 img_wgs84 = img.rio.reproject("EPSG:4326")        # -> latitude / longitude
 print("Après reprojection :", img_wgs84.rio.crs)
 print("Nouvelle forme :", dict(img_wgs84.sizes))
+```
+
+## Pourquoi `xarray` ? {.smaller}
+
+::: {.incremental}
+- Les données géoscience sont riches en **métadonnées** (dates, coordonnées, unités…)
+- `xarray` ajoute étiquettes, dimensions et attributs aux tableaux NumPy
+- Opérations sur des **dimensions nommées**, pas des numéros d'axe
+- Diffusion (*broadcasting*) et alignement de type base de données
+:::
+
+## `DataArray` et `Dataset` {.smaller}
+
+::: {.incremental}
+- **`DataArray`** : un tableau étiqueté — `values`, `dims`, `coords`, `attrs`, `name`
+- **`Dataset`** : conteneur de plusieurs `DataArray` alignés — `dims`, `data_vars`, `coords`, `attrs`
+- Les deux supportent les opérations de type dictionnaire et conservent les métadonnées
+:::
+
+## Ouvrir un GeoTIFF comme `DataArray` — `rioxarray` {.smaller}
+
+```{python}
+img = rxr.open_rasterio('../RGBNIR_of_S2A.tif')
+print("Dimensions :", dict(img.sizes))
+print("CRS        :", img.rio.crs)
+print("Résolution :", img.rio.resolution())
+pir = img.sel(band=4)                              # sélection par étiquette
+print("Bande PIR — forme :", pir.shape, "| max :", int(pir.max()))
 ```
 
 ## Sélection par étiquette — `sel` / `isel` {.smaller}
@@ -166,48 +297,19 @@ img_n = img.assign_coords(band=['B', 'V', 'R', 'PIR'])
 print("bande PIR par étiquette :", img_n.sel(band='PIR').shape)
 ```
 
-Un résultat se réécrit en GeoTIFF géoréférencé avec `rasterio` (`profil` source + `dst.write`).
-
-## Écrire un GeoTIFF — `rasterio` {.smaller}
-
-Sauver un résultat calculé en **conservant** la géoréférence de l'image source :
-
-```{python}
-#| eval: false
-import rasterio
-with rasterio.open('RGBNIR_of_S2A.tif') as src:
-    rouge, pir = src.read(3).astype('float32'), src.read(4).astype('float32')
-    profil = src.profile                        # hérite CRS, transform, dimensions
-ndvi = (pir - rouge) / (pir + rouge)
-profil.update(count=1, dtype='float32')         # une bande, en float
-with rasterio.open('ndvi.tif', 'w', **profil) as dst:
-    dst.write(ndvi, 1)                           # GeoTIFF géoréférencé
-```
-
-## Sauvegarder un tableau NumPy — `.npy` / `.npz` {.smaller}
-
-Stockage temporaire (sans géoréférence) d'un résultat intermédiaire :
-
-```{python}
-#| eval: false
-import numpy as np
-np.save('ndvi.npy', ndvi)                        # un tableau -> .npy
-recharge = np.load('ndvi.npy')
-np.savez_compressed('bandes.npz', rouge=rouge, pir=pir)   # plusieurs -> .npz
-archive = np.load('bandes.npz')
-print(list(archive.keys()))                      # ['rouge', 'pir']
-```
+Un calcul entre bandes (NDVI) renvoie un `DataArray` qui **conserve la géoréférence**.
 
 ## Points clés {.smaller}
 
 ::: {.incremental}
 - **GDAL** = lecture/écriture de l'imagerie (drivers de formats)
-- **RVB** (au plus 3 bandes, 8 bits) vs **géo-formats** (multi-bandes, géoréférence)
+- **RVB** (au plus 3 bandes, 8 bits) vs **géo-formats** (GeoTIFF, **COG**, géoréférence)
 - Consulter les **métadonnées avant** de lire (`rio info`, `gdalinfo`, `rasterio`)
 - Une image est un **tableau NumPy** — découpage, vue vs copie
-- **Indexation avancée** (`argmax`, tableaux d'indices), **tableaux masqués** (`np.ma`), **sauvegarde** (`.npy`/`.npz`)
-- `rioxarray` / `xarray` : dimensions nommées + géoréférence via `.rio`
-- **Découper** (`clip_box`), **rééchantillonner** (`reproject`), sélectionner par **étiquette** (`sel`/`isel`), **écrire** un GeoTIFF (`rasterio`)
+- **Indexation avancée** (`argmax`), **tableaux masqués** (`np.ma`), **sauvegarde** (`.npy`/`.npz`)
+- Écrire un GeoTIFF : `rio.to_raster`, profil `rasterio` hérité, ou géoréférence construite (`from_origin`)
+- `rioxarray` / `xarray` : **`DataArray`**/**`Dataset`**, dimensions nommées + géoréférence via `.rio`
+- **Découper** (`clip_box`), **rééchantillonner**/**reprojeter** (`reproject`), sélectionner par **étiquette** (`sel`/`isel`)
 :::
 
 ## À vous de jouer {.smaller}
