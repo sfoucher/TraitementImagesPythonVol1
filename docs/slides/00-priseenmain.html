@@ -366,7 +366,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="listes" class="slide level2 smaller">
 <h2>Listes</h2>
-<div id="0c432294" class="cell" data-execution_count="1">
+<div id="0c432294" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb4-2"><a href=""></a><span class="bu">print</span>(bandes[<span class="dv">0</span>], <span class="st">"|"</span>, bandes[<span class="op">-</span><span class="dv">1</span>], <span class="st">"|"</span>, bandes[<span class="dv">1</span>:<span class="dv">3</span>])   <span class="co"># index, tranche</span></span>
 <span id="cb4-3"><a href=""></a>bandes.append(<span class="st">"SWIR"</span>)</span>
@@ -384,7 +384,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Idéal pour des données qui ne doivent pas changer (paramètres, dimensions)</li>
 <li class="fragment">Permet les doublons, comme une liste</li>
 </ul>
-<div id="23300254" class="cell" data-execution_count="2">
+<div id="23300254" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>dimensions <span class="op">=</span> (<span class="dv">512</span>, <span class="dv">512</span>)          <span class="co"># immuable : dimensions d'une image</span></span>
 <span id="cb6-2"><a href=""></a>lignes, colonnes <span class="op">=</span> dimensions    <span class="co"># dépaquetage</span></span>
 <span id="cb6-3"><a href=""></a><span class="bu">print</span>(lignes, colonnes)</span>
@@ -400,7 +400,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><code>{…}</code> — non ordonné, <strong>sans doublons</strong></li>
 <li class="fragment">Utile pour dédupliquer et faire des opérations ensemblistes (<code>&amp;</code>, <code>|</code>)</li>
 </ul>
-<div id="547f9d55" class="cell" data-execution_count="3">
+<div id="547f9d55" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a>classes <span class="op">=</span> [<span class="st">"eau"</span>, <span class="st">"forêt"</span>, <span class="st">"eau"</span>, <span class="st">"urbain"</span>, <span class="st">"forêt"</span>]</span>
 <span id="cb8-2"><a href=""></a><span class="bu">print</span>(<span class="bu">set</span>(classes))                          <span class="co"># doublons éliminés</span></span>
 <span id="cb8-3"><a href=""></a></span>
@@ -414,7 +414,7 @@ intersection : {3} | union : {1, 2, 3, 4}</code></pre>
 </section>
 <section id="dictionnaires" class="slide level2 smaller">
 <h2>Dictionnaires</h2>
-<div id="50d66226" class="cell" data-execution_count="4">
+<div id="50d66226" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>, <span class="st">"resolution_m"</span>: <span class="dv">10</span>}</span>
 <span id="cb10-2"><a href=""></a>image[<span class="st">"date"</span>] <span class="op">=</span> <span class="st">"2024-07-01"</span>                 <span class="co"># ajout d'une paire</span></span>
 <span id="cb10-3"><a href=""></a><span class="cf">for</span> cle, valeur <span class="kw">in</span> image.items():</span>
@@ -430,7 +430,7 @@ date : 2024-07-01</code></pre>
 <section id="dictionnaires-et" class="slide level2 smaller">
 <h2>Dictionnaires — <code>*</code> et <code>**</code></h2>
 <p><code>**</code> déballe les <strong>paires clé-valeur</strong> ; <code>*</code> ne déballe que les <strong>clés</strong>.</p>
-<div id="3798dd0c" class="cell" data-execution_count="5">
+<div id="3798dd0c" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a>image <span class="op">=</span> {<span class="st">"capteur"</span>: <span class="st">"Sentinel-2"</span>, <span class="st">"bandes"</span>: <span class="dv">13</span>}</span>
 <span id="cb12-2"><a href=""></a><span class="kw">def</span> resume(capteur, bandes):</span>
 <span id="cb12-3"><a href=""></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>capteur<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>bandes<span class="sc">}</span><span class="ss"> bandes"</span></span>
@@ -448,7 +448,7 @@ date : 2024-07-01</code></pre>
 <section id="compréhensions-liste-dictionnaire" class="slide level2 smaller">
 <h2>Compréhensions : liste &amp; dictionnaire</h2>
 <p>Construire une collection en une ligne — <code>[expression for x in itérable if condition]</code>.</p>
-<div id="11826cff" class="cell" data-execution_count="6">
+<div id="11826cff" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a>bandes <span class="op">=</span> [<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]</span>
 <span id="cb14-2"><a href=""></a><span class="bu">print</span>([b.upper() <span class="cf">for</span> b <span class="kw">in</span> bandes <span class="cf">if</span> <span class="bu">len</span>(b) <span class="op">&lt;=</span> <span class="dv">4</span>])    <span class="co"># liste (avec filtre)</span></span>
 <span id="cb14-3"><a href=""></a><span class="bu">print</span>({nom: i <span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>(bandes)})       <span class="co"># dictionnaire</span></span>
@@ -462,7 +462,7 @@ date : 2024-07-01</code></pre>
 </section>
 <section id="boucles-conditions" class="slide level2 smaller">
 <h2>Boucles &amp; conditions</h2>
-<div id="debf4388" class="cell" data-execution_count="7">
+<div id="debf4388" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href=""></a><span class="cf">for</span> i, nom <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="st">"bleu"</span>, <span class="st">"vert"</span>, <span class="st">"rouge"</span>, <span class="st">"PIR"</span>]):</span>
 <span id="cb16-2"><a href=""></a>    <span class="bu">print</span>(i, nom)</span>
 <span id="cb16-3"><a href=""></a></span>
@@ -487,7 +487,7 @@ valeur finale : 0.5</code></pre>
 </section>
 <section id="fonctions" class="slide level2 smaller">
 <h2>Fonctions</h2>
-<div id="fac12643" class="cell" data-execution_count="8">
+<div id="fac12643" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href=""></a><span class="kw">def</span> ndvi(nir, rouge):</span>
 <span id="cb18-2"><a href=""></a>    <span class="co">"""NDVI = (PIR - Rouge) / (PIR + Rouge)."""</span></span>
 <span id="cb18-3"><a href=""></a>    <span class="cf">return</span> (nir <span class="op">-</span> rouge) <span class="op">/</span> (nir <span class="op">+</span> rouge)</span>
@@ -519,7 +519,7 @@ valeur finale : 0.5</code></pre>
 <li class="fragment"><strong>Héritage</strong> — une classe hérite d’une autre</li>
 <li class="fragment"><strong>Polymorphisme</strong> — un même message, une réponse propre à chaque objet</li>
 </ul>
-<div id="e5db4464" class="cell" data-execution_count="9">
+<div id="e5db4464" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href=""></a><span class="kw">class</span> Image:</span>
 <span id="cb20-2"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capteur, bandes):   <span class="co"># constructeur + attributs</span></span>
 <span id="cb20-3"><a href=""></a>        <span class="va">self</span>.capteur <span class="op">=</span> capteur</span>
@@ -539,7 +539,7 @@ valeur finale : 0.5</code></pre>
 <li class="fragment"><code>import numpy</code> — tout le module · <code>import numpy as np</code> — avec un <strong>alias</strong></li>
 <li class="fragment"><code>from numpy import pi</code> — un <strong>objet précis</strong></li>
 </ul>
-<div id="0374f836" class="cell" data-execution_count="10">
+<div id="0374f836" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np              <span class="co"># alias courant</span></span>
 <span id="cb22-2"><a href=""></a><span class="im">from</span> numpy <span class="im">import</span> pi            <span class="co"># un objet précis</span></span>
 <span id="cb22-3"><a href=""></a><span class="bu">print</span>(np.__version__, <span class="st">"| pi ="</span>, <span class="bu">round</span>(pi, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -610,7 +610,7 @@ valeur finale : 0.5</code></pre>
 <section id="un-avant-goût-de-numpy" class="slide level2 smaller">
 <h2>Un avant-goût de NumPy</h2>
 <p>Une image = une <strong>matrice de nombres</strong> (<code>ndarray</code>), la brique de tous les chapitres.</p>
-<div id="fbb66027" class="cell" data-execution_count="11">
+<div id="fbb66027" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb32-2"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>,  <span class="dv">9</span>],</span>
 <span id="cb32-3"><a href=""></a>                  [ <span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>,  <span class="dv">7</span>],</span>
@@ -627,7 +627,7 @@ valeur finale : 0.5</code></pre>
 <section id="numpy-type-et-attributs" class="slide level2 smaller">
 <h2>NumPy — type et attributs</h2>
 <p>Une matrice se décrit par sa <strong>forme</strong> et son <strong>type</strong> (<code>dtype</code>), qui encode la profondeur radiométrique.</p>
-<div id="07cedb38" class="cell" data-execution_count="12">
+<div id="07cedb38" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb34-2"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>, <span class="dv">9</span>], [<span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">7</span>], [<span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">8</span>]])</span>
 <span id="cb34-3"><a href=""></a><span class="bu">print</span>(<span class="st">"dtype :"</span>, image.dtype, <span class="st">"| ndim :"</span>, image.ndim, <span class="st">"| size :"</span>, image.size)</span>
@@ -644,7 +644,7 @@ nouveau dtype : float32</code></pre>
 <section id="numpy-le-broadcasting" class="slide level2 smaller">
 <h2>NumPy — le <em>broadcasting</em></h2>
 <p>Une opération s’applique à <strong>toute la matrice sans boucle</strong> : NumPy « étire » les formes compatibles.</p>
-<div id="53b187a9" class="cell" data-execution_count="13">
+<div id="53b187a9" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href=""></a>image <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>, <span class="dv">9</span>], [<span class="dv">8</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">7</span>], [<span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">8</span>]])</span>
 <span id="cb36-2"><a href=""></a></span>
 <span id="cb36-3"><a href=""></a><span class="co"># scalaire : convertir des comptes numériques en réflectance</span></span>
@@ -663,7 +663,7 @@ par bande : [10. 15.]</code></pre>
 <section id="numpy-remodeler-et-réordonner" class="slide level2 smaller">
 <h2>NumPy — remodeler et réordonner</h2>
 <p><code>reshape</code> change la forme ; <code>transpose</code> réordonne les axes — l’idiome du pipeline de classification.</p>
-<div id="f9f4ee2e" class="cell" data-execution_count="14">
+<div id="f9f4ee2e" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href=""></a>cube <span class="op">=</span> np.stack([image, image <span class="op">*</span> <span class="dv">3</span>])            <span class="co"># (2, 3, 4) = (bandes, lignes, colonnes)</span></span>
 <span id="cb38-2"><a href=""></a><span class="bu">print</span>(<span class="st">"cube  :"</span>, cube.shape)</span>
 <span id="cb38-3"><a href=""></a><span class="bu">print</span>(<span class="st">"HWC (pour l'affichage)  :"</span>, cube.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).shape)          <span class="co"># (3, 4, 2)</span></span>

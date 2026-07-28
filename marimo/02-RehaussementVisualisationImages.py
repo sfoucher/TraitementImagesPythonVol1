@@ -77,7 +77,7 @@ def _(mo):
 @app.cell
 def _():
     # magic command not supported in marimo; please file an issue to add support
-    # %%capture
+    # %%capture --no-stderr
     # !apt-get update
     # !apt-get install gdal-bin libgdal-dev
     return
@@ -94,8 +94,8 @@ def _(mo):
 @app.cell
 def _():
     # magic command not supported in marimo; please file an issue to add support
-    # %%capture
-    # !pip install -qU matplotlib rioxarray xrscipy scikit-image
+    # %%capture --no-stderr
+    # !pip install -qU matplotlib rioxarray xrscipy scikit-image leafmap localtileserver
     return
 
 
@@ -131,7 +131,7 @@ def _(mo):
 @app.cell
 def _():
     # magic command not supported in marimo; please file an issue to add support
-    # %%capture
+    # %%capture --no-stderr
     # import gdown
     # 
     # gdown.download('https://drive.google.com/uc?export=download&confirm=pbef&id=1a6Ypg0g1Oy4AJt9XWKWfnR12NW1XhNg_', output= 'RGBNIR_of_S2A.tif')
@@ -238,20 +238,6 @@ def _(mo):
 
     Les affichages `matplotlib` précédents sont **statiques**. Pour explorer une image de manière **interactive** — zoomer, se déplacer, superposer un fond de carte, comparer deux visualisations — on peut la placer sur une carte web. La librairie [`leafmap`](https://leafmap.org/) offre une interface Python unifiée au-dessus de `folium` et `ipyleaflet` et permet, en quelques lignes, d'afficher un GeoTIFF géoréférencé sur une carte glissante (*slippy map*).
 
-    L'installation se fait une seule fois dans l'environnement :
-    """)
-    return
-
-
-@app.cell
-def _():
-    # '%pip install -U leafmap' command supported automatically in marimo
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     On crée une carte, puis on ajoute directement notre image locale. Comme les bandes sont stockées dans l'ordre B, V, R, PIR, on demande les indices `[3, 2, 1]` pour un composé **vraie couleur** :
     """)
     return
@@ -813,9 +799,11 @@ def _(img_s2, np, plt):
         (valeurs, vecteurs) = np.linalg.eigh(np.cov(X))
         X_pca = vecteurs.T @ X / np.sqrt(valeurs)[:, None]
         X_stretch = vecteurs @ X_pca
-        X_stretch = X_stretch - X_stretch.min(axis=1, keepdims=True)
-        X_stretch = X_stretch / X_stretch.max(axis=1, keepdims=True)
-        return X_stretch.reshape(img.shape)
+        q = np.quantile(X_stretch, [0.01, 0.02, 0.98, 0.99])
+        print(q)
+        X_stretch = X_stretch - q[1]
+        X_stretch = X_stretch / (q[2] - q[1])
+        return X_stretch.clip(0, 1).reshape(img.shape)
     composite = img_s2.sel(band=[4, 3, 2]).data
     composite_stretch = decorrelation_stretch(composite)
     (_fig, _ax) = plt.subplots(ncols=2, figsize=(8, 4))

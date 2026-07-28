@@ -244,7 +244,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong><code>matplotlib</code></strong> : affichage, palettes, composés colorés</li>
 <li class="fragment">4 images utilisées ce chapitre : <code>RGBNIR_of_S2A.tif</code>, <code>sentinel2.tif</code>, <code>berkeley.jpg</code>, <code>SAR.tif</code></li>
 </ul>
-<div id="78bcbb00" class="cell" data-execution_count="1">
+<div id="78bcbb00" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, numpy <span class="im">as</span> np, matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>img     <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>)          <span class="co"># ordre B,V,R,PIR</span></span>
 <span id="cb1-3"><a href=""></a>img_s2  <span class="op">=</span> rxr.open_rasterio(<span class="st">'../sentinel2.tif'</span>)               <span class="co"># 12 bandes Sentinel-2</span></span>
@@ -260,7 +260,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Ordre des dimensions attendu : <strong>hauteur, largeur, bande</strong></li>
 <li class="fragment"><code>rioxarray</code>/<code>xarray</code> ajoutent les <strong>coordonnées cartographiques</strong></li>
 </ul>
-<div id="7565555e" class="cell" data-execution_count="2">
+<div id="7565555e" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
 <span id="cb2-2"><a href=""></a>plt.imshow(img.sel(band<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]).data.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>) <span class="op">/</span> <span class="fl">2500.0</span>)  <span class="co"># R,V,B</span></span>
 <span id="cb2-3"><a href=""></a>plt.axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -280,7 +280,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Interface unifiée au-dessus de <code>folium</code>/<code>ipyleaflet</code> : zoom, fond de carte</li>
 <li class="fragment"><code>split_map</code> : comparateur à <strong>volet glissant</strong> entre deux visualisations</li>
 </ul>
-<div id="15ab82b5" class="cell" data-execution_count="3">
+<div id="15ab82b5" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">import</span> leafmap</span>
 <span id="cb3-2"><a href=""></a>m <span class="op">=</span> leafmap.Map()</span>
 <span id="cb3-3"><a href=""></a>m.add_raster(<span class="st">'../RGBNIR_of_S2A.tif'</span>, indexes<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>])       <span class="co"># vraie couleur</span></span>
@@ -298,7 +298,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">à calculer <strong>par bande</strong></li>
 <li class="fragment">guident le choix de la transformation d’affichage</li>
 </ul>
-<div id="ec524fbc" class="cell" data-execution_count="4">
+<div id="ec524fbc" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>img_s2.sel(band<span class="op">=</span>[<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>]).quantile(dim<span class="op">=</span>[<span class="st">'x'</span>, <span class="st">'y'</span>], q<span class="op">=</span>[<span class="fl">.025</span>, <span class="fl">.5</span>, <span class="fl">.975</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
@@ -758,7 +758,7 @@ Coordinates:
 </section>
 <section id="histogramme" class="slide level2 smaller">
 <h2>Histogramme</h2>
-<div id="d4f783b8" class="cell" data-execution_count="5">
+<div id="d4f783b8" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a>vals <span class="op">=</span> img.sel(band<span class="op">=</span><span class="dv">4</span>).values.ravel()          <span class="co"># bande PIR</span></span>
 <span id="cb5-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">3</span>))</span>
 <span id="cb5-3"><a href=""></a>ax.hist(vals, bins<span class="op">=</span><span class="dv">50</span>, color<span class="op">=</span><span class="st">"#357cc0"</span>)</span>
@@ -786,7 +786,7 @@ Coordinates:
 <section id="histogrammes-asymétriques-les-percentiles" class="slide level2 smaller">
 <h2>Histogrammes asymétriques : les percentiles</h2>
 <p>Cas des images SAR (longue queue) → borner avec des percentiles :</p>
-<div id="cf160b80" class="cell" data-execution_count="6">
+<div id="cf160b80" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>valid <span class="op">=</span> (sar <span class="op">!=</span> <span class="op">-</span><span class="fl">999.0</span>) <span class="op">&amp;</span> (sar <span class="op">&gt;</span> <span class="dv">0</span>)            <span class="co"># masque no_data</span></span>
 <span id="cb6-2"><a href=""></a>v <span class="op">=</span> sar[valid]</span>
 <span id="cb6-3"><a href=""></a>p <span class="op">=</span> {q: np.percentile(v, q) <span class="cf">for</span> q <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">98</span>, <span class="dv">100</span>)}</span>
@@ -806,7 +806,7 @@ Coordinates:
 <section id="réhaussement-non-linéaire-décibels" class="slide level2 smaller">
 <h2>Réhaussement non linéaire — décibels</h2>
 <p>Pour le radar : passage en <strong>dB</strong> (<code>10·log10</code>) → distribution ~gaussienne.</p>
-<div id="a674bbe9" class="cell" data-execution_count="7">
+<div id="a674bbe9" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>sar_db <span class="op">=</span> <span class="dv">10</span> <span class="op">*</span> np.log10(np.where(valid, sar, np.nan))</span>
 <span id="cb7-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.2</span>))</span>
 <span id="cb7-3"><a href=""></a>im <span class="op">=</span> ax.imshow(sar_db, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax.set_title(<span class="st">"SAR en dB"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
@@ -828,7 +828,7 @@ Coordinates:
 <li class="fragment"><span class="math inline">\(\gamma &gt; 1\)</span> <strong>assombrit</strong> les tons clairs (image surexposée) ; <span class="math inline">\(\gamma=1\)</span> = identité</li>
 <li class="fragment">transformation <strong>non symétrique</strong> entre ombres et hautes lumières</li>
 </ul>
-<div id="d78159ac" class="cell" data-execution_count="8">
+<div id="d78159ac" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a>img_norm <span class="op">=</span> np.clip(img_rgb.data.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>) <span class="op">/</span> <span class="fl">255.0</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
 <span id="cb8-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
 <span id="cb8-3"><a href=""></a><span class="cf">for</span> a, g <span class="kw">in</span> <span class="bu">zip</span>(ax, (<span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">2.0</span>)):</span>
@@ -850,7 +850,7 @@ Coordinates:
 <li class="fragment">but : rendre les niveaux <strong>équiprobables</strong> (histogramme aplati)</li>
 <li class="fragment">révèle des détails dans les zones sombres</li>
 </ul>
-<div id="dca8d195" class="cell" data-execution_count="9">
+<div id="dca8d195" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a><span class="im">from</span> skimage <span class="im">import</span> exposure</span>
 <span id="cb9-2"><a href=""></a>gray <span class="op">=</span> img_rgb.data.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).mean(axis<span class="op">=</span><span class="dv">2</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
 <span id="cb9-3"><a href=""></a>img_eq <span class="op">=</span> exposure.equalize_hist(gray)</span>
@@ -874,7 +874,7 @@ Coordinates:
 <li class="fragment"><strong>CLAHE</strong> : découpe en tuiles, égalise chacune, plafond <code>clip_limit</code> anti-bruit</li>
 <li class="fragment">fait ressortir les détails <strong>locaux</strong> (ombres, textures) sans saturer le reste</li>
 </ul>
-<div id="f759261f" class="cell" data-execution_count="10">
+<div id="f759261f" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>img_clahe <span class="op">=</span> exposure.equalize_adapthist(gray, clip_limit<span class="op">=</span><span class="fl">0.03</span>)</span>
 <span id="cb10-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
 <span id="cb10-3"><a href=""></a>ax[<span class="dv">0</span>].imshow(img_eq, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"égalisation globale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
@@ -896,7 +896,7 @@ Coordinates:
 <li class="fragment">utile pour harmoniser deux acquisitions (p.&nbsp;ex. mosaïquage de scènes adjacentes)</li>
 <li class="fragment"><code>skimage.exposure.match_histograms</code></li>
 </ul>
-<div id="4efaa968" class="cell" data-execution_count="11">
+<div id="4efaa968" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a><span class="im">from</span> skimage.exposure <span class="im">import</span> match_histograms</span>
 <span id="cb11-2"><a href=""></a>source <span class="op">=</span> np.log10(sar)</span>
 <span id="cb11-3"><a href=""></a>cible <span class="op">=</span> np.random.normal(loc<span class="op">=</span>source.mean(), scale<span class="op">=</span>source.std(), size<span class="op">=</span>source.shape)</span>
@@ -916,7 +916,7 @@ Coordinates:
 </section>
 <section id="palettes-de-couleur" class="slide level2 smaller">
 <h2>Palettes de couleur</h2>
-<div id="7e36bc70" class="cell" data-execution_count="12">
+<div id="7e36bc70" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
 <span id="cb12-2"><a href=""></a><span class="cf">for</span> a, cmap <span class="kw">in</span> <span class="bu">zip</span>(ax, [<span class="st">'gray'</span>, <span class="st">'viridis'</span>, <span class="st">'terrain'</span>]):   <span class="co"># viridis &gt; jet (perceptuel)</span></span>
 <span id="cb12-3"><a href=""></a>    a.imshow(sar, vmin<span class="op">=</span>p[<span class="dv">2</span>], vmax<span class="op">=</span>p[<span class="dv">98</span>], cmap<span class="op">=</span>cmap)</span>
@@ -938,7 +938,7 @@ Coordinates:
 <li class="fragment">Sentinel-2 : 12 bandes → nombreux composés possibles selon l’application</li>
 <li class="fragment"><code>RGBNIR_of_S2A.tif</code> (B,V,R,PIR) → vraies vs fausses couleurs</li>
 </ul>
-<div id="3530fffa" class="cell" data-execution_count="13">
+<div id="3530fffa" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
 <span id="cb13-2"><a href=""></a>img.sel(band<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]).plot.imshow(vmin<span class="op">=</span><span class="dv">86</span>, vmax<span class="op">=</span><span class="dv">5000</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
 <span id="cb13-3"><a href=""></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Vraies couleurs"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
@@ -963,7 +963,7 @@ Coordinates:
 <li class="fragment">on <strong>décorrèle</strong> dans l’espace ACP, on <strong>égalise la variance</strong>, puis retour à l’espace original</li>
 <li class="fragment">conserve les teintes relatives tout en maximisant le contraste</li>
 </ul>
-<div id="3a7d8d6b" class="cell" data-execution_count="14">
+<div id="3a7d8d6b" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a><span class="kw">def</span> decorrelation_stretch(im):</span>
 <span id="cb14-2"><a href=""></a>    X <span class="op">=</span> im.reshape(im.shape[<span class="dv">0</span>], <span class="op">-</span><span class="dv">1</span>).astype(<span class="bu">float</span>)</span>
 <span id="cb14-3"><a href=""></a>    X <span class="op">-=</span> X.mean(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>

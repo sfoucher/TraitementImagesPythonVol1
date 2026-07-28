@@ -232,7 +232,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="la-transformée-de-fourier" class="slide level2 smaller">
 <h2>La transformée de Fourier</h2>
-<div id="77d8fa22" class="cell" data-execution_count="1">
+<div id="77d8fa22" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np, matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>N, Fs <span class="op">=</span> <span class="dv">16</span>, <span class="fl">2.0</span><span class="op">;</span> Ts <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>Fs</span>
 <span id="cb1-3"><a href=""></a>t <span class="op">=</span> np.arange(<span class="dv">0</span>, N, Ts)</span>
@@ -259,7 +259,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong>Passe-bande</strong> : une bande de fréquences précise</li>
 <li class="fragment">Filtrer = <strong>multiplier</strong> le spectre par la réponse du filtre</li>
 </ul>
-<div id="f3de4f06" class="cell" data-execution_count="2">
+<div id="f3de4f06" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb2-2"><a href=""></a><span class="im">from</span> scipy <span class="im">import</span> ndimage</span>
 <span id="cb2-3"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../berkeley.jpg'</span>).to_numpy()        <span class="co"># (3, H, W)</span></span>
@@ -282,7 +282,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="laliasing" class="slide level2 smaller">
 <h2>L’aliasing</h2>
 <p>Sous-échantillonner sans filtrer → repliement de spectre :</p>
-<div id="de7e526d" class="cell" data-execution_count="3">
+<div id="de7e526d" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> gaussian_filter</span>
 <span id="cb3-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
 <span id="cb3-3"><a href=""></a>ax[<span class="dv">0</span>].imshow(img.transpose(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).astype(<span class="st">'uint8'</span>))<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"Originale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
@@ -311,7 +311,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="filtrage-linéaire-stationnaire-filtre-moyen" class="slide level2 smaller">
 <h2>Filtrage linéaire stationnaire — filtre moyen</h2>
 <p>Un <strong>filtre moyen</strong> remplace chaque pixel par la moyenne de son voisinage → réduit le bruit, adoucit les détails.</p>
-<div id="9ba3b44c" class="cell" data-execution_count="4">
+<div id="9ba3b44c" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> uniform_filter</span>
 <span id="cb4-2"><a href=""></a>gris <span class="op">=</span> img[<span class="dv">0</span>]                                    <span class="co"># une bande</span></span>
 <span id="cb4-3"><a href=""></a>lisse3 <span class="op">=</span> uniform_filter(gris, size<span class="op">=</span><span class="dv">5</span>)            <span class="co"># moyenne sur une fenêtre 5x5</span></span>
@@ -331,7 +331,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="filtrage-par-convolution-contours-scharr" class="slide level2 smaller">
 <h2>Filtrage par convolution — contours (Scharr)</h2>
 <p>Un <strong>filtre de gradient</strong> (Scharr) met en valeur les <strong>contours</strong> — les fortes variations locales :</p>
-<div id="87f9970d" class="cell" data-execution_count="5">
+<div id="87f9970d" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
 <span id="cb5-2"><a href=""></a>scharr <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">-</span><span class="ot">10j</span>, <span class="dv">3</span><span class="op">-</span><span class="ot">3j</span>], [<span class="op">-</span><span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">0j</span>, <span class="dv">10</span><span class="op">+</span><span class="ot">0j</span>], [<span class="op">-</span><span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>, <span class="dv">0</span><span class="op">+</span><span class="ot">10j</span>, <span class="dv">3</span><span class="op">+</span><span class="ot">3j</span>]])</span>
 <span id="cb5-3"><a href=""></a>gris <span class="op">=</span> img[<span class="dv">0</span>]                                    <span class="co"># une bande</span></span>
@@ -356,7 +356,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Le <strong>filtre médian</strong> remplace chaque pixel par la médiane locale</li>
 <li class="fragment">Élimine le bruit <strong>impulsionnel</strong> (<em>sel et poivre</em>) en préservant mieux les contours qu’un filtre moyen</li>
 </ul>
-<div id="2c17be08" class="cell" data-execution_count="6">
+<div id="2c17be08" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> median_filter, uniform_filter</span>
 <span id="cb6-2"><a href=""></a>bruite <span class="op">=</span> img.astype(<span class="bu">float</span>).copy()</span>
 <span id="cb6-3"><a href=""></a>masque_bruit <span class="op">=</span> np.random.random(bruite.shape) <span class="op">&lt;</span> <span class="fl">0.05</span></span>
@@ -383,7 +383,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">L’<strong>ouverture</strong> (érosion puis dilatation) élimine les petits objets clairs isolés</li>
 <li class="fragment">Utile pour nettoyer un masque issu d’un <strong>seuillage</strong> ou d’une segmentation</li>
 </ul>
-<div id="bbc094a3" class="cell" data-execution_count="7">
+<div id="bbc094a3" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="im">from</span> skimage.morphology <span class="im">import</span> opening, disk</span>
 <span id="cb7-2"><a href=""></a>sar <span class="op">=</span> rxr.open_rasterio(<span class="st">'../SAR.tif'</span>).sel(band<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb7-3"><a href=""></a>sar <span class="op">=</span> sar.where(sar <span class="op">&gt;</span> <span class="dv">0</span>)                          <span class="co"># masque no_data</span></span>
@@ -411,7 +411,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong>Miroir</strong> (<code>reflect</code>, <code>mirror</code>) → prolonge par symétrie</li>
 <li class="fragment"><strong>Constante</strong> (<code>constant</code>) ou <strong>réplication</strong> du bord (<code>nearest</code>)</li>
 </ul>
-<div id="d05a3ab8" class="cell" data-execution_count="8">
+<div id="d05a3ab8" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> uniform_filter</span>
 <span id="cb8-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
 <span id="cb8-3"><a href=""></a><span class="cf">for</span> a, mode <span class="kw">in</span> <span class="bu">zip</span>(ax, [<span class="st">'reflect'</span>, <span class="st">'constant'</span>, <span class="st">'nearest'</span>]):</span>
@@ -430,7 +430,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <section id="du-filtre-à-la-couche-convolutionnelle" class="slide level2 smaller">
 <h2>Du filtre à la couche convolutionnelle</h2>
 <p>Une <strong>couche convolutionnelle</strong> applique des filtres comme celui de Scharr — mais dans un réseau de neurones, ces filtres sont <strong>appris</strong> à partir des données.</p>
-<div id="2f7a1aa4" class="cell" data-execution_count="9">
+<div id="2f7a1aa4" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a><span class="im">import</span> torch, torch.nn <span class="im">as</span> nn</span>
 <span id="cb9-2"><a href=""></a>conv <span class="op">=</span> nn.Conv2d(<span class="dv">1</span>, <span class="dv">1</span>, kernel_size<span class="op">=</span><span class="dv">3</span>, padding<span class="op">=</span><span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>)   <span class="co"># une couche conv 3x3</span></span>
 <span id="cb9-3"><a href=""></a>scharr_gx <span class="op">=</span> torch.tensor([[<span class="op">-</span><span class="fl">3.</span>, <span class="dv">0</span>, <span class="dv">3</span>], [<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>], [<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">3</span>]]).reshape(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
@@ -455,7 +455,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <h2>Filtrage adaptatif — le <em>speckle</em> SAR</h2>
 <p>Les images radar sont dégradées par un bruit multiplicatif (<em>speckle</em>). Le <strong>filtre de Lee</strong> lisse en <strong>préservant les détails</strong> (pondération selon la variance locale) :</p>
 <p><span class="math display">\[ I_F = I_M + K(I - I_M), \qquad K = \frac{\sigma^2_I}{\sigma^2_I + \sigma^2_{bruit}} \]</span></p>
-<div id="8a6024c7" class="cell" data-execution_count="10">
+<div id="8a6024c7" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>moy <span class="op">=</span> sar.rolling(x<span class="op">=</span><span class="dv">5</span>, y<span class="op">=</span><span class="dv">5</span>, min_periods<span class="op">=</span><span class="dv">3</span>, center<span class="op">=</span><span class="va">True</span>).mean()</span>
 <span id="cb10-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">3</span>))</span>
 <span id="cb10-3"><a href=""></a>np.log10(sar).plot.imshow(ax<span class="op">=</span>ax[<span class="dv">0</span>], add_colorbar<span class="op">=</span><span class="va">False</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"SAR brut (speckle)"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
@@ -478,7 +478,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">On en dérive <strong>contraste</strong>, <strong>homogénéité</strong>, <strong>énergie</strong>, <strong>corrélation</strong></li>
 <li class="fragment">Distingue des surfaces de radiométrie semblable mais de texture différente (forêt vs champ)</li>
 </ul>
-<div id="dbc909d8" class="cell" data-execution_count="11">
+<div id="dbc909d8" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a><span class="im">from</span> skimage.feature <span class="im">import</span> graycomatrix, graycoprops</span>
 <span id="cb11-2"><a href=""></a><span class="im">from</span> skimage.util <span class="im">import</span> img_as_ubyte</span>
 <span id="cb11-3"><a href=""></a><span class="im">from</span> skimage.color <span class="im">import</span> rgb2gray</span>
@@ -498,7 +498,7 @@ Fenêtre B {'contrast': np.float64(572.694), 'homogeneity': np.float64(0.085), '
 <section id="segmentation-en-super-pixels-slic" class="slide level2 smaller">
 <h2>Segmentation en super-pixels — SLIC</h2>
 <p><strong>SLIC</strong> regroupe les pixels en régions homogènes et compactes (couleur + distance) :</p>
-<div id="77716342" class="cell" data-execution_count="12">
+<div id="77716342" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a><span class="im">from</span> skimage.segmentation <span class="im">import</span> slic, mark_boundaries</span>
 <span id="cb13-2"><a href=""></a>rgb <span class="op">=</span> img.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).astype(<span class="st">'uint8'</span>)      <span class="co"># berkeley (réutilisée)</span></span>
 <span id="cb13-3"><a href=""></a>seg <span class="op">=</span> slic(rgb, n_segments<span class="op">=</span><span class="dv">250</span>, compactness<span class="op">=</span><span class="dv">10</span>, sigma<span class="op">=</span><span class="dv">1</span>, start_label<span class="op">=</span><span class="dv">1</span>)</span>
@@ -523,7 +523,7 @@ Fenêtre B {'contrast': np.float64(572.694), 'homogeneity': np.float64(0.085), '
 <li class="fragment"><code>kernel_size</code> : échelle spatiale · <code>max_dist</code> : distance de fusion maximale</li>
 <li class="fragment"><code>ratio</code> équilibre couleur vs position — un rôle analogue au poids <span class="math inline">\(m\)</span> de SLIC</li>
 </ul>
-<div id="688f5566" class="cell" data-execution_count="13">
+<div id="688f5566" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a><span class="im">from</span> skimage.segmentation <span class="im">import</span> quickshift</span>
 <span id="cb14-2"><a href=""></a>segments_qs <span class="op">=</span> quickshift(rgb, kernel_size<span class="op">=</span><span class="dv">5</span>, max_dist<span class="op">=</span><span class="dv">10</span>, ratio<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb14-3"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">3.6</span>))</span>
@@ -546,7 +546,7 @@ Fenêtre B {'contrast': np.float64(572.694), 'homogeneity': np.float64(0.085), '
 <li class="fragment">Un <strong>graphe d’adjacence de régions</strong> (RAG) relie les segments qui se touchent</li>
 <li class="fragment">On fusionne les nœuds de couleur moyenne proche jusqu’à un seuil</li>
 </ul>
-<div id="5c0b2304" class="cell" data-execution_count="14">
+<div id="5c0b2304" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a><span class="im">from</span> skimage <span class="im">import</span> graph, color</span>
 <span id="cb15-2"><a href=""></a><span class="kw">def</span> poids_couleur(graph, src, dst, n):</span>
 <span id="cb15-3"><a href=""></a>    diff <span class="op">=</span> graph.nodes[dst][<span class="st">'mean color'</span>] <span class="op">-</span> graph.nodes[n][<span class="st">'mean color'</span>]</span>
@@ -589,7 +589,7 @@ Segments après fusion : 73</code></pre>
 <li class="fragment"><code>regionprops_table</code> construit directement un <strong>tableau</strong> exploitable</li>
 <li class="fragment">Base de la <strong>classification objet</strong> (chapitre suivant)</li>
 </ul>
-<div id="8a4e355d" class="cell" data-execution_count="15">
+<div id="8a4e355d" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href=""></a><span class="im">from</span> skimage <span class="im">import</span> measure</span>
 <span id="cb17-2"><a href=""></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb17-3"><a href=""></a>proprietes <span class="op">=</span> [<span class="st">'label'</span>, <span class="st">'area'</span>, <span class="st">'centroid'</span>, <span class="st">'intensity_mean'</span>]</span>

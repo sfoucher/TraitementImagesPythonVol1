@@ -229,7 +229,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong><code>scipy.spatial.distance</code></strong>, <strong>NumPy</strong> : distances et algèbre (K-NN “à la main”, séparabilité JM)</li>
 <li class="fragment">Chapitre aussi disponible en notebook Google Colab (seuls <code>rioxarray</code>/<code>xrscipy</code> n’y sont pas préinstallés)</li>
 </ul>
-<div id="3a230168" class="cell" data-execution_count="2">
+<div id="3a230168" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, rasterio, geopandas</span>
 <span id="cb1-3"><a href=""></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
@@ -246,7 +246,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><code>berkeley.jpg</code>, <code>SAR.tif</code> : utilisées ailleurs dans le chapitre</li>
 <li class="fragment"><code>sampling_points.csv</code> : jeu d’entraînement dérivé (points + classe + bandes), réutilisé partout</li>
 </ul>
-<div id="3767b15a" class="cell" data-execution_count="3">
+<div id="3767b15a" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb2-2"><a href=""></a><span class="cf">for</span> f <span class="kw">in</span> [<span class="st">'../berkeley.jpg'</span>, <span class="st">'../RGBNIR_of_S2A.tif'</span>, <span class="st">'../SAR.tif'</span>, <span class="st">'../carte.tif'</span>]:</span>
 <span id="cb2-3"><a href=""></a>    <span class="cf">with</span> rxr.open_rasterio(f, mask_and_scale<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> img:</span>
@@ -270,7 +270,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="sur--et-sous-apprentissage" class="slide level2 smaller">
 <h2>Sur- et sous-apprentissage</h2>
-<div id="1d7f28ca" class="cell" data-execution_count="4">
+<div id="1d7f28ca" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
 <span id="cb4-2"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> PolynomialFeatures</span>
 <span id="cb4-3"><a href=""></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
@@ -312,7 +312,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Chaque point est relié à ses valeurs radiométriques via les coordonnées géoréférencées</li>
 <li class="fragment">Le résultat (position + classe + bandes) est sauvegardé en <code>.csv</code>, réutilisé par tous les classificateurs</li>
 </ul>
-<div id="c08fe4a5" class="cell" data-execution_count="5">
+<div id="c08fe4a5" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">import</span> rasterio</span>
 <span id="cb5-2"><a href=""></a>img_carte <span class="op">=</span> rxr.open_rasterio(<span class="st">'../carte.tif'</span>, mask_and_scale<span class="op">=</span><span class="va">True</span>).squeeze()</span>
 <span id="cb5-3"><a href=""></a></span>
@@ -345,7 +345,7 @@ Valeurs de bandes du premier point : [1894 1994 2112 2318]</code></pre>
 <li class="fragment"><span class="math inline">\(JM_{ij} = 2(1-e^{-B_{ij}})\)</span> : proche de <span class="math inline">\(2\)</span> → classes bien séparées, proche de <span class="math inline">\(0\)</span> → confusion probable</li>
 <li class="fragment">Guide le choix des bandes/indices les plus discriminants</li>
 </ul>
-<div id="2b4eb3eb" class="cell" data-execution_count="6">
+<div id="2b4eb3eb" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="kw">def</span> bhattacharyya(m1, s1, m2, s2):</span>
 <span id="cb7-2"><a href=""></a>    s <span class="op">=</span> (s1 <span class="op">+</span> s2) <span class="op">/</span> <span class="dv">2</span></span>
 <span id="cb7-3"><a href=""></a>    d <span class="op">=</span> m1 <span class="op">-</span> m2</span>
@@ -372,7 +372,7 @@ Valeurs de bandes du premier point : [1894 1994 2112 2318]</code></pre>
 <li class="fragment"><strong>Précision</strong> — fausses alarmes (normalisation par colonnes)</li>
 <li class="fragment"><strong>f1-score</strong> = moyenne harmonique du rappel et de la précision</li>
 </ul>
-<div id="07b4e4e1" class="cell" data-execution_count="7">
+<div id="07b4e4e1" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
 <span id="cb9-2"><a href=""></a>y_true <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"ant"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span>, <span class="st">"ant"</span>, <span class="st">"bird"</span>, <span class="st">"bird"</span>]</span>
 <span id="cb9-3"><a href=""></a>y_pred <span class="op">=</span> [<span class="st">"ant"</span>, <span class="st">"ant"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span>, <span class="st">"ant"</span>, <span class="st">"cat"</span>, <span class="st">"bird"</span>]</span>
@@ -403,7 +403,7 @@ weighted avg       0.76      0.71      0.70         7
 <li class="fragment">Un pixel est assigné si <strong>toutes</strong> ses bandes tombent dans la boîte</li>
 <li class="fragment">Rapide, mais laisse des <strong>trous</strong> et des <strong>recouvrements</strong> entre classes</li>
 </ul>
-<div id="1065c304" class="cell" data-execution_count="8">
+<div id="1065c304" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a>bornes <span class="op">=</span> {c: (Xtr[ytr <span class="op">==</span> c].<span class="bu">min</span>(<span class="dv">0</span>), Xtr[ytr <span class="op">==</span> c].<span class="bu">max</span>(<span class="dv">0</span>)) <span class="cf">for</span> c <span class="kw">in</span> np.unique(ytr)}</span>
 <span id="cb11-2"><a href=""></a>c0 <span class="op">=</span> np.unique(ytr)[<span class="dv">0</span>]</span>
 <span id="cb11-3"><a href=""></a><span class="bu">print</span>(<span class="st">"Nombre de classes :"</span>, <span class="bu">len</span>(bornes))</span>
@@ -421,7 +421,7 @@ Boîte de la classe 0 - min : [1264. 1430. 1274. 2167.]</code></pre>
 <li class="fragment">Les parallélépipèdes deviennent creux : l’espace vide croît plus vite que les données</li>
 <li class="fragment">Contre-mesures : sélection de caractéristiques, réduction de dimension (ACP)</li>
 </ul>
-<div id="9bab7ffc" class="cell" data-execution_count="9">
+<div id="9bab7ffc" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a>d, N <span class="op">=</span> <span class="dv">10</span>, <span class="dv">1000</span>   <span class="co"># N points dans un hypercube de côté d</span></span>
 <span id="cb13-2"><a href=""></a><span class="cf">for</span> D <span class="kw">in</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>]:</span>
 <span id="cb13-3"><a href=""></a>    <span class="bu">print</span>(<span class="ss">f"D=</span><span class="sc">{</span>D<span class="sc">:2d}</span><span class="ss"> -&gt; densité ~ </span><span class="sc">{</span>N <span class="op">/</span> d<span class="op">**</span>D<span class="sc">:.2e}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -437,7 +437,7 @@ D=20 -&gt; densité ~ 1.00e-17</code></pre>
 <section id="k-nn-frontières-de-décision" class="slide level2 smaller">
 <h2>K-NN — frontières de décision</h2>
 <p>Vote parmi les <span class="math inline">\(K\)</span> voisins les plus proches (bandes Rouge–PIR) :</p>
-<div id="be25bb7f" class="cell" data-execution_count="10">
+<div id="be25bb7f" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
 <span id="cb15-2"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb15-3"><a href=""></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
@@ -464,7 +464,7 @@ D=20 -&gt; densité ~ 1.00e-17</code></pre>
 <section id="distances-et-plus-proche-voisin" class="slide level2 smaller">
 <h2>Distances et plus proche voisin</h2>
 <p>Le K-NN repose sur des <strong>distances</strong> : <code>cdist</code> les calcule toutes, <code>argmin</code> donne le plus proche voisin — identique à <code>scikit-learn</code> pour <span class="math inline">\(K = 1\)</span>.</p>
-<div id="953f89c5" class="cell" data-execution_count="11">
+<div id="953f89c5" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href=""></a><span class="im">from</span> scipy.spatial.distance <span class="im">import</span> cdist</span>
 <span id="cb16-2"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb16-3"><a href=""></a></span>
@@ -487,7 +487,7 @@ Exactitude 1-PPV « à la main » : 0.39</code></pre>
 <li class="fragment">Tendance au <strong>sur-apprentissage</strong>, surtout si peu d’échantillons par dimension</li>
 <li class="fragment"><code>max_depth</code> contrôle directement la complexité de l’arbre</li>
 </ul>
-<div id="77c009b5" class="cell" data-execution_count="12">
+<div id="77c009b5" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href=""></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
 <span id="cb18-2"><a href=""></a><span class="cf">for</span> prof <span class="kw">in</span> [<span class="dv">2</span>, <span class="dv">5</span>, <span class="va">None</span>]:</span>
 <span id="cb18-3"><a href=""></a>    arbre <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span>prof, random_state<span class="op">=</span><span class="dv">0</span>).fit(Xtr, ytr)</span>
@@ -507,7 +507,7 @@ profondeur=None - exactitude test : 0.390</code></pre>
 <li class="fragment">Frontières de décision plus <strong>régulières</strong> que le K-NN</li>
 <li class="fragment">Base simplifiée dont l’<strong>ADQ</strong> relâche l’hypothèse d’indépendance</li>
 </ul>
-<div id="4922dcbb" class="cell" data-execution_count="13">
+<div id="4922dcbb" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href=""></a><span class="im">from</span> sklearn.naive_bayes <span class="im">import</span> GaussianNB</span>
 <span id="cb20-2"><a href=""></a>gnb <span class="op">=</span> GaussianNB().fit(Xtr, ytr)</span>
 <span id="cb20-3"><a href=""></a><span class="bu">print</span>(<span class="st">"Bayésien naïf - exactitude test :"</span>, <span class="bu">round</span>(gnb.score(Xte, yte), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -524,7 +524,7 @@ profondeur=None - exactitude test : 0.390</code></pre>
 <li class="fragment">Plus de paramètres à estimer → exige davantage de données par classe</li>
 <li class="fragment">Sert aussi à mesurer la séparabilité <strong>JM</strong> (voir plus haut)</li>
 </ul>
-<div id="08a41942" class="cell" data-execution_count="14">
+<div id="08a41942" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href=""></a><span class="im">from</span> sklearn.discriminant_analysis <span class="im">import</span> QuadraticDiscriminantAnalysis <span class="im">as</span> QDA</span>
 <span id="cb22-2"><a href=""></a>qda <span class="op">=</span> QDA(store_covariance<span class="op">=</span><span class="va">True</span>).fit(Xtr, ytr)</span>
 <span id="cb22-3"><a href=""></a><span class="bu">print</span>(<span class="st">"ADQ - exactitude test :"</span>, <span class="bu">round</span>(qda.score(Xte, yte), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -536,7 +536,7 @@ profondeur=None - exactitude test : 0.390</code></pre>
 <section id="réseaux-de-neurones-le-mlp" class="slide level2 smaller">
 <h2>Réseaux de neurones — le MLP</h2>
 <p>Un <strong>perceptron multicouche</strong> enchaîne des couches dont les poids sont <strong>appris</strong> :</p>
-<div id="05a4d0d9" class="cell" data-execution_count="15">
+<div id="05a4d0d9" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href=""></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPClassifier</span>
 <span id="cb24-2"><a href=""></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
 <span id="cb24-3"><a href=""></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
@@ -553,7 +553,7 @@ profondeur=None - exactitude test : 0.390</code></pre>
 </section>
 <section id="comparer-les-classificateurs" class="slide level2 smaller">
 <h2>Comparer les classificateurs</h2>
-<div id="bf388b7f" class="cell" data-execution_count="16">
+<div id="bf388b7f" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href=""></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
 <span id="cb26-2"><a href=""></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPClassifier</span>
 <span id="cb26-3"><a href=""></a></span>
@@ -582,7 +582,7 @@ profondeur=None - exactitude test : 0.390</code></pre>
 <section id="carte-doccupation-des-sols" class="slide level2 smaller">
 <h2>Carte d’occupation des sols</h2>
 <p>On applique le modèle (4 bandes) à toute l’image :</p>
-<div id="9018ad2d" class="cell" data-execution_count="17">
+<div id="9018ad2d" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href=""></a>clf <span class="op">=</span> Pipeline([(<span class="st">"s"</span>, StandardScaler()), (<span class="st">"c"</span>, KNeighborsClassifier(<span class="dv">7</span>, weights<span class="op">=</span><span class="st">'distance'</span>))]).fit(Xtr, ytr)</span>
 <span id="cb27-2"><a href=""></a>img <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).to_numpy()          <span class="co"># (4, H, W)</span></span>
 <span id="cb27-3"><a href=""></a>H, W <span class="op">=</span> img.shape[<span class="dv">1</span>], img.shape[<span class="dv">2</span>]</span>
@@ -602,7 +602,7 @@ profondeur=None - exactitude test : 0.390</code></pre>
 <section id="analyse-post-classification-bilan-surfacique" class="slide level2 smaller">
 <h2>Analyse post-classification — bilan surfacique</h2>
 <p><code>np.bincount</code> compte les pixels par classe ; multiplié par la surface d’un pixel (10 m) → superficie.</p>
-<div id="20b8a628" class="cell" data-execution_count="18">
+<div id="20b8a628" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href=""></a>res <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>).rio.resolution()</span>
 <span id="cb28-2"><a href=""></a>pix_km2 <span class="op">=</span> <span class="bu">abs</span>(res[<span class="dv">0</span>] <span class="op">*</span> res[<span class="dv">1</span>]) <span class="op">/</span> <span class="fl">1e6</span></span>
 <span id="cb28-3"><a href=""></a>comptes <span class="op">=</span> np.bincount(carte.ravel(), minlength<span class="op">=</span><span class="bu">len</span>(noms2))</span>

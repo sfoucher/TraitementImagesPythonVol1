@@ -1,5 +1,5 @@
 # /// script
-# dependencies = ["rioxarray", "xrscipy"]
+# dependencies = ["geopandas", "leafmap", "mapclassify", "rioxarray", "xrscipy"]
 # ///
 
 import marimo
@@ -66,7 +66,7 @@ def _(subprocess):
     subprocess.call(['apt-get', 'update'])
     #! apt-get install gdal-bin libgdal-dev
     subprocess.call(['apt-get', 'install', 'gdal-bin', 'libgdal-dev'])
-    # packages added via marimo's package management: rioxarray xrscipy !pip install -q rioxarray xrscipy
+    # packages added via marimo's package management: rioxarray xrscipy geopandas leafmap mapclassify !pip install -q rioxarray xrscipy geopandas leafmap mapclassify
     return
 
 

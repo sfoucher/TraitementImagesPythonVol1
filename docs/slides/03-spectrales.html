@@ -227,7 +227,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Images : <code>RGBNIR_of_S2A.tif</code>, <code>sentinel2.tif</code> (12 bandes), <code>carte.tif</code></li>
 <li class="fragment">Signatures de laboratoire USGS : <code>ASCIIdata_splib07b_rsSentinel2</code></li>
 </ul>
-<div id="de3d7854" class="cell" data-execution_count="1">
+<div id="de3d7854" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr</span>
 <span id="cb1-3"><a href=""></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -253,7 +253,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="signatures-spectrales" class="slide level2 smaller">
 <h2>Signatures spectrales</h2>
-<div id="6034180e" class="cell" data-execution_count="2">
+<div id="6034180e" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>base <span class="op">=</span> <span class="st">'../ASCIIdata_splib07b_rsSentinel2'</span></span>
 <span id="cb3-2"><a href=""></a><span class="kw">def</span> lire(f):</span>
 <span id="cb3-3"><a href=""></a>    <span class="cf">with</span> <span class="bu">open</span>(f) <span class="im">as</span> fh:</span>
@@ -283,7 +283,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Le choix dépend fortement de l’<strong>application</strong></li>
 <li class="fragment"><strong><code>spyndex</code></strong> (Awesome Spectral Indices) : <strong>200+</strong> indices (optiques et radar)</li>
 </ul>
-<div id="af463b5b" class="cell" data-execution_count="3">
+<div id="af463b5b" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>spyndex.indices[<span class="st">"NDVI"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>SpectralIndex(NDVI: Normalized Difference Vegetation Index)
@@ -331,7 +331,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </tbody>
 </table>
 <p><code>spyndex</code> suppose ces noms de bandes ; on renomme les coordonnées <code>xarray</code> avant le calcul :</p>
-<div id="43906e37" class="cell" data-execution_count="4">
+<div id="43906e37" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>sentinel2_bands <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"G"</span>, <span class="st">"R"</span>, <span class="st">"RE1"</span>, <span class="st">"RE2"</span>, <span class="st">"RE3"</span>, <span class="st">"N"</span>, <span class="st">"N2"</span>, <span class="st">"WV"</span>, <span class="st">"S1"</span>, <span class="st">"S2"</span>]</span>
 <span id="cb6-2"><a href=""></a>img_s2 <span class="op">=</span> img_s2.sel(band<span class="op">=</span><span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>))).assign_coords({<span class="st">'band'</span>: sentinel2_bands})</span>
 <span id="cb6-3"><a href=""></a>img_s2 <span class="op">=</span> img_s2 <span class="op">/</span> <span class="dv">10000</span>   <span class="co"># normalisation en réflectance</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -358,7 +358,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 </section>
 <section id="calcul-des-indices-computeindex" class="slide level2 smaller">
 <h2>Calcul des indices — <code>computeIndex</code></h2>
-<div id="9a3bf35c" class="cell" data-execution_count="5">
+<div id="9a3bf35c" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="im">from</span> rasterio <span class="im">import</span> plot</span>
 <span id="cb7-2"><a href=""></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
 <span id="cb7-3"><a href=""></a>    index<span class="op">=</span>[<span class="st">"NDVI"</span>, <span class="st">"SAVI"</span>],</span>
@@ -392,7 +392,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Comparaison via un <strong>pairplot</strong> (nuages de points deux à deux)</li>
 <li class="fragment">Un bon indice <strong>sépare mieux</strong> les classes visées (ex. NDVI vs NDWI vs NDBI)</li>
 </ul>
-<div id="927d031c" class="cell" data-execution_count="6">
+<div id="927d031c" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="co"># df : indices calculés aux points échantillonnés, une colonne "Land Cover"</span></span>
 <span id="cb8-2"><a href=""></a>idx <span class="op">=</span> spyndex.computeIndex(</span>
 <span id="cb8-3"><a href=""></a>    index<span class="op">=</span>[<span class="st">"NDVI"</span>, <span class="st">"NDWI"</span>, <span class="st">"NDBI"</span>],</span>
@@ -421,7 +421,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Mêmes poids pour tous les pixels → un <strong>produit matriciel</strong> (<code>@</code>)</li>
 <li class="fragment">L’ACP apprend ces poids automatiquement (plutôt que de les fixer)</li>
 </ul>
-<div id="2f53bd93" class="cell" data-execution_count="7">
+<div id="2f53bd93" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a>pixels <span class="op">=</span> np.array([[<span class="fl">10.</span>, <span class="fl">40.</span>], [<span class="fl">20.</span>, <span class="fl">10.</span>], [<span class="fl">5.</span>, <span class="fl">25.</span>]])   <span class="co"># 3 pixels x 2 bandes</span></span>
 <span id="cb9-2"><a href=""></a>M <span class="op">=</span> np.array([[<span class="fl">0.5</span>, <span class="fl">0.5</span>],       <span class="co"># moyenne des deux bandes</span></span>
 <span id="cb9-3"><a href=""></a>              [<span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>]])      <span class="co"># différence des deux bandes</span></span>
@@ -441,7 +441,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Appliqués ici, à titre d’illustration, aux bandes Sentinel-2 analogues</li>
 <li class="fragment">Coefficients fixes → comparables entre scènes (contrairement à l’ACP)</li>
 </ul>
-<div id="e0e3773e" class="cell" data-execution_count="8">
+<div id="e0e3773e" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a>tc_coeffs <span class="op">=</span> np.array([</span>
 <span id="cb11-2"><a href=""></a>    [ <span class="fl">0.3037</span>,  <span class="fl">0.2793</span>,  <span class="fl">0.4743</span>,  <span class="fl">0.5585</span>,  <span class="fl">0.5082</span>,  <span class="fl">0.1863</span>],   <span class="co"># Brightness</span></span>
 <span id="cb11-3"><a href=""></a>    [<span class="op">-</span><span class="fl">0.2848</span>, <span class="op">-</span><span class="fl">0.2435</span>, <span class="op">-</span><span class="fl">0.5436</span>,  <span class="fl">0.7243</span>,  <span class="fl">0.0840</span>, <span class="op">-</span><span class="fl">0.1800</span>],   <span class="co"># Greenness</span></span>
@@ -470,7 +470,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">On diagonalise la <strong>matrice de covariance</strong> (<code>np.linalg.eigh</code>)</li>
 <li class="fragment">Valeurs propres = variance portée par chaque composante</li>
 </ul>
-<div id="01bb6e25" class="cell" data-execution_count="9">
+<div id="01bb6e25" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a>cube <span class="op">=</span> img_s2.to_numpy()</span>
 <span id="cb12-2"><a href=""></a>B, H, W <span class="op">=</span> cube.shape</span>
 <span id="cb12-3"><a href=""></a>X <span class="op">=</span> cube.reshape(B, H <span class="op">*</span> W).T</span>
@@ -492,7 +492,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Composantes rangées par <strong>variance décroissante</strong></li>
 <li class="fragment">3 premières composantes ≈ l’essentiel de l’information</li>
 </ul>
-<div id="fc719d1d" class="cell" data-execution_count="10">
+<div id="fc719d1d" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a>composantes <span class="op">=</span> (X_c <span class="op">@</span> vecteurs).T.reshape(B, H, W)</span>
 <span id="cb14-2"><a href=""></a>etirer <span class="op">=</span> <span class="kw">lambda</span> x: (x <span class="op">-</span> x.<span class="bu">min</span>()) <span class="op">/</span> (x.<span class="bu">max</span>() <span class="op">-</span> x.<span class="bu">min</span>())</span>
 <span id="cb14-3"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">4.5</span>, <span class="dv">4</span>))</span>
@@ -514,7 +514,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Reconstruction = projection inverse + ajout de la moyenne</li>
 <li class="fragment">Erreur mesurée par le <strong>RMSE</strong> en fonction de <span class="math inline">\(k\)</span> <span class="citation" data-cites="richards2022remote">[@richards2022remote]</span></li>
 </ul>
-<div id="629c9b9b" class="cell" data-execution_count="11">
+<div id="629c9b9b" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a><span class="kw">def</span> erreur_reconstruction(k):</span>
 <span id="cb15-2"><a href=""></a>    proj_k <span class="op">=</span> composantes[:k].reshape(k, <span class="op">-</span><span class="dv">1</span>).T</span>
 <span id="cb15-3"><a href=""></a>    X_approx <span class="op">=</span> proj_k <span class="op">@</span> vecteurs[:, :k].T <span class="op">+</span> X.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
