@@ -255,6 +255,40 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    Cette carte est **interactive** : elle ne s'affiche que dans un notebook. Pour le livre, nous en produisons une **capture statique** hors ligne avec `matplotlib` et [`contextily`](https://contextily.readthedocs.io/) (qui télécharge le fond OpenStreetMap). L'image Sentinel-2 est reprojetée en Web Mercator (`EPSG:3857`), chaque bande est étirée entre ses centiles 2 % et 98 %, et les pixels *no data* (valeur `65535` après reprojection) sont rendus transparents pour laisser voir le fond de carte :
+    """)
+    return
+
+
+@app.cell
+def _(np, plt, rxr):
+    import contextily as cx
+    _src = rxr.open_rasterio('RGBNIR_of_S2A.tif').rio.reproject('EPSG:3857')
+    nd = _src.rio.nodata
+    (x, y) = (_src.x.values, _src.y.values)
+    extent = [x.min(), x.max(), y.min(), y.max()]
+
+    def composite(bandes):
+        raw = _src.isel(band=[b - 1 for b in bandes]).to_numpy().astype('float32')
+        rgba = np.zeros(raw.shape[1:] + (4,), 'float32')
+        for i in range(3):
+            canal = raw[i]
+            valide = canal != nd
+            (p2, p98) = np.percentile(canal[valide], [2, 98])
+            rgba[..., i] = np.clip((canal - p2) / (p98 - p2), 0, 1)
+        rgba[..., 3] = (raw != nd).all(axis=0)
+        return rgba
+    (_fig, _ax) = plt.subplots(figsize=(7, 6))
+    cx.add_basemap(_ax, crs='EPSG:3857', source=cx.providers.OpenStreetMap.Mapnik, zorder=0)
+    _ax.imshow(composite([3, 2, 1]), extent=extent, origin='upper', zorder=1)
+    _ax.axis('off')
+    plt.show()
+    return composite, cx, extent
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     La méthode `split_map` crée un **comparateur à volet glissant**, idéal pour opposer deux visualisations de la même scène — ici la vraie couleur (`[3, 2, 1]`) et l'infrarouge fausses couleurs (`[4, 3, 2]`), qui fait ressortir la végétation en rouge :
     """)
     return
@@ -265,6 +299,27 @@ def _(leafmap):
     _m = leafmap.Map()
     _m.split_map(left_layer='RGBNIR_of_S2A.tif', right_layer='RGBNIR_of_S2A.tif', left_args={'indexes': [3, 2, 1]}, right_args={'indexes': [4, 3, 2]}, left_label='Vraie couleur', right_label='Infrarouge')
     _m
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Pour le livre, la capture statique correspondante réutilise la fonction `composite` définie plus haut, appliquée aux deux composés côte à côte :
+    """)
+    return
+
+
+@app.cell
+def _(composite, cx, extent, plt):
+    (_fig, axes) = plt.subplots(1, 2, figsize=(11, 5))
+    for (_ax, bandes, titre) in zip(axes, ([3, 2, 1], [4, 3, 2]), ('Vraie couleur', 'Infrarouge (PIR, R, V)')):
+        cx.add_basemap(_ax, crs='EPSG:3857', source=cx.providers.OpenStreetMap.Mapnik, zorder=0)
+        _ax.imshow(composite(bandes), extent=extent, origin='upper', zorder=1)
+        _ax.set_title(titre)
+        _ax.axis('off')
+    plt.tight_layout()
+    plt.show()
     return
 
 
@@ -804,10 +859,10 @@ def _(img_s2, np, plt):
         X_stretch = X_stretch - q[1]
         X_stretch = X_stretch / (q[2] - q[1])
         return X_stretch.clip(0, 1).reshape(img.shape)
-    composite = img_s2.sel(band=[4, 3, 2]).data
-    composite_stretch = decorrelation_stretch(composite)
+    composite_1 = img_s2.sel(band=[4, 3, 2]).data
+    composite_stretch = decorrelation_stretch(composite_1)
     (_fig, _ax) = plt.subplots(ncols=2, figsize=(8, 4))
-    _ax[0].imshow(np.clip(composite.transpose(1, 2, 0) / 4000.0, 0, 1))
+    _ax[0].imshow(np.clip(composite_1.transpose(1, 2, 0) / 4000.0, 0, 1))
     _ax[0].set_title('composé RVB original')
     _ax[1].imshow(composite_stretch.transpose(1, 2, 0))
     _ax[1].set_title('après étirement par décorrélation')
