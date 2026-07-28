@@ -269,7 +269,7 @@ def _(np, plt, rxr):
     extent = [x.min(), x.max(), y.min(), y.max()]
 
     def composite(bandes):
-        raw = _src.isel(band=[b - 1 for b in bandes]).to_numpy().astype('float32')
+        raw = _src.isel(band=[b - 1 for b in _bandes]).to_numpy().astype('float32')
         rgba = np.zeros(raw.shape[1:] + (4,), 'float32')
         for i in range(3):
             canal = raw[i]
@@ -313,9 +313,9 @@ def _(mo):
 @app.cell
 def _(composite, cx, extent, plt):
     (_fig, axes) = plt.subplots(1, 2, figsize=(11, 5))
-    for (_ax, bandes, titre) in zip(axes, ([3, 2, 1], [4, 3, 2]), ('Vraie couleur', 'Infrarouge (PIR, R, V)')):
+    for (_ax, _bandes, titre) in zip(axes, ([3, 2, 1], [4, 3, 2]), ('Vraie couleur', 'Infrarouge (PIR, R, V)')):
         cx.add_basemap(_ax, crs='EPSG:3857', source=cx.providers.OpenStreetMap.Mapnik, zorder=0)
-        _ax.imshow(composite(bandes), extent=extent, origin='upper', zorder=1)
+        _ax.imshow(composite(_bandes), extent=extent, origin='upper', zorder=1)
         _ax.set_title(titre)
         _ax.axis('off')
     plt.tight_layout()
@@ -877,6 +877,48 @@ def _(mo):
     mo.md(r"""
     Le résultat conserve les teintes relatives entre bandes tout en maximisant le contraste de chacune des composantes principales, ce qui fait ressortir davantage de détails que le composé original.
 
+    ##### Poids des bandes : le cercle des corrélations
+
+    Au-delà du résultat visuel, l'ACP nous renseigne sur **la façon dont chaque bande contribue à chaque composante principale**. Les vecteurs propres donnent le **poids** de chaque bande dans une composante ; multipliés par la racine carrée de la valeur propre associée, ils fournissent la **corrélation** entre chaque bande et chaque composante. On visualise ces corrélations dans un **cercle des corrélations** : chaque bande devient une flèche partant de l'origine, dont les coordonnées sont ses corrélations avec les deux premières composantes (CP1 et CP2). Une flèche proche du cercle unité est bien représentée dans le plan CP1-CP2 ; deux flèches proches signalent des bandes corrélées, deux flèches opposées des bandes anti-corrélées.
+    """)
+    return
+
+
+@app.cell
+def _(img_s2, np, plt):
+    _bandes = [2, 3, 4, 8, 11, 12]
+    noms = ['B', 'V', 'R', 'PIR', 'SWIR1', 'SWIR2']
+    X = img_s2.sel(band=_bandes).data.reshape(len(_bandes), -1).astype(float)
+    X = X[:, ~np.isnan(X).any(axis=0)]  # on retire les no_data
+    X = (X - X.mean(1, keepdims=True)) / X.std(1, keepdims=True)  # standardisation
+    (valeurs, vecteurs) = np.linalg.eigh(np.corrcoef(X))
+    ordre = np.argsort(valeurs)[::-1]  # ACP sur la corrélation
+    (valeurs, vecteurs) = (valeurs[ordre], vecteurs[:, ordre])  # variance décroissante
+    loadings = vecteurs * np.sqrt(valeurs)
+    pct = 100 * valeurs / valeurs.sum()  # corrélation bande <-> composante
+    (_fig, _ax) = plt.subplots(figsize=(5.5, 5.5))
+    _ax.add_patch(plt.Circle((0, 0), 1, fill=False, color='grey', ls='--'))
+    _ax.axhline(0, color='grey', lw=0.5)
+    _ax.axvline(0, color='grey', lw=0.5)
+    for (i, nom) in enumerate(noms):
+        _ax.arrow(0, 0, loadings[i, 0], loadings[i, 1], color='tab:blue', head_width=0.03, length_includes_head=True)
+        _ax.text(loadings[i, 0] * 1.15, loadings[i, 1] * 1.15, nom, ha='center', va='center')
+    _ax.set_xlim(-1.2, 1.2)
+    _ax.set_ylim(-1.2, 1.2)
+    _ax.set_aspect('equal')
+    _ax.set_xlabel(f'CP1 ({pct[0]:.0f} %)')
+    _ax.set_ylabel(f'CP2 ({pct[1]:.0f} %)')
+    _ax.set_title('Cercle des corrélations (ACP sur 6 bandes Sentinel-2)')
+    plt.tight_layout()
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Sur ce composé Sentinel-2, la première composante (CP1, environ 68 % de la variance) est corrélée négativement à presque toutes les bandes : elle traduit la **luminosité globale** de la scène. La seconde (CP2, environ 27 %) oppose le **proche infrarouge et le SWIR1** au reste : c'est un axe de **végétation / humidité**. Les bandes visibles (B, V, R), dont les flèches sont quasi confondues, sont **fortement corrélées** entre elles — c'est précisément cette redondance que l'étirement par décorrélation vient corriger.
+
     ## Points clés
 
     ## Exercices
@@ -894,6 +936,8 @@ def _(mo):
     5.  Comparez une égalisation d'histogramme globale et une égalisation adaptative (CLAHE) sur une image de votre choix. Dans quels cas la CLAHE fait-elle ressortir des détails invisibles avec l'égalisation globale?
 
     6.  Appliquez un étirement par décorrélation sur le composé SWIR2, NIR, R de `sentinel2.tif` et comparez-le au composé sans étirement. La corrélation entre bandes est-elle plus ou moins forte que pour le composé RVB naturel?
+
+    7.  *(cercle des corrélations)* Reprenez le **cercle des corrélations** sur les **quatre bandes** de `RGBNIR_of_S2A.tif` (B, V, R, PIR) : standardisez les bandes, calculez l'ACP sur leur matrice de corrélation, puis tracez les flèches des *loadings* dans le plan CP1-CP2. Quelle(s) bande(s) domine(nt) la première composante? La flèche du proche infrarouge est-elle alignée avec celles du visible ou s'en écarte-t-elle nettement? Qu'en concluez-vous sur la corrélation entre le PIR et les bandes visibles?
 
     ## Quiz
 
