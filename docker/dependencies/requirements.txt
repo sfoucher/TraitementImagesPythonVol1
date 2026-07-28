@@ -47,6 +47,8 @@ rioxarray
 scikit-image
 xrscipy
 geopandas
+leafmap
+mapclassify
 numba
 scikit-learn
 supertree

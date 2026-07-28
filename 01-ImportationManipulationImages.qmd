@@ -93,6 +93,8 @@ import gdown
 gdown.download('https://drive.google.com/uc?export=download&confirm=pbef&id=1a6Ypg0g1Oy4AJt9XWKWfnR12NW1XhNg_', output= 'RGBNIR_of_S2A.tif')
 gdown.download('https://drive.google.com/uc?export=download&confirm=pbef&id=1a4PQ68Ru8zBphbQ22j0sgJ4D2quw-Wo6', output= 'landsat7.tif')
 gdown.download('https://drive.google.com/uc?export=download&confirm=pbef&id=1_zwCLN-x7XJcNHJCH6Z8upEdUXtVtvs1', output= 'berkeley.jpg')
+gdown.download('https://drive.google.com/uc?export=download&confirm=pbef&id=1yGwNeGlRFtyRylFsyKrrh8IZK_YZd012', output= 'AD_Sherbrooke.zip')
+!unzip -o AD_Sherbrooke.zip
 !wget https://raw.githubusercontent.com/sfoucher/TraitementImagesPythonVol1/refs/heads/main/images/modis-aqua.PNG -O modis-aqua.PNG
 ```
 
@@ -696,25 +698,106 @@ Données météos, exemple avec SWOT.
 -->
 ```
 
-```{=html}
-<!--
 ## Importation de données vectorielles
 
-### Importation d'un fichier *shapefile*
+Jusqu'ici, nous avons manipulé de la donnée **matricielle** (*raster*), c'est-à-dire une grille régulière de pixels. L'autre grande famille de données géospatiales est la donnée **vectorielle** : des entités géométriques discrètes — **points**, **lignes** et **polygones** — auxquelles sont associés des **attributs**. Un réseau routier, des limites administratives ou des points d'échantillonnage sont typiquement stockés sous cette forme, le plus souvent dans un *shapefile* (`.shp`), un *GeoPackage* (`.gpkg`) ou un fichier GeoJSON.
 
-### Importation d'une couche dans un *GeoPackage*
+La bibliothèque de référence pour la donnée vectorielle en Python est [GeoPandas](https://geopandas.org/), qui étend les `DataFrame` de `pandas` en y ajoutant une colonne de **géométrie**. Un `GeoDataFrame` se manipule donc exactement comme un tableau `pandas` (filtres, statistiques, jointures), tout en donnant accès aux opérations géométriques (surface, distance, reprojection) et à la géoréférence via l'attribut `.crs`. Pour la visualisation, nous utilisons [leafmap](https://leafmap.org/), qui produit des cartes **interactives** à partir d'un `GeoDataFrame`.
 
-### Importation d'une couche dans une *geodatabase* d'ESRI
+:::::: bloc_package
+:::: bloc_package-header
+::: bloc_package-icon
+:::
 
-### Importation d'un fichier *shapefile*
+**Installation de geopandas et leafmap**
+::::
 
-## Manipulation de données vectorielles
+::: bloc_package-body
+Dans Google Colab, installez les bibliothèques vectorielles avec :
 
-### Requêtes attributaires 
-
-## Exercices de révision
--->
 ```
+!pip install -q geopandas leafmap mapclassify
+```
+:::
+::::::
+
+Nous utilisons ici un jeu de données réel : les **aires de diffusion** de la ville de **Sherbrooke** (l'aire de diffusion est la plus petite unité géographique pour laquelle Statistique Canada diffuse ses données de recensement), enrichies de quelques variables socio-démographiques (population de 2021, nombre de logements, densité). Le fichier est un *shapefile* fourni sous forme d'archive compressée (`AD_Sherbrooke.zip`), téléchargé dans le préambule (section [Données]).
+
+### Lecture avec GeoPandas
+
+La fonction `geopandas.read_file` lit la plupart des formats vectoriels — y compris directement une **archive `.zip`** contenant un *shapefile*. Elle retourne un `GeoDataFrame` dont on inspecte le nombre d'entités, le système de coordonnées et le type de géométrie :
+
+```{python}
+import geopandas as gpd
+
+ad = gpd.read_file('AD_Sherbrooke.zip')
+print("Nombre d'entités :", len(ad))
+print("Système de coordonnées :", ad.crs)
+print("Type de géométrie :", ad.geom_type.unique().tolist())
+ad.head()
+```
+
+Chaque ligne est une aire de diffusion (un polygone) décrite par ses attributs : `ADIDU` (l'identifiant unique), `ADpop_2021` (la population en 2021), `ADtlog_202` (le nombre total de logements), `ADrhlog_20` (les logements occupés par des résidents habituels) et `HabKm2` (la densité en habitants par km2). La colonne `geometry` contient la géométrie de chaque entité.
+
+### Requêtes attributaires
+
+Puisqu'un `GeoDataFrame` est un `DataFrame` `pandas`, on sélectionne des entités par **condition sur les attributs** avec la même syntaxe. On peut aussi calculer des statistiques sur les colonnes :
+
+```{python}
+# Aires de diffusion les plus densément peuplées (plus de 3000 hab/km2)
+denses = ad[ad['HabKm2'] > 3000]
+print("Aires denses :", len(denses), "sur", len(ad))
+print("Population totale (2021) :", int(ad['ADpop_2021'].sum()))
+print("Densité médiane :", round(ad['HabKm2'].median(), 1), "hab/km2")
+```
+
+### Géométrie et projection
+
+La colonne de géométrie donne accès aux **opérations spatiales**. Ce jeu de données est projeté en `EPSG:3347` (projection de Statistique Canada, en mètres), ce qui permet de calculer directement des **surfaces**. Comme pour un raster, on reprojette avec `to_crs` — ici vers `EPSG:4326` (latitude/longitude), le système attendu par les fonds de carte web :
+
+```{python}
+# Surface de chaque aire à partir de la géométrie (CRS métrique -> km2)
+ad['aire_km2'] = ad.geometry.area / 1e6
+print("Superficie totale :", round(ad['aire_km2'].sum(), 1), "km2")
+
+# Reprojection en coordonnées géographiques pour la cartographie
+ad_wgs = ad.to_crs('EPSG:4326')
+print("CRS après reprojection :", ad_wgs.crs)
+```
+
+### Visualisation statique
+
+La méthode `.plot` d'un `GeoDataFrame` produit une carte `matplotlib`. En précisant une colonne, on obtient une **carte choroplèthe** ; l'option `scheme='quantiles'` (fournie par `mapclassify`) répartit les valeurs en classes de même effectif :
+
+```{python}
+#| fig-align: center
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(7, 7))
+ad.plot(column='HabKm2', scheme='quantiles', k=5, cmap='YlOrRd',
+        legend=True, legend_kwds={'title': 'hab/km2', 'fmt': '{:.0f}'},
+        edgecolor='0.6', linewidth=0.2, ax=ax)
+ax.set_title("Densité de population — aires de diffusion de Sherbrooke")
+ax.axis('off')
+plt.show()
+```
+
+### Visualisation interactive avec leafmap
+
+Pour explorer la donnée de façon **interactive** (zoom, déplacement, fonds de carte), `leafmap` ajoute un `GeoDataFrame` à une carte web avec `add_data`. On réutilise les mêmes paramètres de classification que pour la carte statique. La carte ci-dessous n'apparaît que dans la **version HTML** du livre :
+
+```{python .content-visible when-format="html"}
+import leafmap.foliumap as leafmap
+
+m = leafmap.Map(center=[45.40, -71.90], zoom=11)
+m.add_data(ad_wgs, column='HabKm2', scheme='Quantiles', k=5, cmap='YlOrRd',
+           legend_title='hab/km2', layer_name='Densité de population')
+m
+```
+
+::: {.content-visible when-profile="production"}
+La carte interactive `leafmap` n'est visible que dans la version HTML du livre.
+:::
 
 ## Points clés
 

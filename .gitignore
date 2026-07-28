@@ -4,8 +4,8 @@
 .Ruserdata
 .jupyter_cache/
 # Build-time NumPy artifacts written by ch01 (np.save/savez examples)
-/ndvi.npy
-/bandes.npz
+*.npy
+*.npz
 tex-hacks/*
 tutorial-example/*
 lua/*
