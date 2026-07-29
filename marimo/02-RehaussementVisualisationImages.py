@@ -445,7 +445,7 @@ def _(rio):
     from rasterio.plot import show_hist
     with rio.open('RGBNIR_of_S2A.tif') as _src:
         show_hist(_src, bins=50, lw=0.0, stacked=False, alpha=0.3, histtype='stepfilled', title='Histogram')
-    return
+    return (show_hist,)
 
 
 @app.cell(hide_code=True)
@@ -869,7 +869,7 @@ def _(img_s2, np, plt):
     [_a.axis('off') for _a in _ax]
     plt.tight_layout()
     plt.show()
-    return
+    return (composite_stretch,)
 
 
 @app.cell(hide_code=True)
@@ -877,6 +877,22 @@ def _(mo):
     mo.md(r"""
     Le résultat conserve les teintes relatives entre bandes tout en maximisant le contraste de chacune des composantes principales, ce qui fait ressortir davantage de détails que le composé original.
 
+    On peut confirmer cet étalement en traçant l'histogramme des trois bandes du composé étiré avec `show_hist` de `rasterio`, qui accepte directement une matrice `(bandes, lignes, colonnes)`. Après décorrélation, chaque bande occupe désormais toute la plage `[0, 1]` :
+    """)
+    return
+
+
+@app.cell
+def _(composite_stretch, plt, show_hist):
+    (_fig, _ax) = plt.subplots(figsize=(6, 4))
+    show_hist(composite_stretch, bins=50, lw=0.0, stacked=False, alpha=0.3, histtype='stepfilled', ax=_ax, title='Histogramme du composé après étirement par décorrélation')
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ##### Poids des bandes : le cercle des corrélations
 
     Au-delà du résultat visuel, l'ACP nous renseigne sur **la façon dont chaque bande contribue à chaque composante principale**. Les vecteurs propres donnent le **poids** de chaque bande dans une composante ; multipliés par la racine carrée de la valeur propre associée, ils fournissent la **corrélation** entre chaque bande et chaque composante. On visualise ces corrélations dans un **cercle des corrélations** : chaque bande devient une flèche partant de l'origine, dont les coordonnées sont ses corrélations avec les deux premières composantes (CP1 et CP2). Une flèche proche du cercle unité est bien représentée dans le plan CP1-CP2 ; deux flèches proches signalent des bandes corrélées, deux flèches opposées des bandes anti-corrélées.
