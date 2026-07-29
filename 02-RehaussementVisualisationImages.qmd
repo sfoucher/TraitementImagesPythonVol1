@@ -684,6 +684,18 @@ plt.show()
 
 Le résultat conserve les teintes relatives entre bandes tout en maximisant le contraste de chacune des composantes principales, ce qui fait ressortir davantage de détails que le composé original.
 
+On peut confirmer cet étalement en traçant l'histogramme des trois bandes du composé étiré avec `show_hist` de `rasterio`, qui accepte directement une matrice `(bandes, lignes, colonnes)`. Après décorrélation, chaque bande occupe désormais toute la plage `[0, 1]` :
+
+```{python}
+from rasterio.plot import show_hist
+
+fig, ax = plt.subplots(figsize=(6, 4))
+show_hist(composite_stretch, bins=50, lw=0.0, stacked=False, alpha=0.3,
+          histtype='stepfilled', ax=ax,
+          title="Histogramme du composé après étirement par décorrélation")
+plt.show()
+```
+
 ##### Poids des bandes : le cercle des corrélations
 
 Au-delà du résultat visuel, l'ACP nous renseigne sur **la façon dont chaque bande contribue à chaque composante principale**. Les vecteurs propres donnent le **poids** de chaque bande dans une composante ; multipliés par la racine carrée de la valeur propre associée, ils fournissent la **corrélation** entre chaque bande et chaque composante. On visualise ces corrélations dans un **cercle des corrélations** : chaque bande devient une flèche partant de l'origine, dont les coordonnées sont ses corrélations avec les deux premières composantes (CP1 et CP2). Une flèche proche du cercle unité est bien représentée dans le plan CP1-CP2 ; deux flèches proches signalent des bandes corrélées, deux flèches opposées des bandes anti-corrélées.
