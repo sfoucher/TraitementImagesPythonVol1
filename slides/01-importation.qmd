@@ -299,6 +299,40 @@ print("bande PIR par étiquette :", img_n.sel(band='PIR').shape)
 
 Un calcul entre bandes (NDVI) renvoie un `DataArray` qui **conserve la géoréférence**.
 
+## Données vectorielles — GeoPandas {.smaller}
+
+::: {.incremental}
+- Vecteur = **points / lignes / polygones** + **attributs** (shapefile, GeoPackage, GeoJSON)
+- **GeoPandas** = `pandas` + une colonne **géométrie** (`GeoDataFrame`)
+- `read_file` lit même une **archive `.zip`** ; `.crs` porte la géoréférence
+- Se filtre exactement comme un `DataFrame`
+:::
+
+```{python}
+import geopandas as gpd
+ad = gpd.read_file('../AD_Sherbrooke.zip')      # aires de diffusion de Sherbrooke
+print(len(ad), "entités |", ad.crs)
+print("denses (>3000 hab/km2) :", int((ad['HabKm2'] > 3000).sum()))
+```
+
+## Cartographier un `GeoDataFrame` {.smaller}
+
+::: {.incremental}
+- **Choroplèthe** statique : `.plot(column=…, scheme='quantiles')`
+- **Reprojection** `to_crs('EPSG:4326')` pour les fonds de carte web
+- **Interactif** : `leafmap` `add_data` (dans un notebook)
+:::
+
+```{python}
+#| fig-align: center
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(figsize=(5.2, 4.6))
+ad.plot(column='HabKm2', scheme='quantiles', k=5, cmap='YlOrRd',
+        legend=True, edgecolor='0.6', linewidth=0.2, ax=ax)
+ax.set_title("Densité — aires de diffusion de Sherbrooke"); ax.axis('off')
+plt.show()
+```
+
 ## Points clés {.smaller}
 
 ::: {.incremental}
@@ -310,6 +344,7 @@ Un calcul entre bandes (NDVI) renvoie un `DataArray` qui **conserve la géoréf�
 - Écrire un GeoTIFF : `rio.to_raster`, profil `rasterio` hérité, ou géoréférence construite (`from_origin`)
 - `rioxarray` / `xarray` : **`DataArray`**/**`Dataset`**, dimensions nommées + géoréférence via `.rio`
 - **Découper** (`clip_box`), **rééchantillonner**/**reprojeter** (`reproject`), sélectionner par **étiquette** (`sel`/`isel`)
+- **Données vectorielles** : `geopandas` (`GeoDataFrame`), requêtes attributaires, choroplèthe (`.plot`), carte interactive (`leafmap`)
 :::
 
 ## À vous de jouer {.smaller}

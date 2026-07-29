@@ -268,6 +268,35 @@ ax[1].imshow(decorrelation_stretch(composite).transpose(1, 2, 0)); ax[1].set_tit
 plt.tight_layout(); plt.show()
 ```
 
+## Cercle des corrélations (ACP) {.smaller}
+
+::: {.incremental}
+- Les **vecteurs propres** disent **comment chaque bande pèse** dans chaque composante
+- *Loadings* = vecteur propre × racine de la valeur propre = **corrélation** bande–composante
+- Flèche près du cercle = bien représentée ; flèches proches = bandes **corrélées**
+:::
+
+```{python}
+#| fig-align: center
+bandes = [2, 3, 4, 8, 11, 12]; noms = ['B', 'V', 'R', 'PIR', 'SWIR1', 'SWIR2']
+X = img_s2.sel(band=bandes).data.reshape(len(bandes), -1).astype(float)
+X = X[:, ~np.isnan(X).any(axis=0)]
+X = (X - X.mean(1, keepdims=True)) / X.std(1, keepdims=True)
+val, vec = np.linalg.eigh(np.corrcoef(X)); o = np.argsort(val)[::-1]
+L = vec[:, o] * np.sqrt(val[o]); pct = 100 * val[o] / val.sum()
+
+fig, ax = plt.subplots(figsize=(4.6, 4.6))
+ax.add_patch(plt.Circle((0, 0), 1, fill=False, color='grey', ls='--'))
+for i, n in enumerate(noms):
+    ax.arrow(0, 0, L[i, 0], L[i, 1], head_width=0.03, length_includes_head=True, color='tab:blue')
+    ax.text(L[i, 0] * 1.15, L[i, 1] * 1.15, n, ha='center', va='center')
+ax.set_xlim(-1.2, 1.2); ax.set_ylim(-1.2, 1.2); ax.set_aspect('equal')
+ax.set_xlabel(f"CP1 ({pct[0]:.0f} %)"); ax.set_ylabel(f"CP2 ({pct[1]:.0f} %)")
+plt.show()
+```
+
+CP1 = **luminosité** globale ; CP2 oppose **PIR / SWIR1** au visible (**végétation**).
+
 ## Points clés {.smaller}
 
 ::: {.incremental}
