@@ -89,13 +89,16 @@ bibliography: references.bib
 csl: StyleBiblio.csl
 
 format:
-  docx:
-    output: "Traitement-d-images-satellites-avec-Python.docx"
-  ipynb:
-    code-annotations: false
-    ipynb-filters:
-      - my-filter.py
+#  docx:
+#    output: "Traitement-d-images-satellites-avec-Python.docx"
+#  ipynb:
+#    code-annotations: false
+#    ipynb-filters:
+#      - my-filter.py
   html:
+    include-after-body:
+      - text: |
+          <script type="module" src="assets/ia-companion/widget.js" data-worker-url="https://ia-companion.samuel-foucher.workers.dev/"></script>
     colorlinks: true
     css: css/quizlib.min.css
 #    html-math-method: katex
