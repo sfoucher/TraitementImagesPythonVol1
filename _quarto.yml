@@ -1,6 +1,8 @@
 project:
   type: book
   output-dir: docs
+  resources:
+    - assets/ia-companion/lib.js
 #  execute: /home/sfoucher/miniconda3/bin/python
 #  execute-dir: file
 license: CC BY-SA
