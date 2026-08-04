@@ -702,7 +702,7 @@ Au-delà du résultat visuel, l'ACP nous renseigne sur **la façon dont chaque b
 
 ```{python}
 #| fig-align: center
-#| fig-width: 100%
+#| out-width: 100%
 bandes = [2, 3, 4, 8, 11, 12]
 noms = ['B', 'V', 'R', 'PIR', 'SWIR1', 'SWIR2']
 X = img_s2.sel(band=bandes).data.reshape(len(bandes), -1).astype(float)
