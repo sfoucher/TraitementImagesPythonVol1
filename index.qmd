@@ -18,6 +18,8 @@ jupyter: python3
 
 © Samuel Foucher, Philippe Apparicio, Yacine Bouroubi, Mickaël Germain et Étienne Clabaut.
 
+**Utilisation de l'IA :** Claude Code a été utilisé pour aider sur certains aspects techniques et de production: gestion de GitHub et des profils quarto, nettoyage des notebook python, vérification du contenu et des fichiers produits, détection des erreurs. 
+
 **Pour citer cet ouvrage :** Foucher S., Apparicio P., Bouroubi Y., Germain M. et Clabaut, E. (2025). *Traitement d’images satellites avec Python*. Université de Sherbrooke, Département de géomatique appliquée. fabriqueREL. Licence CC BY-SA. <br /> <br />
 
 ![](images/introduction/CouvertureP2.png){width="80%" fig-align="left"}
