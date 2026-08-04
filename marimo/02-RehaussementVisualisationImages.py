@@ -201,7 +201,7 @@ def _(img_rgbnir, plt):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Pour un affichage à trois bandes, les valeurs seront ramenées sur une échelle de 0 à 1, il est donc nécessaire de normaliser les valeurs avant l'affichage:
+    Pour un affichage à trois bandes, les valeurs seront ramenées sur une dynamique de 0 à 1, il est donc nécessaire de normaliser les valeurs avant l'affichage:
     """)
     return
 

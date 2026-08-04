@@ -244,7 +244,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment"><strong><code>matplotlib</code></strong> : affichage, palettes, composés colorés</li>
 <li class="fragment">4 images utilisées ce chapitre : <code>RGBNIR_of_S2A.tif</code>, <code>sentinel2.tif</code>, <code>berkeley.jpg</code>, <code>SAR.tif</code></li>
 </ul>
-<div id="78bcbb00" class="cell" data-execution_count="2">
+<div id="50c94fc1" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> rioxarray <span class="im">as</span> rxr, numpy <span class="im">as</span> np, matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href=""></a>img     <span class="op">=</span> rxr.open_rasterio(<span class="st">'../RGBNIR_of_S2A.tif'</span>)          <span class="co"># ordre B,V,R,PIR</span></span>
 <span id="cb1-3"><a href=""></a>img_s2  <span class="op">=</span> rxr.open_rasterio(<span class="st">'../sentinel2.tif'</span>)               <span class="co"># 12 bandes Sentinel-2</span></span>
@@ -260,7 +260,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Ordre des dimensions attendu : <strong>hauteur, largeur, bande</strong></li>
 <li class="fragment"><code>rioxarray</code>/<code>xarray</code> ajoutent les <strong>coordonnées cartographiques</strong></li>
 </ul>
-<div id="7565555e" class="cell" data-execution_count="3">
+<div id="e7d649b4" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
 <span id="cb2-2"><a href=""></a>plt.imshow(img.sel(band<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]).data.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>) <span class="op">/</span> <span class="fl">2500.0</span>)  <span class="co"># R,V,B</span></span>
 <span id="cb2-3"><a href=""></a>plt.axis(<span class="st">'off'</span>)<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -280,7 +280,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">Interface unifiée au-dessus de <code>folium</code>/<code>ipyleaflet</code> : zoom, fond de carte</li>
 <li class="fragment"><code>split_map</code> : comparateur à <strong>volet glissant</strong> entre deux visualisations</li>
 </ul>
-<div id="15ab82b5" class="cell" data-execution_count="4">
+<div id="58d2c8ab" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">import</span> leafmap</span>
 <span id="cb3-2"><a href=""></a>m <span class="op">=</span> leafmap.Map()</span>
 <span id="cb3-3"><a href=""></a>m.add_raster(<span class="st">'../RGBNIR_of_S2A.tif'</span>, indexes<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>])       <span class="co"># vraie couleur</span></span>
@@ -298,7 +298,7 @@ Foucher, Apparicio, Bouroubi, Germain, Clabaut
 <li class="fragment">à calculer <strong>par bande</strong></li>
 <li class="fragment">guident le choix de la transformation d’affichage</li>
 </ul>
-<div id="ec524fbc" class="cell" data-execution_count="5">
+<div id="43bcf109" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>img_s2.sel(band<span class="op">=</span>[<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>]).quantile(dim<span class="op">=</span>[<span class="st">'x'</span>, <span class="st">'y'</span>], q<span class="op">=</span>[<span class="fl">.025</span>, <span class="fl">.5</span>, <span class="fl">.975</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
@@ -750,15 +750,15 @@ array([[1215., 1356., 1188.],
        [2236., 2443., 2473.]])
 Coordinates:
   * band      (band) int64 24B 2 3 4
-  * quantile  (quantile) float64 24B 0.025 0.5 0.975</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.DataArray</div><div class="xr-array-name"></div><ul class="xr-dim-list"><li><span class="xr-has-index">quantile</span>: 3</li><li><span class="xr-has-index">band</span>: 3</li></ul></div><ul class="xr-sections"><li class="xr-section-item"><div class="xr-array-wrap"><input id="section-8770a136-eec3-4463-bc3a-34ed2e40df0e" class="xr-array-in" type="checkbox" checked=""><label for="section-8770a136-eec3-4463-bc3a-34ed2e40df0e" title="Show/hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-array-preview xr-preview"><span>1.215e+03 1.356e+03 1.188e+03 ... 2.236e+03 2.443e+03 2.473e+03</span></div><div class="xr-array-data"><pre>array([[1215., 1356., 1188.],
+  * quantile  (quantile) float64 24B 0.025 0.5 0.975</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.DataArray</div><div class="xr-array-name"></div><ul class="xr-dim-list"><li><span class="xr-has-index">quantile</span>: 3</li><li><span class="xr-has-index">band</span>: 3</li></ul></div><ul class="xr-sections"><li class="xr-section-item"><div class="xr-array-wrap"><input id="section-ca891429-634e-478a-a8e7-7ba34465cf08" class="xr-array-in" type="checkbox" checked=""><label for="section-ca891429-634e-478a-a8e7-7ba34465cf08" title="Show/hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-array-preview xr-preview"><span>1.215e+03 1.356e+03 1.188e+03 ... 2.236e+03 2.443e+03 2.473e+03</span></div><div class="xr-array-data"><pre>array([[1215., 1356., 1188.],
        [1317., 1587., 1316.],
-       [2236., 2443., 2473.]])</pre></div></div></li><li class="xr-section-item"><input id="section-95d681f9-c211-4795-afcb-62e71448fb94" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-95d681f9-c211-4795-afcb-62e71448fb94" class="xr-section-summary">Coordinates: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">band</span></div><div class="xr-var-dims">(band)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">2 3 4</div><input id="attrs-cf1a7c50-233c-4819-a70f-38fba84aa70b" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-cf1a7c50-233c-4819-a70f-38fba84aa70b" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-171c640c-d07a-4a59-820a-9ac6a2b643dc" class="xr-var-data-in" type="checkbox"><label for="data-171c640c-d07a-4a59-820a-9ac6a2b643dc" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([2, 3, 4])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">quantile</span></div><div class="xr-var-dims">(quantile)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.025 0.5 0.975</div><input id="attrs-8ba9b807-7208-4247-81bc-1a8e3ed775ec" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-8ba9b807-7208-4247-81bc-1a8e3ed775ec" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-0a4c0012-fc45-4a56-85bd-d8c019aa3a53" class="xr-var-data-in" type="checkbox"><label for="data-0a4c0012-fc45-4a56-85bd-d8c019aa3a53" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([0.025, 0.5  , 0.975])</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-ef3a8d99-5a65-4efc-916b-e7bcfff6424a" class="xr-section-summary-in" type="checkbox"><label for="section-ef3a8d99-5a65-4efc-916b-e7bcfff6424a" class="xr-section-summary">Indexes: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-index-name"><div>band</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-1106997c-6c2d-4594-89e1-c62e96ddbdb7" class="xr-index-data-in" type="checkbox"><label for="index-1106997c-6c2d-4594-89e1-c62e96ddbdb7" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([2, 3, 4], dtype='int64', name='band'))</pre></div></li><li class="xr-var-item"><div class="xr-index-name"><div>quantile</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-2f3df3dd-a5df-49aa-94db-2f8d001da484" class="xr-index-data-in" type="checkbox"><label for="index-2f3df3dd-a5df-49aa-94db-2f8d001da484" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([0.025, 0.5, 0.975], dtype='float64', name='quantile'))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-d84b1f2b-c6f0-4f7c-a11a-c342fa4a3ca0" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-d84b1f2b-c6f0-4f7c-a11a-c342fa4a3ca0" class="xr-section-summary" title="Expand/collapse section">Attributes: <span>(0)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"></dl></div></li></ul></div></div>
+       [2236., 2443., 2473.]])</pre></div></div></li><li class="xr-section-item"><input id="section-27d54c28-969b-45e4-b598-f5b8e25e0b42" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-27d54c28-969b-45e4-b598-f5b8e25e0b42" class="xr-section-summary">Coordinates: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">band</span></div><div class="xr-var-dims">(band)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">2 3 4</div><input id="attrs-300fc8ca-2465-4ab4-9a03-b73f22038c05" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-300fc8ca-2465-4ab4-9a03-b73f22038c05" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-449ed3c2-3296-4b4a-9c12-18fe70afad3b" class="xr-var-data-in" type="checkbox"><label for="data-449ed3c2-3296-4b4a-9c12-18fe70afad3b" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([2, 3, 4])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">quantile</span></div><div class="xr-var-dims">(quantile)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.025 0.5 0.975</div><input id="attrs-732c48eb-4ec9-4bb6-bd48-1481dc6d1873" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-732c48eb-4ec9-4bb6-bd48-1481dc6d1873" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-066b60eb-f293-487e-a5a0-8bedda25942a" class="xr-var-data-in" type="checkbox"><label for="data-066b60eb-f293-487e-a5a0-8bedda25942a" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([0.025, 0.5  , 0.975])</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-a97e0d9b-564a-4a9c-83e3-7c1f8f5b7d61" class="xr-section-summary-in" type="checkbox"><label for="section-a97e0d9b-564a-4a9c-83e3-7c1f8f5b7d61" class="xr-section-summary">Indexes: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-index-name"><div>band</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-214cb429-36e5-4544-9b94-57f322b69c19" class="xr-index-data-in" type="checkbox"><label for="index-214cb429-36e5-4544-9b94-57f322b69c19" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([2, 3, 4], dtype='int64', name='band'))</pre></div></li><li class="xr-var-item"><div class="xr-index-name"><div>quantile</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-72396d4c-e4e5-4fe1-a29a-50dc77f36fc3" class="xr-index-data-in" type="checkbox"><label for="index-72396d4c-e4e5-4fe1-a29a-50dc77f36fc3" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([0.025, 0.5, 0.975], dtype='float64', name='quantile'))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-c19a9b03-0ac8-49f6-a740-27883e6d3286" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-c19a9b03-0ac8-49f6-a740-27883e6d3286" class="xr-section-summary" title="Expand/collapse section">Attributes: <span>(0)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"></dl></div></li></ul></div></div>
 </div>
 </div>
 </section>
 <section id="histogramme" class="slide level2 smaller">
 <h2>Histogramme</h2>
-<div id="d4f783b8" class="cell" data-execution_count="6">
+<div id="737a28ff" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a>vals <span class="op">=</span> img.sel(band<span class="op">=</span><span class="dv">4</span>).values.ravel()          <span class="co"># bande PIR</span></span>
 <span id="cb5-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">3</span>))</span>
 <span id="cb5-3"><a href=""></a>ax.hist(vals, bins<span class="op">=</span><span class="dv">50</span>, color<span class="op">=</span><span class="st">"#357cc0"</span>)</span>
@@ -786,7 +786,7 @@ Coordinates:
 <section id="histogrammes-asymétriques-les-percentiles" class="slide level2 smaller">
 <h2>Histogrammes asymétriques : les percentiles</h2>
 <p>Cas des images SAR (longue queue) → borner avec des percentiles :</p>
-<div id="cf160b80" class="cell" data-execution_count="7">
+<div id="52ab1f74" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>valid <span class="op">=</span> (sar <span class="op">!=</span> <span class="op">-</span><span class="fl">999.0</span>) <span class="op">&amp;</span> (sar <span class="op">&gt;</span> <span class="dv">0</span>)            <span class="co"># masque no_data</span></span>
 <span id="cb6-2"><a href=""></a>v <span class="op">=</span> sar[valid]</span>
 <span id="cb6-3"><a href=""></a>p <span class="op">=</span> {q: np.percentile(v, q) <span class="cf">for</span> q <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">98</span>, <span class="dv">100</span>)}</span>
@@ -806,7 +806,7 @@ Coordinates:
 <section id="réhaussement-non-linéaire-décibels" class="slide level2 smaller">
 <h2>Réhaussement non linéaire — décibels</h2>
 <p>Pour le radar : passage en <strong>dB</strong> (<code>10·log10</code>) → distribution ~gaussienne.</p>
-<div id="a674bbe9" class="cell" data-execution_count="8">
+<div id="d9cb7e16" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>sar_db <span class="op">=</span> <span class="dv">10</span> <span class="op">*</span> np.log10(np.where(valid, sar, np.nan))</span>
 <span id="cb7-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="fl">3.2</span>))</span>
 <span id="cb7-3"><a href=""></a>im <span class="op">=</span> ax.imshow(sar_db, cmap<span class="op">=</span><span class="st">'gray'</span>)<span class="op">;</span> ax.set_title(<span class="st">"SAR en dB"</span>)<span class="op">;</span> ax.axis(<span class="st">'off'</span>)</span>
@@ -828,7 +828,7 @@ Coordinates:
 <li class="fragment"><span class="math inline">\(\gamma &gt; 1\)</span> <strong>assombrit</strong> les tons clairs (image surexposée) ; <span class="math inline">\(\gamma=1\)</span> = identité</li>
 <li class="fragment">transformation <strong>non symétrique</strong> entre ombres et hautes lumières</li>
 </ul>
-<div id="d78159ac" class="cell" data-execution_count="9">
+<div id="8ce64022" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a>img_norm <span class="op">=</span> np.clip(img_rgb.data.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>) <span class="op">/</span> <span class="fl">255.0</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
 <span id="cb8-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
 <span id="cb8-3"><a href=""></a><span class="cf">for</span> a, g <span class="kw">in</span> <span class="bu">zip</span>(ax, (<span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">2.0</span>)):</span>
@@ -850,7 +850,7 @@ Coordinates:
 <li class="fragment">but : rendre les niveaux <strong>équiprobables</strong> (histogramme aplati)</li>
 <li class="fragment">révèle des détails dans les zones sombres</li>
 </ul>
-<div id="dca8d195" class="cell" data-execution_count="10">
+<div id="c7969255" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a><span class="im">from</span> skimage <span class="im">import</span> exposure</span>
 <span id="cb9-2"><a href=""></a>gray <span class="op">=</span> img_rgb.data.transpose(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).mean(axis<span class="op">=</span><span class="dv">2</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
 <span id="cb9-3"><a href=""></a>img_eq <span class="op">=</span> exposure.equalize_hist(gray)</span>
@@ -874,7 +874,7 @@ Coordinates:
 <li class="fragment"><strong>CLAHE</strong> : découpe en tuiles, égalise chacune, plafond <code>clip_limit</code> anti-bruit</li>
 <li class="fragment">fait ressortir les détails <strong>locaux</strong> (ombres, textures) sans saturer le reste</li>
 </ul>
-<div id="f759261f" class="cell" data-execution_count="11">
+<div id="0daf57aa" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>img_clahe <span class="op">=</span> exposure.equalize_adapthist(gray, clip_limit<span class="op">=</span><span class="fl">0.03</span>)</span>
 <span id="cb10-2"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
 <span id="cb10-3"><a href=""></a>ax[<span class="dv">0</span>].imshow(img_eq, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>)<span class="op">;</span> ax[<span class="dv">0</span>].set_title(<span class="st">"égalisation globale"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
@@ -896,7 +896,7 @@ Coordinates:
 <li class="fragment">utile pour harmoniser deux acquisitions (p.&nbsp;ex. mosaïquage de scènes adjacentes)</li>
 <li class="fragment"><code>skimage.exposure.match_histograms</code></li>
 </ul>
-<div id="4efaa968" class="cell" data-execution_count="12">
+<div id="0e7b53a9" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a><span class="im">from</span> skimage.exposure <span class="im">import</span> match_histograms</span>
 <span id="cb11-2"><a href=""></a>source <span class="op">=</span> np.log10(sar)</span>
 <span id="cb11-3"><a href=""></a>cible <span class="op">=</span> np.random.normal(loc<span class="op">=</span>source.mean(), scale<span class="op">=</span>source.std(), size<span class="op">=</span>source.shape)</span>
@@ -916,7 +916,7 @@ Coordinates:
 </section>
 <section id="palettes-de-couleur" class="slide level2 smaller">
 <h2>Palettes de couleur</h2>
-<div id="7e36bc70" class="cell" data-execution_count="13">
+<div id="2316cbb2" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
 <span id="cb12-2"><a href=""></a><span class="cf">for</span> a, cmap <span class="kw">in</span> <span class="bu">zip</span>(ax, [<span class="st">'gray'</span>, <span class="st">'viridis'</span>, <span class="st">'terrain'</span>]):   <span class="co"># viridis &gt; jet (perceptuel)</span></span>
 <span id="cb12-3"><a href=""></a>    a.imshow(sar, vmin<span class="op">=</span>p[<span class="dv">2</span>], vmax<span class="op">=</span>p[<span class="dv">98</span>], cmap<span class="op">=</span>cmap)</span>
@@ -938,7 +938,7 @@ Coordinates:
 <li class="fragment">Sentinel-2 : 12 bandes → nombreux composés possibles selon l’application</li>
 <li class="fragment"><code>RGBNIR_of_S2A.tif</code> (B,V,R,PIR) → vraies vs fausses couleurs</li>
 </ul>
-<div id="3530fffa" class="cell" data-execution_count="14">
+<div id="0b4e97bb" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
 <span id="cb13-2"><a href=""></a>img.sel(band<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]).plot.imshow(vmin<span class="op">=</span><span class="dv">86</span>, vmax<span class="op">=</span><span class="dv">5000</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
 <span id="cb13-3"><a href=""></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Vraies couleurs"</span>)<span class="op">;</span> ax[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
@@ -963,7 +963,7 @@ Coordinates:
 <li class="fragment">on <strong>décorrèle</strong> dans l’espace ACP, on <strong>égalise la variance</strong>, puis retour à l’espace original</li>
 <li class="fragment">conserve les teintes relatives tout en maximisant le contraste</li>
 </ul>
-<div id="3a7d8d6b" class="cell" data-execution_count="15">
+<div id="c9271c00" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a><span class="kw">def</span> decorrelation_stretch(im):</span>
 <span id="cb14-2"><a href=""></a>    X <span class="op">=</span> im.reshape(im.shape[<span class="dv">0</span>], <span class="op">-</span><span class="dv">1</span>).astype(<span class="bu">float</span>)</span>
 <span id="cb14-3"><a href=""></a>    X <span class="op">-=</span> X.mean(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
@@ -987,6 +987,39 @@ Coordinates:
 </div>
 </div>
 </div>
+</section>
+<section id="cercle-des-corrélations-acp" class="slide level2 smaller">
+<h2>Cercle des corrélations (ACP)</h2>
+<ul>
+<li class="fragment">Les <strong>vecteurs propres</strong> disent <strong>comment chaque bande pèse</strong> dans chaque composante</li>
+<li class="fragment"><em>Loadings</em> = vecteur propre × racine de la valeur propre = <strong>corrélation</strong> bande–composante</li>
+<li class="fragment">Flèche près du cercle = bien représentée ; flèches proches = bandes <strong>corrélées</strong></li>
+</ul>
+<div id="366570e7" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a>bandes <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">11</span>, <span class="dv">12</span>]<span class="op">;</span> noms <span class="op">=</span> [<span class="st">'B'</span>, <span class="st">'V'</span>, <span class="st">'R'</span>, <span class="st">'PIR'</span>, <span class="st">'SWIR1'</span>, <span class="st">'SWIR2'</span>]</span>
+<span id="cb15-2"><a href=""></a>X <span class="op">=</span> img_s2.sel(band<span class="op">=</span>bandes).data.reshape(<span class="bu">len</span>(bandes), <span class="op">-</span><span class="dv">1</span>).astype(<span class="bu">float</span>)</span>
+<span id="cb15-3"><a href=""></a>X <span class="op">=</span> X[:, <span class="op">~</span>np.isnan(X).<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">0</span>)]</span>
+<span id="cb15-4"><a href=""></a>X <span class="op">=</span> (X <span class="op">-</span> X.mean(<span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)) <span class="op">/</span> X.std(<span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-5"><a href=""></a>val, vec <span class="op">=</span> np.linalg.eigh(np.corrcoef(X))<span class="op">;</span> o <span class="op">=</span> np.argsort(val)[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb15-6"><a href=""></a>L <span class="op">=</span> vec[:, o] <span class="op">*</span> np.sqrt(val[o])<span class="op">;</span> pct <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> val[o] <span class="op">/</span> val.<span class="bu">sum</span>()</span>
+<span id="cb15-7"><a href=""></a></span>
+<span id="cb15-8"><a href=""></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">4.6</span>, <span class="fl">4.6</span>))</span>
+<span id="cb15-9"><a href=""></a>ax.add_patch(plt.Circle((<span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">1</span>, fill<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span><span class="st">'grey'</span>, ls<span class="op">=</span><span class="st">'--'</span>))</span>
+<span id="cb15-10"><a href=""></a><span class="cf">for</span> i, n <span class="kw">in</span> <span class="bu">enumerate</span>(noms):</span>
+<span id="cb15-11"><a href=""></a>    ax.arrow(<span class="dv">0</span>, <span class="dv">0</span>, L[i, <span class="dv">0</span>], L[i, <span class="dv">1</span>], head_width<span class="op">=</span><span class="fl">0.03</span>, length_includes_head<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">'tab:blue'</span>)</span>
+<span id="cb15-12"><a href=""></a>    ax.text(L[i, <span class="dv">0</span>] <span class="op">*</span> <span class="fl">1.15</span>, L[i, <span class="dv">1</span>] <span class="op">*</span> <span class="fl">1.15</span>, n, ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb15-13"><a href=""></a>ax.set_xlim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)<span class="op">;</span> ax.set_ylim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)<span class="op">;</span> ax.set_aspect(<span class="st">'equal'</span>)</span>
+<span id="cb15-14"><a href=""></a>ax.set_xlabel(<span class="ss">f"CP1 (</span><span class="sc">{</span>pct[<span class="dv">0</span>]<span class="sc">:.0f}</span><span class="ss"> %)"</span>)<span class="op">;</span> ax.set_ylabel(<span class="ss">f"CP2 (</span><span class="sc">{</span>pct[<span class="dv">1</span>]<span class="sc">:.0f}</span><span class="ss"> %)"</span>)</span>
+<span id="cb15-15"><a href=""></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="02-rehaussement_files/figure-revealjs/cell-16-output-1.png" class="quarto-figure quarto-figure-center" width="419" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>CP1 = <strong>luminosité</strong> globale ; CP2 oppose <strong>PIR / SWIR1</strong> au visible (<strong>végétation</strong>).</p>
 </section>
 <section id="points-clés" class="slide level2 smaller">
 <h2>Points clés</h2>
