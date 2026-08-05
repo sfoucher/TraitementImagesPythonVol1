@@ -72,6 +72,14 @@ class IaCompanionWidget {
     this.history = [];
     this.cooldownUntil = 0;
     this.render();
+    // Empêche les touches de fuir hors du shadow DOM vers les raccourcis
+    // globaux de Quarto : sa recherche lit document.activeElement, qui renvoie
+    // l'hôte du shadow DOM (un <div>, pas le textarea) et croit donc qu'aucun
+    // champ n'est actif → capte « f », « s », « / » dans sa barre de recherche.
+    // stopPropagation à la racine du shadow bloque le passage vers le document
+    // sans gêner les gestionnaires internes (situés plus bas dans l'arbre).
+    ['keydown', 'keyup', 'keypress'].forEach((evt) =>
+      this.root.addEventListener(evt, (e) => e.stopPropagation()));
   }
 
   render() {
@@ -164,11 +172,6 @@ class IaCompanionWidget {
         this.send(textarea, sendBtn, messages);
       }
     });
-    // Empêche les touches de fuir vers les raccourcis globaux de Quarto
-    // (le retargeting du shadow DOM masque le textarea → Quarto croit qu'aucun
-    // champ n'est actif et capture « / », « s »… dans sa barre de recherche).
-    ['keydown', 'keyup', 'keypress'].forEach((evt) =>
-      textarea.addEventListener(evt, (e) => e.stopPropagation()));
 
     inputRow.append(textarea, sendBtn);
     panel.append(header, messages, inputRow);
