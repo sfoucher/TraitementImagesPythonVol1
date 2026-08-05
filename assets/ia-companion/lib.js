@@ -59,3 +59,11 @@ export function buildPayload(question, pageContext, level, history) {
     history: history.slice(-6),
   };
 }
+
+export function buildQuizPayload(pageContext, level) {
+  return {
+    mode: 'quiz',
+    pageContext: truncateText(pageContext, MAX_PAGE_CHARS),
+    level: level === 'expert' ? 'expert' : 'beginner',
+  };
+}

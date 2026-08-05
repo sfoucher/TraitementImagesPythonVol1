@@ -1,4 +1,4 @@
-import { truncateText, renderMarkdown, buildPayload, MAX_PAGE_CHARS } from './lib.js';
+import { truncateText, renderMarkdown, buildPayload, buildQuizPayload, MAX_PAGE_CHARS } from './lib.js';
 
 const STYLE = `
   :host { all: initial; }
@@ -36,6 +36,13 @@ const STYLE = `
   .inputRow textarea { flex: 1; border: none; padding: 8px; resize: none; font: inherit; }
   .inputRow button { border: none; background: #2b6cb0; color: white; padding: 0 14px; cursor: pointer; }
   .inputRow button:disabled { background: #a0aec0; cursor: not-allowed; }
+  .quizOptions { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .quizOption { border: 1px solid #cbd5e0; background: white; color: #1a202c;
+    padding: 6px 8px; border-radius: 6px; cursor: pointer; text-align: left; font: inherit; }
+  .quizOption:disabled { cursor: default; }
+  .quizOption.correct { background: #c6f6d5; border-color: #38a169; }
+  .quizOption.incorrect { background: #fed7d7; border-color: #e53e3e; }
+  .quizExplanation { margin-top: 8px; font-size: 13px; color: #2d3748; }
   @media (max-width: 480px) {
     .panel { width: 92vw; right: 4vw; }
   }
@@ -173,7 +180,11 @@ class IaCompanionWidget {
       }
     });
 
-    inputRow.append(textarea, sendBtn);
+    const quizBtn = document.createElement('button');
+    quizBtn.textContent = 'Quiz';
+    quizBtn.addEventListener('click', () => this.sendQuiz(quizBtn));
+
+    inputRow.append(textarea, sendBtn, quizBtn);
     panel.append(header, messages, inputRow);
     this.root.appendChild(panel);
     this.panel = panel;
@@ -188,16 +199,7 @@ class IaCompanionWidget {
     this.messagesEl.scrollTop = this.messagesEl.scrollHeight;
   }
 
-  async send(textarea, sendBtn, messages) {
-    if (sendBtn.disabled) return;
-    const question = textarea.value.trim();
-    if (!question || Date.now() < this.cooldownUntil) return;
-
-    this.addMessage('user', question);
-    textarea.value = '';
-    sendBtn.disabled = true;
-
-    const payload = buildPayload(question, getPageContext(), getLevel(), this.history);
+  async postToWorker(payload, triggerBtn) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
@@ -213,21 +215,85 @@ class IaCompanionWidget {
       if (res.status === 429) {
         this.cooldownUntil = Date.now() + 30000;
         this.addMessage('error', "Trop de questions d'un coup, réessaie dans 30 secondes.");
-        return;
+        return null;
       }
       if (!res.ok) {
         this.addMessage('error', 'Désolé, service indisponible, réessayez.');
-        return;
+        return null;
       }
-      const data = await res.json();
-      this.history.push({ role: 'user', text: question });
-      this.history.push({ role: 'assistant', text: data.answer });
-      this.addMessage('assistant', data.answer);
+      return await res.json();
     } catch {
       this.addMessage('error', 'Désolé, service indisponible, réessayez.');
+      return null;
     } finally {
-      sendBtn.disabled = false;
+      triggerBtn.disabled = false;
     }
+  }
+
+  async send(textarea, sendBtn, messages) {
+    if (sendBtn.disabled) return;
+    const question = textarea.value.trim();
+    if (!question || Date.now() < this.cooldownUntil) return;
+
+    this.addMessage('user', question);
+    textarea.value = '';
+    sendBtn.disabled = true;
+
+    const payload = buildPayload(question, getPageContext(), getLevel(), this.history);
+    const data = await this.postToWorker(payload, sendBtn);
+    if (!data) return;
+
+    this.history.push({ role: 'user', text: question });
+    this.history.push({ role: 'assistant', text: data.answer });
+    this.addMessage('assistant', data.answer);
+  }
+
+  async sendQuiz(quizBtn) {
+    if (quizBtn.disabled || Date.now() < this.cooldownUntil) return;
+    quizBtn.disabled = true;
+
+    const payload = buildQuizPayload(getPageContext(), getLevel());
+    const data = await this.postToWorker(payload, quizBtn);
+    if (!data || !data.quiz) return;
+
+    this.addQuizMessage(data.quiz);
+  }
+
+  addQuizMessage(quiz) {
+    const div = document.createElement('div');
+    div.className = 'msg quiz';
+
+    const q = document.createElement('p');
+    q.innerHTML = renderMarkdown(quiz.question);
+    div.appendChild(q);
+
+    const optionsWrap = document.createElement('div');
+    optionsWrap.className = 'quizOptions';
+
+    quiz.options.forEach((optionText, index) => {
+      const btn = document.createElement('button');
+      btn.textContent = optionText;
+      btn.className = 'quizOption';
+      btn.addEventListener('click', () => {
+        optionsWrap.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+        if (index === quiz.correctIndex) {
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('incorrect');
+          optionsWrap.children[quiz.correctIndex].classList.add('correct');
+        }
+        const explanation = document.createElement('p');
+        explanation.className = 'quizExplanation';
+        explanation.innerHTML = renderMarkdown(quiz.explanation);
+        div.appendChild(explanation);
+        this.messagesEl.scrollTop = this.messagesEl.scrollHeight;
+      });
+      optionsWrap.appendChild(btn);
+    });
+
+    div.appendChild(optionsWrap);
+    this.messagesEl.appendChild(div);
+    this.messagesEl.scrollTop = this.messagesEl.scrollHeight;
   }
 }
 
