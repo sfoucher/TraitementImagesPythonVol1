@@ -5,7 +5,7 @@ outils). Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/).
 
 ## [Non publié] — depuis v1.0
 
-175 commits entre `v1.0` (2025-03-28) et aujourd'hui.
+179 commits entre `v1.0` (2025-03-28) et aujourd'hui.
 
 ### Ajouté
 
@@ -33,7 +33,12 @@ outils). Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/).
   `code_complementaire/quizz_functions.py` (HTML seulement).
 - **Assistant IA** : widget de clavardage `assets/ia-companion/`
   (`widget.js` + `lib.js`), injecté par `_quarto.yml`
-  (`include-after-body`), adossé à un worker Cloudflare externe.
+  (`include-after-body`), adossé à un worker Cloudflare externe. Inclut un
+  **mode quiz** interactif (bouton Quiz → `mode:"quiz"`, réponse
+  `{quiz:{question,options,correctIndex,explanation}}`). Le widget tourne dans
+  un shadow DOM : `stopPropagation` à sa racine (sinon les raccourcis de
+  recherche Quarto captent les frappes) et rendu markdown côté client
+  (`renderMarkdown` : titres, listes, liens, blocs de code).
 - **Données vectorielles** : section GeoPandas/leafmap (ch01), cartes statiques
   contextily (ch02).
 
