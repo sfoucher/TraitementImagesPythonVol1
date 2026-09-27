@@ -3,9 +3,9 @@
 Notes destinées aux **contributeurs** (chaîne de compilation, structure du dépôt,
 outils). Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/).
 
-## [Non publié] — depuis v1.0
+## [2.0] — 2026-09-27 — Deuxième édition
 
-179 commits entre `v1.0` (2025-03-28) et aujourd'hui.
+182 commits entre `v1.0` (2025-03-28) et la deuxième édition.
 
 ### Ajouté
 
@@ -52,6 +52,9 @@ outils). Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/).
   les exercices dans les chapitres.
 - `_quarto.yml`, `css/r4ds.scss`, `references.bib`, `.gitignore`, `README.md`
   mis à jour.
+- **Passage à la deuxième édition** : sous-titre `Deuxième édition` (`_quarto.yml`,
+  process.sh injecte `Version 1.<count>`), mentions « 2ième édition » dans les
+  citations (`index.qmd`), image de couverture masquée.
 
 ### Supprimé
 
