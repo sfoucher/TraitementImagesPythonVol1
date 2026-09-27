@@ -25,8 +25,8 @@ crossref:
   lst-title: Bloc de code
 book:
   title: "Traitement d'images satellites avec Python"
-  # process.sh (-M subtitle) overrides this: PDF -> "Version 1.<count>", HTML -> "Première édition · Version 1.<count>".
-  subtitle: "Première édition"
+  # process.sh (-M subtitle) overrides this: PDF -> "Version 1.<count>", HTML -> "Deuxième édition · Version 1.<count>".
+  subtitle: "Deuxième édition"
   search: true
   author: 
     - name: Samuel Foucher
